@@ -1,0 +1,47 @@
+{
+  "$schema": "https://turborepo.com/schema.json",
+  "globalEnv": ["NODE_ENV", "VITE_*"],
+  "tasks": {
+    "lint": {},
+    "dev": {
+      "env": ["NODE_ENV"],
+      "cache": false,
+      "persistent": true
+    },
+    "build:dev": {
+      "env": ["NODE_ENV"],
+      "dependsOn": ["^build:dev"],
+      "inputs": ["$TURBO_DEFAULT$", ".env*"],
+      "outputs": [".nuxt/**", ".output/**", "dist/**"]
+    },
+    "test": {
+      "env": ["NODE_ENV"],
+      "cache": false,
+      "persistent": true
+    },
+    "build:test": {
+      "env": ["NODE_ENV"],
+      "dependsOn": ["^build:test"],
+      "inputs": ["$TURBO_DEFAULT$", ".env*"],
+      "outputs": [".nuxt/**", ".output/**", "dist/**"]
+    },
+    "uat": {
+      "env": ["NODE_ENV"],
+      "cache": false,
+      "persistent": true
+    },
+    "build:uat": {
+      "env": ["NODE_ENV"],
+      "dependsOn": ["^build:uat"],
+      "inputs": ["$TURBO_DEFAULT$", ".env*"],
+      "outputs": [".nuxt/**", ".output/**", "dist/**"]
+    },
+    "build:prod": {
+      "env": ["NODE_ENV"],
+      "dependsOn": ["^build:prod"],
+      "inputs": ["$TURBO_DEFAULT$", ".env*"],
+      "outputs": [".nuxt/**", ".output/**", "dist/**"],
+      "persistent": false
+    }
+  }
+}

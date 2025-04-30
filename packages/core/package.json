@@ -1,0 +1,16 @@
+{
+  "name": "@flylinking/core",
+  "version": "1.0.0",
+  "private": true,
+  "description": "核心方法库",
+  "main": "./index.js",
+  "scripts": {
+    "test": "vite test --watch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "currency.js": "^2.0.4"
+  }
+}

@@ -1,0 +1,287 @@
+pipeline {
+    agent {
+        node {
+            label 'k8s-test-jenkins-slave-nodejs-18-20'
+        }
+    }
+    parameters {
+        choice(name: 'Build_Action', choices: ['YES', 'NO'], description: '本次构建是否进行代码编译？')
+        choice(name: 'Deploy_Action', choices: ['YES', 'NO'], description: '本次构建是否部署至相应环境？')
+        choice(name: 'Code_Review', choices: ['NO', 'YES'], description: '是否进行SonarQube代码扫描？')
+        choice(name: 'Code_Coverage', choices: ['NO', 'YES'], description: '是否进行JaCoCo单元测试？（仅Maven项目选择）')
+    }
+    options {
+        timestamps()
+        buildDiscarder(logRotator(numToKeepStr: '10'))
+        disableConcurrentBuilds()
+        timeout(time: 20, unit: 'MINUTES')
+        gitLabConnection('gitlab')
+    }
+    environment {
+        IMAGE_REPO = "harbor-ca.inflyway.com"
+        HARBOR = credentials('harbor')
+        GIT_CONFIG_URL = "172.24.70.86:8082/flylinking-kustomize/flylinking-monorepo-distribution"
+        GIT = credentials('git-jenkins')
+        PROJECT_NAME = "flylinking-monorepo-distribution"
+        IMAGE_VERSION = "${GIT_COMMIT}-${BUILD_NUMBER}"
+        FEISHU_TOKEN = "472bed08-e932-4bef-9cb4-59d98cec0eba"
+        CHECK_RL = "未做代码扫描"
+        CHECK_CODE_FLAG = "False"
+    }
+    stages {
+        stage('Printenv') {
+            steps {
+                container('jenkins-slave-nodejs-18-20') {
+                    script {
+                        def specificCause = currentBuild.getBuildCauses('hudson.model.Cause$UserIdCause')
+                        env.CAUSE = "${specificCause.shortDescription}"
+                        echo 'printenv'
+                        echo "'${BUILD_URL}'"
+                        echo "'${HOSTNAME}'"
+                        echo "'${RUN_CHANGES_DISPLAY_URL}'"
+                        echo "'${PATH}'"
+                        echo "'${CAUSE}'"
+                    }
+                }
+            }
+        }
+        stage('Checkout代码') {
+            steps {
+                container('jenkins-slave-nodejs-18-20') {
+                    checkout scm
+                    script {
+                        sh 'git config --global --add safe.directory ${WORKSPACE}'
+                        sh "git log --oneline -n 1 > gitlog.file"
+                        env.commitlog = readFile("gitlog.file").trim()
+                        updateGitlabCommitStatus(name: env.STAGE_NAME, state: 'success')
+                        env.git_commit_name = sh (script: "git --no-pager show -s --format='%an' ${GIT_COMMIT}",returnStdout: true).trim()
+                    }
+                }
+            }
+        }
+        stage('SonarQube代码扫描') {
+            failFast true
+            when {
+                environment name: 'Code_Review', value: 'YES'
+            }
+            steps {
+                container('jenkins-slave-nodejs-18-20') {
+                    withSonarQubeEnv('sonarqube') {
+                        sh 'sonar-scanner -X'
+                        sleep 3
+                    }
+                    script {
+                        timeout(10) {
+                            def qg = waitForQualityGate('sonarqube')
+                            if (qg.status != 'OK') {
+                                CHECK_RL="未通过Sonarqube代码质量阈检查，请及时修改！failure: ${qg.status}"
+                            }
+                            else {
+                                CHECK_RL="已通过Sonarqube代码质量阈检查"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        stage('Code_Build代码编译') {
+            when {
+                environment name: 'Build_Action', value: 'YES'
+            }
+            steps {
+                container('jenkins-slave-nodejs-18-20') {
+                    script {
+                        if ( BRANCH_NAME =~ "^ca-test") {
+                            sh 'pnpm install && pnpm run build:test:distribution'
+                        }
+                        else if ( BRANCH_NAME =~ "^ca-uat") {
+                            sh 'pnpm install && pnpm run build:uat:distribution'
+                        }
+                        else if (BRANCH_NAME =~ "master" || BRANCH_NAME =~ "^ca-hotfix" ) {
+                            sh 'pnpm install && pnpm run build:prod:distribution'
+                        }
+                    }
+                }
+            }
+        }
+        stage('Docker_Build构建容器镜像') {
+            when {
+                environment name: 'Build_Action', value: 'YES'
+            }
+            steps {
+                container('jenkins-slave-nodejs-18-20') {
+                    script {
+                        sh 'cd apps/distribution && mkdir docker_build'
+                        sh 'mv Dockerfile .output ecosystem.config.js package.json docker_build/'
+                        if ( BRANCH_NAME =~ "^ca-test" || BRANCH_NAME =~ "^ca-release") {
+                            retry(2) { sh 'cd docker_build && docker build . -t ${IMAGE_REPO}/flylinking-test/${PROJECT_NAME}:${IMAGE_VERSION}' }
+                        }
+                        else if ( BRANCH_NAME =~ "^ca-uat") {
+                            retry(2) { sh 'cd docker_build && docker build . -t ${IMAGE_REPO}/flylinking-uat/${PROJECT_NAME}:${IMAGE_VERSION}' }
+                        }
+                        else if (BRANCH_NAME =~ "master" || BRANCH_NAME =~ "^ca-hotfix" ) {
+                            retry(2) { sh 'cd docker_build && docker build . -t ${IMAGE_REPO}/flylinking-master/${PROJECT_NAME}:${IMAGE_VERSION}' }
+                        }
+                        sh 'rm -rf docker_build'
+                    }
+                }
+            }
+        }
+        stage('Push_Image推送镜像') {
+            when {
+                environment name: 'Build_Action', value: 'YES'
+            }
+            steps {
+                container('jenkins-slave-nodejs-18-20') {
+                    script {
+                        if (BRANCH_NAME =~ "^ca-test" || BRANCH_NAME =~ "^ca-release") {
+                            retry(2) {
+                                sh 'docker login --username ${HARBOR_USR} --password ${HARBOR_PSW} ${IMAGE_REPO}/flylinking-test'
+                                sh 'docker push ${IMAGE_REPO}/flylinking-test/${PROJECT_NAME}:${IMAGE_VERSION}'
+                                updateGitlabCommitStatus(name: env.STAGE_NAME, state: 'success')
+                            }
+                            sh 'docker rmi ${IMAGE_REPO}/flylinking-test/${PROJECT_NAME}:${IMAGE_VERSION}'
+                            image="${IMAGE_REPO}/flylinking-test/${PROJECT_NAME}"
+                            imageTag="${IMAGE_VERSION}"
+                        }
+                        else if (BRANCH_NAME =~ "^ca-uat") {
+                            retry(2) {
+                                sh 'docker login --username ${HARBOR_USR} --password ${HARBOR_PSW} ${IMAGE_REPO}/flylinking-uat'
+                                sh 'docker push ${IMAGE_REPO}/flylinking-uat/${PROJECT_NAME}:${IMAGE_VERSION}'
+                                updateGitlabCommitStatus(name: env.STAGE_NAME, state: 'success')
+                            }
+                            sh 'docker rmi ${IMAGE_REPO}/flylinking-uat/${PROJECT_NAME}:${IMAGE_VERSION}'
+                            image="${IMAGE_REPO}/flylinking-uat/${PROJECT_NAME}"
+                            imageTag="${IMAGE_VERSION}"
+                        }
+                        else if (BRANCH_NAME =~ "master" || BRANCH_NAME =~ "^ca-hotfix") {
+                            retry(2) {
+                                sh 'docker login --username ${HARBOR_USR} --password ${HARBOR_PSW} ${IMAGE_REPO}/flylinking-master'
+                                sh 'docker push ${IMAGE_REPO}/flylinking-master/${PROJECT_NAME}:${IMAGE_VERSION}'
+                                updateGitlabCommitStatus(name: env.STAGE_NAME, state: 'success')
+                            }
+                            sh 'docker rmi ${IMAGE_REPO}/flylinking-master/${PROJECT_NAME}:${IMAGE_VERSION}'
+                            image="${IMAGE_REPO}/flylinking-master/${PROJECT_NAME}"
+                            imageTag="${IMAGE_VERSION}"
+                        }
+                    }
+                }
+            }
+        }
+        stage('Commit_YAML提交YAML配置') {
+            when {
+                environment name: 'Deploy_Action', value: 'YES'
+            }
+            steps {
+                container('jenkins-slave-nodejs-18-20') {
+                    script {
+                        APP_DIR="${JOB_NAME}".split("/")[0]
+                        sh """
+                            echo $APP_DIR $image $imageTag
+                            git config --global user.email "jenkins@camelfin.com"
+                            git config --global user.name "jenkins"
+                            mkdir -p /opt/devops-cd/
+                            cd /opt/devops-cd/
+                            git clone http://${GIT_USR}:${GIT_PSW}@${GIT_CONFIG_URL}
+                        """
+                        if (BRANCH_NAME =~ "master"){
+                            sh """
+                            cd /opt/devops-cd/${APP_DIR}
+                            kustomize edit set image ${image}:${imageTag}
+                            """
+                        }
+                        else if (BRANCH_NAME =~ "^ca-release" || BRANCH_NAME =~ "^ca-test") {
+                            sh """
+                                cd /opt/devops-cd/${APP_DIR}
+                                git checkout -b ca-test origin/ca-test
+                                kustomize edit set image ${image}:${imageTag}
+                            """
+                        }
+                        else if (BRANCH_NAME =~ "^ca-uat" ) {
+                            sh """
+                                cd /opt/devops-cd/${APP_DIR}
+                                git checkout -b ca-uat origin/ca-uat
+                                kustomize edit set image ${image}:${imageTag}
+                            """
+                        }
+                        sh """
+                            cd /opt/devops-cd/${APP_DIR}
+                            git add .
+                            git commit -m '${IMAGE_VERSION}'
+                            git push
+                        """
+                        updateGitlabCommitStatus(name: env.STAGE_NAME, state: 'success')
+                    }
+                }
+            }
+        }
+    }
+    post {
+        success {
+        echo "恭喜你"
+        sh """
+            curl -X POST -H "Content-Type: application/json" \
+              -d '{
+                "msg_type": "interactive",
+                "card": {
+                  "config": {
+                    "wide_screen_mode": true,
+                    "enable_forward": true
+                  },
+                  "header": {
+                    "title": {
+                      "tag": "plain_text",
+                      "content": "构建通知-${JOB_NAME}"
+                    },
+                    "template": "Green"
+                  },
+                  "elements": [
+                    {
+                      "tag": "div",
+                      "text": {
+                        "tag": "lark_md",
+                        "content": "**构建结果：** 构建成功 \\n**项目名称：** ${JOB_NAME} \\n**构建分支：** ${JOB_BASE_NAME} \\n**构建原因：** ${CAUSE} \\n**提交者：** ${git_commit_name} \\n**版本号：** ${IMAGE_VERSION} \\n**提交日志：** ${commitlog} \\n**扫描结果：** ${CHECK_RL}\\n**[点我查看构建日志](${RUN_DISPLAY_URL})** \\n**[点我查看变更记录](${RUN_CHANGES_DISPLAY_URL})**"
+                      }
+                    }
+                  ]
+                }
+              }'  https://open.feishu.cn/open-apis/bot/v2/hook/${FEISHU_TOKEN}
+        """
+        }
+        failure {
+        echo "oh NO!"
+        sh """
+            curl -X POST -H "Content-Type: application/json" \
+              -d '{
+                "msg_type": "interactive",
+                "card": {
+                  "config": {
+                    "wide_screen_mode": true,
+                    "enable_forward": true
+                  },
+                  "header": {
+                    "title": {
+                      "tag": "plain_text",
+                      "content": "构建通知-${JOB_NAME}"
+                    },
+                    "template": "Red"
+                  },
+                  "elements": [
+                    {
+                      "tag": "div",
+                      "text": {
+                        "tag": "lark_md",
+                        "content": "**构建结果：** 构建失败 \\n**项目名称：** ${JOB_NAME} \\n**构建分支：** ${JOB_BASE_NAME} \\n**构建原因：** ${CAUSE} \\n**提交者：** ${git_commit_name} \\n**版本号：** ${IMAGE_VERSION} \\n**提交日志：** ${commitlog} \\n**扫描结果：** ${CHECK_RL}\\n**[点我查看构建日志](${RUN_DISPLAY_URL})** \\n**[点我查看变更记录](${RUN_CHANGES_DISPLAY_URL})**"
+                      }
+                    }
+                  ]
+                }
+              }' \
+        https://open.feishu.cn/open-apis/bot/v2/hook/${FEISHU_TOKEN}
+        """
+        }
+        always {
+            echo '构建完成'
+        }
+    }
+}

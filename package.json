@@ -1,0 +1,44 @@
+{
+  "name": "flylinking-monorepo",
+  "private": true,
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "test": "turbo run test",
+    "uat": "turbo run uat",
+    "prod": "turbo run prod",
+    "build:dev": "turbo run build:dev",
+    "build:test": "turbo run build:test",
+    "build:uat": "turbo run build:uat",
+    "build:prod": "turbo run build:prod",
+    "dev:my": "turbo run dev --filter=my",
+    "test:my": "turbo run test --filter=my",
+    "uat:my": "turbo run uat --filter=my",
+    "build:dev:my": "turbo run build:dev --filter=my",
+    "build:test:my": "turbo run build:test --filter=my",
+    "build:uat:my": "turbo run build:uat --filter=my",
+    "build:prod:my": "turbo run build:prod --filter=my",
+    "dev:distribution": "turbo run dev --filter=distribution",
+    "test:distribution": "turbo run test --filter=distribution",
+    "uat:distribution": "turbo run uat --filter=distribution",
+    "build:dev:distribution": "turbo run build:dev --filter=distribution",
+    "build:test:distribution": "turbo run build:test --filter=distribution",
+    "build:uat:distribution": "turbo run build:uat --filter=distribution",
+    "build:prod:distribution": "turbo run build:prod --filter=distribution",
+    "lint": "turbo run lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3",
+    "eslint": "^9.23.0",
+    "prettier": "^3.5.3",
+    "turbo": "^2.4.4"
+  },
+  "packageManager": "pnpm@9.0.0",
+  "engines": {
+    "node": ">=18"
+  },
+  "workspaces": [
+    "apps/*"
+  ]
+}

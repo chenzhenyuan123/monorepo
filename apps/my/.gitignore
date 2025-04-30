@@ -1,0 +1,22 @@
+# Nuxt dev/build outputs
+.data
+.output
+.nuxt
+.nitro
+.cache
+dist
+plugins/i18n/langs/
+
+# Node dependencies
+node_modules
+
+# Logs
+logs
+*.log
+
+# Misc
+.DS_Store
+.fleet
+.idea
+plugins/langs/en-US.js
+plugins/langs/zh-CN.js

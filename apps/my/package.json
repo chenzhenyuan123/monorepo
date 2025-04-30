@@ -1,0 +1,44 @@
+{
+  "name": "my",
+  "private": true,
+  "scripts": {
+    "build:prod": "npm run genLang && nuxt build --mode production",
+    "build:uat": "npm run genLang && nuxt build --mode uat",
+    "build:test": "npm run genLang && nuxt build --mode test",
+    "build:dev": "npm run genLang && nuxt build --mode development",
+    "dev": "npm run genLang && nuxt dev --mode development",
+    "test": "npm run genLang && nuxt dev --mode test",
+    "uat": "npm run genLang && nuxt dev --mode uat",
+    "generate": "npm run genLang && nuxt generate",
+    "preview": "npm run genLang && nuxt preview",
+    "postinstall": "nuxt prepare",
+    "pm2:start": "pm2 start ecosystem.config.js",
+    "pm2:stop": "pm2 stop ecosystem.config.js",
+    "pm2:restart": "pm2 restart ecosystem.config.js",
+    "genLang": "node plugins/i18n/csv2lang.js"
+  },
+  "devDependencies": {
+    "@element-plus/nuxt": "^1.0.5",
+    "@nuxt/devtools": "latest",
+    "@types/node": "^18.16.19",
+    "csv-parser": "^3.0.0",
+    "nuxt": "^3.6.3",
+    "sass": "^1.64.1",
+    "vite": "^4.0.0",
+    "vue-i18n": "^9.6.4"
+  },
+  "dependencies": {
+    "@element-plus/icons-vue": "^2.1.0",
+    "@fingerprintjs/fingerprintjs": "^3.4.2",
+    "@pinia/nuxt": "^0.5.2",
+    "clipboard": "^2.0.11",
+    "currency.js": "^2.0.4",
+    "dayjs": "^1.11.1",
+    "element-plus": "^2.3.8",
+    "js-cookie": "^3.0.5",
+    "pinia": "^2.2.0",
+    "throttle-debounce": "^5.0.0",
+    "vue": "^3.2.0",
+    "vue-dompurify-html": "^5.0.1"
+  }
+}

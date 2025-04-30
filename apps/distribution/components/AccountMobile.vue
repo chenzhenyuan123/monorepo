@@ -1,0 +1,74 @@
+<script setup>
+import { checkResponseData } from "@/util/index.js";
+const { contactInfoApi } = useApi();
+import { useUserStore } from '@/store/userState.js'
+const userStore = useUserStore()
+userStore.getUserInfo()
+
+const router = useRouter()
+const emit = defineEmits(['hiddenSetting'])
+const goAccount = () => {
+  navigateTo('/account/profile')
+  emit('hiddenSetting')
+}
+// 退出
+const toLogin = async() => {
+  const result = await contactInfoApi.userLogOut()
+  const res = checkResponseData(result, 'NO_RETURN_DATA')
+  if(res) {
+    userStore.logout().then(() => {
+      navigateTo('/login')
+    })
+  }
+}
+</script>
+
+<template>
+  <div class="container" @click="goAccount">
+    <img class="avatar" src="~@/assets/imgs/avatar.svg">
+    <div>
+      <div v-if="userStore.userInfo.userName" class="name">{{ userStore.userInfo.userName }}</div>
+      <div class="email">{{ userStore.userInfo.loginAccount }}</div>
+    </div>
+    <div class="logout">
+      <i class="Flylink icon-log-out-01" @click="toLogin()"></i>
+    </div>
+  </div>
+</template>
+
+<style lang="scss" scoped>
+.container {
+  position: relative;
+  margin-top: 24px;
+  padding: 24px;
+  border: 1px solid #E4E7EC;
+  display: flex;
+  // flex-direction: row;
+  align-items: center;
+  .avatar {
+    margin-right: 12px;
+    width: 40px;
+    height: 40px;
+  }
+  .name {
+    font-size: 16px;
+    font-weight: 600;
+    color: #101828;
+    line-height: 24px;
+  }
+  .email {
+    font-size: 16px;
+    color: #475467;
+    line-height: 24px;
+  }
+  .logout {
+    cursor: pointer;
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    .icon-log-out-01 {
+      font-size: 20px;
+    }
+  }
+}
+</style>

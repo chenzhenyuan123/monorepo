@@ -1,0 +1,288 @@
+.el-link.el-link--primary, .el-link.el-link--primary:hover, .a-text {
+  color: #5548FF;
+  --el-link-text-color: #5548FF;
+}
+.el-button.el-button--primary, .el-button.el-button--primary:focus {
+  background-color: #5548FF;
+  border-color: #5548FF;
+  border-radius: 8px;
+  box-shadow: 0px 1px 2px 0px rgba(16, 24, 40, 0.05);
+  padding: 10px 16px;
+}
+.el-button.is-disabled, .el-button.is-disabled:hover {
+  background-color: #F2F4F7 !important;
+  border-color: #EAECF0 !important;
+  box-shadow: 0px 1px 2px 0px rgba(16, 24, 40, 0.05) !important;
+  color: #98A2B3 !important;
+}
+.email-verify-btn.el-button > span{
+  color: #fff;
+}
+
+.custom-loading-svg {
+  .el-loading-spinner{
+    .circular {
+      background: url('@/assets/imgs/loading.svg') 50% / cover no-repeat;
+    }
+    .el-loading-text {
+      margin: 16px 0;
+      color: #344054;
+      font-size: 18px;
+    }
+    .path {
+      stroke: transparent
+    }
+  }
+}
+// message信息弹框样式
+.el-message--error.error-message-box {
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid #D0D5DD;
+  background:  #FFF;
+  box-shadow: 0px 1px 2px 0px rgba(16, 24, 40, 0.05);
+  --el-message-bg-color: #FFF;
+  --el-message-border-color: #D0D5DD;
+  --el-message-text-color: #344054;
+  .el-message__content {
+    color: #344054;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 20px;
+  }
+  .el-message__icon {
+    color: #DC6803;
+    font-size: 20px;
+    position: relative;
+    margin-right: 16px;
+    &::after {
+      content: "";
+      width: 26px;
+      height: 26px;
+      border-radius: 20px;
+      border: 1.667px solid #DC6803;
+      opacity: 0.3;
+      position: absolute;
+      top: -4px;
+      left: -4px;
+    }
+    &::before {
+      content: "";
+      width: 36px;
+      height: 36px;
+      border-radius: 20px;
+      border: 1.667px solid #DC6803;
+      opacity: 0.1;
+      position: absolute;
+      top: -9px;
+      left: -9px;
+    }
+  }
+  .el-message__closeBtn {
+    color: #98A2B3;
+    font-size: 20px;
+  }
+}
+.el-message--success.success-message-box {
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid #D0D5DD;
+  background:  #FFF;
+  box-shadow: 0px 1px 2px 0px rgba(16, 24, 40, 0.05);
+  --el-message-bg-color: #FFF;
+  --el-message-border-color: #D0D5DD;
+  --el-message-text-color: #344054;
+  .el-message__content {
+    color: #344054;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 20px;
+  }
+  .el-message__icon {
+    color: #079455;
+    font-size: 20px;
+    position: relative;
+    margin-right: 16px;
+    &::after {
+      content: "";
+      width: 26px;
+      height: 26px;
+      border-radius: 20px;
+      border: 1.667px solid #079455;
+      opacity: 0.3;
+      position: absolute;
+      top: -4px;
+      left: -4px;
+    }
+    &::before {
+      content: "";
+      width: 36px;
+      height: 36px;
+      border-radius: 20px;
+      border: 1.667px solid #079455;
+      opacity: 0.1;
+      position: absolute;
+      top: -9px;
+      left: -9px;
+    }
+  }
+  .el-message__closeBtn {
+    color: #98A2B3;
+    font-size: 20px;
+  }
+}
+
+// 弹窗公共样式
+.el-overlay-dialog {
+  .el-dialog.dialog-box {
+    overflow: hidden;
+    padding: 24px;
+    border-radius: 12px;
+    background: #FFF;
+    box-shadow: 0px 1px 3px 0px rgba(16, 24, 40, 0.1), 0px 1px 2px 0px rgba(16, 24, 40, 0.06);
+    .el-dialog__body {
+      margin-top: -16px;
+    }
+    .dialog-footer {
+      .el-button {
+        height: 44px;
+        padding: 10px 16px;
+        border-radius: 8px;
+        margin-left: 12px;
+      }
+    }
+    .el-dialog__headerbtn {
+      z-index: 11;
+      .el-dialog__close {
+        font-size: 24px;
+        color: #98A2B3;
+        margin: 12px 12px 0 0;
+        .rtl & {
+          margin: 12px 0 0 12px;
+        }
+      }
+    }
+    .title {
+      color: #101828;
+      font-size: 18px;
+      font-weight: 600;
+      line-height:  28px;
+      position: relative;
+      z-index: 1;
+    }
+    .text {
+      color: #475467;
+      font-size: 14px;
+      line-height:  20px;
+      margin-top: 4px;
+      position: relative;
+      z-index: 1;
+    }
+  }
+}
+.m .el-overlay-dialog {
+  .el-dialog.dialog-box {
+    max-width: calc(100% - 16px);
+  }
+}
+
+// message-box公共样式
+.el-message-box.message-box {
+  padding: 16px 24px;
+  .header {
+    .key-icon {
+      width: 24px;
+      height: 24px;
+      margin-bottom: 16px;
+      padding: 12px;
+      border-radius: 50%;
+      background: #FEE4E2;
+      .icon-Warning {
+        display: block;
+        width: 24px;
+        height: 24px;
+        background: url('@/assets/imgs/alert-circle.svg') 50% / cover no-repeat;
+      }
+    }
+    .circle-box {
+      width: 288px;
+      height: 288px;
+      border-radius: 288px;
+      border: 1px solid rgb(228 231 236 / 20%);
+      position: absolute;
+      left: -100px;
+      top: -98px;
+      z-index: 0;
+      .circle-box1 {
+        width: 240px;
+        height: 240px;
+        border-radius: 240px;
+        border: 1px solid rgb(228 231 236 / 40%);
+        position: absolute;
+        left: calc(50% - 120px);
+        top: 24px;
+      }
+      .circle-box2 {
+        width: 192px;
+        height: 192px;
+        border-radius: 192px;
+        border: 1px solid rgb(228 231 236 / 60%);
+        position: absolute;
+        left: calc(50% - 96px);
+        top: 24px;
+      }
+      .circle-box3 {
+        width: 144px;
+        height: 144px;
+        border-radius: 144px;
+        border: 1px solid rgb(228 231 236 / 80%);
+        position: absolute;
+        left: calc(50% - 72px);
+        top: 24px;
+      }
+      .circle-box4 {
+        width: 96px;
+        height: 96px;
+        border-radius: 96px;
+        border: 1px solid #E4E7EC;
+        position: absolute;
+        left: calc(50% - 48px);
+        top: 24px;
+      }
+    }
+  }
+  .title {
+    color: #101828;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 28px;
+    margin-bottom: 4px;
+    position: relative;
+    z-index: 1;
+  }
+  .text {
+    color: #475467;
+    font-size: 14px;
+    line-height: 20px;
+  }
+  .margin-top20 {
+    margin-top: 20px;
+  }
+  .el-message-box__btns {
+    margin-top: 26px;
+    margin-bottom: 10px;
+    .el-button, .el-button:focus {
+      width: 100%;
+      height: 44px;
+      line-height: 44px;
+      color: #344054;
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 24px;
+      border-radius: 8px;
+      border: 1px solid #D0D5DD;
+      background: #FFF;
+      box-shadow: 0px 0px 0px 1px rgba(16, 24, 40, 0.18) inset, 0px -2px 0px 0px rgba(16, 24, 40, 0.05) inset, 0px 1px 2px 0px rgba(16, 24, 40, 0.05);
+    }
+  }
+}
