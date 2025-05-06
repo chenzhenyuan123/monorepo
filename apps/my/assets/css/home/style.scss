@@ -99,8 +99,7 @@
 .home-products-box {
   min-height: 385px;
   .products-box-top {
-    height: 44px;
-    padding-bottom: 21px;
+    padding-bottom: 10px;
     border-bottom: 1px solid #E4E7EC;
     display: flex;
     justify-content: space-between;
@@ -114,6 +113,7 @@
 
     .products-box-top-right {
       display: flex;
+      flex-wrap: wrap;
 
       &>div {
         margin-left: 12px;
@@ -155,6 +155,7 @@
         font-weight: 600;
         line-height: 20px;
         margin-top: 2px;
+        margin-bottom: 12px;
       }
 
       :deep(.el-button.home-btn-Join) {

@@ -2,15 +2,38 @@
 import SidebarItem from './SidebarItem.vue'
 import { reactive, inject } from 'vue'
 import routes from './route.js'
+import myRoutes from './route-my.js'
+import { useUserStore } from '@/store/userState.js'
 
-const router = useRouter()
+const route = useRoute()
 const isCollapse = inject('isCollapse')
 const emit = defineEmits(['hiddenSetting'])
 const isMobile = useIsMobile()
+const userStore = useUserStore()
+const routesData = ref([]) // 是否为买家中心的路由
+onMounted(() => {
+  routesData.value = userStore.isMy(window.location.href, ['my','my-test']) ? myRoutes : routes
+})
 
 const selectMenu = () => {
   emit('hiddenSetting')
 }
+
+const activeMenu = computed({
+  get: () => {
+    const { fullPath } = route
+    const routePath = myRoutes.find(item => {
+      if (item.meta?.matchPaths) {
+        // 将动态路由参数转换为正则表达式模式
+        const patterns = item.meta.matchPaths.map(path => {
+          return new RegExp('^' + path.replace(/:[\w-]+/g, '[^/]+') + '$')
+        })
+        return patterns.some(pattern => pattern.test(fullPath))// 检查是否有匹配的模式
+      }
+    })
+    return routePath ? routePath.path : fullPath
+  }
+})
 
 </script>
 
@@ -18,7 +41,7 @@ const selectMenu = () => {
   <div>
     <el-scrollbar :class="{ 'border-none' : isMobile }">
       <el-menu
-        :default-active="$route.fullPath"
+        :default-active="activeMenu"
         router
         :collapse="isCollapse"
         popper-class="popper-class"
@@ -30,7 +53,7 @@ const selectMenu = () => {
           <img v-if="isCollapse" class="abb-logo" src="~@/assets/imgs/abb-logo.svg" alt="" @click="navigateTo('/home')">
           <img v-else src="~@/assets/imgs/Flylinking-logo.svg" alt="" @click="navigateTo('/home')">
         </div>
-        <template v-for="item in routes" :key="item.path">
+        <template v-for="item in routesData" :key="item.path">
           <sidebar-item :item-data="item" />
         </template>
       </el-menu>

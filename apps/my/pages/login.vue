@@ -4,7 +4,7 @@ import { isEmail, isEmailPassword, specialCharacterstr } from '@/util/validate.j
 import { useUserStore } from '@/store/userState.js'
 const { contactInfoApi } = useApi();
 
-const { $t: t } = useNuxtApp();
+const { $locale, $t: t } = useNuxtApp();
 const userStore = useUserStore()
 const router = useRouter();
 const route = useRoute();
@@ -18,24 +18,48 @@ const loginFormRef = ref()
 
 // 校验邮箱格式
 const validateEmail = (rule, value, callback) => {
-  if (!isEmail(value)) {
+  if (!isEmail(value) && value) {
     callback(new Error(t('signup.signupValidateEmailFormat')))
   } else {
     callback()
   }
 }
-const rules = ref({
-  email: [
-    { required: true, message: t('signup.signupValidateEmailEmpty'), trigger: 'change' },
-    { validator: validateEmail, trigger: 'blur' }
-  ],
-  loginPassword: [
-    { required: true, message: t('signup.signupValidatePasswordRequired'), trigger: 'change' }
-  ]
-})
+const rules = ()=>{
+  return {
+    email: [
+      { required: true, message: t('signup.signupValidateEmailEmpty'), trigger: 'change' },
+      { validator: validateEmail, trigger: 'change' }
+    ],
+    loginPassword: [
+      { required: true, message: t('signup.signupValidatePasswordRequired'), trigger: 'change' }
+    ],
+    code: [
+      { required: true, message: t('login.loginValidateCodeRequired'), trigger: 'change' }
+    ]
+  }
+}
 const showError = ref(false)
 const loading = ref(false)
-const onSubmit = formEl => {
+const isMy = ref(false) // 是否为买家中心
+const isPasswordLogin = ref('') // 是否在邮件code输入页code,登录页login
+onMounted(() => {
+  isMy.value = userStore.isMy(window.location.href, ['my','my-test'])
+})
+// 输入邮箱发验证码
+const goEmailCode = () => {
+  const formEl = loginFormRef.value?.formRef
+  formEl &&
+    formEl.validate(async valid => {
+      if (!valid) return
+
+      isPasswordLogin.value = 'code'
+      startCountdown(120)
+    })
+}
+
+
+const onSubmit = () => {
+  const formEl = loginFormRef.value?.formRef
   formEl &&
     formEl.validate(async valid => {
       if (!valid) return
@@ -49,7 +73,13 @@ const onSubmit = formEl => {
           if(route.query?.store) {
             routerGo('/join')
           } else {
-            routerGo('/home')
+            // 如果是买家中心，跳转订单页面
+            if(isMy.value) {
+              routerGo('/orders')
+            } else {
+              routerGo('/home')
+            }
+            
           }
           userStore.setToken(res)
         }
@@ -66,6 +96,32 @@ const routerGo = (path) => {
     query: route.query
   })
 }
+// 倒计时
+const seconds = ref(120);
+const timer = ref(null);
+// 定时器
+const startCountdown = (val) => {
+  seconds.value = val;
+  timer.value = setInterval(() => {
+    if (seconds.value > 0) {
+      seconds.value--;
+    } else {
+      clearInterval(timer.value);
+    }
+  }, 1000);
+};
+// 重新发送邮件
+const sendAgain = async() => {
+  if (seconds.value > 0) {
+    return;
+  }
+  // const result = await contactInfoApi.againsendVerifyEmail({email: route.query.email, verifyType: route.query.type})
+  // const res = checkResponseData(result, 'NO_RETURN_DATA')
+  // if(res) {
+  //   startCountdown(120)
+  // }
+};
+
 </script>
 <template>
   <div class="main-box" :class="{ m: isMobile }">
@@ -76,28 +132,87 @@ const routerGo = (path) => {
       <div class="right">
         <Header />
         <div class="signup-right-box">
-          <h4 class="signup-title text-center">{{$t('login.loginTilte')}}</h4>
-          <div class="signup-tip text-center">
-            <p class="text font-size16">{{$t('login.loginWelcome')}}</p>
+          <template v-if="isMy && !isPasswordLogin">
+            <h4 class="signup-title text-center">{{$t('login.loginToTitle')}}</h4>
+          </template>
+          <template v-else-if="isPasswordLogin==='code'">
+            <h4 class="signup-title text-center">{{$t('login.enterOneTimeCode')}}</h4>
+            <div class="signup-tip text-center">
+              <p class="text font-size16">{{$t('login.oneCodeTo', {email: loginForm.email})}}</p>
+            </div>
+          </template>
+          <template v-else>
+            <h4 class="signup-title text-center">{{$t('login.loginTilte')}}</h4>
+            <div class="signup-tip text-center">
+              <p class="text font-size16">{{$t('login.loginWelcome')}}</p>
+            </div>
+          </template>
+          <FormValidate
+            ref="loginFormRef"
+            :model="loginForm"
+            label-position="top"
+            :rules="rules()"
+            :validate-on-rule-change="false"
+            require-asterisk-position="right"
+            class="login-box"
+            novalidate
+          >
+            <template v-if="isMy && !isPasswordLogin">
+              <el-form-item
+                :label="$t('login.flyLinkAccount')"
+                prop="email"
+              >
+                <el-input v-model="loginForm.email" maxlength="254" :placeholder="$t('login.flyLinkAccount')" :class="{'error':showError}" />
+              </el-form-item>
+              <el-form-item>
+                <el-button type="primary" id="login-btn-login" class="signup-btn" :loading="loading" @click="goEmailCode()">{{ $t('email-verify.emailVerifyContinue') }}</el-button>
+              </el-form-item>
+            </template>
+            <template v-else-if="isPasswordLogin==='code'">
+              <el-form-item
+                :label="$t('login.loginFormCodeplaceholder')"
+                prop="code"
+              >
+                <el-input v-model="loginForm.code" maxlength="254" :placeholder="$t('login.loginFormCodeplaceholder')" :class="{'error':showError}" />
+              </el-form-item>
+              <el-form-item label="">
+                <span class="margin-right6">{{$t('login.receiveCode')}}</span>
+                <el-link type="primary" :underline="false" @click="sendAgain">
+                  <span v-if="seconds>0">{{$t('withdraw.verifyCodeDialogP4_countdown', { sec: seconds })}}</span>
+                  <span v-else>{{$t('email-sent.emailSentAgain')}} </span>
+                  
+                </el-link>
+              </el-form-item>
+              <el-form-item>
+                <el-button type="primary" id="login-btn-login" class="signup-btn" :loading="loading" @click="onSubmit()">{{ $t('login.loginAccount') }}</el-button>
+                <el-button id="login-btn-login" class="signup-btn margin-top16" @click="isPasswordLogin=''">{{ $t('email-sent.emailSentBack') }}</el-button>
+              </el-form-item>
+            </template>
+            <template v-else>
+              <el-form-item
+                :label="$t('login.loginFormEmail')"
+                prop="email"
+              >
+                <el-input v-model="loginForm.email" maxlength="254" :placeholder="$t('login.loginFormEmailplaceholder')" :class="{'error':showError}" />
+              </el-form-item>
+              <el-form-item :label="$t('login.loginFormPassword')" prop="loginPassword">
+                <InputPassword v-model="loginForm.loginPassword" maxlength="20" minlength="8" :class="{'error':showError}" />
+              </el-form-item>
+              <el-form-item class="remember-box">
+                <el-link type="primary" :underline="false" @click="routerGo('/password')">{{$t('login.loginForgotPassword')}}</el-link>
+              </el-form-item>
+              <el-form-item>
+                <el-button type="primary" id="login-btn-login" class="signup-btn" :loading="loading" @click="onSubmit()">{{ $t('login.loginFormSaveButton') }}</el-button>
+              </el-form-item>
+            </template>
+          </FormValidate>
+          <div v-if="isMy && isPasswordLogin!=='login'" class="signup-tip text-center">
+            <el-link type="primary" :underline="false" @click="isPasswordLogin='login'">{{$t('login.loginUsePassword')}}</el-link>
           </div>
-          <el-form ref="loginFormRef" :model="loginForm" label-position="top" :rules="rules" require-asterisk-position="right" class="login-box" novalidate>
-            <el-form-item
-              :label="$t('login.loginFormEmail')"
-              prop="email"
-            >
-              <el-input v-model="loginForm.email" maxlength="254" :class="{'error':showError}" />
-            </el-form-item>
-            <el-form-item :label="$t('login.loginFormPassword')" prop="loginPassword">
-              <InputPassword v-model="loginForm.loginPassword" maxlength="20" minlength="8" :class="{'error':showError}" />
-            </el-form-item>
-            <el-form-item class="remember-box">
-              <el-link type="primary" :underline="false" @click="routerGo('/password')">{{$t('login.loginForgotPassword')}}</el-link>
-            </el-form-item>
-            <el-form-item>
-              <el-button type="primary" id="login-btn-login" class="signup-btn" :loading="loading" @click="onSubmit(loginFormRef)">{{ $t('login.loginFormSaveButton') }}</el-button>
-            </el-form-item>
-          </el-form>
-          <div class="signup-tip text-center margin-top30">
+          <div v-if="isMy && isPasswordLogin==='login'" class="signup-tip text-center">
+            <el-link type="primary" :underline="false" @click="isPasswordLogin=''">{{$t('login.loginUseOneTimeCode')}}</el-link>
+          </div>
+          <div v-if="!isMy" class="signup-tip text-center">
             <p class="text">{{$t('login.loginhasAccount')}}</p>
             <el-link type="primary" :underline="false" @click="routerGo('/signup')">{{$t('signup.signupTilte')}}</el-link>
           </div>

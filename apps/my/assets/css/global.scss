@@ -286,3 +286,33 @@
     }
   }
 }
+
+// 顶部返回按钮样式
+.header-back {
+  margin-bottom: 20px;
+  a {
+    text-decoration: none;
+    color: #5548FF;
+    font-family: Inter;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 20px;
+    .icon-arrow-left {
+      margin-right: 6px;
+    }
+  }
+}
+// 溢出...，限制1行
+.ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+// 溢出...，限制2行
+.ellipsis2 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2; /* 限制为两行 */
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

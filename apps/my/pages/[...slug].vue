@@ -17,7 +17,7 @@ const isMobile = useIsMobile()
     <div class="notFound-content">
       <h1>{{$t('NotFound404.NotFound404PageLost')}}</h1>
       <p>{{$t('NotFound404.NotFound404PageMove')}}</p>
-      <NuxtLink to="/home" class="a-text" id="NotFound404-btn-gohome">{{$t('NotFound404.NotFound404GoHome')}}</NuxtLink>
+      <NuxtLink to="/login" class="a-text" id="NotFound404-btn-gohome">{{$t('NotFound404.NotFound404GoHome')}}</NuxtLink>
     </div>
   </div>
 </template>

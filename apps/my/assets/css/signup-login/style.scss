@@ -8,8 +8,7 @@
     line-height: 38px;
   }
   .signup-tip {
-    margin: 12px 0 32px;
-    height: 20px;
+    margin: 12px 0;
     font-size: 14px;
     p {
       display: inline-block;
@@ -35,11 +34,19 @@
   font-size: 16px;
   width: 100%;
   margin-top: 6px;
+  margin-left: 0;
+}
+.margin-top16{
+  margin-top: 16px;
+}
+.margin-right6 {
+  margin-right: 6px;
 }
 .padding32 {
   padding: 0 32px;
 }
 :deep(.login-box.el-form) {
+  margin: 32px 0 24px;
   .el-form-item__label {
     color: #344054;
     font-size: 14px;

@@ -6,6 +6,7 @@ const showSetting = ref(false)
 const isCollapse = ref(false)
 provide('isCollapse', isCollapse)
 const isMobile = useIsMobile()
+const route = useRoute()
 
 </script>
 
@@ -24,7 +25,7 @@ const isMobile = useIsMobile()
           </template>
         </navbar>
       </div>
-      <div class="m-wrap" :class="{ 'full-page': settingStore.isFullPage }">
+      <div class="m-wrap" :class="{ 'full-page': settingStore.isFullPage, ['main-wrap-' + route.name]: true }">
         <div>
           <slot />
         </div>
@@ -56,7 +57,7 @@ const isMobile = useIsMobile()
         </navbar>
       </div>
       <!-- 内容区 -->
-      <div class="main-wrap" :class="{ 'full-page': settingStore.isFullPage }">
+      <div class="main-wrap" :class="{ 'full-page': settingStore.isFullPage, ['main-wrap-' + route.name]: true }">
         <div>
           <slot />
         </div>
@@ -131,7 +132,7 @@ const isMobile = useIsMobile()
   height: 100%;
   overflow: hidden;
   background: #fff;
-  padding: 0 32px;
+  padding: 4px 32px;
   overflow-y: auto;
   &.full-page {
     display: flex;
