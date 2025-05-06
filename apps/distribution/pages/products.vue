@@ -46,7 +46,8 @@ const getGoodsList = async() => {
     userId: userStore?.userInfo?.userId,
     pageNo: page.pageNo,
     pageSize: page.pageSize,
-    searchContent: search.value
+    searchContent: search.value,
+    storeId: storeSearchStr.value
   }
   const result = await productsApi.getRecommendGoodsList(body)
   const res = checkResponseData(result)
@@ -91,6 +92,15 @@ const joinSave = () => {
   isJoin.value = true
   getGoodsList()
 }
+
+// 店铺搜索
+const storeSearchStr = ref()
+const storeSearchChange = e => {
+  if(e && e!==storeSearchStr.value) {
+    storeSearchStr.value = e
+    getGoodsList()
+  }
+}
 </script>
 
 <template>
@@ -102,6 +112,9 @@ const joinSave = () => {
           <div class="title">{{$t('home.homeProducts')}}</div>
           <div class="products-box-top-right">
             <div><el-input v-model="search" id="home-btn-Search" :prefix-icon="Search" :placeholder="$t('home.homeSearch')" clearable @change="getGoodsList" /></div>
+            <div>
+              <StoreListSearch @change="storeSearchChange" />
+            </div>
             <div class="float-left">
               <el-button type="primary" id="home-btn-Join" :icon="Plus" class="home-btn-Join" @click="joinClick()">{{ $t('home.homeJoin') }}</el-button>
             </div>

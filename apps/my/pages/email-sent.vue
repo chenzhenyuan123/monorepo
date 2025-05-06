@@ -69,7 +69,7 @@ onUnmounted(() => {
         </div>
         <div class="signup-tip text-center margin-top30">
           <p class="text">{{$t('email-sent.emailSentNoReceive')}}</p>
-          <el-link type="primary" :underline="false" class="font-weight600" :class="{'defalt-color': seconds>0}" @click="sendAgain">
+          <el-link type="primary" underline="never" class="font-weight600" :class="{'defalt-color': seconds>0}" @click="sendAgain">
             {{$t('email-sent.emailSentAgain')}} 
             <span v-if="seconds>0" class="margin-left4"> ({{$t('email-sent.emailSentSecs', {sec: seconds})}})</span>
           </el-link>

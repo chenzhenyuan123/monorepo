@@ -241,7 +241,7 @@ onUnmounted(()=>{
             </p>
             <p class="dialog-p mb6">
                 {{ $t('withdraw.verifyCodeDialogP4_1') }}
-                <el-link :underline="false" :disabled="createCodeData.loading || countdownData.timerShow" @click="createCode">
+                <el-link underline="never" :disabled="createCodeData.loading || countdownData.timerShow" @click="createCode">
                     {{ countdownData.timerShow ? $t('withdraw.verifyCodeDialogP4_countdown', { sec: countdownData.timerCount }) : $t('withdraw.verifyCodeDialogP4_2') }}
                 </el-link>
             </p>

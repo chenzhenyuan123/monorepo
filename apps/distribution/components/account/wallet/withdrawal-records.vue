@@ -96,7 +96,7 @@ const jumpToDetail = (r) => {
         type="primary"
         class="download-btn"
         id="Affiliate-terms-download"
-        :underline="false"
+        underline="never"
         @click="downloadByA({
           url: 'https://flylink-cdn-oss-prod.inflyway.com/flylink/flylink-terms-of-use.pdf',
           name: 'flylink-terms-of-use.pdf'

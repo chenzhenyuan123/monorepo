@@ -25,6 +25,7 @@ import {
     isElo,
     isIBAN,
 } from "@/util/validate";
+import { Message } from '@flylinking/ui'
 
 const { t } = useI18n();
 const { userApi, withdrawApi } = useApi()

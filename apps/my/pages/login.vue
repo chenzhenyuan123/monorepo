@@ -177,7 +177,7 @@ const sendAgain = async() => {
               </el-form-item>
               <el-form-item label="">
                 <span class="margin-right6">{{$t('login.receiveCode')}}</span>
-                <el-link type="primary" :underline="false" @click="sendAgain">
+                <el-link type="primary" underline="never" @click="sendAgain">
                   <span v-if="seconds>0">{{$t('withdraw.verifyCodeDialogP4_countdown', { sec: seconds })}}</span>
                   <span v-else>{{$t('email-sent.emailSentAgain')}} </span>
                   
@@ -199,7 +199,7 @@ const sendAgain = async() => {
                 <InputPassword v-model="loginForm.loginPassword" maxlength="20" minlength="8" :class="{'error':showError}" />
               </el-form-item>
               <el-form-item class="remember-box">
-                <el-link type="primary" :underline="false" @click="routerGo('/password')">{{$t('login.loginForgotPassword')}}</el-link>
+                <el-link type="primary" underline="never" @click="routerGo('/password')">{{$t('login.loginForgotPassword')}}</el-link>
               </el-form-item>
               <el-form-item>
                 <el-button type="primary" id="login-btn-login" class="signup-btn" :loading="loading" @click="onSubmit()">{{ $t('login.loginFormSaveButton') }}</el-button>
@@ -207,14 +207,14 @@ const sendAgain = async() => {
             </template>
           </FormValidate>
           <div v-if="isMy && isPasswordLogin!=='login'" class="signup-tip text-center">
-            <el-link type="primary" :underline="false" @click="isPasswordLogin='login'">{{$t('login.loginUsePassword')}}</el-link>
+            <el-link type="primary" underline="never" @click="isPasswordLogin='login'">{{$t('login.loginUsePassword')}}</el-link>
           </div>
           <div v-if="isMy && isPasswordLogin==='login'" class="signup-tip text-center">
-            <el-link type="primary" :underline="false" @click="isPasswordLogin=''">{{$t('login.loginUseOneTimeCode')}}</el-link>
+            <el-link type="primary" underline="never" @click="isPasswordLogin=''">{{$t('login.loginUseOneTimeCode')}}</el-link>
           </div>
           <div v-if="!isMy" class="signup-tip text-center">
             <p class="text">{{$t('login.loginhasAccount')}}</p>
-            <el-link type="primary" :underline="false" @click="routerGo('/signup')">{{$t('signup.signupTilte')}}</el-link>
+            <el-link type="primary" underline="never" @click="routerGo('/signup')">{{$t('signup.signupTilte')}}</el-link>
           </div>
         </div>
         

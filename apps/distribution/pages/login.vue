@@ -91,7 +91,7 @@ const routerGo = (path) => {
               <InputPassword v-model="loginForm.loginPassword" maxlength="20" minlength="8" :class="{'error':showError}" />
             </el-form-item>
             <el-form-item class="remember-box">
-              <el-link type="primary" :underline="false" @click="routerGo('/password')">{{$t('login.loginForgotPassword')}}</el-link>
+              <el-link type="primary" underline="never" @click="routerGo('/password')">{{$t('login.loginForgotPassword')}}</el-link>
             </el-form-item>
             <el-form-item>
               <el-button type="primary" id="login-btn-login" class="signup-btn" :loading="loading" @click="onSubmit(loginFormRef)">{{ $t('login.loginFormSaveButton') }}</el-button>
@@ -99,7 +99,7 @@ const routerGo = (path) => {
           </el-form>
           <div class="signup-tip text-center margin-top30">
             <p class="text">{{$t('login.loginhasAccount')}}</p>
-            <el-link type="primary" :underline="false" @click="routerGo('/signup')">{{$t('signup.signupTilte')}}</el-link>
+            <el-link type="primary" underline="never" @click="routerGo('/signup')">{{$t('signup.signupTilte')}}</el-link>
           </div>
         </div>
         

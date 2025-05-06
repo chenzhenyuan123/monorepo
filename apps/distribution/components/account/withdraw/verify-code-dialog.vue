@@ -56,6 +56,44 @@ const rules = () => {
     }
 }
 
+const countdownData = reactive({
+    // 显示延时时间
+    timerShow: false,
+    // 轮循时间
+    times: 120,
+    // 120 秒内获取验证码
+    timerCount: 120,
+    timer: null,
+})
+
+
+/**
+ * 倒计时
+ */
+const setTimeoutForCountdown = (times) => {
+    // 取消倒计时
+    clearTimeoutForCountdown()
+
+    // 重置时间
+    countdownData.timerCount = times || countdownData.times
+    countdownData.timerShow = true
+    countdownData.timer = setInterval(() => {
+        if (countdownData.timerCount > 1) {
+            countdownData.timerCount--
+        } else {
+            // 取消倒计时
+            clearTimeoutForCountdown()
+        }
+    }, 1000)
+}
+/**
+ * 取消倒计时
+ */
+const clearTimeoutForCountdown = () => {
+    clearInterval(countdownData.timer)
+    countdownData.timerShow = false
+}
+
 // 验证码创建
 const createCode = async() => {
     if (form.verificationCode) form.verificationCode = ''
@@ -64,7 +102,14 @@ const createCode = async() => {
     const res = checkResponseData(result)
 
     if (res) {
-        successMessage(t('withdraw.verifyCodeDialogSendSuccessMessage'))
+        if (res.isSuccess) {
+            successMessage(t('withdraw.verifyCodeDialogSendSuccessMessage'))
+            // 倒计时
+            setTimeoutForCountdown()
+        } else {
+            // 倒计时
+            setTimeoutForCountdown(res.nextSendCountDown)
+        }
         createCodeData.createCodeError = false
     } else if (result.code === 'FA0011') {
         createCodeData.createCodeError = true
@@ -135,6 +180,11 @@ onMounted(()=>{
     createCode()
 })
 
+onUnmounted(()=>{
+    // 取消倒计时
+    clearTimeoutForCountdown()
+})
+
 </script>
 
 <template>
@@ -191,7 +241,9 @@ onMounted(()=>{
             </p>
             <p class="dialog-p mb6">
                 {{ $t('withdraw.verifyCodeDialogP4_1') }}
-                <el-link :underline="false" :disabled="createCodeData.loading" @click="createCode">{{ $t('withdraw.verifyCodeDialogP4_2') }}</el-link>
+                <el-link underline="never" :disabled="createCodeData.loading || countdownData.timerShow" @click="createCode">
+                    {{ countdownData.timerShow ? $t('withdraw.verifyCodeDialogP4_countdown', { sec: countdownData.timerCount }) : $t('withdraw.verifyCodeDialogP4_2') }}
+                </el-link>
             </p>
         </template>
 

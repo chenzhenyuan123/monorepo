@@ -4,8 +4,6 @@ import AccountDisable from '@/components/AccountDisable';
 import { ElConfigProvider } from 'element-plus'
 import ZH_CN from 'element-plus/es/locale/lang/zh-cn'
 import EN from 'element-plus/es/locale/lang/en'
-import { DATE } from '@flylinking/core'
-import { Message } from '@flylinking/ui'
 
 const { $locale } = useNuxtApp()
 const lang = computed(() => {
@@ -53,18 +51,13 @@ useHead({
   <Head>
     <Link rel="icon" :href="Flylinking" sizes="64x64" />
     <Link rel="stylesheet" type="text/css" href="//at.alicdn.com/t/c/font_4655796_hsbgmyd9mit.css" />
-    <Meta name="viewport"
-      content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <Meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
     <title>FlyLinking</title>
   </Head>
   <div>
     <noscript>
       You have to enable JavaScript to view this page.
     </noscript>
-    <h2>我是测试内容，当前时间是：{{ DATE.formatDate(Date.now()) }}</h2>
-    <Message type="success">
-      我是测试Message的内容
-    </Message>
     <el-config-provider :locale="lang" :rtl="isRTL">
       <NuxtLayout>
         <NuxtPage :key="$locale" />

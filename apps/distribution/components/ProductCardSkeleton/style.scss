@@ -110,6 +110,22 @@
           line-height: 20px; 
         }
       }
+      .store-name-box {
+        margin-top: 12px;
+        display: flex;
+        .store-name-icon {
+          margin-right: 4px;
+        }
+        .store-name {
+          color: #98A2B3;
+          font-family: Inter;
+          font-size: 14px;
+          line-height: 20px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+      }
     }
   }
 }

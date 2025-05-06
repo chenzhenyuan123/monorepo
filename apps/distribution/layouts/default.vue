@@ -131,7 +131,7 @@ const isMobile = useIsMobile()
   height: 100%;
   overflow: hidden;
   background: #fff;
-  padding: 0 32px;
+  padding: 4px 32px;
   overflow-y: auto;
   &.full-page {
     display: flex;
