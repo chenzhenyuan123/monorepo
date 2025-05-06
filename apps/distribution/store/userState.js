@@ -22,7 +22,7 @@ export const useUserStore = defineStore('user', {
     setToken(userData) {
       this.token = userData.token
       this.userInfo = userData
-      Cookies.set('Flylinking-Access-Token', this.token)
+      Cookies.set('Flylinking-Access-Token', this.token, { domain: '.flylinking.com' })
       localStorage.setItem("userInfo", JSON.stringify(userData))
     },
     logout() {

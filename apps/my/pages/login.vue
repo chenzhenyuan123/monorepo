@@ -40,11 +40,8 @@ const rules = ()=>{
 }
 const showError = ref(false)
 const loading = ref(false)
-const isMy = ref(false) // 是否为买家中心
+const isMy = ref(true) // 是否为买家中心
 const isPasswordLogin = ref('') // 是否在邮件code输入页code,登录页login
-onMounted(() => {
-  isMy.value = userStore.isMy(window.location.href, ['my','my-test'])
-})
 // 输入邮箱发验证码
 const goEmailCode = () => {
   const formEl = loginFormRef.value?.formRef
@@ -69,18 +66,8 @@ const onSubmit = () => {
       const res = checkResponseData(result)
       if(res) {
         if(res?.token) {
-          // 如果是join页面携带的storeId，需要跳转join页面加入分销员
-          if(route.query?.store) {
-            routerGo('/join')
-          } else {
-            // 如果是买家中心，跳转订单页面
-            if(isMy.value) {
-              routerGo('/orders')
-            } else {
-              routerGo('/home')
-            }
-            
-          }
+          // 如果是买家中心，跳转订单页面
+          routerGo('/orders')
           userStore.setToken(res)
         }
       } else {
@@ -174,7 +161,16 @@ const sendAgain = async() => {
                 prop="code"
               >
                 <el-input v-model="loginForm.code" maxlength="254" :placeholder="$t('login.loginFormCodeplaceholder')" :class="{'error':showError}" />
+                <span v-if="showError" class="margin-right6">{{$t('login.loginValidateCodeErrorTip3')}}</span>
               </el-form-item>
+              <!-- 输入过即展示剩余几次的提示 -->
+              <!-- <el-form-item label="">
+                <span class="margin-right6">{{$t('login.loginValidateCodeErrorTip1')}}</span>
+              </el-form-item> -->
+              <!-- 3小时内输入超5次禁用的提示 -->
+              <!-- <el-form-item label="">
+                <span class="margin-right6">{{$t('login.loginValidateCodeErrorTip2')}}</span>
+              </el-form-item> -->
               <el-form-item label="">
                 <span class="margin-right6">{{$t('login.receiveCode')}}</span>
                 <el-link type="primary" underline="never" @click="sendAgain">

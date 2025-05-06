@@ -2,7 +2,6 @@
 import SidebarItem from './SidebarItem.vue'
 import { reactive, inject } from 'vue'
 import routes from './route.js'
-import myRoutes from './route-my.js'
 import { useUserStore } from '@/store/userState.js'
 
 const route = useRoute()
@@ -12,7 +11,7 @@ const isMobile = useIsMobile()
 const userStore = useUserStore()
 const routesData = ref([]) // 是否为买家中心的路由
 onMounted(() => {
-  routesData.value = userStore.isMy(window.location.href, ['my','my-test']) ? myRoutes : routes
+  routesData.value = routes
 })
 
 const selectMenu = () => {
@@ -22,7 +21,7 @@ const selectMenu = () => {
 const activeMenu = computed({
   get: () => {
     const { fullPath } = route
-    const routePath = myRoutes.find(item => {
+    const routePath = routesData.value.find(item => {
       if (item.meta?.matchPaths) {
         // 将动态路由参数转换为正则表达式模式
         const patterns = item.meta.matchPaths.map(path => {

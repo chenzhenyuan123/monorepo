@@ -99,6 +99,12 @@ importers:
       '@fingerprintjs/fingerprintjs':
         specifier: ^3.4.2
         version: 3.4.2
+      '@flylinking/core':
+        specifier: workspace:*
+        version: link:../../packages/core
+      '@flylinking/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
       '@pinia/nuxt':
         specifier: ^0.5.2
         version: 0.5.5(typescript@5.8.3)(vue@3.5.13)

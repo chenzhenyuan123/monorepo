@@ -34,7 +34,6 @@ const getIsShow = () => {
 }
 
 defineExpose({ show, hide, toggle, getIsShow })
-console.log('Layer', props)
 
 </script>
 

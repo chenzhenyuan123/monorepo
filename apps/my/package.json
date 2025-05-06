@@ -28,6 +28,8 @@
     "vue-i18n": "^9.6.4"
   },
   "dependencies": {
+    "@flylinking/core":"workspace:*",
+    "@flylinking/ui":"workspace:*",
     "@element-plus/icons-vue": "^2.1.0",
     "@fingerprintjs/fingerprintjs": "^3.4.2",
     "@pinia/nuxt": "^0.5.2",
