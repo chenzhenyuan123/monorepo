@@ -1,3 +1,3 @@
-import { useHttp } from "./useHttp";
+import { fetch } from "./useHttp";
 
-export { useHttp };
+export { fetch };

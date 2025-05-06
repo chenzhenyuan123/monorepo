@@ -1,7 +1,3 @@
-import { errorMessage, successMessage } from "@/util/index.js";
-import { useUserStore } from '@/store/userState.js'
-import { toLogout } from '@/util/auth.js'
-
 // get方法传递数组形式参数useI18n.tc('login.serverError')
 const paramsSerializer = (params) => {
   if (!params)
@@ -32,9 +28,7 @@ const langMap = {
   "en-US": "en-US",
   "en_US": "en-US"
 }
-const userStore = useUserStore()
-
-const fetch = (url, option) => {
+export const fetch = (url, option, userStore, errorMessage, successMessage, toLogout) => {
   return $fetch(url, {
     // 请求拦截器
     onRequest({ options }) {
@@ -86,24 +80,6 @@ const fetch = (url, option) => {
   }).catch(error => {
     return error.data
   })
-}
-
-export const useHttp = {
-  get(url, params, option) {
-    return fetch(url, { method: 'get', params, ...option })
-  },
-
-  post(url, body, option) {
-    return fetch(url, { method: 'post', body, ...option })
-  },
-
-  put(url, body, option) {
-    return fetch(url, { method: 'put', body, ...option })
-  },
-
-  delete(url, body, option) {
-    return fetch(url, { method: 'delete', body, ...option })
-  },
 }
 
 /**

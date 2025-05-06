@@ -451,4 +451,13 @@ const contactInfoClick = ()=>{
 .main-container .m-wrap.main-wrap-orders-id {
   box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.2) inset, 0px 5px 10px -5px rgba(0, 0, 0, 0.1) inset;
 }
+
+.rtl .order-detail-content .left .goods-content .goods-name {
+  display: flex;
+  margin: 0;
+  .goods-imgs {
+    margin: 0;
+    margin-left: 20px;
+  }
+}
 </style>
