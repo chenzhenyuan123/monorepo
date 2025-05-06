@@ -28,7 +28,7 @@ const langMap = {
   "en-US": "en-US",
   "en_US": "en-US"
 }
-export const fetch = (url, option, userStore, errorMessage, successMessage, toLogout) => {
+export const fetch = (url, option, userStore, errorMessage, toLogout) => {
   return $fetch(url, {
     // 请求拦截器
     onRequest({ options }) {
