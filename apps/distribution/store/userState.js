@@ -56,6 +56,10 @@ export const useUserStore = defineStore('user', {
   } catch (e) {
   }
   info = info ? JSON.parse(info) : {};
+  const token = Cookies.get('Flylinking-Access-Token')
+  if(!info?.token && token) {
+    info.token = token
+  }
 
   return info;
 }

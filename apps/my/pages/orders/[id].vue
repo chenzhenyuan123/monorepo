@@ -12,7 +12,7 @@ const contactInfoRef = ref(null)
 const contactInfoScrollHeight = ref(0)
 const contactInfoClick = ()=>{
   const rect = contactInfoRef.value?.getBoundingClientRect();
-  contactInfoScrollHeight.value = parseInt(rect?.top) + 70
+  contactInfoScrollHeight.value = parseInt(rect?.top) + 60
   showContactInfo.value = true
 }
 </script>
@@ -212,7 +212,8 @@ const contactInfoClick = ()=>{
       }
     }
     .Contact {
-      padding: 16px 24px;
+      margin: 16px 24px;
+      padding: 0;
       cursor: pointer;
       position: relative;
       display: inline-block;

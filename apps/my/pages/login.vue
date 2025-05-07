@@ -1,6 +1,7 @@
 <script setup name="Login">
 import { checkResponseData } from "@/util/index.js";
 import { isEmail, isEmailPassword, specialCharacterstr } from '@/util/validate.js'
+import {formatCreditCardNumber, normalCreditCardNumber} from "@/util/dataUtil";
 import { useUserStore } from '@/store/userState.js'
 const { contactInfoApi } = useApi();
 
@@ -24,6 +25,18 @@ const validateEmail = (rule, value, callback) => {
     callback()
   }
 }
+// 校验验证码
+const validateCode = (rule, value, callback) => {
+  if (checkResultData.errorForExceedingLimit || createCodeData.createCodeError) {
+    // 3小时内输入超5次禁用的提示
+    callback(new Error(t('withdraw.verifyCodeDialogValidateCodeExceedingLimit')))
+  } else if (value && checkResultData.isVerify === false) {
+    // 输入过即展示剩余几次的提示
+    callback(new Error(t('withdraw.verifyCodeDialogValidateCodeError', { times: checkResultData.max - checkResultData.numberTimes })))
+  } else {
+    callback()
+  }
+}
 const rules = ()=>{
   return {
     email: [
@@ -34,7 +47,8 @@ const rules = ()=>{
       { required: true, message: t('signup.signupValidatePasswordRequired'), trigger: 'change' }
     ],
     code: [
-      { required: true, message: t('login.loginValidateCodeRequired'), trigger: 'change' }
+      { required: true, message: t('login.loginValidateCodeRequired'), trigger: 'change' },
+      { validator: validateCode, trigger: 'change' }
     ]
   }
 }
@@ -53,7 +67,32 @@ const goEmailCode = () => {
       startCountdown(120)
     })
 }
-
+const createCodeData = reactive({
+    loading: false,
+    createCodeError: false,
+})
+const checkResultData = reactive({
+    loading: false,
+    code: '',
+    numberTimes: 1,
+    max: 5,
+    errorForExceedingLimit: false,
+    isVerify: undefined,
+    checkCode: undefined,
+})
+// 重置code正确校验
+const removeCodeVerify = () => {
+    checkResultData.isVerify = undefined
+}
+const codeSubmit = () => {
+  const formEl = loginFormRef.value?.formRef
+  formEl &&
+    formEl.validate(async valid => {
+      if (!valid) return
+      // loading.value = true
+      // 验证码校验，成功则登录
+    })
+  }
 
 const onSubmit = () => {
   const formEl = loginFormRef.value?.formRef
@@ -66,9 +105,9 @@ const onSubmit = () => {
       const res = checkResponseData(result)
       if(res) {
         if(res?.token) {
+          userStore.setToken(res)
           // 如果是买家中心，跳转订单页面
           routerGo('/orders')
-          userStore.setToken(res)
         }
       } else {
         showError.value = true
@@ -160,7 +199,8 @@ const sendAgain = async() => {
                 :label="$t('login.loginFormCodeplaceholder')"
                 prop="code"
               >
-                <el-input v-model="loginForm.code" maxlength="254" :placeholder="$t('login.loginFormCodeplaceholder')" :class="{'error':showError}" />
+                <el-input v-model="loginForm.code" maxlength="254" :placeholder="$t('login.loginFormCodeplaceholder')" :class="{'error':showError}"
+                @input="e => { loginForm.code = formatCreditCardNumber(e);removeCodeVerify(); }" />
                 <span v-if="showError" class="margin-right6">{{$t('login.loginValidateCodeErrorTip3')}}</span>
               </el-form-item>
               <!-- 输入过即展示剩余几次的提示 -->
@@ -180,7 +220,7 @@ const sendAgain = async() => {
                 </el-link>
               </el-form-item>
               <el-form-item>
-                <el-button type="primary" id="login-btn-login" class="signup-btn" :loading="loading" @click="onSubmit()">{{ $t('login.loginAccount') }}</el-button>
+                <el-button type="primary" id="login-btn-login" class="signup-btn" :loading="loading" @click="codeSubmit()">{{ $t('login.loginAccount') }}</el-button>
                 <el-button id="login-btn-login" class="signup-btn margin-top16" @click="isPasswordLogin=''">{{ $t('email-sent.emailSentBack') }}</el-button>
               </el-form-item>
             </template>
