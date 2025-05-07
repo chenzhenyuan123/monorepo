@@ -46,7 +46,14 @@ const contactInfoClick = ()=>{
         <div class="order-text">
           <b>Shipment track no.</b>
           <p>
-            <el-tag>AT657061241CN</el-tag>
+            <a :href="`https://t.17track.net/en#nums=${'AT657061241CN'}`" target="_blank" class="shipment-tag-a">
+              <span class="ellipsis">AT657061241CNAT657061241CNAT657061241CNAT657061241CN</span>
+              <i class="Flylink icon-share-04"></i>
+            </a>
+            <a :href="`https://t.17track.net/en#nums=${'AT657061241CN'}`" target="_blank" class="shipment-tag-a">
+              <span class="ellipsis">AT6570612461241CN</span>
+              <i class="Flylink icon-share-04"></i>
+            </a>
           </p>
         </div>
         <el-divider class="divider" />
@@ -209,6 +216,36 @@ const contactInfoClick = ()=>{
       .contact-info-item-icon {
         float: left;
         margin-right: 6px;
+      }
+      .shipment-tag-a {
+        display: inline-block;
+        max-width: calc(100% - 16px);
+        cursor: pointer;
+        border-radius: 6px;
+        border: 1px solid #CFCCFF;
+        background: #F0EFFF;
+        margin-top: 6px;
+        overflow: hidden;
+        text-decoration: none;
+        padding: 2px 8px 2px 6px;
+        span {
+          display: block;
+          float: left;
+          max-width: calc(100% - 16px);
+          color: #443ACC;
+          text-align: center;
+          font-family: Inter;
+          font-size: 14px;
+          font-weight: 600;
+          line-height: 20px;
+        }
+        i {
+          display: block;
+          float: left;
+          margin-left: 4px;
+          font-size: 12px;
+          line-height: 20px;
+        }
       }
     }
     .Contact {

@@ -50,7 +50,7 @@ useHead({
 <template>
   <Head>
     <Link rel="icon" :href="Flylinking" sizes="64x64" />
-    <Link rel="stylesheet" type="text/css" href="//at.alicdn.com/t/c/font_4655796_4ybzqfy5mci.css" />
+    <Link rel="stylesheet" type="text/css" href="//at.alicdn.com/t/c/font_4655796_oomkmav2ta.css" />
     <Meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
     <title>FlyLinking</title>
   </Head>
