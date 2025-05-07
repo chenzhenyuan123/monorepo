@@ -242,15 +242,15 @@ const sendAgain = async() => {
               </el-form-item>
             </template>
           </FormValidate>
+          <div v-if="isPasswordLogin!=='code'" class="signup-tip text-center">
+            <p class="text">{{$t('login.loginhasAccount')}}</p>
+            <el-link type="primary" underline="never" @click="routerGo('/signup')">{{$t('signup.signupTilte')}}</el-link>
+          </div>
           <div v-if="isMy && isPasswordLogin!=='login'" class="signup-tip text-center">
             <el-link type="primary" underline="never" @click="isPasswordLogin='login'">{{$t('login.loginUsePassword')}}</el-link>
           </div>
           <div v-if="isMy && isPasswordLogin==='login'" class="signup-tip text-center">
             <el-link type="primary" underline="never" @click="isPasswordLogin=''">{{$t('login.loginUseOneTimeCode')}}</el-link>
-          </div>
-          <div v-if="!isMy" class="signup-tip text-center">
-            <p class="text">{{$t('login.loginhasAccount')}}</p>
-            <el-link type="primary" underline="never" @click="routerGo('/signup')">{{$t('signup.signupTilte')}}</el-link>
           </div>
         </div>
         

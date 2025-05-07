@@ -99,7 +99,7 @@ const validatorFn = (type, index) => {
           width: 330px;
           float: left;
           word-break: break-all;
-          /*text-align: left;*/
+          text-align: left;
         }
       }
     }

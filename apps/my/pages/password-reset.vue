@@ -28,7 +28,7 @@ const startCountdown = (val) => {
       seconds.value--;
     } else {
       clearInterval(timer.value);
-      routerGo('/home')
+      routerGo('/orders')
     }
   }, 1000);
 };
