@@ -86,7 +86,7 @@ const routerGo = (path) => {
   <div class="main-box" :class="{ m: isMobile }">
     <div class="signup-box">
       <div v-if="!isMobile" class="left">
-        <CarouselImage system="100" height="100" />
+        <CarouselImage system="104" height="100" />
       </div>
       <div class="right">
         <Header />

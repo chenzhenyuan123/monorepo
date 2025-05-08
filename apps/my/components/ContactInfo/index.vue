@@ -9,6 +9,10 @@ const props = defineProps({
   positionTop: { // PC端对应的定位
     type: Number,
     default: 0
+  },
+  positionLeft: { // PC端对应的左边定位，不传默认在右侧
+    type: String,
+    default: 'auto'
   }
 })
 
@@ -24,7 +28,7 @@ onMounted(() => {
 });
 </script>
 <template>
-  <Layer ref="layerRef" title="Contact us" class="layer" :positionTop="positionTop" v-once @hide="$emit('hide')">
+  <Layer ref="layerRef" title="Contact us" class="layer" :positionTop="positionTop" :positionLeft="positionLeft" v-once @hide="$emit('hide')">
     <div class="contact-info">
       <div v-for="item in contactData" :key="item.value" v-show="contactInfo[item.value]" class="contact-info-item">
         <div class="contact-info-item-icon">

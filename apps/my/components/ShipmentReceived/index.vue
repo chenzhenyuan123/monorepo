@@ -62,9 +62,9 @@ const submit = async() => {
         </div>
         <h3 class="title">{{$t('orders.ordersShipmenReceived')}}</h3>
         <div class="dialog-text-box">
-          <p class="dialog-text">Please confirm that you have received the shipping package for this order.</p>
-          <p class="dialog-text">Please confirm that you have received the shipping package for this order.</p>
-          <p class="dialog-text">Please confirm that you have received the shipping package for this order.</p>
+          <p class="dialog-text">{{$t('orders.ordersShipmenReceivedTip1')}}</p>
+          <p class="dialog-text">{{$t('orders.ordersShipmenReceivedTip2')}}</p>
+          <p class="dialog-text">{{$t('orders.ordersShipmenReceivedTip3')}}</p>
         </div>
       </div>
       <template #footer>

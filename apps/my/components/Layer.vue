@@ -10,6 +10,10 @@ const props = defineProps({
   positionTop: {
     type: Number,
     default: 0
+  },
+  positionLeft: { // PC端对应的左边定位，不传默认在右侧
+    type: String,
+    default: 'auto'
   }
 })
 const emit = defineEmits(["hide"])
@@ -39,7 +43,12 @@ defineExpose({ show, hide, toggle, getIsShow })
 
 <template>
     <div v-if="isShow" :class="{ 'layer': true, 'is-pc': !isMobile }" @click.stop="hide">
-        <div :class="{ 'layer-body': true, 'init-animation': isShow }" @click.stop :style="{ top: (positionTop > 0&&!isMobile) ? `${positionTop}px` : 'auto' }">
+        <div
+          :class="{ 'layer-body': true, 'init-animation': isShow }"
+          @click.stop
+          :style="{ top: (positionTop > 0&&!isMobile) ? `${positionTop}px` : 'auto',
+                    left: !isMobile ? positionLeft : 0 }"
+        >
             <div class="layer-body-title-container">
                 <h1 class="layer-body-title">{{ title }}</h1>
                 <div class="layer-body-title-close" @click="hide">

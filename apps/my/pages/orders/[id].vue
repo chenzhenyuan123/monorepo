@@ -3,18 +3,23 @@
  * @Description: 买家中心/订单列表/订单详情
 -->
 <script name="OrdersDeatil" setup>
-import { checkResponseData, successMessage, currencyFormat } from "@/util/index.js";
+import { checkResponseData, successMessage, currencyFormat, formatInTable } from "@/util/index.js";
 import { orderInfo, contactData } from "@/components/ContactInfo/const.js";
+import { ordersStatus } from "@/util/const.js";
   
 const isMobile = useIsMobile()
 const showContactInfo = ref(false)
+const contactSellerRef = ref(null)
 const contactInfoRef = ref(null)
 const contactInfoScrollHeight = ref(0)
-const contactInfoClick = ()=>{
-  const rect = contactInfoRef.value?.getBoundingClientRect();
-  contactInfoScrollHeight.value = parseInt(rect?.top) + 60
+const positionLeft = ref('auto')
+const contactInfoClick = (ref, type) => {
+  const rect = ref.getBoundingClientRect();
+  contactInfoScrollHeight.value = parseInt(rect?.top) + rect?.height
   showContactInfo.value = true
+  positionLeft.value = (rect?.left&&type) ? `${rect.left}px` : 'auto'
 }
+console.log('formatInTable==>', formatInTable(ordersStatus, 2, 'value', 'tag'))
 
 // 确认已收货-完成订单
 const showReceived = ref(false)
@@ -31,12 +36,18 @@ const receivedSave = () => {
     </div>
     <div class="order-detail-title">
       <div class="order-detail-title-header">
-        <el-tag>Pending payment</el-tag>
+        <el-tag :type="formatInTable(ordersStatus, 3, 'value', 'tag')">{{$t(formatInTable(ordersStatus, 4))}}</el-tag>
       </div>
       <h3 class="title">Baby Name Sweater, Baby Knit Sweater, Embroidered Baby Sweatshirt, Personalized Baby Clothes, Baby Girl Coming Home Outfit, Gift for Newborn</h3>
+      <!-- 待付款：发起支付Pay Now
+           待发货：联系卖家Contact Seller
+           已发货：查看物流Track Shipment，确认收货Mark as Received -->
       <div class="order-detail-title-fotter">
-        <el-button type="primary" id="">Pay Now</el-button>
-        <el-button id="Mark as Received" @click="showReceived=true">Mark as Received</el-button>
+        <!-- <a href="https://store-test.flylinking.com/shipping?id=FLY25050897483298" target="_blank"><el-button type="primary" id="Pay-Now-btn">Pay Now</el-button></a> -->
+        <div ref="contactSellerRef" class="order-detail-title-fotter-button">
+          <el-button type="primary" id="Contact-seller-btn" @click="contactInfoClick(contactSellerRef, 'left')">Contact Seller</el-button>
+        </div>
+        <el-button id="Mark-as-Received-btn" @click="showReceived=true">Mark as Received</el-button>
       </div>
     </div>
     <div class="order-detail-content">
@@ -75,7 +86,7 @@ const receivedSave = () => {
           </p>
         </div>
         <el-divider class="divider" />
-        <div ref="contactInfoRef" class="order-text Contact" id="contact-info-click" @click="contactInfoClick">
+        <div ref="contactInfoRef" class="order-text Contact" id="contact-info-click" @click="contactInfoClick(contactInfoRef)">
           <b>{{$t('orders.ordersContactSeller')}}</b>
           <div class="order-text-icon">
             <div v-for="item in contactData" :key="item.value" v-show="orderInfo.contactData[item.value]" class="contact-info-item-icon">
@@ -189,7 +200,7 @@ const receivedSave = () => {
     </div>
 
     <!-- 联系方式 -->
-    <ContactInfo v-if="showContactInfo" :contactInfo="orderInfo.contactData" :positionTop="contactInfoScrollHeight" @hide="showContactInfo=false" />
+    <ContactInfo v-if="showContactInfo" :contactInfo="orderInfo.contactData" :positionTop="contactInfoScrollHeight" :positionLeft="positionLeft" @hide="showContactInfo=false" />
     
     <!-- 已完成收货-->
     <ShipmentReceived v-if="showReceived" v-model="showReceived" :data="{id: 1}" @save="receivedSave" />
@@ -200,6 +211,30 @@ const receivedSave = () => {
   margin: 20px 0 32px;
 }
 .order-detail-title {
+  .order-detail-title-header {
+    .el-tag {
+      border-radius: 6px;
+      border: 1px solid #B2DDFF;
+      background:#EFF8FF;
+      color: #175CD3;
+      font-weight: 600;
+    }
+    .el-tag.el-tag--success {
+      border: 1px solid #ABEFC6;
+      background: #ECFDF3;
+      color:#067647;
+    }
+    .el-tag.el-tag--Shipped {
+      border: 1px solid #CFCCFF;
+      background: #F0EFFF;
+      color:#443ACC;
+    }
+    .el-tag.el-tag--info {
+      border: 1px solid #E4E7EC;
+      background: #F9FAFB;
+      color:#344054;
+    }
+  }
   .title {
     color: 101828;
     font-family: Inter;
@@ -207,6 +242,10 @@ const receivedSave = () => {
     font-weight: 600;
     line-height: 38px;
     margin: 8px 0 20px;
+  }
+  .order-detail-title-fotter-button {
+    display: inline-block;
+    margin-right: 12px;
   }
 }
 .order-detail-content {
@@ -380,7 +419,6 @@ const receivedSave = () => {
         font-family: Inter;
         font-size: 16px;
         line-height: 24px;
-        float: right;
         .goods-details-text1 {
           margin-right: 16px;
         }

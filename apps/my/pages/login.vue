@@ -153,7 +153,7 @@ const sendAgain = async() => {
   <div class="main-box" :class="{ m: isMobile }">
     <div class="signup-box">
       <div v-if="!isMobile" class="left">
-        <CarouselImage system="103" height="100" />
+        <CarouselImage system="105" height="100" />
       </div>
       <div class="right">
         <Header />

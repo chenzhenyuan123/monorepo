@@ -12,6 +12,7 @@ const route = useRoute();
 const { $t: t } = useNuxtApp();
 import { useUserStore } from '@/store/userState.js'
 const userStore = useUserStore()
+const isMobile = useIsMobile()
 
 definePageMeta({
   layout: 'noside'
@@ -99,7 +100,7 @@ const routerGo = (path) => {
 
 </script>
 <template>
-  <div class="email-verify-main">
+  <div class="email-verify-main" :class="{'m': isMobile}">
     <Header />
     <div v-if="loadingPage" class="email-verify-box">
       <div class="email-verify-icon">
@@ -147,6 +148,9 @@ const routerGo = (path) => {
 @import url("@/assets/css/signup-login/style.scss");
 .email-verify-box {
   margin: 96px auto 140px;
+}
+.m .email-verify-box {
+  max-width: calc(100% - 32px)
 }
 </style>
 <style lang="scss">

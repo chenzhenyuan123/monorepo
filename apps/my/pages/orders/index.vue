@@ -4,7 +4,7 @@
 -->
 <template>
   <div class="orders">
-    <CarouselImage system="101" />
+    <CarouselImage system="106" />
     
     <div class="order-list-box">
       <div class="header">
