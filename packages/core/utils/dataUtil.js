@@ -83,3 +83,48 @@ export const flagUrl = (val = '') => {
     const id = (val).toLowerCase()
     return `https://kamelnet-prod-oss-public.oss-cn-beijing.aliyuncs.com/flag/${id}.png`
 }
+
+// 为全选置空，提供唯一常量
+// export const theAll = Symbol('all')
+export const theAll = 'Symbol-all'
+
+/**
+ * 是否是theAll
+ * @param value
+ * @returns {Boolean}
+ */
+export function isTheAll(value) {
+    return value === theAll
+}
+
+/**
+ * @desc 是否是空值（undefined 和 nell 和 NaN）
+ * @param {*} str 需要保障的值
+ */
+export function isEMpty(str) {
+    return str === undefined || str === null || Number.isNaN(str)
+}
+
+/**
+ * @desc 是否是无用值
+ * @param {*} str 需要保障的值
+ */
+export function isUseless(str) {
+    return isEMpty(str) || str === ''
+}
+
+/**
+ *
+ * @param params
+ */
+export const getCleanFormData = (params) => {
+    const obj = { ...params }
+    for (let key in obj) {
+        const item = obj[key]
+        if (isUseless(item) || isTheAll(item)) {
+            delete obj[key]
+        }
+    }
+
+    return obj
+}

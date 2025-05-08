@@ -79,7 +79,6 @@ import NoData from '@/components/svg/NoData.svg'
         color: #475467;
         font-size: 14px;
         line-height: 20px;
-        margin-top: 4px;
         margin: 5px 52px 20px;
         .el-link {
         text-decoration: underline;
