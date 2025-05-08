@@ -104,7 +104,7 @@ const codeSubmit = () => {
       const body = {
         email: loginForm.value.email,
         verifyCode: normalCreditCardNumber(loginForm.value.code),
-        userRole: 'distributor' // distributor:分销员 buyer:买家
+        userRole: 'buyer' // distributor:分销员 buyer:买家
       }
       const result = await contactInfoApi.loginWithVerifyCode(body)
       const res = checkResponseData(result)
@@ -112,7 +112,7 @@ const codeSubmit = () => {
         if(res.isVerify && res?.loginCO) {
           if(res?.loginCO?.token) {
             userStore.setToken(res.loginCO)
-            routerGo('/orders')
+            routerGo('/home')
           }
           return
         }
@@ -139,7 +139,7 @@ const onSubmit = () => {
       if(res && res?.isVerify) {
         if(res?.loginCO?.token) {
           userStore.setToken(res.loginCO)
-          routerGo('/orders')
+          routerGo('/home')
         }
       } else {
         showError.value = true
@@ -180,7 +180,7 @@ const sendAgain = async() => {
   <div class="main-box" :class="{ m: isMobile }">
     <div class="signup-box">
       <div v-if="!isMobile" class="left">
-        <CarouselImage system="105" height="100" />
+        <CarouselImage system="103" height="100" />
       </div>
       <div class="right">
         <Header />
