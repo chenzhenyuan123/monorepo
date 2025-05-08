@@ -1,4 +1,6 @@
 // get方法传递数组形式参数useI18n.tc('login.serverError')
+import {getDeviceId} from "../utils/common";
+
 const paramsSerializer = (params) => {
   if (!params)
     return
@@ -31,7 +33,7 @@ const langMap = {
 export const fetch = (url, option, userStore, errorMessage, toLogout) => {
   return $fetch(url, {
     // 请求拦截器
-    onRequest({ options }) {
+    async onRequest({ options }) {
       // get方法传递数组形式参数
       options.params = paramsSerializer(options.params)
       // 从useRuntimeConfig中取baseURL
@@ -48,6 +50,11 @@ export const fetch = (url, option, userStore, errorMessage, toLogout) => {
       userStore.getUserInfo()
       if(userStore?.token) {
         options.headers['Flylinking-Access-Token'] = userStore.token
+      }
+
+      let result = await getDeviceId();
+      if (result.visitorId) {
+        options.headers["Visitor-Id"] = result.visitorId;
       }
     },
     // 响应拦截

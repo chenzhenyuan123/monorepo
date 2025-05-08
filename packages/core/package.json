@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@fingerprintjs/fingerprintjs": "^3.4.2",
     "currency.js": "^2.0.4",
     "dayjs": "^1.11.1"
   }
