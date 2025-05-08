@@ -1,5 +1,5 @@
 <script setup name="Login">
-import { checkResponseData } from "@/util/index.js";
+import { checkResponseData, errorMessage } from "@/util/index.js";
 import { isEmail, isEmailPassword, specialCharacterstr } from '@/util/validate.js'
 import {formatCreditCardNumber, normalCreditCardNumber} from "@/util/dataUtil";
 import { useUserStore } from '@/store/userState.js'
@@ -27,10 +27,10 @@ const validateEmail = (rule, value, callback) => {
 }
 // 校验验证码
 const validateCode = (rule, value, callback) => {
-  if (checkResultData.errorForExceedingLimit || createCodeData.createCodeError) {
+  if (checkResultData.errorForExceedingLimit) {
     // 3小时内输入超5次禁用的提示
     callback(new Error(t('withdraw.verifyCodeDialogValidateCodeExceedingLimit')))
-  } else if (value && checkResultData.isVerify === false) {
+  } else if (value && checkResultData.isVerify) {
     // 输入过即展示剩余几次的提示
     callback(new Error(t('withdraw.verifyCodeDialogValidateCodeError', { times: checkResultData.max - checkResultData.numberTimes })))
   } else {
@@ -54,7 +54,7 @@ const rules = ()=>{
 }
 const showError = ref(false)
 const loading = ref(false)
-const isMy = ref(true) // 是否为买家中心
+const isMy = ref(true) // 是否为验证码登录
 const isPasswordLogin = ref('') // 是否在邮件code输入页code,登录页login
 // 输入邮箱发验证码
 const goEmailCode = () => {
@@ -62,35 +62,68 @@ const goEmailCode = () => {
   formEl &&
     formEl.validate(async valid => {
       if (!valid) return
-
-      isPasswordLogin.value = 'code'
-      startCountdown(120)
+      sendLoginVerifyEmail()
     })
 }
-const createCodeData = reactive({
-    loading: false,
-    createCodeError: false,
-})
+// 发送验证码
+const sendLoginVerifyEmail = async() => {
+  loading.value = true
+  const result = await contactInfoApi.sendLoginVerifyEmail({
+    email: loginForm.value.email,
+    userRole: 'buyer' // distributor:分销员 buyer:买家
+  })
+  const res = checkResponseData(result)
+  if(res) {
+    if(res?.isSuccess) {
+      if(loginForm.value?.code) loginForm.value.code = ''
+      isPasswordLogin.value = 'code'
+      clearInterval(timer.value)
+      startCountdown(120)
+    } else {
+      errorMessage(t('login.loginEmailCodeError'))
+    }
+  }
+  loading.value = false
+}
 const checkResultData = reactive({
-    loading: false,
-    code: '',
-    numberTimes: 1,
-    max: 5,
-    errorForExceedingLimit: false,
-    isVerify: undefined,
-    checkCode: undefined,
+    numberTimes: 1, // 验证次数
+    max: 5,  //  最大验证次数
+    errorForExceedingLimit: false, // 超过最大验证次数-展示已禁用
+    isVerify: false, // 验证结果-true展示当前已输入几次
 })
 // 重置code正确校验
 const removeCodeVerify = () => {
-    checkResultData.isVerify = undefined
+    checkResultData.isVerify = false
 }
 const codeSubmit = () => {
   const formEl = loginFormRef.value?.formRef
   formEl &&
     formEl.validate(async valid => {
       if (!valid) return
-      // loading.value = true
-      // 验证码校验，成功则登录
+      loading.value = true
+      const body = {
+        email: loginForm.value.email,
+        verifyCode: normalCreditCardNumber(loginForm.value.code),
+        userRole: 'buyer' // distributor:分销员 buyer:买家
+      }
+      const result = await contactInfoApi.loginWithVerifyCode(body)
+      const res = checkResponseData(result)
+      if(res) {
+        if(res.isVerify && res?.loginCO) {
+          if(res?.loginCO?.token) {
+            userStore.setToken(res.loginCO)
+            routerGo('/orders')
+          }
+          return
+        }
+        checkResultData.numberTimes = res?.numberTimes
+        checkResultData.isVerify = !res.isSuccess
+        checkResultData.errorForExceedingLimit = res.numberTimes===5
+      } else {
+        checkResultData.errorForExceedingLimit = true
+      }
+      loading.value = false
+      formEl.validateField('code')
     })
   }
 
@@ -103,17 +136,15 @@ const onSubmit = () => {
       loading.value = true
       const result = await contactInfoApi.userLogin(loginForm.value)
       const res = checkResponseData(result)
-      if(res) {
-        if(res?.token) {
-          userStore.setToken(res)
-          // 如果是买家中心，跳转订单页面
+      if(res && res?.isVerify) {
+        if(res?.loginCO?.token) {
+          userStore.setToken(res.loginCO)
           routerGo('/orders')
         }
       } else {
         showError.value = true
       }
       loading.value = false
-      
     })
 }
 const routerGo = (path) => {
@@ -141,11 +172,7 @@ const sendAgain = async() => {
   if (seconds.value > 0) {
     return;
   }
-  // const result = await contactInfoApi.againsendVerifyEmail({email: route.query.email, verifyType: route.query.type})
-  // const res = checkResponseData(result, 'NO_RETURN_DATA')
-  // if(res) {
-  //   startCountdown(120)
-  // }
+  sendLoginVerifyEmail()
 };
 
 </script>
@@ -204,14 +231,14 @@ const sendAgain = async() => {
                 <span v-if="showError" class="margin-right6">{{$t('login.loginValidateCodeErrorTip3')}}</span>
               </el-form-item>
               <!-- 输入过即展示剩余几次的提示 -->
-              <!-- <el-form-item label="">
-                <span class="margin-right6">{{$t('login.loginValidateCodeErrorTip1')}}</span>
-              </el-form-item> -->
+              <el-form-item v-if="checkResultData.isVerify && !checkResultData.errorForExceedingLimit" label="">
+                <span class="margin-right6 loginValidateCodeErrorTip">{{$t('login.loginValidateCodeErrorTip1')}}</span>
+              </el-form-item>
               <!-- 3小时内输入超5次禁用的提示 -->
-              <!-- <el-form-item label="">
-                <span class="margin-right6">{{$t('login.loginValidateCodeErrorTip2')}}</span>
-              </el-form-item> -->
-              <el-form-item label="">
+              <el-form-item v-if="checkResultData.errorForExceedingLimit" label="">
+                <span class="margin-right6 loginValidateCodeErrorTip">{{$t('login.loginValidateCodeErrorTip2')}}</span>
+              </el-form-item>
+              <el-form-item v-if="!checkResultData.errorForExceedingLimit" label="">
                 <span class="margin-right6">{{$t('login.receiveCode')}}</span>
                 <el-link type="primary" underline="never" @click="sendAgain">
                   <span v-if="seconds>0">{{$t('withdraw.verifyCodeDialogP4_countdown', { sec: seconds })}}</span>
@@ -220,7 +247,7 @@ const sendAgain = async() => {
                 </el-link>
               </el-form-item>
               <el-form-item>
-                <el-button type="primary" id="login-btn-login" class="signup-btn" :loading="loading" @click="codeSubmit()">{{ $t('login.loginAccount') }}</el-button>
+                <el-button v-if="!checkResultData.errorForExceedingLimit" type="primary" id="login-btn-login" class="signup-btn" :loading="loading" @click="codeSubmit()">{{ $t('login.loginAccount') }}</el-button>
                 <el-button id="login-btn-login" class="signup-btn margin-top16" @click="isPasswordLogin=''">{{ $t('email-sent.emailSentBack') }}</el-button>
               </el-form-item>
             </template>
@@ -317,5 +344,9 @@ const sendAgain = async() => {
 }
 .text-center {
   text-align: center;
+}
+.loginValidateCodeErrorTip {
+  line-height: 20px;
+  margin-top: 10px;
 }
 </style>
