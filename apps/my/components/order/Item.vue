@@ -76,7 +76,6 @@
         border-radius: 8px;
         border: 1px solid #E4E7EC;
         background: #FFF;
-        margin-top: 12px;
         .header {
             padding: 16px 20px;
             display: flex;

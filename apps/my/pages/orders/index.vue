@@ -31,19 +31,21 @@
     return arrToDict(tabsData.value)
   })
   const handleClick = () => {
-// console.log(activeName.value)
+    console.log('activeName.value: ', activeName.value)
+    getOrderList()
   }
 
 
-  const formData = reactive({})
+  const searchFormRef = ref(null)
+  const formData = ref({})
   const dataRange = computed({
     // getter
     get() {
-      return [formData.startDateTime, formData.endDateTime]
+      return [formData.value.startDateTime, formData.value.endDateTime]
     },
     // setter
     set(newValue) {
-      splitDateRange(newValue, formData, 'startDateTime', 'endDateTime')
+      splitDateRange(newValue, formData.value, 'startDateTime', 'endDateTime')
     }
   })
   const tableLoading = ref(true)
@@ -54,10 +56,7 @@
     pageNo: 1,
     pageSize: 5,
     total: 1,
-    list: [{
-      id: '1',
-      title: '跳转订单详情页'
-    }]
+    list: [{ id: 1 }]
   })
   const getOrderList = ({ pageNo = 1, pageSize = pageData.value.pageSize } = {}) => {
     if (pageSize !== pageData.value.pageSize) pageData.value.pageSize = pageSize
@@ -66,12 +65,12 @@
       pageNo,
       pageSize,
       orderState: activeName.value,
-      ...formData
+      ...formData.value
     })
     buyerOrderApi.listPage(params).then(result => {
       const res = checkResponseData(result)
       if (res) {
-        console.log(res)
+        // tableData.value = res
       }
     }).catch(err => {
       console.log('qryGoodsList err: ', err)
@@ -84,6 +83,15 @@
   }
   const pageSizeChange = (pageSize) => {
     getOrderList({ pageSize })
+  }
+  const formSearch = () => {
+    searchFormRef.value.hideLayer()
+    getOrderList()
+  }
+  const formReset = () => {
+    searchFormRef.value.hideLayer()
+    formData.value = {}
+    getOrderList()
   }
 
 
@@ -122,6 +130,7 @@
     </el-tabs>
 
     <SearchFormBox
+            ref="searchFormRef"
             class="search-form"
             filterLabel="Filter orders"
     >
@@ -168,14 +177,15 @@
           />
         </el-form-item>
         <el-form-item class="search-form-buttons">
-          <el-button type="primary">Search</el-button>
-          <el-button>Reset</el-button>
+          <el-button type="primary" @click="formSearch">Search</el-button>
+          <el-button @click="formReset">Reset</el-button>
         </el-form-item>
       </el-form>
     </SearchFormBox>
 
     <OrderList
-            v-loading="tableLoading"
+            class="order-list-container"
+            :loading="tableLoading"
             :pageData="pageData"
             :tableData="tableData"
             @pageChange="pageChange"
@@ -195,8 +205,9 @@
   * {
     box-sizing: border-box;
   }
+  .orders {}
   .carousel-image {
-    margin: 32px 0;
+    margin: 28px 0 32px;
   }
   .tabs {
     margin-bottom: 32px;
@@ -204,7 +215,28 @@
   .search-form {
     padding: 0 18px 8px;
   }
-  .select-menu {
-    margin-bottom: 32px;
+  .order-list-container {
+    margin: 0 -32px;
+  }
+
+  .m {
+    .orders {
+      padding: 0 16px;
+    }
+    .carousel-image {
+      margin: 0 0 32px;
+    }
+    .select-menu {
+      width: calc(100% + 16px);
+      margin: 0 -8px 8px;
+    }
+    .search-form {
+      width: calc(100% + 16px);
+      padding: 0;
+      margin: 0 -8px 16px;
+    }
+    .order-list-container {
+      margin: 0 -16px;
+    }
   }
 </style>

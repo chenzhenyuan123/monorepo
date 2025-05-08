@@ -14,11 +14,16 @@ const props = defineProps({
             list: []
         })
     },
+    loading: {
+        type: Boolean,
+        default: false
+    },
     isShowPage: {
         type: Boolean,
         default: true
     }
 });
+const isMobile = useIsMobile()
 const emit = defineEmits(['pageChange', 'pageSizeChange'])
 
 const pageChange = (pageNo) => {
@@ -32,18 +37,24 @@ const pageSizeChange = (pageSize) => {
 </script>
 
 <template>
-<article>
-    <section v-if="tableData.total > 0" class="order-list">
-        <OrderItem
-            v-for="item in tableData.list"
-            :key="item.id"
-            :orderData="item"
-            class="order-list-item"
-        >
-        </OrderItem>
+<article
+        v-loading="loading"
+        class="order-list-container"
+>
+    <template v-if="tableData.total > 0">
+        <section class="order-list">
+            <OrderItem
+                    v-for="item in tableData.list"
+                    :key="item.id"
+                    :orderData="item"
+                    class="order-list-item"
+            >
+            </OrderItem>
+        </section>
 
         <Pagination
                 v-if="isShowPage"
+                class="pagination"
                 :current-page="tableData.pageNo"
                 :page-size="tableData.pageSize"
                 :total="tableData.total"
@@ -52,8 +63,9 @@ const pageSizeChange = (pageSize) => {
                 @update:page-size="pageSizeChange"
                 @update:current-page="pageChange"
         />
-    </section>
-    <empty-data v-else></empty-data>
+    </template>
+
+    <empty-data v-else-if="!loading"></empty-data>
 </article>
 </template>
 
@@ -61,7 +73,42 @@ const pageSizeChange = (pageSize) => {
 * {
     box-sizing: border-box;
 }
-.order-list {
+.order-list-container {
     min-height: 50vh;
+    padding-bottom: 48px;
+}
+.order-list {
+    padding: 20px 32px;
+    border-top: 1px solid #E4E7EC;
+    background-color: #F9FAFB;
+    .order-list-item {
+        margin-bottom: 12px;
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+}
+
+.pagination {
+    padding: 12px 24px 16px;
+}
+
+.m {
+    .order-list-container {
+        padding-bottom: 0;
+    }
+    .order-list {
+        padding: 20px 8px;
+        .order-list-item {
+            margin-bottom: 12px;
+            &:last-child {
+                margin-bottom: 0;
+            }
+        }
+    }
+
+    .pagination {
+        padding: 12px 16px;
+    }
 }
 </style>

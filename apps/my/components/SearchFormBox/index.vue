@@ -1,12 +1,11 @@
 <script setup>
-  const isMobile = useIsMobile()
-
   const props = defineProps({
     filterLabel: {
       type: String,
       default: 'Filter'
     }
   })
+  const isMobile = useIsMobile()
   const emit = defineEmits(['show','hide'])
 
   const isShowMobileLayer = ref(false)
@@ -91,7 +90,8 @@
     .search-form-label {
       display: flex;
       align-items: center;
-      padding: 10px 14px;
+      height: 40px;
+      padding: 8px 14px;
       border-radius: 8px;
       border: 1px solid #D0D5DD;
       background: #FFF;
@@ -141,12 +141,18 @@
       :deep(.el-form) {
         .el-form-item {
           min-width: 100%;
+          padding: 0 16px 12px;
         }
         .search-form-buttons {
           display: block;
+          padding: 8px 16px 20px;
           .el-button {
             width: 100%;
+            height: 44px;
             margin: 0 0 16px;
+            font-size: 16px;
+            font-style: normal;
+            font-weight: 600;
           }
         }
       }
