@@ -15,12 +15,18 @@ const contactInfoClick = ()=>{
   contactInfoScrollHeight.value = parseInt(rect?.top) + 60
   showContactInfo.value = true
 }
+
+// 确认已收货-完成订单
+const showReceived = ref(false)
+const receivedSave = () => {
+  // 刷新接口数据
+}
 </script>
 <template>
   <div class="orders-detail-box" :class="{'m': isMobile}">
     <div class="header-back">
       <NuxtLink to="/orders">
-        <i class="Flylink icon-arrow-left"></i>{{$t('router.Orders')}}
+        <i class="Flylink icon-arrow-left"></i>{{$t('orders')}}
       </NuxtLink>
     </div>
     <div class="order-detail-title">
@@ -30,21 +36,21 @@ const contactInfoClick = ()=>{
       <h3 class="title">Baby Name Sweater, Baby Knit Sweater, Embroidered Baby Sweatshirt, Personalized Baby Clothes, Baby Girl Coming Home Outfit, Gift for Newborn</h3>
       <div class="order-detail-title-fotter">
         <el-button type="primary" id="">Pay Now</el-button>
-        <el-button id="">Cancel Order</el-button>
+        <el-button id="Mark as Received" @click="showReceived=true">Mark as Received</el-button>
       </div>
     </div>
     <div class="order-detail-content">
       <div class="right">
         <div class="order-text">
-          <b>Order ID:</b>
+          <b>{{$t('wallet.subReferralTableLabelOrderID')}}:</b>
           <p>FLY25032776778246</p>
         </div>
         <div class="order-text">
-          <b>Create Datetime:</b>
+          <b>{{$t('orders.ordersCreateTime')}}:</b>
           <p>2024-12-12 11:07:32</p>
         </div>
         <div class="order-text">
-          <b>Shipment track no.</b>
+          <b>{{$t('orders.ordersShipmentTrackNo')}}</b>
           <p>
             <a :href="`https://t.17track.net/en#nums=${'AT657061241CN'}`" target="_blank" class="shipment-tag-a">
               <span class="ellipsis">AT657061241CNAT657061241CNAT657061241CNAT657061241CN</span>
@@ -54,11 +60,23 @@ const contactInfoClick = ()=>{
               <span class="ellipsis">AT6570612461241CN</span>
               <i class="Flylink icon-share-04"></i>
             </a>
+            <a :href="`https://t.17track.net/en#nums=${'AT657061241CN'}`" target="_blank" class="shipment-tag-a">
+              <span class="ellipsis">1</span>
+              <i class="Flylink icon-share-04"></i>
+            </a>
+            <a :href="`https://t.17track.net/en#nums=${'AT657061241CN'}`" target="_blank" class="shipment-tag-a">
+              <span class="ellipsis">123</span>
+              <i class="Flylink icon-share-04"></i>
+            </a>
+            <a :href="`https://t.17track.net/en#nums=${'AT657061241CN'}`" target="_blank" class="shipment-tag-a">
+              <span class="ellipsis">12fffggg3</span>
+              <i class="Flylink icon-share-04"></i>
+            </a>
           </p>
         </div>
         <el-divider class="divider" />
         <div ref="contactInfoRef" class="order-text Contact" id="contact-info-click" @click="contactInfoClick">
-          <b>Contact Merchant</b>
+          <b>{{$t('orders.ordersContactSeller')}}</b>
           <div class="order-text-icon">
             <div v-for="item in contactData" :key="item.value" v-show="orderInfo.contactData[item.value]" class="contact-info-item-icon">
               <img v-if="orderInfo.contactData[item.value]" :src="item.icon" lazy />
@@ -79,7 +97,7 @@ const contactInfoClick = ()=>{
             </div>
             <div class="goods-attr">
               <p class="goods-sku ellipsis">
-                Sku code: 
+                {{$t('orders.ordersSkuCode')}}: 
                 <span class="goods-sku-code ellipsis">20250108000000000032</span>
               </p>
               <div class="goods-spu ellipsis2">style: xianglian, material: S925, color: white</div>
@@ -93,7 +111,7 @@ const contactInfoClick = ()=>{
         <div class="goods-details-bottom">
           <div class="goods-details-text">
             <div class="goods-details-text1">
-              Subtotal
+              {{$t('orders.ordersSubtotal')}}
             </div>
             <div class="goods-details-text2">
               $ 20.00
@@ -101,21 +119,23 @@ const contactInfoClick = ()=>{
           </div>
           <div class="goods-details-text">
             <div class="goods-details-text1">
-              Shipping
+              {{$t('orders.ordersShipping')}}
             </div>
             <div class="goods-details-text2">
-              <h2 class="deliver-h2 decoration">$ 20.00</h2>
-              
+              <h2 class="deliver-h2 decoration">
+                $ 20.00
+                {{$t('orders.ordersFreeShipping')}}
+              </h2>
             </div>
           </div>
           <div class="goods-details-text">
             <div class="goods-details-text2 deliver-p active">
-              Free shipping  (Order ≥ $ 200.00)
+              {{$t('orders.ordersFreeShippingLimit', {curreny: '$', amt: currencyFormat(2888.99)})}}
             </div>
           </div>
           <div class="goods-details-text">
             <div class="goods-details-text1">
-              Total
+              {{$t('orders.ordersTotal')}}
             </div>
             <div class="goods-details-text2">
               $ 20.00
@@ -123,53 +143,56 @@ const contactInfoClick = ()=>{
           </div>
         </div>
       </div>
-    </div>
-    <div class="shipping-box">
-      <div class="shipping-title">Shipping information</div>
-      <div class="shipping-content">
-        <dl>
-          <dt>Contact:</dt>
-          <dd>
-            <p>John Yin</p>
-            <p>yinxianghua@inflyway.com</p>
-            <p>+507 861059921035</p>
-          </dd>
-        </dl>
-        <dl>
-          <dt>Address Line:</dt>
-          <dd>
-            <p>Shangdi 10 Jie Baidu Dasha Here lies the second line of the address</p>
-          </dd>
-        </dl>
-        <dl>
-          <dt>City:</dt>
-          <dd>
-            <p>Haidian</p>
-          </dd>
-        </dl>
-        <dl>
-          <dt>State:</dt>
-          <dd>
-            <p>Ngobe-Bugle</p>
-          </dd>
-        </dl>
-        <dl>
-          <dt>Country/Region:</dt>
-          <dd>
-            <p>Panama</p>
-          </dd>
-        </dl>
-        <dl>
-          <dt>Postal Code/Zip:</dt>
-          <dd>
-            <p>100085</p>
-          </dd>
-        </dl>
+      <div class="shipping-box">
+        <div class="shipping-title">{{$t('orders.ordersShippingInformation')}}</div>
+        <div class="shipping-content">
+          <dl>
+            <dt>{{$t('orders.ordersContact')}}:</dt>
+            <dd>
+              <p>John Yin</p>
+              <p>yinxianghua@inflyway.com</p>
+              <p>+507 861059921035</p>
+            </dd>
+          </dl>
+          <dl>
+            <dt>{{$t('orders.ordersAddressLine')}}:</dt>
+            <dd>
+              <p>Shangdi 10 Jie Baidu Dasha Here lies the second line of the address</p>
+            </dd>
+          </dl>
+          <dl>
+            <dt>{{$t('orders.ordersCity')}}:</dt>
+            <dd>
+              <p>Haidian</p>
+            </dd>
+          </dl>
+          <dl>
+            <dt>{{$t('orders.ordersState')}}:</dt>
+            <dd>
+              <p>Ngobe-Bugle</p>
+            </dd>
+          </dl>
+          <dl>
+            <dt>{{$t('orders.ordersCountry')}}:</dt>
+            <dd>
+              <p>Panama</p>
+            </dd>
+          </dl>
+          <dl>
+            <dt>{{$t('orders.ordersPostalCode')}}:</dt>
+            <dd>
+              <p>100085</p>
+            </dd>
+          </dl>
+        </div>
       </div>
     </div>
 
     <!-- 联系方式 -->
     <ContactInfo v-if="showContactInfo" :contactInfo="orderInfo.contactData" :positionTop="contactInfoScrollHeight" @hide="showContactInfo=false" />
+    
+    <!-- 已完成收货-->
+    <ShipmentReceived v-if="showReceived" v-model="showReceived" :data="{id: 1}" @save="receivedSave" />
   </div>
 </template>
 <style lang="scss" scoped>
@@ -228,6 +251,7 @@ const contactInfoClick = ()=>{
         overflow: hidden;
         text-decoration: none;
         padding: 2px 8px 2px 6px;
+        margin-right: 8px;
         span {
           display: block;
           float: left;
@@ -264,6 +288,7 @@ const contactInfoClick = ()=>{
     background-color: #fff;
     overflow: hidden;
     width: calc(100% - 320px - 24px);
+    margin-bottom: 24px;
     .header {
       padding: 16px 20px;
       display: flex;
@@ -383,8 +408,8 @@ const contactInfoClick = ()=>{
 }
 .shipping-box {
   width: calc(100% - 320px - 24px);
-  margin-top: 24px;
   background-color: #fff;
+  overflow: hidden;
   .shipping-title {
     padding: 16px 20px;
     border-bottom: 1px solid #E4E7EC;
@@ -401,7 +426,7 @@ const contactInfoClick = ()=>{
         font-weight: 600;
         line-height: 20px;
         margin-bottom: 4px;
-        width: 160px;
+        min-width: 160px;
       }
       dd {
         flex: 1;
@@ -478,6 +503,11 @@ const contactInfoClick = ()=>{
         }
       }
     }
+  }
+}
+@media screen and (max-width: 1000px){
+  .order-detail-content .left .goods-details-bottom {
+    padding-left: 20px;
   }
 }
 </style>
