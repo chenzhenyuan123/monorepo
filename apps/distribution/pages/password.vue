@@ -25,12 +25,14 @@ const validateEmail = (rule, value, callback) => {
     callback()
   }
 }
-const rules = ref({
-  email: [
-    { required: true, message: t('signup.signupValidateEmailEmpty'), trigger: 'blur' },
-    { validator: validateEmail, trigger: 'change' }
-  ]
-})
+const rules = ()=>{
+  return {
+    email: [
+      { required: true, message: t('signup.signupValidateEmailEmpty'), trigger: 'blur' },
+      { validator: validateEmail, trigger: 'change' }
+    ]
+  }
+}
 
 const showError = ref(false)
 const loading = ref(false)
@@ -81,7 +83,7 @@ const routerGo = path => {
       <h3 class="title">{{$t('password.passwordTitle')}}</h3>
       <p class="email-verify-text">{{$t('password.passwordDescription')}}</p>
       
-      <el-form ref="signupFormRef" :model="signupForm" label-position="top" :rules="rules" require-asterisk-position="right" class="login-box" novalidate>
+      <el-form ref="signupFormRef" :model="signupForm" label-position="top" :rules="rules()" require-asterisk-position="right" class="login-box" novalidate>
         <el-form-item :label="$t('login.loginFormEmail')" prop="email">
           <el-input v-model="signupForm.email" maxlength="254" :placeholder="$t('signup.signupValidateEmailEmpty')" :class="{'error':showError}" />
         </el-form-item>

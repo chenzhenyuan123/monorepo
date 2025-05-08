@@ -56,16 +56,18 @@ const validatePassword2 = (rule, value, callback) => {
     callback()
   }
 }
-const rules = ref({
-  password: [
-    { required: true, message: t('password-reset.passwordValidateRequired'), trigger: 'change' },
-    { validator: validatePassword, trigger: 'blur' }
-  ],
-  password2: [
-    { required: true, message: t('password-reset.passwordValidatedEmpty'), trigger: 'change' },
-    { validator: validatePassword2, trigger: 'blur' }
-  ]
-})
+const rules = ()=>{
+  return {
+    password: [
+      { required: true, message: t('password-reset.passwordValidateRequired'), trigger: 'change' },
+      { validator: validatePassword, trigger: 'blur' }
+    ],
+    password2: [
+      { required: true, message: t('password-reset.passwordValidatedEmpty'), trigger: 'change' },
+      { validator: validatePassword2, trigger: 'blur' }
+    ]
+  }
+}
 const showError = ref(false)
 // 跳转首页
 const onSubmit = formEl => {
@@ -108,7 +110,7 @@ const routerGo = (path) => {
       </div>
       <h3 class="title">{{$t('password-reset.passwordResetTitle')}}</h3>
       <p class="email-verify-text">{{$t('password-reset.passwordResetDescription')}}</p>
-      <el-form ref="signupFormRef" :model="signupForm" label-position="top" :rules="rules" require-asterisk-position="right" class="login-box" novalidate>
+      <el-form ref="signupFormRef" :model="signupForm" label-position="top" :rules="rules()" require-asterisk-position="right" class="login-box" novalidate>
         <el-form-item :label="$t('password-reset.passwordResetNewPassword')" prop="password">
           <InputPassword v-model="signupForm.password" :placeholder="$t('password-reset.passwordValidateRequired')" maxlength="20" minlength="8" :class="{'error':showError}"  />
         </el-form-item>

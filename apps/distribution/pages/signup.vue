@@ -33,16 +33,18 @@ const validatePassword = (rule, value, callback) => {
     callback()
   }
 }
-const rules = ref({
-  email: [
-    { required: true, message: t('signup.signupValidateEmailEmpty'), trigger: 'change' },
-    { validator: validateEmail, trigger: 'blur' }
-  ],
-  loginPassword: [
-    { required: true, message: t('signup.signupValidatePasswordRequired'), trigger: 'change' },
-    { validator: validatePassword, trigger: 'blur' }
-  ]
-})
+const rules = ()=>{
+  return {
+    email: [
+      { required: true, message: t('signup.signupValidateEmailEmpty'), trigger: 'change' },
+      { validator: validateEmail, trigger: 'blur' }
+    ],
+    loginPassword: [
+      { required: true, message: t('signup.signupValidatePasswordRequired'), trigger: 'change' },
+      { validator: validatePassword, trigger: 'blur' }
+    ]
+  }
+}
 const showError = ref(false)
 const loading = ref(false)
 const onSubmit = formEl => {
@@ -96,7 +98,7 @@ const routerGo = (path) => {
             <p class="text">{{ $t('signup.signupHaveAccount') }}</p>
             <el-link type="primary" underline="never" @click="routerGo('/login')">{{ $t('login.loginFormSaveButton')}}</el-link>
           </div>
-          <el-form ref="signupFormRef" :model="signupForm" label-position="top" require-asterisk-position="right" :rules="rules" class="login-box" novalidate>
+          <el-form ref="signupFormRef" :model="signupForm" label-position="top" require-asterisk-position="right" :rules="rules()" class="login-box" novalidate>
             <el-form-item :label="$t('login.loginFormEmail')" prop="email">
               <el-input v-model="signupForm.email" type="email" maxlength="254" :placeholder="$t('signup.signupValidateEmailEmpty')" :class="{'error':showError}" />
             </el-form-item>

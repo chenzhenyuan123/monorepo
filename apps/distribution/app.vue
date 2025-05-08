@@ -60,7 +60,7 @@ useHead({
     </noscript>
     <el-config-provider :locale="lang" :rtl="isRTL">
       <NuxtLayout>
-        <NuxtPage :key="$locale" />
+        <NuxtPage />
         <!-- <AccountDisable /> -->
       </NuxtLayout>
     </el-config-provider>

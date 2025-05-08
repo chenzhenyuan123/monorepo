@@ -24,15 +24,17 @@ const validateEmail = (rule, value, callback) => {
     callback()
   }
 }
-const rules = ref({
-  email: [
-    { required: true, message: t('signup.signupValidateEmailEmpty'), trigger: 'change' },
-    { validator: validateEmail, trigger: 'blur' }
-  ],
-  loginPassword: [
-    { required: true, message: t('signup.signupValidatePasswordRequired'), trigger: 'change' }
-  ]
-})
+const rules = ()=>{
+  return {
+    email: [
+      { required: true, message: t('signup.signupValidateEmailEmpty'), trigger: 'change' },
+      { validator: validateEmail, trigger: 'blur' }
+    ],
+    loginPassword: [
+      { required: true, message: t('signup.signupValidatePasswordRequired'), trigger: 'change' }
+    ]
+  }
+}
 const showError = ref(false)
 const loading = ref(false)
 const onSubmit = formEl => {
@@ -80,7 +82,7 @@ const routerGo = (path) => {
           <div class="signup-tip text-center">
             <p class="text font-size16">{{$t('login.loginWelcome')}}</p>
           </div>
-          <el-form ref="loginFormRef" :model="loginForm" label-position="top" :rules="rules" require-asterisk-position="right" class="login-box" novalidate>
+          <el-form ref="loginFormRef" :model="loginForm" label-position="top" :rules="rules()" require-asterisk-position="right" class="login-box" novalidate>
             <el-form-item
               :label="$t('login.loginFormEmail')"
               prop="email"
