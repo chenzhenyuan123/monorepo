@@ -163,6 +163,9 @@ importers:
 
   packages/core:
     dependencies:
+      '@fingerprintjs/fingerprintjs':
+        specifier: ^3.4.2
+        version: 3.4.2
       currency.js:
         specifier: ^2.0.4
         version: 2.0.4
