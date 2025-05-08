@@ -26,3 +26,15 @@ export const resetPassword = (data) => {
 export const userLogOut = () => {
     return useHttp.get(`/member/userLogin/logOut`, {}, { server: true })
 }
+// 发送登录验证邮件
+export const sendLoginVerifyEmail = (data) => {
+    return useHttp.post('/member/userLogin/sendLoginVerifyEmail', data, { server: false })
+}
+// 通过验证码登录
+export const loginWithVerifyCode = (data) => {
+    return useHttp.post('/member/userLogin/loginWithVerifyCode', data, { server: false })
+}
+// 设置密码
+export const setPassword = (data) => {
+    return useHttp.post('/member/user/setPassword', data, { server: false })
+}

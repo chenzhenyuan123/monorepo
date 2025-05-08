@@ -37,7 +37,8 @@ const GetcheckVerifyCode = async() => {
   const body = {
     email: routeEmailData.value.email,
     code: routeEmailData.value.code,
-    verifyType: 'register'
+    verifyType: 'register',
+    userRole: 'distributor' // distributor:分销员 buyer:买家
   }
   
   const result = await contactInfoApi.checkVerifyCode(body)

@@ -77,15 +77,22 @@ const onSubmit = formEl => {
 
       showError.value = false
       const body = {
-        email: route.query?.email,
         loginPassword: signupForm.value.password2
       }
-      const result = await contactInfoApi.resetPassword(body)
-      const res = checkResponseData(result, 'NO_RETURN_DATA')
+      if(route.query?.email) {
+        body.email = route.query.email
+      }
+      let result = null
+      if(route.query?.code) { // 根据邮箱code重置密码
+        result = await contactInfoApi.resetPassword(body)
+      } else { // 没有邮箱code为第一次设置密码
+        result = await contactInfoApi.setPassword(body)
+      }
+      const res = checkResponseData(result)
 
       if(res) {
-        if(result?.data?.token) {
-          userStore.setToken(result.data)
+        if(res.token) {
+          userStore.setToken(res)
         }
         loadingPage.value = false
         startCountdown(5)

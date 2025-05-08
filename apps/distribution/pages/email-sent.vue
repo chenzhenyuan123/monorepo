@@ -32,7 +32,11 @@ const sendAgain = async() => {
   if (seconds.value > 0) {
     return;
   }
-  const result = await contactInfoApi.againsendVerifyEmail({email: route.query.email, verifyType: route.query.type})
+  const result = await contactInfoApi.againsendVerifyEmail({
+    email: route.query.email,
+    verifyType: route.query.type,
+    userRole: 'distributor' // distributor:分销员 buyer:买家
+  })
   const res = checkResponseData(result, 'NO_RETURN_DATA')
   if(res) {
     startCountdown(120)

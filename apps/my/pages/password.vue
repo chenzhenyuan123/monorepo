@@ -46,7 +46,8 @@ const onSubmit = formEl => {
       loading.value = true
       const body = {
         email: signupForm.value.email,
-        verifyType: 'resetPassword'
+        verifyType: 'resetPassword',
+        userRole: 'buyer' // distributor:分销员 buyer:买家
       }
       const result = await contactInfoApi.againsendVerifyEmail(body)
       const res = checkResponseData(result, 'NO_RETURN_DATA')

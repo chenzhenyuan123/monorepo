@@ -60,7 +60,10 @@ const onSubmit = formEl => {
       }
       showError.value = false
       loading.value = true
-      const result = await contactInfoApi.userRegister(signupForm.value)
+      const result = await contactInfoApi.userRegister({
+        ...signupForm.value,
+        userRole: 'distributor' // distributor:分销员 buyer:买家
+      })
       const res = checkResponseData(result, 'NO_RETURN_DATA')
       if(res) {
           navigateTo({
