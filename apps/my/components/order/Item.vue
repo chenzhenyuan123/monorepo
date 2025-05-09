@@ -41,16 +41,6 @@
 
     // 联系人弹窗
     const showContactInfo = ref(false)
-    const contactSellerRef = ref(null) // 弹窗ref
-    const contactInfoRef = ref(null) // 弹窗ref
-    const contactInfoScrollHeight = ref(0) // 弹窗top位置
-    const positionLeft = ref('auto') // 弹窗left位置  aoto靠右
-    const contactInfoClick = (ref, type) => {
-        const rect = ref.getBoundingClientRect();
-        contactInfoScrollHeight.value = parseInt(rect?.top) + rect?.height
-        showContactInfo.value = true
-        positionLeft.value = (rect?.left&&type) ? `${rect.left}px` : 'auto'
-    }
 </script>
 
 <template>
@@ -103,14 +93,14 @@
         </div>
         <div class="goods-details-bottom-button">
             <el-button v-if="orderData.buyerOrderStatus===0 && orderData.payNowUrl" type="primary" id="Pay-Now-btn" @click.stop="jumpToPay">{{$t('orders.ordersPayNow')}}</el-button>
-            <div v-if="orderData.buyerOrderStatus===1" :ref="'contactSellerRef'+orderData.id" class="order-detail-title-fotter-button">
-                <el-button type="primary" id="Contact-seller-btn" @click.stop="contactInfoClick(contactSellerRef)">{{$t('orders.ordersContactSeller')}}</el-button>
+            <div v-if="orderData.buyerOrderStatus===1" class="order-detail-title-fotter-button">
+                <el-button type="primary" id="Contact-seller-btn" @click.stop="showContactInfo = true">{{$t('orders.ordersContactSeller')}}</el-button>
+                <!-- 联系方式 -->
+                <ContactInfo v-if="showContactInfo" :contactInfo="orderData" @hide="showContactInfo=false" />
             </div>
             <el-button v-if="orderData.buyerOrderStatus===2 && orderData.logisticsCode" type="primary" id="Track-Shipment-btn" @click.stop="jumpTo17track">{{$t('orders.ordersTrackShipment')}}</el-button>
         </div>
 
-        <!-- 联系方式 -->
-        <ContactInfo v-if="showContactInfo" :contactInfo="orderData" :positionTop="contactInfoScrollHeight" :positionLeft="positionLeft" @hide="showContactInfo=false" />
     </div>
 </template>
 
@@ -241,5 +231,8 @@
             padding: 12px 24px 16px;
             text-align: right;
         }
+    }
+    .order-detail-title-fotter-button {
+        position: relative;
     }
 </style>
