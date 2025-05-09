@@ -74,14 +74,10 @@ const sendLoginVerifyEmail = async() => {
   })
   const res = checkResponseData(result)
   if(res) {
-    if(res?.isSuccess) {
-      if(loginForm.value?.code) loginForm.value.code = ''
-      isPasswordLogin.value = 'code'
-      clearInterval(timer.value)
-      startCountdown(120)
-    } else {
-      errorMessage(t('login.loginEmailCodeError'))
-    }
+    if(loginForm.value?.code) loginForm.value.code = ''
+    isPasswordLogin.value = 'code'
+    clearInterval(timer.value)
+    startCountdown(120)
   }
   loading.value = false
 }
@@ -228,7 +224,6 @@ const sendAgain = async() => {
               >
                 <el-input v-model="loginForm.code" maxlength="254" :placeholder="$t('login.loginFormCodeplaceholder')" :class="{'error':showError}"
                 @input="e => { loginForm.code = formatCreditCardNumber(e);removeCodeVerify(); }" />
-                <span v-if="showError" class="margin-right6">{{$t('login.loginValidateCodeErrorTip3')}}</span>
               </el-form-item>
               <!-- 输入过即展示剩余几次的提示 -->
               <el-form-item v-if="checkResultData.isVerify && !checkResultData.errorForExceedingLimit" label="">
