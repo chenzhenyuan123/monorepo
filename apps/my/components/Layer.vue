@@ -1,5 +1,6 @@
 <script setup>
 import { Close } from '@element-plus/icons-vue';
+import { ClickOutside as vClickOutside } from 'element-plus';
 const isMobile = useIsMobile()
 
 const props = defineProps({
@@ -7,13 +8,9 @@ const props = defineProps({
     type: String,
     default: ''
   },
-  positionTop: {
+  left: {
     type: Number,
     default: 0
-  },
-  positionLeft: { // PC端对应的左边定位，不传默认在右侧
-    type: String,
-    default: 'auto'
   }
 })
 const emit = defineEmits(["hide"])
@@ -28,7 +25,6 @@ const hide = () => {
     isShow.value = false
     emit('hide')
 }
-
 const toggle = () => {
     isShow.value = !isShow.value
 }
@@ -42,12 +38,16 @@ defineExpose({ show, hide, toggle, getIsShow })
 </script>
 
 <template>
-    <div v-if="isShow" :class="{ 'layer': true, 'is-pc': !isMobile }" @click.stop="hide">
+    <div
+      v-if="isShow"
+      :class="{ 'layer': true, 'is-pc': !isMobile }"
+      :style="{left: (!isMobile && left) ? '0px' : 'auto'}"
+      @click.stop="hide"
+      v-click-outside="hide"
+    >
         <div
           :class="{ 'layer-body': true, 'init-animation': isShow }"
           @click.stop
-          :style="{ top: (positionTop > 0&&!isMobile) ? `${positionTop}px` : 'auto',
-                    left: !isMobile ? positionLeft : 0 }"
         >
             <div class="layer-body-title-container">
                 <h1 class="layer-body-title">{{ title }}</h1>
@@ -97,7 +97,15 @@ defineExpose({ show, hide, toggle, getIsShow })
     background-color: rgba(0, 0, 0, 0.40);
     min-height: 500px;
     &.is-pc {
-        
+      position: absolute;
+      width: 366px;
+      right: 0;
+      top: auto;
+      .layer-body {
+        position: absolute;
+        top: 10px;
+        right: 0;
+      }
     }
     .layer-body {
         position: absolute;
