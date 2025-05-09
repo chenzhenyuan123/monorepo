@@ -18,10 +18,16 @@
   .direction-inline-block {
     display: inline-block;
   }
+  .direction-text-align-right {
+    text-align: left;
+  }
 }
 .ltr {
   direction: ltr;
   text-align: unset;
+  .direction-text-align-right {
+    text-align: right;
+  }
 }
 
 .rtl {

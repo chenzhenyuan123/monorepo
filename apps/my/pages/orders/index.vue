@@ -20,17 +20,18 @@
   const tabsData = computed(() => {
     return [
       { value: theAll, label: 'All' },
-      { value: 1, label: 'Pending Payment' },
-      { value: 2, label: 'Not shipped' },
-      { value: 3, label: 'Shipped' },
-      { value: 4, label: 'Completed' },
-      { value: 5, label: 'Cancelled' },
+      { value: 0, label: 'Pending Payment' },
+      { value: 1, label: 'Not shipped' },
+      { value: 2, label: 'Shipped' },
+      { value: 3, label: 'Completed' },
+      { value: 4, label: 'Cancelled' },
     ]
   })
   const tabsDict = computed(() => {
     return arrToDict(tabsData.value)
   })
-  const handleClick = () => {
+  const handleClick = (val) => {
+    console.log('val: ', val)
     console.log('activeName.value: ', activeName.value)
     getOrderList()
   }
@@ -55,8 +56,8 @@
   const tableData = ref({
     pageNo: 1,
     pageSize: 5,
-    total: 1,
-    list: [{ id: 1 }]
+    total: 0,
+    list: []
   })
   const getOrderList = ({ pageNo = 1, pageSize = pageData.value.pageSize } = {}) => {
     if (pageSize !== pageData.value.pageSize) pageData.value.pageSize = pageSize
@@ -70,7 +71,7 @@
     buyerOrderApi.listPage(params).then(result => {
       const res = checkResponseData(result)
       if (res) {
-        // tableData.value = res
+        tableData.value = res
       }
     }).catch(err => {
       console.log('qryGoodsList err: ', err)
@@ -82,6 +83,7 @@
     getOrderList({ pageNo })
   }
   const pageSizeChange = (pageSize) => {
+      // window.document.body.scrollTop = 0
     getOrderList({ pageSize })
   }
   const formSearch = () => {
@@ -98,7 +100,7 @@
   onMounted(async () => {
     const hash = window.location.hash ? window.location.hash.substring(1) : ''
     if (tabsDict.value[hash]) {
-      activeName.value = hash
+      activeName.value = Number(hash)
     } else {
       activeName.value = theAll
     }
@@ -125,7 +127,7 @@
               :value="item.value"
       />
     </el-select>
-    <el-tabs v-else v-model="activeName" class="tabs tabs-default" @tab-click="handleClick">
+    <el-tabs v-else v-model="activeName" class="tabs tabs-default" @tab-change="handleClick">
       <el-tab-pane v-for="item in tabsData" :key="item.value" :id="'order-' + item.value" :label="item.label" :name="item.value"></el-tab-pane>
     </el-tabs>
 
