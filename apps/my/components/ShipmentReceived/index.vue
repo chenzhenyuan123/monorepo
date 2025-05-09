@@ -3,8 +3,9 @@
  * @Description: 确认已收货弹窗
 -->
 <script setup>
-import { checkResponseData } from "@/util/index.js";
+import { checkResponseData, successMessage } from "@/util/index.js";
 const { buyerOrderApi } = useApi();
+const { $t: t } = useNuxtApp();
 
 const props = defineProps({
   data: {
@@ -26,6 +27,7 @@ const submit = async() => {
   const result = await buyerOrderApi.confirmReceipt({orderId: props.data.id})
   const res = checkResponseData(result, 'NO_RETURN_DATA')
   if(res) {
+    successMessage(t('orders.ordersMarkAsReceiptSuccess'))
     emit('save')
   }
   loading.value = false

@@ -40,22 +40,27 @@
     }
 }
 
-// .tag-cricle {
-//   display: inline-flex;
-//   align-items: center;
-//   padding: 1px 10px;
-//   border-radius: 22px;
-//   border: 1px solid #ABEFC6;
-//   background: #ECFDF3;
-//   .state-label-icon {
-//     margin: 0 4px 0 -2px;
-//     color: #17B26A;
-//     font-size: 12px;
-//   }
-//   .state-label-span {
-//     color: #067647;
-//     font-size: 14px;
-//     font-weight: 500;
-//     line-height: 20px; /* 142.857% */
-//   }
-// }
+// 订单状态tag
+
+.orders-status-tag.el-tag {
+    border-radius: 6px;
+    border: 1px solid #B2DDFF;
+    background:#EFF8FF;
+    color: #175CD3;
+    font-weight: 600;
+  }
+  .el-tag.success {
+    border: 1px solid #ABEFC6;
+    background: #ECFDF3;
+    color:#067647;
+  }
+  .el-tag.warning {
+    border: 1px solid #CFCCFF;
+    background: #F0EFFF;
+    color:#443ACC;
+  }
+  .el-tag.info {
+    border: 1px solid #E4E7EC;
+    background: #F9FAFB;
+    color:#344054;
+  }

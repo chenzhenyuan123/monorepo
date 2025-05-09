@@ -24,7 +24,6 @@ onMounted(() => {
 const getInfo = async () => {
   const result = await buyerOrderApi.orderDetail({orderId: route.params?.id})
   const res = checkResponseData(result)
-  console.log(res)
   if(res) {
     orderInfo.value = Object.assign(res)
   }
@@ -59,19 +58,19 @@ const receivedSave = () => {
     </div>
     <div class="order-detail-title">
       <div v-if="orderInfo.orderDetailCO.buyerOrderStatus" class="order-detail-title-header">
-        <el-tag :class="formatInTable(ordersStatus, orderInfo.orderDetailCO.buyerOrderStatus, 'value', 'tag')">{{$t(formatInTable(ordersStatus, orderInfo.orderDetailCO.buyerOrderStatus))}}</el-tag>
+        <el-tag class="orders-status-tag" :class="formatInTable(ordersStatus, orderInfo.orderDetailCO.buyerOrderStatus, 'value', 'tag')">{{$t(formatInTable(ordersStatus, orderInfo.orderDetailCO.buyerOrderStatus))}}</el-tag>
       </div>
       <h3 v-if="orderInfo.goodsList.length>0" class="title">{{orderInfo.goodsList[0].goodsTitle}}</h3>
       <!-- 待付款：发起支付Pay Now buyerOrderStatus0
            待发货：联系卖家Contact Seller buyerOrderStatus1
            已发货：查看物流Track Shipment，确认收货Mark as Received buyerOrderStatus2 -->
       <div class="order-detail-title-fotter">
-        <a v-if="orderInfo.orderDetailCO.buyerOrderStatus===0" :href="orderInfo.orderDetailCO.payNowUrl" target="_blank"><el-button type="primary" id="Pay-Now-btn">{{$t('orders.ordersPayNow')}}</el-button></a>
+        <a v-if="orderInfo.orderDetailCO.buyerOrderStatus===0 && orderInfo.orderDetailCO.payNowUrl" :href="orderInfo.orderDetailCO.payNowUrl" target="_blank"><el-button type="primary" id="Pay-Now-btn">{{$t('orders.ordersPayNow')}}</el-button></a>
         <div v-if="orderInfo.orderDetailCO.buyerOrderStatus===1" ref="contactSellerRef" class="order-detail-title-fotter-button">
           <el-button type="primary" id="Contact-seller-btn" @click="contactInfoClick(contactSellerRef, 'left')">{{$t('orders.ordersContactSeller')}}</el-button>
         </div>
         <el-button v-if="orderInfo.orderDetailCO.buyerOrderStatus===2" id="Mark-as-Received-btn" @click="showReceived=true">{{$t('orders.ordersMarkAsReceived')}}</el-button>
-        <a v-if="orderInfo.orderDetailCO.buyerOrderStatus===2" :href="`https://t.17track.net/en#nums=${orderInfo.orderDetailCO.logisticsCode}`" target="_blank">
+        <a v-if="orderInfo.orderDetailCO.buyerOrderStatus===2 && orderInfo.orderDetailCO.logisticsCode" :href="`https://t.17track.net/en#nums=${orderInfo.orderDetailCO.logisticsCode}`" target="_blank">
           <el-button type="primary" id="Track-Shipment-btn">{{$t('orders.ordersTrackShipment')}}</el-button>
         </a>
       </div>
@@ -135,17 +134,17 @@ const receivedSave = () => {
               {{$t('orders.ordersSubtotal')}}
             </div>
             <div class="goods-details-text2">
-              {{orderInfo.currency}} {{currencyFormat(orderInfo.orderDetailCO.goodsAmount)}}
+              {{orderInfo.orderDetailCO.paymentCurrency}} {{currencyFormat(orderInfo.orderDetailCO.goodsAmount)}}
             </div>
           </div>
           <div class="goods-details-text">
             <div class="goods-details-text1">
               {{$t('orders.ordersShipping')}}
             </div>
-            <div class="goods-details-text2">
+            <div v-if="orderInfo.orderDetailCO.shippingFeeAmount || orderInfo.orderDetailCO.shippingFeeAmount===0" class="goods-details-text2">
               <h2 class="deliver-h2">
                 <span class="decoration" v-if="orderInfo.orderDetailCO.discountedShippingAmount>0">{{orderInfo.orderDetailCO.currency}} {{currencyFormat(orderInfo.orderDetailCO.discountedShippingAmount)}}</span>
-                <span v-else-if="orderInfo.orderDetailCO.shippingFeeAmount===0 || orderInfo.orderDetailCO.shippingFeeAmount">{{orderInfo.orderDetailCO.currency}} {{currencyFormat(orderInfo.orderDetailCO.shippingFeeAmount)}}</span>
+                <span v-else-if="orderInfo.orderDetailCO.shippingFeeAmount>0">{{orderInfo.orderDetailCO.currency}} {{currencyFormat(orderInfo.orderDetailCO.shippingFeeAmount)}}</span>
                 <span class="active" v-else>{{$t('orders.ordersFreeShipping')}}</span>
               </h2>
             </div>
@@ -153,7 +152,7 @@ const receivedSave = () => {
           <!-- 存在邮费并且达到包邮 -->
           <div v-if="orderInfo.orderDetailCO.freeShippingThreshold && orderInfo.orderDetailCO.discountedShippingAmount>0" class="goods-details-text">
             <div class="goods-details-text2 deliver-p active">
-              {{$t('orders.ordersFreeShippingLimit', {curreny: orderInfo.currency, amt: currencyFormat(orderInfo.orderDetailCO.freeShippingThreshold)})}}
+              {{$t('orders.ordersFreeShippingLimit', {curreny: orderInfo.orderDetailCO.paymentCurrency, amt: currencyFormat(orderInfo.orderDetailCO.freeShippingThreshold)})}}
             </div>
           </div>
           <div class="goods-details-text">
@@ -161,7 +160,7 @@ const receivedSave = () => {
               {{$t('orders.ordersTotal')}}
             </div>
             <div class="goods-details-text2">
-              {{orderInfo.currency}}  {{currencyFormat(orderInfo.orderDetailCO.goodsAmount)}}
+              {{orderInfo.orderDetailCO.paymentCurrency}}  {{currencyFormat(orderInfo.orderDetailCO.goodsAmount)}}
             </div>
           </div>
         </div>
@@ -220,34 +219,11 @@ const receivedSave = () => {
   </div>
 </template>
 <style lang="scss" scoped>
+@use "@/assets/css/element-reset/tag.scss" as *;
 .orders-detail-box {
   margin: 20px 0 32px;
 }
 .order-detail-title {
-  .order-detail-title-header {
-    .el-tag {
-      border-radius: 6px;
-      border: 1px solid #B2DDFF;
-      background:#EFF8FF;
-      color: #175CD3;
-      font-weight: 600;
-    }
-    .el-tag.success {
-      border: 1px solid #ABEFC6;
-      background: #ECFDF3;
-      color:#067647;
-    }
-    .el-tag.warning {
-      border: 1px solid #CFCCFF;
-      background: #F0EFFF;
-      color:#443ACC;
-    }
-    .el-tag.info {
-      border: 1px solid #E4E7EC;
-      background: #F9FAFB;
-      color:#344054;
-    }
-  }
   .title {
     color: 101828;
     font-family: Inter;
@@ -267,7 +243,7 @@ const receivedSave = () => {
   width: 100%;
   display: inline-block;
   .right {
-    width: 320px;
+    width: 280px;
     margin-left: 24px;
     float: right;
     background-color: #fff;
@@ -325,7 +301,7 @@ const receivedSave = () => {
       }
     }
     .Contact {
-      margin: 16px 24px;
+      margin: 16px 20px;
       padding: 0;
       cursor: pointer;
       position: relative;
@@ -339,7 +315,7 @@ const receivedSave = () => {
     float: left;
     background-color: #fff;
     overflow: hidden;
-    width: calc(100% - 320px - 24px);
+    width: calc(100% - 280px - 24px);
     margin-bottom: 24px;
     .header {
       padding: 16px 20px;
@@ -460,7 +436,7 @@ const receivedSave = () => {
   }
 }
 .shipping-box {
-  width: calc(100% - 320px - 24px);
+  width: calc(100% - 280px - 24px);
   background-color: #fff;
   overflow: hidden;
   .shipping-title {
