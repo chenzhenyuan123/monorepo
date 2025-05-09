@@ -4,7 +4,7 @@
 -->
 <script setup>
 import { checkResponseData } from "@/util/index.js";
-const { joinApi } = useApi();
+const { buyerOrderApi } = useApi();
 
 const props = defineProps({
   data: {
@@ -22,17 +22,13 @@ const close = () => {
 const loading = ref(false)
 // 提交
 const submit = async() => {
-  //loading.value = true
-  // const result = await joinApi.joinStore({storeId: storeInfo.value.storeId})
-  // const res = checkResponseData(result, 'NO_RETURN_DATA')
-  // if(res) {
-  //   showJoinCheck.value = true
-  //   setTimeout(() => {
-  //     close()
-  //     emit('save')
-  //   }, 3000)
-  // }
-  // loading.value = false
+  loading.value = true
+  const result = await buyerOrderApi.confirmReceipt({orderId: props.data.id})
+  const res = checkResponseData(result, 'NO_RETURN_DATA')
+  if(res) {
+    emit('save')
+  }
+  loading.value = false
 }
 </script>
 
@@ -69,8 +65,8 @@ const submit = async() => {
       </div>
       <template #footer>
         <span class="dialog-footer">
-          <el-button @click="close()">Not yet</el-button>
-          <el-button :loading="loading" type="primary" id="products-btn-confirm" @click="submit()">Mark as Receipt</el-button>
+          <el-button @click="close()">{{$t('orders.ordersNotYet')}}</el-button>
+          <el-button :loading="loading" type="primary" id="products-btn-confirm" @click="submit()">{{$t('orders.ordersMarkAsReceipt')}}</el-button>
         </span>
       </template>
     </el-dialog>

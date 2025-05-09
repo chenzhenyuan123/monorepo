@@ -3,84 +3,94 @@
  * @Description: 买家中心/订单列表/订单详情
 -->
 <script name="OrdersDeatil" setup>
-import { checkResponseData, successMessage, currencyFormat, formatInTable } from "@/util/index.js";
-import { orderInfo, contactData } from "@/components/ContactInfo/const.js";
+import { checkResponseData, successMessage, currencyFormat, formatInTable, previewImg } from "@/util/index.js";
+import { contactData } from "@/components/ContactInfo/const.js";
 import { ordersStatus } from "@/util/const.js";
+import { formatDate } from "@flylinking/core/utils/dateUtil"
+const { buyerOrderApi } = useApi();
   
+const route = useRoute();
 const isMobile = useIsMobile()
-const showContactInfo = ref(false)
-const contactSellerRef = ref(null)
-const contactInfoRef = ref(null)
-const contactInfoScrollHeight = ref(0)
-const positionLeft = ref('auto')
+
+const orderInfo = ref({
+  goodsList: [],
+  orderDetailCO: {},
+  shipping: {}
+})
+onMounted(() => { 
+  getInfo()
+})
+// 获取订单详情数据
+const getInfo = async () => {
+  const result = await buyerOrderApi.orderDetail({orderId: route.params?.id})
+  const res = checkResponseData(result)
+  console.log(res)
+  if(res) {
+    orderInfo.value = Object.assign(res)
+  }
+}
+
+// 联系人弹窗
+const showContactInfo = ref(false) 
+const contactSellerRef = ref(null) // 弹窗ref
+const contactInfoRef = ref(null) // 弹窗ref
+const contactInfoScrollHeight = ref(0) // 弹窗top位置
+const positionLeft = ref('auto') // 弹窗left位置  aoto靠右
 const contactInfoClick = (ref, type) => {
   const rect = ref.getBoundingClientRect();
   contactInfoScrollHeight.value = parseInt(rect?.top) + rect?.height
   showContactInfo.value = true
   positionLeft.value = (rect?.left&&type) ? `${rect.left}px` : 'auto'
 }
-console.log('formatInTable==>', formatInTable(ordersStatus, 2, 'value', 'tag'))
 
 // 确认已收货-完成订单
 const showReceived = ref(false)
 const receivedSave = () => {
-  // 刷新接口数据
+  getInfo()
+  showReceived.value = false
 }
 </script>
 <template>
   <div class="orders-detail-box" :class="{'m': isMobile}">
     <div class="header-back">
       <NuxtLink to="/orders">
-        <i class="Flylink icon-arrow-left"></i>{{$t('orders')}}
+        <i class="Flylink icon-arrow-left"></i>{{$t('router.Orders')}}
       </NuxtLink>
     </div>
     <div class="order-detail-title">
-      <div class="order-detail-title-header">
-        <el-tag :type="formatInTable(ordersStatus, 3, 'value', 'tag')">{{$t(formatInTable(ordersStatus, 4))}}</el-tag>
+      <div v-if="orderInfo.orderDetailCO.buyerOrderStatus" class="order-detail-title-header">
+        <el-tag :class="formatInTable(ordersStatus, orderInfo.orderDetailCO.buyerOrderStatus, 'value', 'tag')">{{$t(formatInTable(ordersStatus, orderInfo.orderDetailCO.buyerOrderStatus))}}</el-tag>
       </div>
-      <h3 class="title">Baby Name Sweater, Baby Knit Sweater, Embroidered Baby Sweatshirt, Personalized Baby Clothes, Baby Girl Coming Home Outfit, Gift for Newborn</h3>
-      <!-- 待付款：发起支付Pay Now
-           待发货：联系卖家Contact Seller
-           已发货：查看物流Track Shipment，确认收货Mark as Received -->
+      <h3 v-if="orderInfo.goodsList.length>0" class="title">{{orderInfo.goodsList[0].goodsTitle}}</h3>
+      <!-- 待付款：发起支付Pay Now buyerOrderStatus0
+           待发货：联系卖家Contact Seller buyerOrderStatus1
+           已发货：查看物流Track Shipment，确认收货Mark as Received buyerOrderStatus2 -->
       <div class="order-detail-title-fotter">
-        <!-- <a href="https://store-test.flylinking.com/shipping?id=FLY25050897483298" target="_blank"><el-button type="primary" id="Pay-Now-btn">Pay Now</el-button></a> -->
-        <div ref="contactSellerRef" class="order-detail-title-fotter-button">
-          <el-button type="primary" id="Contact-seller-btn" @click="contactInfoClick(contactSellerRef, 'left')">Contact Seller</el-button>
+        <a v-if="orderInfo.orderDetailCO.buyerOrderStatus===0" :href="orderInfo.orderDetailCO.payNowUrl" target="_blank"><el-button type="primary" id="Pay-Now-btn">{{$t('orders.ordersPayNow')}}</el-button></a>
+        <div v-if="orderInfo.orderDetailCO.buyerOrderStatus===1" ref="contactSellerRef" class="order-detail-title-fotter-button">
+          <el-button type="primary" id="Contact-seller-btn" @click="contactInfoClick(contactSellerRef, 'left')">{{$t('orders.ordersContactSeller')}}</el-button>
         </div>
-        <el-button id="Mark-as-Received-btn" @click="showReceived=true">Mark as Received</el-button>
+        <el-button v-if="orderInfo.orderDetailCO.buyerOrderStatus===2" id="Mark-as-Received-btn" @click="showReceived=true">{{$t('orders.ordersMarkAsReceived')}}</el-button>
+        <a v-if="orderInfo.orderDetailCO.buyerOrderStatus===2" :href="`https://t.17track.net/en#nums=${orderInfo.orderDetailCO.logisticsCode}`" target="_blank">
+          <el-button type="primary" id="Track-Shipment-btn">{{$t('orders.ordersTrackShipment')}}</el-button>
+        </a>
       </div>
     </div>
     <div class="order-detail-content">
       <div class="right">
         <div class="order-text">
           <b>{{$t('wallet.subReferralTableLabelOrderID')}}:</b>
-          <p>FLY25032776778246</p>
+          <p>{{orderInfo.orderDetailCO.id}}</p>
         </div>
         <div class="order-text">
           <b>{{$t('orders.ordersCreateTime')}}:</b>
-          <p>2024-12-12 11:07:32</p>
+          <p>{{formatDate(orderInfo.orderDetailCO.createTime)}}</p>
         </div>
         <div class="order-text">
           <b>{{$t('orders.ordersShipmentTrackNo')}}</b>
-          <p>
-            <a :href="`https://t.17track.net/en#nums=${'AT657061241CN'}`" target="_blank" class="shipment-tag-a">
-              <span class="ellipsis">AT657061241CNAT657061241CNAT657061241CNAT657061241CN</span>
-              <i class="Flylink icon-share-04"></i>
-            </a>
-            <a :href="`https://t.17track.net/en#nums=${'AT657061241CN'}`" target="_blank" class="shipment-tag-a">
-              <span class="ellipsis">AT6570612461241CN</span>
-              <i class="Flylink icon-share-04"></i>
-            </a>
-            <a :href="`https://t.17track.net/en#nums=${'AT657061241CN'}`" target="_blank" class="shipment-tag-a">
-              <span class="ellipsis">1</span>
-              <i class="Flylink icon-share-04"></i>
-            </a>
-            <a :href="`https://t.17track.net/en#nums=${'AT657061241CN'}`" target="_blank" class="shipment-tag-a">
-              <span class="ellipsis">123</span>
-              <i class="Flylink icon-share-04"></i>
-            </a>
-            <a :href="`https://t.17track.net/en#nums=${'AT657061241CN'}`" target="_blank" class="shipment-tag-a">
-              <span class="ellipsis">12fffggg3</span>
+          <p v-if="orderInfo.orderDetailCO.logisticsCode">
+            <a :href="`https://t.17track.net/en#nums=${orderInfo.orderDetailCO.logisticsCode}`" target="_blank" class="shipment-tag-a">
+              <span class="ellipsis">{{orderInfo.orderDetailCO.logisticsCode}}</span>
               <i class="Flylink icon-share-04"></i>
             </a>
           </p>
@@ -89,8 +99,8 @@ const receivedSave = () => {
         <div ref="contactInfoRef" class="order-text Contact" id="contact-info-click" @click="contactInfoClick(contactInfoRef)">
           <b>{{$t('orders.ordersContactSeller')}}</b>
           <div class="order-text-icon">
-            <div v-for="item in contactData" :key="item.value" v-show="orderInfo.contactData[item.value]" class="contact-info-item-icon">
-              <img v-if="orderInfo.contactData[item.value]" :src="item.icon" lazy />
+            <div v-for="item in contactData" :key="item.value" v-show="orderInfo.orderDetailCO[item.value]" class="contact-info-item-icon">
+              <img v-if="orderInfo.orderDetailCO[item.value]" :src="item.icon" lazy />
             </div>
           </div>
         </div>
@@ -98,25 +108,25 @@ const receivedSave = () => {
       <div class="left">
         <div class="header">
           <i class="Flylink icon-Shop"></i>
-          <span class="goods-text">店铺名称.店铺名称店铺名称店铺名称店铺名称</span>
+          <span class="goods-text">{{orderInfo.orderDetailCO.sellerBusinessName}}</span>
           <i class="Flylink icon-chevron-right"></i>
         </div>
-        <dl class="goods-content">
+        <dl v-for="kv in orderInfo.goodsList" :key="kv.id" class="goods-content">
           <dt class="goods-name">
             <div class="goods-imgs">
-              <img src="https://flylink-cdn-oss-test.inflyway.com/flylink/1739782961352_b132cd9f67e9e3c95fb3d371934ba589.jpg" lazy />
+              <PictureForOSSAndCenter :image="previewImg(kv.mainPicture)" ref="imageRef" class="store-goods-module-item-image"></PictureForOSSAndCenter>
             </div>
             <div class="goods-attr">
               <p class="goods-sku ellipsis">
                 {{$t('orders.ordersSkuCode')}}: 
-                <span class="goods-sku-code ellipsis">20250108000000000032</span>
+                <span class="goods-sku-code ellipsis">{{kv.skuCode}}</span>
               </p>
-              <div class="goods-spu ellipsis2">style: xianglian, material: S925, color: white</div>
+              <div class="goods-spu ellipsis2" v-html="kv.skuDesc" />
             </div>
           </dt>
           <dd class="goods-quantity">
-            <span>$ {{currencyFormat(2888.99)}}</span>
-            <span class="quantity">× 2</span>
+            <span>{{kv.paymentCurrency}} {{currencyFormat(kv.paymentAmount)}}</span>
+            <span class="quantity">× {{ kv.quantity || '0' }}</span>
           </dd>
         </dl>
         <div class="goods-details-bottom">
@@ -125,7 +135,7 @@ const receivedSave = () => {
               {{$t('orders.ordersSubtotal')}}
             </div>
             <div class="goods-details-text2">
-              $ 20.00
+              {{orderInfo.currency}} {{currencyFormat(orderInfo.orderDetailCO.goodsAmount)}}
             </div>
           </div>
           <div class="goods-details-text">
@@ -133,15 +143,17 @@ const receivedSave = () => {
               {{$t('orders.ordersShipping')}}
             </div>
             <div class="goods-details-text2">
-              <h2 class="deliver-h2 decoration">
-                $ 20.00
-                {{$t('orders.ordersFreeShipping')}}
+              <h2 class="deliver-h2">
+                <span class="decoration" v-if="orderInfo.orderDetailCO.discountedShippingAmount>0">{{orderInfo.orderDetailCO.currency}} {{currencyFormat(orderInfo.orderDetailCO.discountedShippingAmount)}}</span>
+                <span v-else-if="orderInfo.orderDetailCO.shippingFeeAmount===0 || orderInfo.orderDetailCO.shippingFeeAmount">{{orderInfo.orderDetailCO.currency}} {{currencyFormat(orderInfo.orderDetailCO.shippingFeeAmount)}}</span>
+                <span class="active" v-else>{{$t('orders.ordersFreeShipping')}}</span>
               </h2>
             </div>
           </div>
-          <div class="goods-details-text">
+          <!-- 存在邮费并且达到包邮 -->
+          <div v-if="orderInfo.orderDetailCO.freeShippingThreshold && orderInfo.orderDetailCO.discountedShippingAmount>0" class="goods-details-text">
             <div class="goods-details-text2 deliver-p active">
-              {{$t('orders.ordersFreeShippingLimit', {curreny: '$', amt: currencyFormat(2888.99)})}}
+              {{$t('orders.ordersFreeShippingLimit', {curreny: orderInfo.currency, amt: currencyFormat(orderInfo.orderDetailCO.freeShippingThreshold)})}}
             </div>
           </div>
           <div class="goods-details-text">
@@ -149,7 +161,7 @@ const receivedSave = () => {
               {{$t('orders.ordersTotal')}}
             </div>
             <div class="goods-details-text2">
-              $ 20.00
+              {{orderInfo.currency}}  {{currencyFormat(orderInfo.orderDetailCO.goodsAmount)}}
             </div>
           </div>
         </div>
@@ -160,39 +172,40 @@ const receivedSave = () => {
           <dl>
             <dt>{{$t('orders.ordersContact')}}:</dt>
             <dd>
-              <p>John Yin</p>
-              <p>yinxianghua@inflyway.com</p>
-              <p>+507 861059921035</p>
+              <p>{{ orderInfo.shipping.firstName || '--' }} {{ orderInfo.shipping.lastName }}</p>
+              <p>{{ orderInfo.shipping.email || '--' }}</p>
+              <p>+{{orderInfo.shipping.callingCode}} {{ orderInfo.shipping.phone || '--' }}</p>
             </dd>
           </dl>
           <dl>
             <dt>{{$t('orders.ordersAddressLine')}}:</dt>
             <dd>
-              <p>Shangdi 10 Jie Baidu Dasha Here lies the second line of the address</p>
+              <p>{{ orderInfo.shipping.addressLine || '--' }}</p>
+              <p>{{ orderInfo.shipping.addressLineTwo }}</p>
             </dd>
           </dl>
           <dl>
             <dt>{{$t('orders.ordersCity')}}:</dt>
             <dd>
-              <p>Haidian</p>
+              <p>{{ orderInfo.shipping.city || '--' }}</p>
             </dd>
           </dl>
           <dl>
             <dt>{{$t('orders.ordersState')}}:</dt>
             <dd>
-              <p>Ngobe-Bugle</p>
+              <p>{{ orderInfo.shipping.state || '--' }}</p>
             </dd>
           </dl>
           <dl>
             <dt>{{$t('orders.ordersCountry')}}:</dt>
             <dd>
-              <p>Panama</p>
+              <p>{{ orderInfo.shipping.country || '--' }}</p>
             </dd>
           </dl>
           <dl>
             <dt>{{$t('orders.ordersPostalCode')}}:</dt>
             <dd>
-              <p>100085</p>
+              <p>{{ orderInfo.shipping.zipcode || '--' }}</p>
             </dd>
           </dl>
         </div>
@@ -200,10 +213,10 @@ const receivedSave = () => {
     </div>
 
     <!-- 联系方式 -->
-    <ContactInfo v-if="showContactInfo" :contactInfo="orderInfo.contactData" :positionTop="contactInfoScrollHeight" :positionLeft="positionLeft" @hide="showContactInfo=false" />
+    <ContactInfo v-if="showContactInfo" :contactInfo="orderInfo.orderDetailCO" :positionTop="contactInfoScrollHeight" :positionLeft="positionLeft" @hide="showContactInfo=false" />
     
     <!-- 已完成收货-->
-    <ShipmentReceived v-if="showReceived" v-model="showReceived" :data="{id: 1}" @save="receivedSave" />
+    <ShipmentReceived v-if="showReceived" v-model="showReceived" :data="orderInfo.orderDetailCO" @save="receivedSave" />
   </div>
 </template>
 <style lang="scss" scoped>
@@ -219,17 +232,17 @@ const receivedSave = () => {
       color: #175CD3;
       font-weight: 600;
     }
-    .el-tag.el-tag--success {
+    .el-tag.success {
       border: 1px solid #ABEFC6;
       background: #ECFDF3;
       color:#067647;
     }
-    .el-tag.el-tag--Shipped {
+    .el-tag.warning {
       border: 1px solid #CFCCFF;
       background: #F0EFFF;
       color:#443ACC;
     }
-    .el-tag.el-tag--info {
+    .el-tag.info {
       border: 1px solid #E4E7EC;
       background: #F9FAFB;
       color:#344054;
@@ -362,10 +375,12 @@ const receivedSave = () => {
           overflow: hidden;
           margin-right: 20px;
           float: left;
-          img {
-            height: 100%;
-            width: 100%;
-            object-fit: cover;
+          border-radius: 2.4px;
+          background: #f7f7f7;
+          .store-goods-module-item-image {
+            width: 60px;
+            height: 60px;
+            display: block;
           }
         }
         .goods-attr {

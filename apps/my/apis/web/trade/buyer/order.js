@@ -5,8 +5,8 @@ export const listPage = (data) => {
     return useHttp.post(`/trade/buyer/order/listPage`, data, { server: true })
 }
 // 订单详情
-export const detail = (data) => {
-    return useHttp.post(`/trade/buyer/order/detail`, data, { server: true })
+export const orderDetail = (data) => {
+    return useHttp.post(`/trade/buyer/order/detail`, data, { server: false })
 }
 // 确认收货
 export const confirmReceipt = (data) => {
