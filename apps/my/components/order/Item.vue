@@ -33,6 +33,24 @@
     const jumpToPay = () => {
         window.open(props.orderData.payNowUrl, '_blank')
     }
+
+    const jumpTo17track = () => {
+        window.open(`https://t.17track.net/en#nums=${props.orderData.logisticsCode}`, '_blank')
+    }
+
+
+    // 联系人弹窗
+    const showContactInfo = ref(false)
+    const contactSellerRef = ref(null) // 弹窗ref
+    const contactInfoRef = ref(null) // 弹窗ref
+    const contactInfoScrollHeight = ref(0) // 弹窗top位置
+    const positionLeft = ref('auto') // 弹窗left位置  aoto靠右
+    const contactInfoClick = (ref, type) => {
+        const rect = ref.getBoundingClientRect();
+        contactInfoScrollHeight.value = parseInt(rect?.top) + rect?.height
+        showContactInfo.value = true
+        positionLeft.value = (rect?.left&&type) ? `${rect.left}px` : 'auto'
+    }
 </script>
 
 <template>
@@ -54,17 +72,17 @@
             <div class="flex-center"></div>
             <el-tag class="orders-status-tag" :class="formatInTable(ordersStatus, orderData.buyerOrderStatus, 'value', 'tag')">{{$t(formatInTable(ordersStatus, orderData.buyerOrderStatus))}}</el-tag>
         </div>
-        <dl class="goods-content">
+        <dl v-for="item in orderData.orderGoodsSkuCOList" :key="item.id" class="goods-content">
             <div class="goods-imgs">
-                <img src="https://flylink-cdn-oss-test.inflyway.com/flylink/1739782961352_b132cd9f67e9e3c95fb3d371934ba589.jpg" lazy />
+                <img :src="item.mainPicture" lazy />
             </div>
             <div class="goods-attr">
-                <div class="goods-spu ellipsis2">Baby Name Sweater, Baby Knit Sweater, Embroidered Baby Sweatshirt, Personalized Baby Clothes, Baby Girl Coming Home Outfit, Gift for Newborn</div>
-                <p class="goods-sku ellipsis"> xianglian, S925, white</p>
+                <div class="goods-spu ellipsis2">{{ item.goodsTitle }}</div>
+                <p class="goods-sku ellipsis">{{ item.skuDesc }}</p>
             </div>
             <dd class="goods-quantity">
-                <p>$ {{currencyFormat(2888.99)}}</p>
-                <p class="quantity">× 2</p>
+                <p>{{ item.currency }} {{currencyFormat(item.unitPrice)}}</p>
+                <p class="quantity">× {{ item.quantity }}</p>
             </dd>
         </dl>
         <div class="goods-details-bottom">
@@ -79,13 +97,20 @@
             <div class="goods-details-text">
                 <div class="goods-details-text1">
                     Amount:
-                    <b class="deliver-h2 decoration">$ 20.00</b>
+                    <b class="deliver-h2 decoration">{{ orderData.currency }} {{currencyFormat(orderData.goodsAmount)}}</b>
                 </div>
             </div>
         </div>
         <div class="goods-details-bottom-button">
-            <el-button type="primary" @click.stop="jumpToPay">Pay Now</el-button>
+            <el-button v-if="orderData.buyerOrderStatus===0 && orderData.payNowUrl" type="primary" id="Pay-Now-btn" @click.stop="jumpToPay">{{$t('orders.ordersPayNow')}}</el-button>
+            <div v-if="orderData.buyerOrderStatus===1" :ref="'contactSellerRef'+orderData.id" class="order-detail-title-fotter-button">
+                <el-button type="primary" id="Contact-seller-btn" @click.stop="contactInfoClick(contactSellerRef)">{{$t('orders.ordersContactSeller')}}</el-button>
+            </div>
+            <el-button v-if="orderData.buyerOrderStatus===2 && orderData.logisticsCode" type="primary" id="Track-Shipment-btn" @click.stop="jumpTo17track">{{$t('orders.ordersTrackShipment')}}</el-button>
         </div>
+
+        <!-- 联系方式 -->
+        <ContactInfo v-if="showContactInfo" :contactInfo="orderData" :positionTop="contactInfoScrollHeight" :positionLeft="positionLeft" @hide="showContactInfo=false" />
     </div>
 </template>
 
