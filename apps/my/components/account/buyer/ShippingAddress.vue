@@ -239,6 +239,7 @@ const submit = () => {
             form.value = {}
             emit('updateData')
             isEdit.value = false
+            isAdd.value = false
         }
         loading.value = false
 
