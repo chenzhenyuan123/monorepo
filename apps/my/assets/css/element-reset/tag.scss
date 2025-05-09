@@ -41,26 +41,25 @@
 }
 
 // 订单状态tag
-
 .orders-status-tag.el-tag {
     border-radius: 6px;
     border: 1px solid #B2DDFF;
     background:#EFF8FF;
     color: #175CD3;
     font-weight: 600;
-  }
-  .el-tag.success {
+}
+.orders-status-tag.el-tag.success {
     border: 1px solid #ABEFC6;
     background: #ECFDF3;
     color:#067647;
-  }
-  .el-tag.warning {
+}
+.orders-status-tag.el-tag.warning {
     border: 1px solid #CFCCFF;
     background: #F0EFFF;
     color:#443ACC;
-  }
-  .el-tag.info {
+}
+.orders-status-tag.el-tag.info {
     border: 1px solid #E4E7EC;
     background: #F9FAFB;
     color:#344054;
-  }
+}

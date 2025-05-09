@@ -68,7 +68,6 @@ onMounted(() => {
     align-items: center;
     padding: 15px 0px;
     height: 32px;
-    border-bottom: 1px solid #E5E5E5;
     &:last-child {
       border-bottom: none;
     }
