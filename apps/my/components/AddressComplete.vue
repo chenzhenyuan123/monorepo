@@ -33,7 +33,7 @@
             languageCode: 'en',
             sessionToken: uuid
         }).then(result => {
-            const res = result.data.value?.data || {}
+            const res = result.data || {}
             if (res) {
                 if (res.address_line) _value.value = res.address_line
                 console.log('addressComponentsJson', JSON.parse(res.addressComponentsJson))
@@ -82,7 +82,7 @@
             sessionToken: uuid
         }).then(result => {
             console.log('result: ', result)
-            const res = result.data.value?.data || {}
+            const res = result.data || {}
             if (res) {
                 options.value = res.map(item => {
                     const regex = new RegExp(keywords, 'i')
