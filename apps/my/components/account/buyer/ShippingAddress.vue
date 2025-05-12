@@ -337,7 +337,12 @@ userStore.getUserInfo()
                     />
                 </el-form-item>
                 <el-form-item prop="addressLineTwo" class="nature-form-item-col12">
-                    <el-input v-model="form.addressLineTwo" :placeholder="$t('profile.shippingAddressEditPlaceholderAddress2')" class="nature-form-input input-default" @change="e => { form.addressLineTwo = e.trim() }" />
+                    <el-input
+                            v-model="form.addressLineTwo"
+                            :placeholder="$t('profile.shippingAddressEditPlaceholderAddress2')"
+                            class="nature-form-input input-default"
+                            @change="e => { form.addressLineTwo = e.trim() }"
+                    />
                 </el-form-item>
                 <div class="nature-form-group">
                     <el-form-item prop="city" class="nature-form-item">
@@ -385,7 +390,7 @@ userStore.getUserInfo()
         </el-form-item>
         <el-form-item class="nature-form-buttons">
             <el-button id="profile-btn-shipping-address-cancel" class="button-default" @click="cancel">{{$t('profile.cancel')}}</el-button>
-            <el-button id="profile-btn-shipping-address-save" type="primary" class="button-default" :loading="loading" @click="submit">Save</el-button>
+            <el-button id="profile-btn-shipping-address-save" type="primary" class="button-default" :loading="loading" @click="submit">{{$t('profile.save')}}</el-button>
         </el-form-item>
     </el-form>
 
@@ -429,7 +434,7 @@ userStore.getUserInfo()
             </div>
         </div>
         <div v-if="!isEdit" class="nature-item nature-buttons">
-            <el-button type="text" class="button-default" @click="deleteAddress">Delete</el-button>
+            <el-button type="text" class="button-default" @click="deleteAddress">{{$t('profile.delete')}}</el-button>
             <el-button class="button-default" :loading="loading" @click="edit">{{$t('profile.edit')}}</el-button>
         </div>
     </div>

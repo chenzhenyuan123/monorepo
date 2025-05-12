@@ -1,4 +1,5 @@
 <script setup>
+    import { useI18n } from "vue-i18n";
 import { Plus } from '@element-plus/icons-vue';
 
 const props = defineProps({
@@ -15,6 +16,7 @@ const props = defineProps({
         default: 20
     }
 })
+const { t } = useI18n();
 const emit = defineEmits(["updateData"])
 
 const isAdd = ref(false)
@@ -41,11 +43,11 @@ const updateData = () => {
 <template>
     <div class="profile-head">
         <div class="profile-head-content">
-            <div class="profile-title">Shipping addresses</div>
-            <div class="profile-discribe">Add your shipping address and log in when visiting store.flylinking.com to quickly fill in your address at checkout and get the products you love faster.</div>
+            <div class="profile-title">{{$t('profile.shippingAddress')}}</div>
+            <div class="profile-discribe">{{$t('profile.shippingAddressGroupTitleMessage')}}</div>
         </div>
         <div v-if="natureData.length < maxLength && natureData.length > 0" class="profile-head-right">
-            <el-button id="profile-btn-shipping-address-add" :icon="Plus" class="button-default" @click="showAddModule">Add address</el-button>
+            <el-button id="profile-btn-shipping-address-add" :icon="Plus" class="button-default" @click="showAddModule">{{$t('profile.addAddress')}}</el-button>
         </div>
     </div>
 
@@ -70,7 +72,7 @@ const updateData = () => {
 
     <div v-else-if="!isAdd" class="nature-list">
         <div class="nature-item">
-            <el-button id="profile-btn-shipping-address-add" :icon="Plus" class="button-default" @click="showAddModule">Add address</el-button>
+            <el-button id="profile-btn-shipping-address-add" :icon="Plus" class="button-default" @click="showAddModule">{{$t('profile.addAddress')}}</el-button>
         </div>
     </div>
 </template>
