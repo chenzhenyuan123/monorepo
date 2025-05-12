@@ -68,6 +68,10 @@
         // if (cancelToken) {
         //     cancelToken.cancel()
         // }
+        if (!props.country) {
+            console.log('need country')
+            return
+        }
         if (!uuid) {
             setUuid()
         }
@@ -118,7 +122,16 @@
 <template>
     <el-dropdown trigger="click" @command="dropdownCommand" style="width: 100%;" max-height="300px" ref="dropdownRef" popper-class="popper-2025225114306"
                  :popper-options="{modifiers: [{ name: 'offset', options: { offset: [0, 1] }}]}" :triggerKeys="[]">
-        <el-input size="large" cashier_inputInfo v-model="_value" @update:model-value="inputHandle" :placeholder="$attrs.placeholder" clearable @blur="trim" />
+        <el-input
+                size="large"
+                cashier_inputInfo
+                class="input-default"
+                v-model="_value"
+                @update:model-value="inputHandle"
+                :placeholder="$attrs.placeholder"
+                clearable
+                @blur="trim"
+        />
         <template v-if="options.length > 0" #dropdown>
             <el-dropdown-menu placement="bottom" :style="{width: W+'px', maxHeight: '250px', overflowY: 'auto'}">
                 <el-dropdown-item v-for="(item, index) in options" :key="index" :command="index" :class="{active: placeId === item.placeId}">
@@ -187,6 +200,7 @@
     }
 </style>
 <style scoped lang="scss">
+    @import url("@/assets/css/element-reset/input.scss");
     .powered-by{
         display: flex;
         align-items: center;

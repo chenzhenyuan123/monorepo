@@ -55,7 +55,7 @@
             <template v-if="!isMobile">
                 <span class="span big">{{ formatDate(orderData.createTime, 4) }}</span>
                 <div class="flex-center-8"></div>
-                <span class="span">{{$t('wallet.subReferralTableLabelOrderID')}}: {{ orderData.id }}</span>
+                <span class="span">{{$t('orders.orderItemLabelOrderID')}}：{{ orderData.id }}</span>
                 <div class="line"></div>
             </template>
             <div class="link" @click.stop="jumpToShop">
@@ -78,7 +78,7 @@
             </div>
             <dd class="goods-quantity-container direction-text-align-right">
                 <p class="goods-quantity">{{ item.paymentCurrency }} {{currencyFormat(item.paymentAmount)}}</p>
-                <p class="quantity">Quantity：{{ item.quantity }}</p>
+                <p class="quantity">{{$t('orders.orderItemLabelQuantity')}}：{{ item.quantity }}</p>
             </dd>
         </dl>
         <div class="goods-details-bottom direction-text-align-right">
@@ -91,7 +91,7 @@
                 <div v-else class="active">{{$t('orders.ordersFreeShipping')}}</div>
             </div>
             <div class="goods-details-text-container direction-flex-right">
-                <div class="goods-details-text">Amount </div>
+                <div class="goods-details-text">{{$t('orders.orderItemLabelAmount')}} </div>
                 <div class="goods-details-text bold">
                     {{ orderData.paymentCurrency }} {{currencyFormat(orderData.paymentAmount)}}
                 </div>

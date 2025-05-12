@@ -9,6 +9,7 @@
   import {arrToDict} from "@flylinking/core/utils/common";
   import {splitDateRange} from "@flylinking/core/utils/dateUtil";
   import {getCleanFormData, theAll} from "@flylinking/core/utils/dataUtil";
+  import { ordersStatus } from "@/util/const.js";
 
 
   const { buyerOrderApi } = useApi();
@@ -17,22 +18,18 @@
 
 
   const activeName = ref('')
-  const tabsData = computed(() => {
-    return [
-      { value: theAll, label: 'All' },
-      { value: 0, label: 'Pending Payment' },
-      { value: 1, label: 'Not shipped' },
-      { value: 2, label: 'Shipped' },
-      { value: 3, label: 'Completed' },
-      { value: 4, label: 'Cancelled' },
-    ]
-  })
+  const tabsData = ref([
+    { value: theAll, label: 'orders.ordersStatusAll' },
+    { value: 0, label: 'orders.ordersStatus1' },
+    { value: 1, label: 'orders.ordersStatus2' },
+    { value: 2, label: 'orders.ordersStatus3' },
+    { value: 3, label: 'orders.ordersStatus4' },
+    { value: 4, label: 'orders.ordersStatus5' },
+  ])
   const tabsDict = computed(() => {
     return arrToDict(tabsData.value)
   })
   const handleClick = (val) => {
-    console.log('val: ', val)
-    console.log('activeName.value: ', activeName.value)
     getOrderList()
   }
 
@@ -123,12 +120,12 @@
       <el-option
               v-for="item in tabsData"
               :key="item.value"
-              :label="item.label"
+              :label="$t(item.label)"
               :value="item.value"
       />
     </el-select>
     <el-tabs v-else v-model="activeName" class="tabs tabs-default" @tab-change="handleClick">
-      <el-tab-pane v-for="item in tabsData" :key="item.value" :id="'order-' + item.value" :label="item.label" :name="item.value"></el-tab-pane>
+      <el-tab-pane v-for="item in tabsData" :key="item.value" :id="'order-' + item.value" :label="$t(item.label)" :name="item.value"></el-tab-pane>
     </el-tabs>
 
     <SearchFormBox
@@ -137,7 +134,7 @@
             filterLabel="Filter orders"
     >
       <el-form :model="formData" :inline="!isMobile" label-position="top" novalidate>
-        <el-form-item label="Store" style="width: 200px;">
+        <el-form-item :label="$t('orders.searchFormLabelStore')" style="width: 200px;">
           <el-input
                   v-model="formData.storeName"
                   clearable
@@ -147,7 +144,7 @@
                   @clear="getOrderList"
           />
         </el-form-item>
-        <el-form-item label="Order ID" style="width: 200px;">
+        <el-form-item :label="$t('orders.searchFormLabelOrderID')" style="width: 200px;">
           <el-input
                   v-model="formData.orderId"
                   clearable
@@ -157,7 +154,7 @@
                   @clear="getOrderList"
           />
         </el-form-item>
-        <el-form-item label="Products" style="width: 200px;">
+        <el-form-item :label="$t('orders.searchFormLabelProducts')" style="width: 200px;">
           <el-input
                   v-model="formData.products"
                   clearable
@@ -167,7 +164,7 @@
                   @clear="getOrderList"
           />
         </el-form-item>
-        <el-form-item label="Datetime" style="width: 280px;">
+        <el-form-item :label="$t('orders.searchFormLabelDatetime')" style="width: 280px;">
           <el-date-picker
                   v-model="dataRange"
                   type="daterange"
@@ -179,8 +176,8 @@
           />
         </el-form-item>
         <el-form-item class="search-form-buttons">
-          <el-button type="primary" @click="formSearch">Search</el-button>
-          <el-button @click="formReset">Reset</el-button>
+          <el-button type="primary" @click="formSearch">{{ t('orders.searchFormButtonSearch') }}</el-button>
+          <el-button @click="formReset">{{ t('orders.searchFormButtonReset') }}</el-button>
         </el-form-item>
       </el-form>
     </SearchFormBox>

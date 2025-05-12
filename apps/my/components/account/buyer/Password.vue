@@ -1,6 +1,6 @@
 <script setup>
-import { useUserStore } from '@/store/userState.js'
 import { useI18n } from "vue-i18n";
+import { useUserStore } from '@/store/userState.js'
 
 const { t } = useI18n();
 const userStore = useUserStore();
@@ -22,15 +22,15 @@ const jumpToResetPassword = () => {
 <template>
     <div class="profile-head">
         <div class="profile-head-content">
-            <div class="profile-title">Password</div>
-            <div class="profile-discribe">You can set a login password to simplify the login process, or continue using OTP verification to log in.</div>
+            <div class="profile-title">{{$t('profile.password')}}</div>
+            <div class="profile-discribe">{{$t('profile.passwordTitleMessage')}}</div>
         </div>
     </div>
 
     <div class="nature-list">
         <div class="nature-item">
-            <el-button v-if="userStore.userInfo.havePassword" id="account-btn-set-password" class="button-default" @click="jumpToResetPassword">Rest password</el-button>
-            <el-button v-else id="account-btn-set-password" class="button-default" @click="jumpToSetPassword">Set password</el-button>
+            <el-button v-if="userStore.userInfo.havePassword" id="account-btn-set-password" class="button-default" @click="jumpToResetPassword">{{$t('profile.restPassword')}}</el-button>
+            <el-button v-else id="account-btn-set-password" class="button-default" @click="jumpToSetPassword">{{$t('profile.setPassword')}}</el-button>
         </div>
     </div>
 </template>
