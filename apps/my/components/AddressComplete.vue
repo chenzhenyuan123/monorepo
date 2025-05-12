@@ -81,7 +81,6 @@
             includedRegionCode: props.country,
             sessionToken: uuid
         }).then(result => {
-            console.log('result: ', result)
             const res = result.data || {}
             if (res) {
                 options.value = res.map(item => {
