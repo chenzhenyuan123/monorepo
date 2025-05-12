@@ -21,12 +21,18 @@
   .direction-text-align-right {
     text-align: left;
   }
+  .direction-flex-right {
+    justify-content: left;
+  }
 }
 .ltr {
   direction: ltr;
   text-align: unset;
   .direction-text-align-right {
     text-align: right;
+  }
+  .direction-flex-right {
+    justify-content: right;
   }
 }
 

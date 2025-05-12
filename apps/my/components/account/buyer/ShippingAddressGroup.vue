@@ -9,18 +9,27 @@ const props = defineProps({
     countryData: {
         type: Array,
         default: () => []
+    },
+    maxLength: {
+        type: Number,
+        default: 20
     }
 })
 const emit = defineEmits(["updateData"])
 
 const isAdd = ref(false)
 
-const add = () => {
+const showAddModule = () => {
     isAdd.value = true
 }
 
-const removeAdd = () => {
+const hideAddModule = () => {
     isAdd.value = false
+}
+
+const addData = () => {
+    hideAddModule()
+    emit('updateData')
 }
 
 const updateData = () => {
@@ -35,8 +44,8 @@ const updateData = () => {
             <div class="profile-title">Shipping addresses</div>
             <div class="profile-discribe">Add your shipping address and log in when visiting store.flylinking.com to quickly fill in your address at checkout and get the products you love faster.</div>
         </div>
-        <div v-if="natureData.length" class="profile-head-right">
-            <el-button id="profile-btn-shipping-address-add" :icon="Plus" class="button-default" @click="add">Add address</el-button>
+        <div v-if="natureData.length < maxLength && natureData.length > 0" class="profile-head-right">
+            <el-button id="profile-btn-shipping-address-add" :icon="Plus" class="button-default" @click="showAddModule">Add address</el-button>
         </div>
     </div>
 
@@ -45,8 +54,8 @@ const updateData = () => {
             key="add"
             :isAdd="true"
             :country-data="countryData"
-            @update-data="updateData"
-            @cancel="removeAdd"
+            @update-data="addData"
+            @cancel="hideAddModule"
     ></AccountBuyerShippingAddress>
 
     <template v-if="natureData.length">
@@ -61,7 +70,7 @@ const updateData = () => {
 
     <div v-else-if="!isAdd" class="nature-list">
         <div class="nature-item">
-            <el-button id="profile-btn-shipping-address-add" :icon="Plus" class="button-default" @click="add">Add address</el-button>
+            <el-button id="profile-btn-shipping-address-add" :icon="Plus" class="button-default" @click="showAddModule">Add address</el-button>
         </div>
     </div>
 </template>

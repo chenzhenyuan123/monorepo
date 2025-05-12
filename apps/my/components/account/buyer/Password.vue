@@ -11,6 +11,12 @@ const jumpToSetPassword = () => {
         path: '/password'
     })
 }
+
+const jumpToResetPassword = () => {
+    navigateTo({
+        path: '/password-reset'
+    })
+}
 </script>
 
 <template>
@@ -23,7 +29,8 @@ const jumpToSetPassword = () => {
 
     <div class="nature-list">
         <div class="nature-item">
-            <el-button id="account-btn-set-password" class="button-default" @click="jumpToSetPassword">Set password</el-button>
+            <el-button v-if="userStore.userInfo.havePassword" id="account-btn-set-password" class="button-default" @click="jumpToResetPassword">Rest password</el-button>
+            <el-button v-else id="account-btn-set-password" class="button-default" @click="jumpToSetPassword">Set password</el-button>
         </div>
     </div>
 </template>

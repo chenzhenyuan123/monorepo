@@ -140,8 +140,8 @@ const receivedSave = () => {
               </div>
               <div v-if="orderInfo.orderDetailCO.shippingFeeAmount || orderInfo.orderDetailCO.shippingFeeAmount===0" class="goods-details-text2">
                 <h2 class="deliver-h2">
-                  <span class="decoration" v-if="orderInfo.orderDetailCO.discountedShippingAmount>0">{{orderInfo.orderDetailCO.currency}} {{currencyFormat(orderInfo.orderDetailCO.discountedShippingAmount)}}</span>
-                  <span v-else-if="orderInfo.orderDetailCO.shippingFeeAmount>0">{{orderInfo.orderDetailCO.currency}} {{currencyFormat(orderInfo.orderDetailCO.shippingFeeAmount)}}</span>
+                  <span class="decoration" v-if="orderInfo.orderDetailCO.discountedShippingAmount>0">{{orderInfo.orderDetailCO.paymentCurrency}} {{currencyFormat(orderInfo.orderDetailCO.discountedShippingAmount)}}</span>
+                  <span v-else-if="orderInfo.orderDetailCO.shippingFeeAmount>0">{{orderInfo.orderDetailCO.paymentCurrency}} {{currencyFormat(orderInfo.orderDetailCO.shippingFeeAmount)}}</span>
                   <span class="active" v-else>{{$t('orders.ordersFreeShipping')}}</span>
                 </h2>
               </div>
@@ -157,7 +157,7 @@ const receivedSave = () => {
                 {{$t('orders.ordersTotal')}}
               </div>
               <div class="goods-details-text2">
-                {{orderInfo.orderDetailCO.paymentCurrency}}  {{currencyFormat(orderInfo.orderDetailCO.goodsAmount)}}
+                {{orderInfo.orderDetailCO.paymentCurrency}}  {{currencyFormat(orderInfo.orderDetailCO.paymentAmount)}}
               </div>
             </div>
           </div>

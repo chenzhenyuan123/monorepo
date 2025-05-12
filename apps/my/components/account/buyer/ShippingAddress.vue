@@ -7,8 +7,9 @@ import {
     hasArabic,
     isValidZipcode,
 } from "@/util/validate";
+import {isUseless} from "@flylinking/core/utils/dataUtil";
 
-const { t } = useI18n();
+const { t, locale } = useI18n();
 const { userApi } = useApi()
 const userStore = useUserStore()
 const props = defineProps({
@@ -222,6 +223,23 @@ const changeCountry = () => {
     form.value.province = undefined
     form.value.callingCode = countryToCallingCode.value[form.value.country]
 }
+
+const setGoogleMapData = (data) => {
+    if (!isUseless(data.address_line)) form.value.addressLineOne = data.address_line;
+    if (!isUseless(data.address_line_2)) form.value.addressLineTwo = data.address_line_2;
+    if (!isUseless(data.city)) form.value.city = data.city;
+    if (!isUseless(data.zipcode)) form.value.postal = data.zipcode;
+    locationData.provinceData.some(item => {
+        if (item.name === data.state) {
+            form.value.province = item.provinceId;
+            return true
+        }
+    })
+}
+
+const addressChange = (val) => {
+    form.value.addressLineOne = val;
+}
 // 编辑用户基础信息
 const submit = () => {
     formRef.value.validate(async valid => {
@@ -239,7 +257,6 @@ const submit = () => {
             form.value = {}
             emit('updateData')
             isEdit.value = false
-            isAdd.value = false
         }
         loading.value = false
 
@@ -251,12 +268,18 @@ const cancel = () => {
     emit('cancel')
 }
 const deleteAddress = async () => {
-    const result = await userApi.deleteShippingInfo({ id: props.natureData.id })
+    const result = await userApi.deleteUserShippingInfoById(props.natureData.id)
     const res = checkResponseData(result, 'NO_RETURN_DATA')
     if (res) {
         emit('updateData')
     }
 }
+
+onMounted(() => {
+    if (props.isAdd) {
+        form.value = {}
+    }
+})
 
 userStore.getUserInfo()
 
@@ -303,7 +326,15 @@ userStore.getUserInfo()
                     </el-select>
                 </el-form-item>
                 <el-form-item prop="addressLineOne" class="nature-form-item-col12">
-                    <el-input v-model="form.addressLineOne" :placeholder="$t('profile.shippingAddressEditPlaceholderAddress1')" class="nature-form-input input-default" @change="e => { form.addressLineOne = e.trim() }" />
+<!--                    <el-input v-model="form.addressLineOne" :placeholder="$t('profile.shippingAddressEditPlaceholderAddress1')" class="nature-form-input input-default" @change="e => { form.addressLineOne = e.trim() }" />-->
+                    <AddressComplete
+                            :placeholder="$t('profile.shippingAddressEditPlaceholderAddress1')"
+                            :country="form.country"
+                            :lang="locale"
+                            :value="form.addressLineOne"
+                            @selected="setGoogleMapData"
+                            @change="addressChange"
+                    />
                 </el-form-item>
                 <el-form-item prop="addressLineTwo" class="nature-form-item-col12">
                     <el-input v-model="form.addressLineTwo" :placeholder="$t('profile.shippingAddressEditPlaceholderAddress2')" class="nature-form-input input-default" @change="e => { form.addressLineTwo = e.trim() }" />
@@ -354,7 +385,7 @@ userStore.getUserInfo()
         </el-form-item>
         <el-form-item class="nature-form-buttons">
             <el-button id="profile-btn-shipping-address-cancel" class="button-default" @click="cancel">{{$t('profile.cancel')}}</el-button>
-            <el-button id="profile-btn-shipping-address-save" type="primary" class="button-default" :loading="loading" @click="submit">{{$t('profile.save')}}</el-button>
+            <el-button id="profile-btn-shipping-address-save" type="primary" class="button-default" :loading="loading" @click="submit">Save</el-button>
         </el-form-item>
     </el-form>
 

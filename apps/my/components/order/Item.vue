@@ -4,7 +4,7 @@
 -->
 <script name="Orders" setup>
     import { useI18n } from "vue-i18n";
-    import { currencyFormat, formatInTable } from "@/util/index.js"
+    import { currencyFormat, formatInTable, previewImg } from "@/util/index.js"
     import { ordersStatus } from "@/util/const.js";
     import {formatDate} from "@flylinking/core/utils/dateUtil";
     import {previewFlylinkStoreUrl} from "@flylinking/core/utils/urlUtil";
@@ -18,6 +18,12 @@
     const { t } = useI18n();
     const router = useRouter();
     const isMobile = useIsMobile()
+
+    const hasButton = computed(() => {
+        return props.orderData.buyerOrderStatus===0 && props.orderData.payNowUrl ||
+            props.orderData.buyerOrderStatus===1 ||
+            props.orderData.buyerOrderStatus===2 && props.orderData.logisticsCode
+    })
 
     const jumpToDetail = () => {
         navigateTo({
@@ -64,34 +70,34 @@
         </div>
         <dl v-for="item in orderData.orderGoodsSkuCOList" :key="item.id" class="goods-content">
             <div class="goods-imgs">
-                <img :src="item.mainPicture" lazy />
+                <img :src="previewImg(item.mainPicture)" lazy />
             </div>
             <div class="goods-attr">
                 <div class="goods-spu ellipsis2">{{ item.goodsTitle }}</div>
                 <p class="goods-sku ellipsis">{{ item.skuDesc }}</p>
             </div>
-            <dd class="goods-quantity">
-                <p>{{ item.currency }} {{currencyFormat(item.unitPrice)}}</p>
-                <p class="quantity">× {{ item.quantity }}</p>
+            <dd class="goods-quantity-container direction-text-align-right">
+                <p class="goods-quantity">{{ item.paymentCurrency }} {{currencyFormat(item.paymentAmount)}}</p>
+                <p class="quantity">Quantity：{{ item.quantity }}</p>
             </dd>
         </dl>
-        <div class="goods-details-bottom">
+        <div class="goods-details-bottom direction-text-align-right">
             <div v-if="orderData.shippingFeeAmount >= 0" class="goods-details-text">
-                <div v-if="orderData.shippingFeeAmount > 0">{{$t('orders.ordersShippingAmount', { currency: orderData.currency, amt: currencyFormat(orderData.shippingFeeAmount) })}}</div>
+                <div v-if="orderData.shippingFeeAmount > 0">{{$t('orders.ordersShippingAmount', { currency: orderData.paymentCurrency, amt: currencyFormat(orderData.shippingFeeAmount) })}}</div>
                 <template v-else-if="orderData.discountedShippingAmount">
-                    <div class="delete">{{$t('orders.ordersShippingAmount', { currency: orderData.currency, amt: currencyFormat(orderData.discountedShippingAmount) })}}</div>
-                    <div class="active">{{$t('orders.ordersFreeShippingLimit', { currency: orderData.currency, amt: currencyFormat(orderData.freeShippingThreshold) })}}</div>
+                    <div class="delete">{{$t('orders.ordersShippingAmount', { currency: orderData.paymentCurrency, amt: currencyFormat(orderData.discountedShippingAmount) })}}</div>
+                    <div class="active">{{$t('orders.ordersFreeShippingLimit', { currency: orderData.paymentCurrency, amt: currencyFormat(orderData.freeShippingThreshold) })}}</div>
                 </template>
                 <div v-else class="active">{{$t('orders.ordersFreeShipping')}}</div>
             </div>
-            <div class="goods-details-text">
-                <div class="goods-details-text1">
-                    Amount:
-                    <b class="deliver-h2 decoration">{{ orderData.currency }} {{currencyFormat(orderData.goodsAmount)}}</b>
+            <div class="goods-details-text-container direction-flex-right">
+                <div class="goods-details-text">Amount </div>
+                <div class="goods-details-text bold">
+                    {{ orderData.paymentCurrency }} {{currencyFormat(orderData.paymentAmount)}}
                 </div>
             </div>
         </div>
-        <div class="goods-details-bottom-button">
+        <div v-if="hasButton" class="goods-details-bottom-button direction-text-align-right">
             <el-button v-if="orderData.buyerOrderStatus===0 && orderData.payNowUrl" type="primary" id="Pay-Now-btn" @click.stop="jumpToPay">{{$t('orders.ordersPayNow')}}</el-button>
             <div v-if="orderData.buyerOrderStatus===1" class="order-detail-title-fotter-button">
                 <el-button type="primary" id="Contact-seller-btn" @click.stop="showContactInfo = true">{{$t('orders.ordersContactSeller')}}</el-button>
@@ -173,50 +179,69 @@
             .goods-attr {
                 flex: 1;
                 padding: 0 20px;
-                .goods-sku {
-                    color: #667085;
-                    font-family: Inter;
-                    font-size: 14px;
-                    line-height: 20px;
-                    margin-bottom: 8px;
-                }
                 .goods-spu {
                     color: #101828;
                     font-family: Inter;
                     font-size: 16px;
                     line-height: 24px;
                     font-weight: 600;
+                    margin-bottom: 4px;
+                }
+                .goods-sku {
+                    color: #667085;
+                    font-family: Inter;
+                    font-size: 14px;
+                    line-height: 20px;
                 }
             }
-            .goods-quantity {
+            .goods-quantity-container {
                 min-width: 200px;
                 white-space: nowrap;
                 flex-shrink: 0;
-                text-align: right;
                 font-family: Inter;
-                line-height: 30px;
-                color: #101828;
-                font-size: 20px;
-                font-weight: 600;
+                .goods-quantity {
+                    color: #101828;
+                    font-size: 18px;
+                    font-weight: 600;
+                    line-height: 28px;
+                    margin-bottom: 2px;
+                }
                 .quantity {
-                    color: #475467;
+                    color: #667085;
                     font-size: 16px;
                     font-weight: 400;
+                    line-height: 20px;
                 }
             }
         }
         .goods-details-bottom {
-            padding: 0px 24px 16px;
+            padding: 0 24px 16px;
             overflow: hidden;
-            text-align: right;
+            .goods-details-text-container {
+                display: flex;
+                align-items: center;
+                .goods-details-text {
+                    + .goods-details-text {
+                        margin-top: 0;
+                        margin-left: 4px;
+                    }
+                }
+            }
             .goods-details-text {
-                margin-top: 8px;
-                color: #101828;
-                width: 100%;
-                color: #101828;
+                color: #475467;
                 font-family: Inter;
-                font-size: 16px;
-                line-height: 24px;
+                font-size: 14px;
+                font-weight: 400;
+                line-height: 20px;
+                /*+ .goods-details-text {*/
+                /*    margin-top: 4px;*/
+                /*}*/
+                &.bold {
+                    color: #101828;
+                    font-size: 20px;
+                    font-weight: 600;
+                    line-height: 30px;
+                }
                 .active {
                     color: #21a470;
                 }
@@ -229,7 +254,6 @@
         .goods-details-bottom-button {
             border-top: 1px solid #E4E7EC;
             padding: 12px 24px 16px;
-            text-align: right;
         }
     }
     .order-detail-title-fotter-button {

@@ -7,6 +7,7 @@ import * as clientApi from './web/distribution/client'
 import * as walletApi from './web/member/wallet'
 import * as withdrawApi from './web/account/client/withdraw'
 import * as buyerOrderApi from './web/trade/buyer/order'
+import * as googleMapApi from './googleMap'
 export default {
   contactInfoApi,
   homeApi,
@@ -16,5 +17,6 @@ export default {
   clientApi,
   walletApi,
   withdrawApi,
-  buyerOrderApi
+  buyerOrderApi,
+  googleMapApi
 }
