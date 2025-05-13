@@ -84,11 +84,11 @@ const routerGo = path => {
       <h3 class="title">{{$t('password.passwordTitle')}}</h3>
       <p class="email-verify-text">{{$t('password.passwordDescription')}}</p>
       
-      <el-form ref="signupFormRef" :model="signupForm" label-position="top" :rules="rules()" require-asterisk-position="right" class="login-box" novalidate>
+      <FormValidate ref="signupFormRef" :model="signupForm" label-position="top" :rules="rules()" require-asterisk-position="right" class="login-box" novalidate>
         <el-form-item :label="$t('login.loginFormEmail')" prop="email">
           <el-input v-model="signupForm.email" maxlength="254" :placeholder="$t('signup.signupValidateEmailEmpty')" :class="{'error':showError}" />
         </el-form-item>
-      </el-form>
+      </FormValidate>
       <el-button type="primary" id="password-btn-reset" class="email-verify-btn reset-password-btn" :loading="loading" @click="onSubmit(signupFormRef)">{{$t('password.passwordSaveButton')}}</el-button>
       <div class="signup-tip text-center margin-top30">
         <el-button link class="go-back" @click="routerGo('/login')">

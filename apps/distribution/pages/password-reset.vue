@@ -117,7 +117,7 @@ const routerGo = (path) => {
       </div>
       <h3 class="title">{{$t('password-reset.passwordResetTitle')}}</h3>
       <p class="email-verify-text">{{$t('password-reset.passwordResetDescription')}}</p>
-      <el-form ref="signupFormRef" :model="signupForm" label-position="top" :rules="rules()" require-asterisk-position="right" class="login-box" novalidate>
+      <FormValidate ref="signupFormRef" :model="signupForm" label-position="top" :rules="rules()" require-asterisk-position="right" class="login-box" novalidate>
         <el-form-item :label="$t('password-reset.passwordResetNewPassword')" prop="password">
           <InputPassword v-model="signupForm.password" :placeholder="$t('password-reset.passwordValidateRequired')" maxlength="20" minlength="8" :class="{'error':showError}"  />
         </el-form-item>
@@ -128,7 +128,7 @@ const routerGo = (path) => {
         <el-form-item>
           <PasswordValidator :data="signupForm.password" />
         </el-form-item>
-      </el-form>
+      </FormValidate>
       <el-button type="primary" id="password-reset-btn-confirm" class="email-verify-btn" @click="onSubmit(signupFormRef)">{{$t('password-reset.passwordResetConfirm')}}</el-button>
       <div class="signup-tip text-center margin-top30">
         <el-button link class="go-back" @click="routerGo('/login')">
