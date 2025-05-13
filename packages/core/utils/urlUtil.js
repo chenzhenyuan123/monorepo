@@ -1,7 +1,7 @@
 const baseFlylinkStoreMap = {
-    development: 'https://store-dev.inflyway.com',
-    test: 'https://store-test.flylinking.com',
-    uat: 'https://store-uat.flylinking.com',
+    DEV: 'https://store-dev.inflyway.com',
+    TEST: 'https://store-test.flylinking.com',
+    UAT: 'https://store-uat.flylinking.com',
     production: 'https://store.flylinking.com'
 }
 
@@ -13,7 +13,7 @@ const baseFlylinkStoreMap = {
 export function previewFlylinkStoreUrl(filePath) {
     // 从useRuntimeConfig中取baseURL
     const { public: { VITE_HOST, VITE_NODE_ENV } } = useRuntimeConfig()
-    const baseOrigin = baseFlylinkStoreMap[VITE_HOST] || baseFlylinkStoreMap.development
+    const baseOrigin = baseFlylinkStoreMap[VITE_NODE_ENV] || baseFlylinkStoreMap.DEV
 
     if (!filePath) return
 
