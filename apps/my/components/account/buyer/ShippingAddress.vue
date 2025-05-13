@@ -28,6 +28,12 @@ const props = defineProps({
 })
 const emit = defineEmits(['updateData', 'cancel', 'delete'])
 
+
+const isShowDeleteDialog = ref(false)
+const showDeleteDialog = () => {
+    isShowDeleteDialog.value = true
+}
+
 const countryDict = computed(() => {
     return arrToDict(props.countryData, { value: 'countryId', label: 'name' })
 })
@@ -434,11 +440,16 @@ userStore.getUserInfo()
             </div>
         </div>
         <div v-if="!isEdit" class="nature-item nature-buttons">
-            <el-button type="text" class="button-default" @click="deleteAddress">{{$t('profile.delete')}}</el-button>
+            <el-button type="text" class="button-default" @click="showDeleteDialog">{{$t('profile.delete')}}</el-button>
             <el-button class="button-default" :loading="loading" @click="edit">{{$t('profile.edit')}}</el-button>
         </div>
     </div>
 
+    <AccountBuyerDeleteDialog
+            v-if="isShowDeleteDialog"
+            v-model="isShowDeleteDialog"
+            @delete="deleteAddress"
+    ></AccountBuyerDeleteDialog>
 </template>
 
 <style lang="scss" scoped>
