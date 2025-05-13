@@ -33,6 +33,12 @@
         background: #5548FF;
         color: #FFF;
     }
+    &.el-button--danger {
+        // border: 2px solid rgba(255, 255, 255, 0.12);
+        border: 0;
+        background: #D92D20;
+        color: #FFF;
+    }
     &.el-button--text {
         box-shadow: none;
         background-color: transparent;
