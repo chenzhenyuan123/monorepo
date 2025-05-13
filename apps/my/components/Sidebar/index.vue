@@ -49,8 +49,8 @@ const activeMenu = computed({
         @select="selectMenu"
       >
         <div class="logo-container" v-if="!isMobile">
-          <img v-if="isCollapse" class="abb-logo" src="~@/assets/imgs/abb-logo.svg" alt="" @click="navigateTo('/home')">
-          <img v-else src="~@/assets/imgs/Flylinking-logo.svg" alt="" @click="navigateTo('/home')">
+          <img v-if="isCollapse" class="abb-logo" src="~@/assets/imgs/abb-logo.svg" alt="" @click="navigateTo('/orders')">
+          <img v-else src="~@/assets/imgs/Flylinking-logo.svg" alt="" @click="navigateTo('/orders')">
         </div>
         <template v-for="item in routesData" :key="item.path">
           <sidebar-item :item-data="item" />

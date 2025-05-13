@@ -145,7 +145,7 @@ const routerGo = (path) => {
       </div>
       <h3 class="title">{{$t('email-verify.emailVerifySuccessTitlePassword')}}</h3>
       <p class="email-verify-text">{{$t('email-verify.emailVerifySuccessRedirect')}}</p>
-      <el-button type="primary" id="password-reset-btn-login" class="email-verify-btn" @click="routerGo('/home')">{{$t('email-verify.emailVerifyContinue')}}</el-button>
+      <el-button type="primary" id="password-reset-btn-login" class="email-verify-btn" @click="routerGo('/orders')">{{$t('email-verify.emailVerifyContinue')}}</el-button>
       <p class="email-verify-text1">{{$t('email-verify.emailVerifyRedirecting', {sec: seconds})}}</p>
     </div>
     
