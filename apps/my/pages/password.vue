@@ -69,9 +69,7 @@ const onSubmit = () => {
 
 // 跳转首页-已登录
 const routerGo = path => {
-  navigateTo({
-    path
-  })
+  router.back()
 }
 
 </script>
