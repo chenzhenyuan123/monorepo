@@ -484,6 +484,7 @@ orders,searchFormLabelStore,,,Store,商店,Tienda,Loja,المتجر,Boutique,Sho
 orders,searchFormLabelOrderID,,,Order ID,订单ID,ID del pedido,ID da encomenda,معرف الطلب,ID de commande,Bestell-ID,ID заказа,注文ID,주문 ID,ID đơn hàng,ID ordine,מזהה הזמנה,,,,,
 orders,searchFormLabelProducts,,,Product,产品,Producto,Produto,المنتج,Produit,Produkt,Продукт,製品,제품,Sản phẩm,Prodotto,מוצר,,,,,
 orders,searchFormLabelDatetime,,,Date,日期,Fecha,Data,التاريخ,Date,Datum,Дата,日付,날짜,Ngày,Data,תאריך,,,,,
+orders,searchFormPlaceholderStore,,,Store name,商店名称,Nombre de la tienda,Nome da loja,اسم المتجر,Nom du magasin,Ladenname,Название магазина,店名,상점 이름,Tên cửa hàng,Nome del negozio,שם החנות,,,,,
 orders,searchFormButtonSearch,,,Search,搜索,Buscar,Pesquisar,بحث,Rechercher,Suchen,Поиск,検索,검색,Tìm kiếm,Cerca,חיפוש,,,,,
 orders,searchFormButtonReset,,,Reset,重置,Restablecer,Repor,إعادة تعيين,Réinitialiser,Zurücksetzen,Сбросить,リセット,초기화,Đặt lại,Reimposta,איפוס,,,,,
 orders,orderItemLabelOrderID,,,Order ID,订单ID,ID del pedido,ID da encomenda,معرف الطلب,ID de commande,Bestell-ID,ID заказа,注文ID,주문 ID,ID đơn hàng,ID ordine,מזהה הזמנה,,,,,
