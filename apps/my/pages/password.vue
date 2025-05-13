@@ -37,7 +37,8 @@ const rules = ()=>{
 const showError = ref(false)
 const loading = ref(false)
 // 重置密码
-const onSubmit = formEl => {
+const onSubmit = () => {
+  const formEl = signupFormRef.value?.formRef
   formEl &&
     formEl.validate(async valid => {
       if (!valid) return
@@ -89,7 +90,7 @@ const routerGo = path => {
           <el-input v-model="signupForm.email" maxlength="254" :placeholder="$t('signup.signupValidateEmailEmpty')" :class="{'error':showError}" />
         </el-form-item>
       </FormValidate>
-      <el-button type="primary" id="password-btn-reset" class="email-verify-btn reset-password-btn" :loading="loading" @click="onSubmit(signupFormRef)">{{$t('password.passwordSaveButton')}}</el-button>
+      <el-button type="primary" id="password-btn-reset" class="email-verify-btn reset-password-btn" :loading="loading" @click="onSubmit()">{{$t('password.passwordSaveButton')}}</el-button>
       <div class="signup-tip text-center margin-top30">
         <el-button link class="go-back" @click="routerGo('/login')">
           <el-icon><Back /></el-icon>
