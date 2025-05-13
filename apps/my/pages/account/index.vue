@@ -189,7 +189,7 @@
 </template>
 
 <style lang="scss" scoped>
-    @import url("@/assets/css/element-reset/select.scss");
+    @use "@/assets/css/element-reset/select.scss" as *;
     * {
         box-sizing: border-box;
     }

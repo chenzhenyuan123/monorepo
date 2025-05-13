@@ -140,7 +140,7 @@ userStore.getUserInfo()
         class="nature-form"
         novalidate
     >
-        <el-form-item :label="$t('profile.generalEditLableAccount')" prop="" class="nature-form-item" required>
+        <el-form-item :label="$t('profile.generalEditLableAccount')" prop="" class="nature-form-item">
             <el-input v-model="userData.loginAccount" class="nature-form-input input-default" disabled />
         </el-form-item>
         <el-form-item :label="$t('profile.generalEditLableDistributorID')" prop="" class="nature-form-item">
@@ -151,7 +151,7 @@ userStore.getUserInfo()
                 <el-form-item prop="firstName" class="nature-form-item">
                     <el-input v-model="form.firstName" :maxlength="nameMaxLength" class="nature-form-input input-default" @change="e => { form.firstName = e.trim() }" />
                 </el-form-item>
-                <div class="nature-form-group-center"></div>
+                <div class="flex-center-8"></div>
                 <el-form-item prop="lastName" class="nature-form-item">
                     <el-input v-model="form.lastName" :maxlength="nameMaxLength" class="nature-form-input input-default" @change="e => { form.lastName = e.trim() }" />
                 </el-form-item>

@@ -140,7 +140,7 @@ userStore.getUserInfo()
         class="nature-form"
         novalidate
     >
-        <el-form-item :label="$t('profile.generalEditLableAccount')" prop="" class="nature-form-item" required>
+        <el-form-item :label="$t('profile.generalEditLableAccount')" prop="" class="nature-form-item">
             <el-input v-model="userData.loginAccount" class="nature-form-input input-default" disabled />
         </el-form-item>
         <el-form-item :label="$t('profile.generalEditLableDistributorID')" prop="" class="nature-form-item">

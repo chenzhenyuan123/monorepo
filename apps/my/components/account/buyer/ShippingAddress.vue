@@ -307,7 +307,7 @@ userStore.getUserInfo()
                 <el-form-item prop="firstName" class="nature-form-item">
                     <el-input v-model="form.firstName" class="nature-form-input input-default" @change="e => { form.firstName = e.trim() }" />
                 </el-form-item>
-                <div class="nature-form-group-center"></div>
+                <div class="flex-center-8"></div>
                 <el-form-item prop="lastName" class="nature-form-item">
                     <el-input v-model="form.lastName" class="nature-form-input input-default" @change="e => { form.lastName = e.trim() }" />
                 </el-form-item>
@@ -354,7 +354,7 @@ userStore.getUserInfo()
                     <el-form-item prop="city" class="nature-form-item">
                         <el-input v-model="form.city" :placeholder="$t('profile.shippingAddressEditPlaceholderCity')" class="nature-form-input input-default" @change="e => { form.city = e.trim() }" />
                     </el-form-item>
-                    <div class="nature-form-group-center"></div>
+                    <div class="flex-center-8"></div>
                     <el-form-item prop="postal" class="nature-form-item">
                         <el-input v-model="form.postal" :placeholder="$t('profile.shippingAddressEditPlaceholderPostal')" class="nature-form-input input-default" @change="e => { form.postal = e.trim() }" />
                     </el-form-item>
@@ -453,10 +453,9 @@ userStore.getUserInfo()
 </template>
 
 <style lang="scss" scoped>
-@import url("@/assets/css/element-reset/button.scss");
-@import url("@/assets/css/element-reset/input.scss");
-@import url("@/assets/css/element-reset/select.scss");
-@import url("@/assets/css/element-reset/radio.scss");
-// @import url("@/components/account/profile/form.scss");
-@import url("./form.scss");
+    @use "@/assets/css/element-reset/button.scss" as *;
+    @use "@/assets/css/element-reset/input.scss" as *;
+    @use "@/assets/css/element-reset/select.scss" as *;
+    @use "@/assets/css/element-reset/radio.scss" as *;
+    @use "./form.scss" as *;
 </style>

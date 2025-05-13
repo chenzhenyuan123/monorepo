@@ -20,7 +20,7 @@
             }
         }
         :deep(.el-input__wrapper) {
-            padding: 0;
+            //padding: 0;
             border-radius: 0;
             border: 0;
             background-color: transparent;
@@ -88,13 +88,14 @@
             line-height: 24px;
         }
     }
-    .input-default-p {
-        color: #475467;
-        font-size: 14px;
-        font-weight: 400;
-        line-height: 20px; /* 142.857% */
-        margin-top: 6px;
-    }
+}
+
+.input-default-p {
+    color: #475467;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px; /* 142.857% */
+    margin-top: 6px;
 }
 
 .el-form-item.is-error {
