@@ -70,7 +70,8 @@ const rules = ()=>{
 }
 const showError = ref(false)
 // 跳转首页
-const onSubmit = formEl => {
+const onSubmit = () => {
+  const formEl = signupFormRef.value?.formRef
   formEl &&
     formEl.validate(async valid => {
       if (!valid) return
@@ -129,7 +130,7 @@ const routerGo = (path) => {
           <PasswordValidator :data="signupForm.password" />
         </el-form-item>
       </FormValidate>
-      <el-button type="primary" id="password-reset-btn-confirm" class="email-verify-btn" @click="onSubmit(signupFormRef)">{{$t('password-reset.passwordResetConfirm')}}</el-button>
+      <el-button type="primary" id="password-reset-btn-confirm" class="email-verify-btn" @click="onSubmit()">{{$t('password-reset.passwordResetConfirm')}}</el-button>
       <div class="signup-tip text-center margin-top30">
         <el-button link class="go-back" @click="routerGo('/login')">
           <el-icon><Back /></el-icon>
