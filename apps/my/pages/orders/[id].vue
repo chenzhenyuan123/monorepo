@@ -7,6 +7,7 @@ import { checkResponseData, successMessage, currencyFormat, formatInTable, previ
 import { contactData } from "@/components/ContactInfo/const.js";
 import { ordersStatus } from "@/util/const.js";
 import { formatDate } from "@flylinking/core/utils/dateUtil"
+import {previewFlylinkStoreUrl} from "@flylinking/core/utils/urlUtil"
 const { buyerOrderApi } = useApi();
   
 const route = useRoute();
@@ -38,6 +39,11 @@ const showReceived = ref(false)
 const receivedSave = () => {
   getInfo()
   showReceived.value = false
+}
+// 跳转店铺首页
+const jumpToShop = () => {
+    const url = 's/' + orderInfo.value.orderDetailCO?.sellerStoreId
+    window.open(previewFlylinkStoreUrl(url), '_blank')
 }
 </script>
 <template>
@@ -102,7 +108,7 @@ const receivedSave = () => {
       </div>
       <div class="left ">
         <div class="order-detail-content-top">
-          <div class="header">
+          <div class="header" @click="jumpToShop()">
             <i class="Flylink icon-Shop"></i>
             <span class="goods-text">{{orderInfo.orderDetailCO.sellerBusinessName}}</span>
             <i class="Flylink icon-chevron-right"></i>
@@ -138,7 +144,7 @@ const receivedSave = () => {
               <div class="goods-details-text1">
                 {{$t('orders.ordersShipping')}}
               </div>
-              <div v-if="orderInfo.orderDetailCO.shippingFeeAmount || orderInfo.orderDetailCO.shippingFeeAmount===0" class="goods-details-text2">
+              <div v-if="orderInfo.orderDetailCO.shippingFeeAmount >= 0" class="goods-details-text2">
                 <h2 class="deliver-h2">
                   <span class="decoration" v-if="orderInfo.orderDetailCO.discountedShippingAmount>0">{{orderInfo.orderDetailCO.paymentCurrency}} {{currencyFormat(orderInfo.orderDetailCO.discountedShippingAmount)}}</span>
                   <span v-else-if="orderInfo.orderDetailCO.shippingFeeAmount>0">{{orderInfo.orderDetailCO.paymentCurrency}} {{currencyFormat(orderInfo.orderDetailCO.shippingFeeAmount)}}</span>
