@@ -14,16 +14,18 @@ definePageMeta({
 onMounted(() => {
   userStore.getUserInfo()
   // 是否已登录
-  if(userStore.isLogin) {
-    navigateTo({
-      path: '/home'
-    })
-  } else {
-    navigateTo({
-      path: '/login'
-    })
-  }
-  
+  // if(userStore.isLogin) {
+  //   navigateTo({
+  //     path: '/home'
+  //   })
+  // } else {
+  //   navigateTo({
+  //     path: '/login'
+  //   })
+  // }
+  navigateTo({
+    path: '/login'
+  })
 })
 </script>
 
