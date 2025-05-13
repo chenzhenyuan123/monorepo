@@ -54,7 +54,7 @@ const jumpToShop = () => {
       </NuxtLink>
     </div>
     <div class="order-detail-title">
-      <div v-if="orderInfo.orderDetailCO.buyerOrderStatus" class="order-detail-title-header">
+      <div v-if="orderInfo.orderDetailCO.buyerOrderStatus>=0" class="order-detail-title-header">
         <el-tag class="orders-status-tag" :class="formatInTable(ordersStatus, orderInfo.orderDetailCO.buyerOrderStatus, 'value', 'tag')">{{$t(formatInTable(ordersStatus, orderInfo.orderDetailCO.buyerOrderStatus))}}</el-tag>
       </div>
       <h3 v-if="orderInfo.goodsList.length>0" class="title">{{orderInfo.goodsList[0].goodsTitle}}</h3>
@@ -62,7 +62,9 @@ const jumpToShop = () => {
            待发货：联系卖家Contact Seller buyerOrderStatus1
            已发货：查看物流Track Shipment，确认收货Mark as Received buyerOrderStatus2 -->
       <div class="order-detail-title-fotter">
-        <a v-if="orderInfo.orderDetailCO.buyerOrderStatus===0 && orderInfo.orderDetailCO.payNowUrl" :href="orderInfo.orderDetailCO.payNowUrl" target="_blank"><el-button type="primary" id="Pay-Now-btn">{{$t('orders.ordersPayNow')}}</el-button></a>
+        <a v-if="orderInfo.orderDetailCO.buyerOrderStatus===0 && orderInfo.orderDetailCO.payNowUrl" :href="orderInfo.orderDetailCO.payNowUrl" target="_blank">
+          <el-button type="primary" id="Pay-Now-btn">{{$t('orders.ordersPayNow')}}</el-button>
+        </a>
         <div v-if="orderInfo.orderDetailCO.buyerOrderStatus===1" class="order-detail-title-fotter-button">
           <el-button type="primary" id="Contact-seller-btn" @click="showContactInfo2=true">{{$t('orders.ordersContactSeller')}}</el-button>
           <!-- 联系方式弹窗 -->
@@ -78,7 +80,7 @@ const jumpToShop = () => {
       <div class="right">
         <div class="order-text">
           <b>{{$t('wallet.subReferralTableLabelOrderID')}}:</b>
-          <p>{{orderInfo.orderDetailCO.id}}</p>
+          <p>{{orderInfo.orderDetailCO.flylinkOrderId}}</p>
         </div>
         <div class="order-text">
           <b>{{$t('orders.ordersCreateTime')}}:</b>
