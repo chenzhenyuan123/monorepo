@@ -138,7 +138,7 @@
           <el-input
                   v-model="formData.storeName"
                   clearable
-                  placeholder="Store name"
+                  :placeholder="$t('orders.searchFormPlaceholderStore')"
                   :suffix-icon="Search"
                   @keyup.enter.native="getOrderList"
                   @clear="getOrderList"
@@ -148,7 +148,7 @@
           <el-input
                   v-model="formData.orderId"
                   clearable
-                  placeholder="Order ID"
+                  :placeholder="$t('orders.searchFormLabelOrderID')"
                   :suffix-icon="Search"
                   @keyup.enter.native="getOrderList"
                   @clear="getOrderList"
@@ -158,7 +158,7 @@
           <el-input
                   v-model="formData.products"
                   clearable
-                  placeholder="Products"
+                  :placeholder="$t('orders.searchFormLabelProducts')"
                   :suffix-icon="Search"
                   @keyup.enter.native="getOrderList"
                   @clear="getOrderList"
