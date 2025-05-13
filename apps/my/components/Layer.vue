@@ -176,7 +176,7 @@ defineExpose({ show, hide, toggle, getIsShow })
           animation: none;
         }
         .rtl & {
-          left: 16px;
+          left: 80px;
           right: auto;
         }
         .layer-body-title-container {
@@ -186,16 +186,6 @@ defineExpose({ show, hide, toggle, getIsShow })
         }
         .layer-body-bottom-button {
           display: none;
-        }
-      }
-    }
-  }
-  /* 1440+(16)*2 */
-  @media screen and (min-width: 1472px) {
-    .layer {
-      :deep(.layer-body) {
-        .rtl & {
-          left: calc(50% - 720px);
         }
       }
     }
