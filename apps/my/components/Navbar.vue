@@ -28,7 +28,7 @@ const toPassword = () => {
 
 <template>
   <div v-if="isMobile" class="navbar-wrap pdlr24">
-    <img class="logo" src="~@/assets/imgs/Flylinking-logo.svg" alt="" @click="navigateTo('/home')">
+    <img class="logo" src="~@/assets/imgs/Flylinking-logo.svg" alt="" @click="navigateTo('/orders')">
     <Language style="display: none" />
     <slot name="collapse"></slot>
   </div>
