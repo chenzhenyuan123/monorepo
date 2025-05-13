@@ -30,8 +30,10 @@ const jumpToResetPassword = () => {
     
         <div class="nature-list">
             <div class="nature-item">
-                <el-button v-if="userStore.userInfo.havePassword" id="account-btn-set-password" class="button-default" @click="jumpToSetPassword">{{$t('profile.restPassword')}}</el-button>
-                <el-button v-else id="account-btn-set-password" class="button-default" @click="jumpToResetPassword">{{$t('profile.setPassword')}}</el-button>
+                <div class="nature-item-label">
+                    <el-button v-if="userStore.userInfo.havePassword" id="account-btn-set-password" class="button-default" @click="jumpToSetPassword">{{$t('profile.restPassword')}}</el-button>
+                    <el-button v-else id="account-btn-set-password" class="button-default" @click="jumpToResetPassword">{{$t('profile.setPassword')}}</el-button>
+                </div>
             </div>
         </div>
     </div>

@@ -55,16 +55,16 @@
             <template v-if="!isMobile">
                 <span class="span big">{{ formatDate(orderData.createTime, 4) }}</span>
                 <div class="flex-center-8"></div>
-                <span class="span">{{$t('orders.orderItemLabelOrderID')}}：{{ orderData.id }}</span>
+                <span class="span">{{$t('orders.orderItemLabelOrderID')}}: {{ orderData.flylinkOrderId }}</span>
                 <div class="line"></div>
             </template>
-            <div class="link" @click.stop="jumpToShop">
-                <i class="Flylink icon-Shop icon"></i>
-                <div class="flex-center-4"></div>
-                <span class="span ellipsis">{{ orderData.sellerBusinessName }}</span>
-                <div class="flex-center-4"></div>
-                <i class="Flylink icon-chevron-right icon"></i>
-            </div>
+<!--            <div class="link" @click.stop="jumpToShop">-->
+                <i class="Flylink icon-Shop icon" @click.stop="jumpToShop"></i>
+                <div class="flex-center-4" @click.stop="jumpToShop"></div>
+                <span class="span link ellipsis" @click.stop="jumpToShop">{{ orderData.sellerBusinessName }}</span>
+                <div class="flex-center-4" @click.stop="jumpToShop"></div>
+                <i class="Flylink icon-chevron-right icon" @click.stop="jumpToShop"></i>
+<!--            </div>-->
             <div class="flex-center"></div>
             <el-tag class="orders-status-tag" :class="formatInTable(ordersStatus, orderData.buyerOrderStatus, 'value', 'tag')">{{$t(formatInTable(ordersStatus, orderData.buyerOrderStatus))}}</el-tag>
         </div>
@@ -77,8 +77,8 @@
                 <p class="goods-sku ellipsis">{{ item.skuDesc }}</p>
             </div>
             <dd class="goods-quantity-container direction-text-align-right">
-                <p class="goods-quantity">{{ item.paymentCurrency }} {{currencyFormat(item.paymentAmount)}}</p>
-                <p class="quantity">{{$t('orders.orderItemLabelQuantity')}}：{{ item.quantity }}</p>
+                <p class="goods-quantity-amount">{{ item.paymentCurrency }} {{currencyFormat(item.paymentAmount)}}</p>
+                <p class="goods-quantity-num">{{$t('orders.orderItemLabelQuantity')}}: {{ item.quantity }}</p>
             </dd>
         </dl>
         <div class="goods-details-bottom direction-text-align-right">
@@ -91,20 +91,21 @@
                 <div v-else class="active">{{$t('orders.ordersFreeShipping')}}</div>
             </div>
             <div class="goods-details-text-container direction-flex-right">
-                <div class="goods-details-text">{{$t('orders.orderItemLabelAmount')}} </div>
+                <div class="goods-details-text">{{$t('orders.orderItemLabelAmount')}}</div>
+                <div class="flex-center-6"></div>
                 <div class="goods-details-text bold">
                     {{ orderData.paymentCurrency }} {{currencyFormat(orderData.paymentAmount)}}
                 </div>
             </div>
         </div>
         <div v-if="hasButton" class="goods-details-bottom-button direction-text-align-right">
-            <el-button v-if="orderData.buyerOrderStatus===0 && orderData.payNowUrl" type="primary" id="Pay-Now-btn" @click.stop="jumpToPay">{{$t('orders.ordersPayNow')}}</el-button>
+            <el-button v-if="orderData.buyerOrderStatus===0 && orderData.payNowUrl" type="primary" class="button-default" id="Pay-Now-btn" @click.stop="jumpToPay">{{$t('orders.ordersPayNow')}}</el-button>
             <div v-if="orderData.buyerOrderStatus===1" class="order-detail-title-fotter-button">
-                <el-button type="primary" id="Contact-seller-btn" @click.stop="showContactInfo = true">{{$t('orders.ordersContactSeller')}}</el-button>
+                <el-button type="primary" class="button-default" id="Contact-seller-btn" @click.stop="showContactInfo = true">{{$t('orders.ordersContactSeller')}}</el-button>
                 <!-- 联系方式 -->
                 <ContactInfo v-if="showContactInfo" :contactInfo="orderData" @hide="showContactInfo=false" />
             </div>
-            <el-button v-if="orderData.buyerOrderStatus===2 && orderData.logisticsCode" type="primary" id="Track-Shipment-btn" @click.stop="jumpTo17track">{{$t('orders.ordersTrackShipment')}}</el-button>
+            <el-button v-if="orderData.buyerOrderStatus===2 && orderData.logisticsCode" type="primary" class="button-default" id="Track-Shipment-btn" @click.stop="jumpTo17track">{{$t('orders.ordersTrackShipment')}}</el-button>
         </div>
 
     </div>
@@ -112,8 +113,8 @@
 
 <style lang="scss" scoped>
     @use "@/assets/css/element-reset/tag.scss" as *;
+    @use "@/assets/css/element-reset/button.scss" as *;
     .order-list-box {
-        overflow: hidden;
         border-radius: 8px;
         border: 1px solid #E4E7EC;
         background: #FFF;
@@ -122,20 +123,75 @@
             background: #F2F4F7;
             box-shadow: 0px 4px 8px -2px rgba(16, 24, 40, 0.10), 0px 2px 4px -2px rgba(16, 24, 40, 0.06);
         }
+        .m & {
+            padding: 0 0 12px;
+            .header {
+                padding: 12px;
+                .span {
+                    font-size: 12px;
+                    font-weight: 600;
+                    line-height: 18px;
+                    /*&.big {*/
+                    /*    font-size: 16px;*/
+                    /*    line-height: 24px;*/
+                    /*}*/
+                }
+            }
+            .goods-content {
+                padding: 0 12px;
+                + .goods-content {
+                    margin-top: 8px;
+                }
+                .goods-attr {
+                    padding: 0 12px;
+                    .goods-spu {
+                        font-size: 12px;
+                        line-height: 18px;
+                    }
+                    .goods-sku {
+                        font-size: 12px;
+                        line-height: 18px;
+                    }
+                }
+                .goods-quantity-container {
+                    min-width: 100px;
+                    .goods-quantity-amount {
+                        font-size: 14px;
+                        line-height: 20px;
+                    }
+                    .goods-quantity-num {
+                        font-size: 12px;
+                        line-height: 18px;
+                    }
+                }
+            }
+            .goods-details-bottom {
+                padding: 0 12px 8px;
+                .goods-details-text {
+                    font-size: 12px;
+                    line-height: 18px;
+                    &.bold {
+                        font-size: 16px;
+                        line-height: 24px;
+                    }
+                }
+            }
+            .goods-details-bottom-button {
+                border-top: 0;
+                padding: 0 12px 0;
+                .button-default {
+                    height: 36px;
+                }
+            }
+        }
         .header {
             padding: 20px 24px 0;
             display: flex;
             align-items: center;
             .link{
-                display: flex;
-                align-items: center;
                 border: 1px solid transparent;
                 &:hover {
                     border-bottom-color: #475467;
-                }
-                .icon {
-                    width: 18px;
-                    text-align: center;
                 }
             }
             .line {
@@ -199,14 +255,14 @@
                 white-space: nowrap;
                 flex-shrink: 0;
                 font-family: Inter;
-                .goods-quantity {
+                .goods-quantity-amount {
                     color: #101828;
                     font-size: 18px;
                     font-weight: 600;
                     line-height: 28px;
                     margin-bottom: 2px;
                 }
-                .quantity {
+                .goods-quantity-num {
                     color: #667085;
                     font-size: 16px;
                     font-weight: 400;
@@ -216,16 +272,9 @@
         }
         .goods-details-bottom {
             padding: 0 24px 16px;
-            overflow: hidden;
             .goods-details-text-container {
                 display: flex;
-                align-items: center;
-                .goods-details-text {
-                    + .goods-details-text {
-                        margin-top: 0;
-                        margin-left: 4px;
-                    }
-                }
+                align-items: baseline;
             }
             .goods-details-text {
                 color: #475467;
@@ -233,9 +282,6 @@
                 font-size: 14px;
                 font-weight: 400;
                 line-height: 20px;
-                /*+ .goods-details-text {*/
-                /*    margin-top: 4px;*/
-                /*}*/
                 &.bold {
                     color: #101828;
                     font-size: 20px;

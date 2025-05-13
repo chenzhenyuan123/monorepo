@@ -199,7 +199,7 @@ userStore.getUserInfo()
                 <el-form-item prop="firstName" class="nature-form-item">
                     <el-input v-model="form.firstName" class="nature-form-input input-default" @change="e => { form.firstName = e.trim() }" />
                 </el-form-item>
-                <div class="nature-form-group-center"></div>
+                <div class="flex-center-8"></div>
                 <el-form-item prop="lastName" class="nature-form-item">
                     <el-input v-model="form.lastName" class="nature-form-input input-default" @change="e => { form.lastName = e.trim() }" />
                 </el-form-item>
@@ -230,7 +230,7 @@ userStore.getUserInfo()
                     <el-form-item prop="" class="nature-form-item">
                         <el-input v-model="form.city" :placeholder="$t('profile.companyEditPlaceholderCity')" class="nature-form-input input-default" @change="e => { form.city = e.trim() }" />
                     </el-form-item>
-                    <div class="nature-form-group-center"></div>
+                    <div class="flex-center-8"></div>
                     <el-form-item prop="" class="nature-form-item">
                         <el-input v-model="form.postal" :placeholder="$t('profile.companyEditPlaceholderPostal')" class="nature-form-input input-default" @change="e => { form.postal = e.trim() }" />
                     </el-form-item>

@@ -212,7 +212,7 @@
     margin-bottom: 32px;
   }
   .search-form {
-    padding: 0 18px 8px;
+    padding: 0 0 8px;
   }
   .order-list-container {
     margin: 0 -32px;
