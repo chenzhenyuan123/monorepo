@@ -91,6 +91,7 @@ const checkResultData = reactive({
 const removeCodeVerify = () => {
     checkResultData.isVerify = false
 }
+// 验证码登录
 const codeSubmit = () => {
   const formEl = loginFormRef.value?.formRef
   formEl &&
@@ -121,7 +122,7 @@ const codeSubmit = () => {
       loading.value = false
       formEl.validateField('code')
     })
-  }
+}
 
 const onSubmit = () => {
   const formEl = loginFormRef.value?.formRef
@@ -139,6 +140,7 @@ const onSubmit = () => {
         }
       } else {
         showError.value = true
+        if(res?.failReason && !res?.isVerify) errorMessage(t(`service.${res.failCode}`) || res.failReason)
       }
       loading.value = false
     })
