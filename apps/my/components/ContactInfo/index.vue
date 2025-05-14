@@ -28,7 +28,7 @@ onMounted(() => {
 });
 </script>
 <template>
-  <Layer ref="layerRef" title="Contact us" class="layer" :positionTop="positionTop" :positionLeft="positionLeft" v-once @hide="$emit('hide')">
+  <Layer ref="layerRef" :title="$t('orders.orderContactAs')" class="layer" :positionTop="positionTop" :positionLeft="positionLeft" v-once @hide="$emit('hide')">
     <div class="contact-info">
       <div v-for="item in contactData" :key="item.value" v-show="contactInfo[item.value]" class="contact-info-item">
         <div class="contact-info-item-icon">
@@ -67,7 +67,7 @@ onMounted(() => {
     display: flex;
     align-items: center;
     padding: 15px 0px;
-    height: 32px;
+    height: 24px;
     &:last-child {
       border-bottom: none;
     }
