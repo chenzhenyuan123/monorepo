@@ -44,6 +44,9 @@
       font-weight: 400;
       text-align: right;
       flex-grow: 1;
+      .rtl & {
+        text-align: left;
+      }
     }
   }
 }

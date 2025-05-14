@@ -174,12 +174,14 @@ const routerGo = path => {
                       <div class="icon-container">
                         <img :src="flagUrl(currencyToCountryId[item.currency])" alt="">
                       </div>
+                      <div class="flex-center-8"></div>
                       <span>{{ formatterAmount(item.nonUSDCommission, item.currency) }}</span>
                     </div>
                     <div class="statistical-tabs-item">
                       <div class="icon-container">
                         <img :src="flagUrl('us')" alt="">
                       </div>
+                      <div class="flex-center-8"></div>
                       <span>{{ formatterAmount(item.estimatedUSDAmount, 'USD') }}</span>
                     </div>
                   </div>
@@ -190,8 +192,10 @@ const routerGo = path => {
               </div>
             </div>
             <template #reference>
-              <h3 class="num" :class="{ 'tip-trigger-style': walletInfo.nonUSDollar }">
-                <template v-if="walletInfo.nonUSDollar">≈</template>
+              <h3 v-if="walletInfo.nonUSDollar" class="num tip-trigger-style">
+                ≈ {{ formatterAmount(walletInfo.pendingCommission) }}
+              </h3>
+              <h3 v-else class="num">
                 {{ formatterAmount(walletInfo.pendingCommission) }}
               </h3>
             </template>

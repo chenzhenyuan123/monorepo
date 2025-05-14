@@ -194,7 +194,6 @@ onMounted(() => {
     display: flex;
     align-items: center;
     padding: 12px 16px;
-    margin-left: 5px;
     border-radius: 8px;
     border: 1px solid #D0D5DD;
     .el-icon {
@@ -254,6 +253,10 @@ onMounted(() => {
       top: 12px;
       right: 10px;
       color: #3369FF;
+      .rtl & {
+        left: 10px;
+        right: auto;
+      }
     }
     &:hover, &.active {
       background-color: #F2F4F7;

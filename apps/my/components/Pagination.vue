@@ -19,7 +19,7 @@ const paginationLayout = isMobile ? 'prev, pager, next' : 'prev, pager, next, si
 </script>
 
 <template>
-  <div class="flylinking-pagination">
+  <div class="flylinking-pagination direction-ltr">
     <el-pagination
       v-bind="$attrs"
       :page-sizes="pageSizes"

@@ -158,7 +158,7 @@ userStore.getUserInfo()
             </div>
         </el-form-item>
         <el-form-item :label="$t('profile.generalEditLableGender')" prop="gender" class="nature-form-item">
-            <el-radio-group v-model="form.gender" class="nature-form-input radio-default">
+            <el-radio-group v-model="form.gender" class="nature-form-input radio-default direction-ltr">
                 <el-radio v-for="item in genderData" :key="item.value" :value="item.value">{{ item.label }}</el-radio>
             </el-radio-group>
         </el-form-item>

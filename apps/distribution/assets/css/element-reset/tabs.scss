@@ -7,6 +7,11 @@
                 height: 1px;
                 background-color: #E4E7EC;
             }
+            .el-tabs__nav {
+                .rtl & {
+                    float: right;
+                }
+            }
         }
         .el-tabs__active-bar {
             background-color: #5548FF;
@@ -23,6 +28,10 @@
             }
             + .el-tabs__item {
                 margin-left: 12px;
+                .rtl & {
+                    margin-left: 0;
+                    margin-right: 12px;
+                }
             }
         }
     }

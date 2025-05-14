@@ -104,6 +104,7 @@ const jumpToDetail = (r) => {
       >
         {{$t('wallet.downloadText')}}
       </el-link>
+        <div class="flex-center-6"></div>
       <el-popover
         placement="top"
         effect="dark"
@@ -235,10 +236,17 @@ const jumpToDetail = (r) => {
 }
 // 下载文件
 .download-container {
-  text-align: right;
+    display: flex;
+    align-items: center;
+    justify-content: right;
   position: absolute;
   top: -60px;
   right: 12px;
+    .rtl & {
+        left: 12px;
+        right: auto;
+        justify-content: left;
+    }
   .download-btn {
     color: #443ACC;
     font-family: Inter;
@@ -252,8 +260,7 @@ const jumpToDetail = (r) => {
   }
   .popover-download-icon {
     display: block;
-    float: right;
-    margin-left: 6px;
+      line-height: 0;
   }
 }
 .m {

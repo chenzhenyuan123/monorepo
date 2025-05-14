@@ -37,6 +37,7 @@ const isMobile = useIsMobile()
 <style scoped lang="scss">
 .title {
   margin-left: 12px;
+  margin-right: 12px;
   font-size: 16px;
   font-weight: 600;
   height: 40px;
