@@ -158,7 +158,7 @@ const jumpToShop = () => {
             </div>
             <!-- 存在邮费并且达到包邮 -->
             <div v-if="orderInfo.orderDetailCO.freeShippingThreshold && orderInfo.orderDetailCO.discountedShippingAmount>0" class="goods-details-text">
-              <div class="goods-details-text2 deliver-p active">
+              <div class="goods-details-text2 deliver-p active  font-size16">
                 {{$t('orders.ordersFreeShippingLimit', {curreny: orderInfo.orderDetailCO.paymentCurrency, amt: currencyFormat(orderInfo.orderDetailCO.freeShippingThreshold)})}}
               </div>
             </div>
@@ -166,7 +166,7 @@ const jumpToShop = () => {
               <div class="goods-details-text1">
                 {{$t('orders.ordersTotal')}}
               </div>
-              <div class="goods-details-text2">
+              <div class="goods-details-text2 font-size24">
                 {{orderInfo.orderDetailCO.paymentCurrency}}  {{currencyFormat(orderInfo.orderDetailCO.paymentAmount)}}
               </div>
             </div>

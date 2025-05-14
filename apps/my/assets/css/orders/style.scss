@@ -1,5 +1,6 @@
 .orders-detail-box {
-  margin: 20px 0 32px;
+  margin: 20px auto 32px;
+  max-width: 1200px;
 }
 .order-detail-title {
   .title {
@@ -12,12 +13,14 @@
   }
   .order-detail-title-fotter {
     display: flex;
+    .el-button {
+      padding: 10px 14px;
+      height: 40px;
+    }
   }
   .order-detail-title-fotter-button {
     display: inline-block;
     margin-right: 12px;
-  }
-  .order-detail-title-fotter-button {
     position: relative;
   }
 }
@@ -34,6 +37,7 @@
     min-width: 280px;
     background-color: #fff;
     position: relative;
+    border-radius: 8px;
     .order-text {
       padding: 16px 20px 0;
       b {
@@ -54,6 +58,9 @@
       .contact-info-item-icon {
         float: left;
         margin-right: 6px;
+        img {
+          width: 24px;
+        }
       }
       .shipment-tag-a {
         display: inline-block;
@@ -118,6 +125,7 @@
       svg, i {
         color: #475467;
         line-height: 28px;
+        font-size: 20px;
       }
     }
     .goods-content {
@@ -180,7 +188,7 @@
       }
     }
     .goods-details-bottom {
-      padding: 16px 20px;
+      padding: 24px;
       overflow: hidden;
       padding-left: 40%;
       border-top: 1px solid #E4E7EC;
@@ -200,6 +208,13 @@
         .goods-details-text2 {
           text-align: right;
           font-weight: 600;
+          font-size: 20px;
+        }
+        .font-size24 {
+          font-size: 24px;
+        }
+        .font-size16 {
+          font-size: 16px;
         }
         .deliver-p {
           text-align: right;
@@ -221,6 +236,7 @@
       overflow: hidden;
       margin-bottom: 24px;
       background-color: #fff;
+      border-radius: 8px;
     }
   }
 }
@@ -228,9 +244,11 @@
   flex: 1;
   background-color: #fff;
   overflow: hidden;
+  border-radius: 8px;
   .shipping-title {
     padding: 16px 20px;
     border-bottom: 1px solid #E4E7EC;
+    font-weight: 600;
   }
   .shipping-content {
     padding: 16px 20px;
@@ -268,6 +286,7 @@
     .right {
       margin-bottom: 16px;
       width: 100%;
+      border-radius: 0;
     }
     .left {
       width: 100%;
@@ -277,10 +296,14 @@
       .goods-details-bottom {
         padding-left: 20px;
       }
+      .order-detail-content-top {
+        border-radius: 0;
+      }
     }
   }
   .shipping-box {
     width: 100%;
+    border-radius: 0;
     .shipping-content {
       dl {
         display: block;

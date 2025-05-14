@@ -47,6 +47,11 @@
     background:#EFF8FF;
     color: #175CD3;
     font-weight: 600;
+    padding: 4px 10px;
+    height: 28px;
+    :deep(.el-tag__content) {
+        line-height: 29px;
+    }
 }
 .orders-status-tag.el-tag.success {
     border: 1px solid #ABEFC6;
