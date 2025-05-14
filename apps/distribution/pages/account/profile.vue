@@ -264,6 +264,17 @@ onBeforeUnmount(() => {
         float: left;
         position: sticky;
         top: 0;
+        .rtl & {
+            float: right;
+            .profile-menu-item {
+                padding: 8px 10px 8px 12px;
+                border-left: 0;
+                border-right: 2px solid transparent;
+                &.active {
+                    border-right-color: #5548FF;
+                }
+            }
+        }
         .profile-menu-item {
             display: inline-block;
             width: 100%;

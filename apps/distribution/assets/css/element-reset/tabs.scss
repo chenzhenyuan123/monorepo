@@ -8,9 +8,11 @@
                 background-color: #E4E7EC;
             }
             .el-tabs__nav {
-                .rtl & {
-                    float: right;
-                }
+                display: inline-flex;
+                float: none;
+                //.rtl & {
+                //    float: right;
+                //}
             }
         }
         .el-tabs__active-bar {
