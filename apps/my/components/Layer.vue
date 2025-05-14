@@ -2,6 +2,8 @@
 import { Close } from '@element-plus/icons-vue';
 import { ClickOutside as vClickOutside } from 'element-plus';
 const isMobile = useIsMobile()
+const { $locale } = useNuxtApp()
+const isRtl = ['ar', 'he-IL'].includes($locale.value) // 判断是否为 阿拉伯语和希伯来语，默认靠右
 
 const props = defineProps({
   title: {
@@ -9,7 +11,7 @@ const props = defineProps({
     default: ''
   },
   left: {
-    type: Number,
+    type: [Number,String],
     default: 0
   }
 })
@@ -41,7 +43,7 @@ defineExpose({ show, hide, toggle, getIsShow })
     <div
       v-if="isShow"
       :class="{ 'layer': true, 'is-pc': !isMobile }"
-      :style="{left: (!isMobile && left) ? '0px' : 'auto'}"
+      :style="{left: (!isMobile && left) ? '0px' : ((!isMobile && !left && isRtl) ? '0' : 'auto'), right: (!isMobile && !left && isRtl) ? 'auto' : '0'}"
       @click.stop="hide"
       v-click-outside="hide"
     >
@@ -173,10 +175,6 @@ defineExpose({ show, hide, toggle, getIsShow })
         box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.1), 0px 4px 20px 0px rgba(0, 0, 0, 0.15);
         &.init-animation {
           animation: none;
-        }
-        .rtl & {
-          left: 80px;
-          right: auto;
         }
         .layer-body-title-container {
           .layer-body-title-close {
