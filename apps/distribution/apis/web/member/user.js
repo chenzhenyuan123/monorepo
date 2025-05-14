@@ -26,3 +26,7 @@ export const editUserCompanyInfo = (data) => {
 export const editUserShippingInfo = (data) => {
     return useHttp.post(`/member/user/editUserShippingInfo`, data, { server: true })
 }
+// 删除用户收货信息
+export const deleteUserShippingInfoById = (shippingId) => {
+    return useHttp.get(`/member/user/deleteUserShippingInfoById/${shippingId}`, {}, { server: true })
+}
