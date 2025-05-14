@@ -224,6 +224,10 @@
 .margin-right12{
   margin-right: 12px;
 }
+.rtl .margin-right12 {
+  margin-right: 0;
+  margin-left: 12px;
+}
 .shipping-box {
   flex: 1;
   background-color: #fff;
