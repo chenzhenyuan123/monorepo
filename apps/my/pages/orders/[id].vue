@@ -70,10 +70,10 @@ const jumpToShop = () => {
           <!-- 联系方式弹窗 -->
           <ContactInfo v-if="showContactInfo2" :contactInfo="orderInfo.orderDetailCO" left="0" @hide="showContactInfo2=false" />
         </div>
-        <el-button v-if="orderInfo.orderDetailCO.buyerOrderStatus===2" id="Mark-as-Received-btn" @click="showReceived=true">{{$t('orders.ordersMarkAsReceived')}}</el-button>
-        <a v-if="orderInfo.orderDetailCO.buyerOrderStatus===2 && orderInfo.orderDetailCO.logisticsCode" :href="`https://t.17track.net/en#nums=${orderInfo.orderDetailCO.logisticsCode}`" target="_blank">
+        <a v-if="orderInfo.orderDetailCO.buyerOrderStatus===2 && orderInfo.orderDetailCO.logisticsCode" :href="`https://t.17track.net/en#nums=${orderInfo.orderDetailCO.logisticsCode}`" target="_blank" class="margin-right12">
           <el-button type="primary" id="Track-Shipment-btn">{{$t('orders.ordersTrackShipment')}}</el-button>
         </a>
+        <el-button v-if="orderInfo.orderDetailCO.buyerOrderStatus===2" id="Mark-as-Received-btn" @click="showReceived=true">{{$t('orders.ordersMarkAsReceived')}}</el-button>
       </div>
     </div>
     <div class="order-detail-content">
@@ -86,9 +86,9 @@ const jumpToShop = () => {
           <b>{{$t('orders.ordersCreateTime')}}:</b>
           <p>{{formatDate(orderInfo.orderDetailCO.createTime)}}</p>
         </div>
-        <div class="order-text">
+        <div v-if="orderInfo.orderDetailCO.logisticsCode" class="order-text">
           <b>{{$t('orders.ordersShipmentTrackNo')}}</b>
-          <p v-if="orderInfo.orderDetailCO.logisticsCode">
+          <p>
             <a :href="`https://t.17track.net/en#nums=${orderInfo.orderDetailCO.logisticsCode}`" target="_blank" class="shipment-tag-a">
               <span class="ellipsis">{{orderInfo.orderDetailCO.logisticsCode}}</span>
               <i class="Flylink icon-share-04"></i>
@@ -121,11 +121,12 @@ const jumpToShop = () => {
                 <PictureForOSSAndCenter :image="previewImg(kv.mainPicture)" ref="imageRef" class="store-goods-module-item-image"></PictureForOSSAndCenter>
               </div>
               <div class="goods-attr">
-                <p class="goods-sku ellipsis">
+                <!-- <p class="goods-sku ellipsis">
                   {{$t('orders.ordersSkuCode')}}: 
                   <span class="goods-sku-code ellipsis">{{kv.skuCode}}</span>
-                </p>
-                <div class="goods-spu ellipsis2" v-html="kv.skuDesc" />
+                </p> -->
+                <div v-if="kv.skuDesc" class="goods-spu ellipsis2" v-html="kv.skuDesc" />
+                <div v-else>{{$t('orders.orderSkuDesc')}}</div>
               </div>
             </dt>
             <dd class="goods-quantity">
