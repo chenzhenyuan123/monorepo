@@ -112,7 +112,6 @@ defineExpose({ show, hide, toggle, getIsShow })
         left: 0;
         bottom: 0;
         width: 100%;
-        max-height: 100%;
         background-color: #ffffff;
         border-radius: 12px 12px 0 0;
         &.init-animation {

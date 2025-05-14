@@ -142,6 +142,7 @@
         .goods-attr {
           width: calc(100% - 80px);
           float: left;
+          margin-top: 6px;
          .goods-sku {
             color: #667085;
             font-family: Inter;
@@ -178,7 +179,7 @@
     .goods-details-bottom {
       padding: 16px 20px;
       overflow: hidden;
-      padding-left: 50%;
+      padding-left: 40%;
       border-top: 1px solid #E4E7EC;
       .goods-details-text {
         display: flex;
@@ -201,7 +202,7 @@
           text-align: right;
           flex: 1;
           font-weight: 400;
-          font-size: 12px;
+          font-size: 16px;
           margin-top: -8px;
         }
         .decoration{
@@ -219,6 +220,9 @@
       background-color: #fff;
     }
   }
+}
+.margin-right12{
+  margin-right: 12px;
 }
 .shipping-box {
   flex: 1;
