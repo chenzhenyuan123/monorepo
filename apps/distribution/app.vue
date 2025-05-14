@@ -3,14 +3,39 @@ import Flylinking from '@/assets/imgs/64x64.icon.ico'
 import AccountDisable from '@/components/AccountDisable';
 import { ElConfigProvider } from 'element-plus'
 import ZH_CN from 'element-plus/es/locale/lang/zh-cn'
-import EN from 'element-plus/es/locale/lang/en'
+import en from 'element-plus/es/locale/lang/en'
+import es from 'element-plus/es/locale/lang/es'
+import fr from 'element-plus/es/locale/lang/fr'
+import de from 'element-plus/es/locale/lang/de'
+import pt from 'element-plus/es/locale/lang/pt'
+import ar from 'element-plus/es/locale/lang/ar'
+import ru from 'element-plus/es/locale/lang/ru'
+import ja from 'element-plus/es/locale/lang/ja'
+import ko from 'element-plus/es/locale/lang/ko'
+import vi from 'element-plus/es/locale/lang/vi'
+import it from 'element-plus/es/locale/lang/it'
+import he from 'element-plus/es/locale/lang/he'
 
 const { $locale } = useNuxtApp()
+
+const langs = {
+  'en-US': en,
+  'es-ES': es,
+  'fr-FR': fr,
+  'zh-CN': ZH_CN,
+  'de-DE': de,
+  'pt-PT': pt,
+  'ar': ar,
+  'ru-RU': ru,
+  'ja-JP': ja,
+  'ko-KR': ko,
+  'vi-VN': vi,
+  'it-IT': it,
+  'he-IL': he,
+};
 const lang = computed(() => {
-  return $locale.value === 'zh-CN' ? ZH_CN : EN
-})
-const isRTL = computed(() => {
-  return ['ar', 'he-IL'].includes($locale.value)
+  const elLang = langs[$locale.value]
+  return elLang ? elLang : en
 })
 
 useHead({
@@ -58,7 +83,7 @@ useHead({
     <noscript>
       You have to enable JavaScript to view this page.
     </noscript>
-    <el-config-provider :locale="lang" :rtl="isRTL">
+    <el-config-provider :locale="lang">
       <NuxtLayout>
         <NuxtPage />
         <!-- <AccountDisable /> -->
