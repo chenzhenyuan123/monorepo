@@ -161,7 +161,7 @@
                     ></AccountProfileGeneral>
                 </div>
                 <div id="password" class="profile">
-                    <AccountBuyerPassword></AccountBuyerPassword>
+                    <AccountBuyerPassword :user-data="userData"></AccountBuyerPassword>
                 </div>
                 <div id="contact" class="profile">
                     <AccountProfileContact
