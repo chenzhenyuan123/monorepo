@@ -21,6 +21,9 @@
   .direction-text-align-right {
     text-align: left;
   }
+  .direction-text-align-left {
+    text-align: right;
+  }
   .direction-flex-right {
     justify-content: left;
   }
@@ -30,6 +33,9 @@
   text-align: unset;
   .direction-text-align-right {
     text-align: right;
+  }
+  .direction-text-align-left {
+    text-align: left;
   }
   .direction-flex-right {
     justify-content: right;

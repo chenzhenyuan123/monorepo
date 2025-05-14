@@ -10,6 +10,9 @@
     line-height: 38px;
     margin: 8px 0 20px;
   }
+  .order-detail-title-fotter {
+    display: flex;
+  }
   .order-detail-title-fotter-button {
     display: inline-block;
     margin-right: 12px;
@@ -220,13 +223,6 @@
       background-color: #fff;
     }
   }
-}
-.margin-right12{
-  margin-right: 12px;
-}
-.rtl .margin-right12 {
-  margin-right: 0;
-  margin-left: 12px;
 }
 .shipping-box {
   flex: 1;
