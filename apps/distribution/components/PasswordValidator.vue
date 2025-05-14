@@ -7,7 +7,8 @@
     <ul v-if="data" class="password-validator-box">
       <li v-for="(item, index) in validatorData" :key="item.value">
         <el-icon :class="{'password-validator-box-icon': validatorFn(item.type, index)}"><SuccessFilled /></el-icon>
-        <span>{{$t(item.label)}}</span>
+        <div class="flex-center-8"></div>
+        <span class="direction-text-align-left">{{$t(item.label)}}</span>
       </li>
     </ul>
   </div>
@@ -85,9 +86,8 @@ const validatorFn = (type, index) => {
         line-height: 20px;
         margin-bottom: 12px;
         overflow: hidden;
+        display: flex;
         .el-icon {
-          float: left;
-          margin-right: 8px;
           font-size: 20px;
           color: #D0D5DD;
           &.password-validator-box-icon {
@@ -97,9 +97,7 @@ const validatorFn = (type, index) => {
         span {
           display: block;
           width: 330px;
-          float: left;
           word-break: break-all;
-          text-align: left;
         }
       }
     }
