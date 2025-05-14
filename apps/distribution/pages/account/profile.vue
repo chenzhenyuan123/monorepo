@@ -13,7 +13,7 @@ const userData = reactive({})
 const userBasicData = reactive({})
 const contactInfoData = reactive({})
 const companyData = reactive({})
-const shippingData = reactive({})
+const shippingData = ref([])
 const locationData = reactive({
     countryData: [
         // {
@@ -35,6 +35,7 @@ const locationData = reactive({
 const anchorData = computed(() => {
     return [
         { value: 'general', label: t('profile.general') },
+        { value: 'password', label: t('profile.password') },
         { value: 'contact', label: t('profile.contact') },
         { value: 'company', label: t('profile.company') },
         { value: 'shippingAddress', label: t('profile.shippingAddress') },
@@ -59,7 +60,7 @@ const getUserAccountInfo = async() => {
         Object.assign(userBasicData, res.userBasic)
         Object.assign(contactInfoData, res.contactInfo)
         Object.assign(companyData, res.company)
-        Object.assign(shippingData, res.shipping)
+        shippingData.value = [...res.shipping]
     }
 }
 // 获取所有国家列表
@@ -143,41 +144,44 @@ onBeforeUnmount(() => {
                 class="profile-select-menu select-default"
                 @change="changeMenu"
             >
-              <el-option
-                v-for="item in anchorData"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              />
+                <el-option
+                        v-for="item in anchorData"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                />
             </el-select>
             <div class="profile-group">
                 <div id="general" class="profile">
                     <AccountProfileGeneral
-                        :user-data="userData"
-                        :nature-data="userBasicData"
-                        :country-data="locationData.countryData"
-                        @update-data="getUserAccountInfo"
+                            :user-data="userData"
+                            :nature-data="userBasicData"
+                            :country-data="locationData.countryData"
+                            @update-data="getUserAccountInfo"
                     ></AccountProfileGeneral>
+                </div>
+                <div id="password" class="profile">
+                    <AccountBuyerPassword :user-data="userData"></AccountBuyerPassword>
                 </div>
                 <div id="contact" class="profile">
                     <AccountProfileContact
-                        :nature-data="contactInfoData"
-                        @update-data="getUserAccountInfo"
+                            :nature-data="contactInfoData"
+                            @update-data="getUserAccountInfo"
                     ></AccountProfileContact>
                 </div>
                 <div id="company" class="profile">
                     <AccountProfileCompany
-                        :nature-data="companyData"
-                        :country-data="locationData.countryData"
-                        @update-data="getUserAccountInfo"
+                            :nature-data="companyData"
+                            :country-data="locationData.countryData"
+                            @update-data="getUserAccountInfo"
                     ></AccountProfileCompany>
                 </div>
                 <div id="shippingAddress" class="profile">
-                    <AccountProfileShippingAddress
-                        :nature-data="shippingData"
-                        :country-data="locationData.countryData"
-                        @update-data="getUserAccountInfo"
-                    ></AccountProfileShippingAddress>
+                    <AccountBuyerShippingAddressGroup
+                            :nature-data="shippingData"
+                            :country-data="locationData.countryData"
+                            @update-data="getUserAccountInfo"
+                    ></AccountBuyerShippingAddressGroup>
                 </div>
             </div>
         </div>
@@ -185,7 +189,7 @@ onBeforeUnmount(() => {
 </template>
 
 <style lang="scss" scoped>
-@import url("@/assets/css/element-reset/select.scss");
+@use "@/assets/css/element-reset/select.scss" as *;
 * {
     box-sizing: border-box;
 }
