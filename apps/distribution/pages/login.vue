@@ -123,6 +123,13 @@ const codeSubmit = () => {
       formEl.validateField('code')
     })
 }
+// 返回邮件
+const codeBack = () => { 
+  isPasswordLogin.value = ''
+  checkResultData.isVerify = false
+  checkResultData.errorForExceedingLimit = false
+  clearInterval(timer.value);
+}
 
 const onSubmit = () => {
   const formEl = loginFormRef.value?.formRef
@@ -245,7 +252,7 @@ const sendAgain = async() => {
               </el-form-item>
               <el-form-item>
                 <el-button v-if="!checkResultData.errorForExceedingLimit" type="primary" id="login-btn-login" class="signup-btn" :loading="loading" @click="codeSubmit()">{{ $t('login.loginAccount') }}</el-button>
-                <el-button id="login-btn-login" class="signup-btn margin-top16" @click="isPasswordLogin=''">{{ $t('email-sent.emailSentBack') }}</el-button>
+                <el-button id="login-btn-login" class="signup-btn margin-top16" @click="codeBack()">{{ $t('email-sent.emailSentBack') }}</el-button>
               </el-form-item>
             </template>
             <template v-else>
