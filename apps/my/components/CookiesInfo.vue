@@ -23,7 +23,7 @@ const toPrivacy = () => {
   <template v-if="!trackingCookies">
     <div v-if="isMobile" class="container-m">
       <div class="t">
-        {{ $t('home.cookieProtocolTip1') }} 
+        {{ $t('home.cookieProtocolTip1') }}
         <a class="privacy" href="/legal/privacy-policy" target="_blank">{{$t('login.footerPrivacyPolice')}}</a>.
       </div>
       <div class="t d">{{ $t('home.cookieProtocolTip2') }}</div>
@@ -41,21 +41,24 @@ const toPrivacy = () => {
           <i class="Flylink icon-flag-05"></i>
         </div>
       </div>
-      <div>
+      <div class="info">
         <div class="t">
-          {{ $t('home.cookieProtocolTip1') }} 
+          {{ $t('home.cookieProtocolTip1') }}
           <a class="privacy" href="/legal/privacy-policy" target="_blank">{{$t('login.footerPrivacyPolice')}}</a>.
           {{ $t('home.cookieProtocolTip2') }}
         </div>
         <!-- <div class="t d">{{ $t('home.cookieProtocolTip2') }}</div> -->
       </div>
       <div class="right">
+        <div class="flex-center-8"></div>
         <button id="cookieProtocol-btn-decline" class="btn" @click="tracking('0')">
           {{ $t('home.cookieProtocolDecline') }}
         </button>
+        <div class="flex-center-12"></div>
         <button id="cookieProtocol-btn-allow" class="btn allow" @click="tracking('1')">
           {{ $t('home.cookieProtocolAllow') }}
         </button>
+        <div class="flex-center-8"></div>
         <i id="cookieProtocol-btn-allow" class="Flylink icon-x-close" @click="tracking('1')"></i>
       </div>
     </div>
@@ -65,7 +68,7 @@ const toPrivacy = () => {
 <style lang="scss" scoped>
 .t {
   font-size: 16px;
-  color: #ffffff; 
+  color: #ffffff;
   line-height: 24px;
 }
 .d {
@@ -86,7 +89,7 @@ const toPrivacy = () => {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 0 16px 0 0;
+    /*margin: 0 16px 0 0;*/
     width: 48px;
     height: 48px;
     border-radius: 10px;
@@ -95,44 +98,51 @@ const toPrivacy = () => {
       color: #fff;
     }
   }
+  .info {
+    padding: 0 16px;
+  }
   .right {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 0 0 0 24px;
-    min-width: 200px;
     .btn {
       cursor: pointer;
       padding: 10px 16px;
       border-radius: 8px;
       background: #fff;
       color: #443ACC;
-      padding: 10px 16px;
+      white-space: nowrap;
     }
     .allow {
-      margin-left: 12px;
       background: #5548FF;
       color: #fff;
-      margin-right: 12px;
     }
     .icon-x-close {
+      display: block;
+      width: 40px;
+      min-width: 40px;
+      height: 40px;
+      line-height: 40px;
+      text-align: center;
       cursor: pointer;
-      margin-left: 18px;
       color: #fff;
       opacity: 0.7;
     }
   }
 }
-.container-m { 
+.container-m {
   position: absolute;
   z-index: 9999;
   background: #443ACC;
   left: 8px;
   right: 8px;
   bottom: 16px;
-  padding: 16px 48px 16px 16px;
+  padding: 16px;
   border: 1px solid #776CFF;
   border-radius: 12px;
+  .t {
+    padding-right: 32px;
+  }
   .btn {
     margin-top: 24px;
     cursor: pointer;
@@ -140,7 +150,7 @@ const toPrivacy = () => {
     border-radius: 8px;
     background: #fff;
     color: #443ACC;
-    width: calc(100% + 32px);
+    width: 100%;
   }
   .allow {
     margin-top: 12px;

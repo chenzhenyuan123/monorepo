@@ -396,6 +396,7 @@ userStore.getUserInfo()
         </el-form-item>
         <el-form-item class="nature-form-buttons">
             <el-button id="profile-btn-shipping-address-cancel" class="button-default" @click="cancel">{{$t('profile.cancel')}}</el-button>
+            <div class="flex-center-12"></div>
             <el-button id="profile-btn-shipping-address-save" type="primary" class="button-default" :loading="loading" @click="submit">{{$t('profile.save')}}</el-button>
         </el-form-item>
     </el-form>
@@ -441,6 +442,7 @@ userStore.getUserInfo()
         </div>
         <div v-if="!isEdit" class="nature-item nature-buttons">
             <el-button type="text" class="button-default" @click="showDeleteDialog">{{$t('profile.delete')}}</el-button>
+            <div class="flex-center-12"></div>
             <el-button class="button-default" :loading="loading" @click="edit">{{$t('profile.edit')}}</el-button>
         </div>
     </div>

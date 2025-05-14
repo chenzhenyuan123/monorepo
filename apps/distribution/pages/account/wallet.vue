@@ -196,12 +196,14 @@ onMounted(() => {
                       <div class="icon-container">
                         <img :src="flagUrl(currencyToCountryId[item.currency])" alt="">
                       </div>
+                      <div class="flex-center-8"></div>
                       <span>{{ formatterAmount(item.nonUSDCommission, item.currency) }}</span>
                     </div>
                     <div class="statistical-tabs-item">
                       <div class="icon-container">
                         <img :src="flagUrl('us')" alt="">
                       </div>
+                      <div class="flex-center-8"></div>
                       <span>{{ formatterAmount(item.estimatedUSDAmount, 'USD') }}</span>
                     </div>
                   </div>
@@ -212,8 +214,10 @@ onMounted(() => {
               </div>
             </div>
             <template #reference>
-              <span class="card-amount" :class="{ 'tip-trigger-style': walletInfo.nonUSDollar }">
-                <template v-if="walletInfo.nonUSDollar">≈</template>
+              <span v-if="walletInfo.nonUSDollar" class="card-amount tip-trigger-style">
+                ≈ {{ formatterAmount(walletInfo.pendingCommission) }}
+              </span>
+              <span v-else class="card-amount">
                 {{ formatterAmount(walletInfo.pendingCommission) }}
               </span>
             </template>
@@ -352,6 +356,7 @@ onMounted(() => {
       font-weight: 600;
       line-height: 44px; /* 122.222% */
       letter-spacing: -0.72px;
+      direction: ltr;
       &.tip-trigger-style {
         text-decoration-line: underline;
         text-decoration-style: dotted;
