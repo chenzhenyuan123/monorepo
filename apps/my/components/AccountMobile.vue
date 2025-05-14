@@ -26,10 +26,12 @@ const toLogin = async() => {
 <template>
   <div class="container" @click="goAccount">
     <img class="avatar" src="~@/assets/imgs/avatar.svg">
+    <div class="flex-center-12"></div>
     <div>
       <div v-if="userStore.userInfo.userName" class="name">{{ userStore.userInfo.userName }}</div>
       <div class="email">{{ userStore.userInfo.loginAccount }}</div>
     </div>
+    <div class="flex-center"></div>
     <div class="logout">
       <i class="Flylink icon-log-out-01" @click="toLogin()"></i>
     </div>
@@ -46,7 +48,6 @@ const toLogin = async() => {
   // flex-direction: row;
   align-items: center;
   .avatar {
-    margin-right: 12px;
     width: 40px;
     height: 40px;
   }
@@ -63,9 +64,7 @@ const toLogin = async() => {
   }
   .logout {
     cursor: pointer;
-    position: absolute;
-    top: 24px;
-    right: 24px;
+    align-self: flex-start;
     .icon-log-out-01 {
       font-size: 20px;
     }

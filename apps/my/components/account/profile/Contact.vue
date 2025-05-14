@@ -109,6 +109,7 @@ userStore.getUserInfo()
         </el-form-item>
         <el-form-item class="nature-form-buttons">
             <el-button id="profile-btn-contact-cancel" class="button-default" @click="cancel">{{$t('profile.cancel')}}</el-button>
+            <div class="flex-center-12"></div>
             <el-button id="profile-btn-contact-save" type="primary" class="button-default" :loading="loading" @click="submit">{{$t('profile.saveChanges')}}</el-button>
         </el-form-item>
     </el-form>

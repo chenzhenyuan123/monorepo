@@ -286,3 +286,17 @@
     }
   }
 }
+
+// 兼容多语言从右向左
+.flex-center {
+  flex: 1;
+}
+// 固定宽度
+$flex-center-width-max: 24;
+@for $i from 1 through $flex-center-width-max {
+  .flex-center-#{$i} {
+    width: $i * 1px;
+    min-width: $i * 1px;
+    align-self: stretch;
+  }
+}

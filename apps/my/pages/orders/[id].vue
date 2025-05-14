@@ -70,9 +70,10 @@ const jumpToShop = () => {
           <!-- 联系方式弹窗 -->
           <ContactInfo v-if="showContactInfo2" :contactInfo="orderInfo.orderDetailCO" left="0" @hide="showContactInfo2=false" />
         </div>
-        <a v-if="orderInfo.orderDetailCO.buyerOrderStatus===2 && orderInfo.orderDetailCO.logisticsCode" :href="`https://t.17track.net/en#nums=${orderInfo.orderDetailCO.logisticsCode}`" target="_blank" class="margin-right12">
+        <a v-if="orderInfo.orderDetailCO.buyerOrderStatus===2 && orderInfo.orderDetailCO.logisticsCode" :href="`https://t.17track.net/en#nums=${orderInfo.orderDetailCO.logisticsCode}`" target="_blank">
           <el-button type="primary" id="Track-Shipment-btn">{{$t('orders.ordersTrackShipment')}}</el-button>
         </a>
+        <div v-if="orderInfo.orderDetailCO.buyerOrderStatus===2 && orderInfo.orderDetailCO.logisticsCode" class="flex-center-8"></div>
         <el-button v-if="orderInfo.orderDetailCO.buyerOrderStatus===2" id="Mark-as-Received-btn" @click="showReceived=true">{{$t('orders.ordersMarkAsReceived')}}</el-button>
       </div>
     </div>

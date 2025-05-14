@@ -36,6 +36,20 @@
                 box-shadow: none;
             }
         }
+        &:first-child {
+            .el-radio-button__inner {
+                .rtl & {
+                    border-radius: 0 8px 8px 0;
+                }
+            }
+        }
+        &:last-child {
+            .el-radio-button__inner {
+                .rtl & {
+                    border-radius: 8px 0 0 8px;
+                }
+            }
+        }
         + .el-radio-button {
             .el-radio-button__inner {
                 border-left: 1px solid #D0D5DD;

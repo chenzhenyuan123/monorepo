@@ -169,7 +169,10 @@
   }
   .email-verify-error-box {
     margin: 32px 0;
-    //text-align: left;
+    text-align: left;
+    .rtl & {
+      text-align: right;
+    }
     li {
       line-height: 28px;
       color: #475467;

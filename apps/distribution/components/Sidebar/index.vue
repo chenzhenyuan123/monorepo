@@ -15,7 +15,7 @@ const selectMenu = () => {
 </script>
 
 <template>
-  <div>
+  <div class="sidebar">
     <el-scrollbar :class="{ 'border-none' : isMobile }">
       <el-menu
         :default-active="$route.fullPath"
@@ -41,53 +41,75 @@ const selectMenu = () => {
 <style scoped  lang="scss">
 .el-scrollbar {
   border-right: 1px solid #E4E7EC;
+  .rtl & {
+    border-left: 1px solid #E4E7EC;
+    border-right: 0;
+  }
 }
 .border-none {
   border-right: none;
 }
-:deep(.el-menu) {
-  --el-menu-icon-width: 24px;
-  --el-menu-base-level-padding: 12px;
-  height: 100%;
-  border-right: none;
-  color: #344054;
-  margin: 0 16px;
-  padding: 0;
-  .el-menu--inline {
-    margin: 0;
-  }
-  .el-menu-item {
-    margin-top: 0px;
-    height: 40px;
-    &:hover {
-      background: #fff;
-    }
-  }
-  .el-sub-menu__title {
-    height: 40px;
-    &:hover {
-      background: #fff;
-    }
-  }
-  .el-menu-item.is-active {
-    background: #F2F4F7;
-    border-radius: 6px;
+.sidebar {
+  :deep(.el-menu) {
+    --el-menu-icon-width: 24px;
+    --el-menu-base-level-padding: 12px;
+    height: 100%;
+    border-right: none;
     color: #344054;
-  }
-  .el-sub-menu.is-active {
+    margin: 0 16px;
+    padding: 0;
+    &:not(.el-menu--collapse) {
+      .el-sub-menu__title {
+        .rtl & {
+          padding-left: 36px;
+          padding-right: calc(var(--el-menu-base-level-padding) + var(--el-menu-level)*var(--el-menu-level-padding));
+        }
+      }
+    }
+    .el-menu--inline {
+      margin: 0;
+    }
+    .el-menu-item {
+      margin-top: 0px;
+      height: 40px;
+      .rtl & {
+        padding-left: 12px;
+        padding-right: calc(var(--el-menu-base-level-padding) + var(--el-menu-level)*var(--el-menu-level-padding));
+      }
+      &:hover {
+        background: #fff;
+      }
+    }
     .el-sub-menu__title {
+      height: 40px;
+      &:hover {
+        background: #fff;
+      }
+    }
+    .el-menu-item.is-active {
       background: #F2F4F7;
       border-radius: 6px;
       color: #344054;
     }
-  }
-  .el-sub-menu__icon-arrow {
-    font-size: 16px;
-  }
-  
-  &.sidebar-container {
-    .el-menu-item {
-      margin-bottom: 4px;
+    .el-sub-menu.is-active {
+      .el-sub-menu__title {
+        background: #F2F4F7;
+        border-radius: 6px;
+        color: #344054;
+      }
+    }
+    .el-sub-menu__icon-arrow {
+      font-size: 16px;
+      .rtl & {
+        left: 12px;
+        right: auto;
+      }
+    }
+
+    &.sidebar-container {
+      .el-menu-item {
+        margin-bottom: 4px;
+      }
     }
   }
 }

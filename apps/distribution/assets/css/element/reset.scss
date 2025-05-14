@@ -18,10 +18,28 @@
   .direction-inline-block {
     display: inline-block;
   }
+  .direction-text-align-right {
+    text-align: left;
+  }
+  .direction-text-align-left {
+    text-align: right;
+  }
+  .direction-flex-right {
+    justify-content: left;
+  }
 }
 .ltr {
   direction: ltr;
   text-align: unset;
+  .direction-text-align-right {
+    text-align: right;
+  }
+  .direction-text-align-left {
+    text-align: left;
+  }
+  .direction-flex-right {
+    justify-content: right;
+  }
 }
 
 .rtl {
@@ -31,15 +49,14 @@
   .el-form-item--label-top .el-form-item__label {
     text-align: unset;
   }
-  .el-table .el-table__cell {
-    text-align: unset;
-  }
   .el-form-item__error {
     width: 100%;
   }
-  .el-dialog__headerbtn {
-    right: auto;
-    left: 0;
+  .el-select__wrapper {
+    text-align: right;
+  }
+  .el-table .el-table__cell {
+    text-align: unset;
   }
   .el-table__body-wrapper {
     .el-scrollbar__wrap--hidden-default {
@@ -51,5 +68,9 @@
     .el-scrollbar__bar.is-horizontal {
       display: none;
     }
+  }
+  .el-dialog__headerbtn {
+    right: auto;
+    left: 0;
   }
 }

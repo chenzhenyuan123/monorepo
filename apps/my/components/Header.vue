@@ -21,19 +21,17 @@ const isMobile = useIsMobile()
   align-items: center;
   height: 80px;
   max-width: 1440px;
-  margin: 0 12px;
+  margin: 0 32px;
 }
-.header.m{margin: 0 auto;}
+.header.m{margin: 0 24px;}
 
 .logo {
   height: 30px;
-  padding-left: 24px;
   > img {
     height: 100%;
   }
 }
 
 .lang {
-  margin-right: 24px;
 }
 </style>

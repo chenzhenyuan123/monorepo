@@ -159,7 +159,10 @@ userStore.getUserInfo()
         </el-form-item>
         <el-form-item :label="$t('profile.generalEditLableGender')" prop="gender" class="nature-form-item">
             <el-radio-group v-model="form.gender" class="nature-form-input radio-default">
-                <el-radio v-for="item in genderData" :key="item.value" :value="item.value">{{ item.label }}</el-radio>
+                <template v-for="item in genderData" :key="item.value">
+                    <el-radio :value="item.value">{{ item.label }}</el-radio>
+                    <div class="flex-center"></div>
+                </template>
             </el-radio-group>
         </el-form-item>
         <el-form-item :label="$t('profile.generalEditLableLocation')" prop="location" class="nature-form-item">
@@ -190,6 +193,7 @@ userStore.getUserInfo()
         </el-form-item>
         <el-form-item class="nature-form-buttons">
             <el-button id="profile-btn-general-cancel" class="button-default" @click="cancel">{{$t('profile.cancel')}}</el-button>
+            <div class="flex-center-12"></div>
             <el-button id="profile-btn-general-save" type="primary" class="button-default" :loading="loading" @click="submit">{{$t('profile.saveChanges')}}</el-button>
         </el-form-item>
     </el-form>

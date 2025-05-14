@@ -37,6 +37,7 @@ const toPassword = () => {
     <slot name="collapse"></slot>
     <div class="right-menu">
       <Language />
+      <div class="flex-center-16"></div>
       <!-- 用户-->
       <el-dropdown class="avatar-container" trigger="click">
         <el-button>
@@ -71,7 +72,6 @@ const toPassword = () => {
     display: flex;
     align-items: center;
     .avatar-container {
-      margin-left: 16px;
       .avatar-wrapper {
         display: flex;
         align-items: center;

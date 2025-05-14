@@ -133,6 +133,7 @@ const formatterAmount = (v, c) => {
                     <template v-if="isMobile">{{ row.orderId }}</template>
                     <div v-else class="goods-container">
                         <el-image :src="previewImg(row.mainPicture)" alt="" class="goods-img" fit="contain"></el-image>
+                        <div class="flex-center-12"></div>
                         <div class="goods-info">
                             <div class="goods-info-h1" :title="row.goodsName">{{ row.goodsName }}</div>
                             <div class="goods-info-p">{{ $t('wallet.referralTableLabelOrderID') }}: {{ row.orderId }}</div>
@@ -198,7 +199,6 @@ const formatterAmount = (v, c) => {
         min-height: 40px;
         border-radius: 4px;
         background: lightgray 50% / cover no-repeat;
-        margin-right: 12px;
     }
     .goods-info {
         .goods-info-h1 {
