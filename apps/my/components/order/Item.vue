@@ -8,6 +8,7 @@
     import { ordersStatus } from "@/util/const.js";
     import {formatDate} from "@flylinking/core/utils/dateUtil";
     import {previewFlylinkStoreUrl} from "@flylinking/core/utils/urlUtil";
+    import { ArrowDown } from '@element-plus/icons-vue';
 
     const props = defineProps({
         orderData: {
@@ -24,6 +25,12 @@
             props.orderData.buyerOrderStatus===1 ||
             props.orderData.buyerOrderStatus===2 && props.orderData.logisticsCode
     })
+
+    const skuLimit = ref(2)
+    const isShowSkuMore = ref(false)
+    const showSkuMore = () => {
+        isShowSkuMore.value = true
+    }
 
     const jumpToDetail = () => {
         navigateTo({
@@ -68,19 +75,28 @@
             <div class="flex-center"></div>
             <el-tag class="orders-status-tag" :class="formatInTable(ordersStatus, orderData.buyerOrderStatus, 'value', 'tag')">{{$t(formatInTable(ordersStatus, orderData.buyerOrderStatus))}}</el-tag>
         </div>
-        <dl v-for="item in orderData.orderGoodsSkuCOList" :key="item.id" class="goods-content">
-            <div class="goods-imgs">
-                <img :src="previewImg(item.mainPicture)" lazy />
-            </div>
-            <div class="goods-attr">
-                <div class="goods-spu ellipsis2">{{ item.goodsTitle }}</div>
-                <p class="goods-sku ellipsis">{{ item.skuDesc }}</p>
-            </div>
-            <dd class="goods-quantity-container direction-text-align-right">
-                <p class="goods-quantity-amount">{{ item.paymentCurrency }} {{currencyFormat(item.paymentAmount)}}</p>
-                <p class="goods-quantity-num">{{$t('orders.orderItemLabelQuantity')}}: {{ item.quantity }}</p>
-            </dd>
-        </dl>
+        <template v-for="(item, i) in orderData.orderGoodsSkuCOList" :key="item.id">
+            <dl v-if="isShowSkuMore || i < skuLimit" class="goods-content">
+                <div class="goods-imgs">
+                    <img :src="previewImg(item.mainPicture)" lazy />
+                </div>
+                <div class="goods-attr">
+                    <div class="goods-spu ellipsis2">{{ item.goodsTitle }}</div>
+                    <p class="goods-sku ellipsis">{{ item.skuDesc }}</p>
+                </div>
+                <dd class="goods-quantity-container direction-text-align-right">
+                    <p class="goods-quantity-amount">{{ item.paymentCurrency }} {{currencyFormat(item.paymentAmount)}}</p>
+                    <p class="goods-quantity-num">{{$t('orders.orderItemLabelQuantity')}}: {{ item.quantity }}</p>
+                </dd>
+            </dl>
+        </template>
+        <div v-if="orderData.orderGoodsSkuCOList.length > skuLimit && !isShowSkuMore" class="goods-sku-more">
+            <el-button
+                    id="sku-more-btn"
+                    :icon="ArrowDown"
+                    @click.stop="showSkuMore"
+            >{{$t('orders.orderItemButtonMore')}}</el-button>
+        </div>
         <div class="goods-details-bottom direction-text-align-right">
             <div v-if="orderData.shippingFeeAmount >= 0" class="goods-details-text">
                 <div v-if="orderData.shippingFeeAmount > 0">{{$t('orders.ordersShippingAmount', { currency: orderData.paymentCurrency, amt: currencyFormat(orderData.shippingFeeAmount) })}}</div>
@@ -268,6 +284,15 @@
                     font-weight: 400;
                     line-height: 20px;
                 }
+            }
+        }
+        .goods-sku-more {
+            padding: 20px;
+            text-align: center;
+            .el-button {
+                height: 28px;
+                padding: 0 12px;
+                border-radius: 4px;
             }
         }
         .goods-details-bottom {
