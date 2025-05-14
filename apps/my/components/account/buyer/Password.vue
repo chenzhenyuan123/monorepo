@@ -1,10 +1,14 @@
 <script setup>
 import { useI18n } from "vue-i18n";
-import { useUserStore } from '@/store/userState.js'
-
 const { t } = useI18n();
-const userStore = useUserStore();
 const router = useRouter();
+
+const props  = defineProps({
+    userData: {
+        type: Object,
+        default: () => {}
+    }
+});
 // 已有密码-跳转密码重置
 const jumpToSetPassword = () => {
     navigateTo({
@@ -31,7 +35,7 @@ const jumpToResetPassword = () => {
         <div class="nature-list">
             <div class="nature-item">
                 <div class="nature-item-label">
-                    <el-button v-if="userStore.userInfo.havePassword" id="account-btn-set-password" class="button-default" @click="jumpToSetPassword">{{$t('profile.restPassword')}}</el-button>
+                    <el-button v-if="userData.havePassword" id="account-btn-set-password" class="button-default" @click="jumpToSetPassword">{{$t('profile.restPassword')}}</el-button>
                     <el-button v-else id="account-btn-set-password" class="button-default" @click="jumpToResetPassword">{{$t('profile.setPassword')}}</el-button>
                 </div>
             </div>
