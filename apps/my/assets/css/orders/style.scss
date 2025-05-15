@@ -154,7 +154,7 @@
         .goods-attr {
           width: calc(100% - 80px);
           float: left;
-          margin-top: 6px;
+          margin-top: 4px;
          .goods-sku {
             color: #667085;
             font-family: Inter;
@@ -190,13 +190,14 @@
     }
     .goods-details-bottom {
       padding: 24px;
+      padding-top: 10px;
       overflow: hidden;
       padding-left: 40%;
       border-top: 1px solid #E4E7EC;
       .goods-details-text {
         display: flex;
         justify-content: space-between;
-        margin-top: 8px;
+        margin-top: 14px;
         color: #101828;
         width: 100%;
         color: #101828;

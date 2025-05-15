@@ -88,7 +88,7 @@ const getSrc = (imgName) => {
         </div>
         <div class="order-text">
           <b>{{$t('orders.ordersCreateTime')}}:</b>
-          <p>{{formatDate(orderInfo.orderDetailCO.createTime)}}</p>
+          <p>{{formatDate(orderInfo.orderDetailCO.createTime)}} (UTC+8)</p>
         </div>
         <div v-if="orderInfo.orderDetailCO.logisticsCode" class="order-text">
           <b>{{$t('orders.ordersShipmentTrackNo')}}</b>
