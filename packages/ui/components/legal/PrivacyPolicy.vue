@@ -13,4 +13,11 @@
   min-width: 400px;
   max-width: 1200px;
 }
+@media screen and (max-width: 768px) {
+  .privacy-policy-box {
+    max-width: calc(100% - 40px);
+    min-width: calc(100% - 40px);
+    margin: 20px;
+  }
+}
 </style>
