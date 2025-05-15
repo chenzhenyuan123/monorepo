@@ -37,7 +37,7 @@ const getSrc = (imgName) => {
         <div class="contact-info-item-icon">
           <img v-if="contactInfo[item.value]" class="scope-other-info-icon2" :src="getSrc(item.icon.replace('.svg', ''))" loading="lazy">
         </div>
-        <span class="contact-info-item-name">{{contactInfo[item.value]}}</span>
+        <span class="contact-info-item-name direction-text-align-left">{{contactInfo[item.value]}}</span>
         <div
           class="contact-info-item-icon2-container copy-btn"
           :data-copy="contactInfo[item.value]"
