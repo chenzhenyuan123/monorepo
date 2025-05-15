@@ -26,13 +26,16 @@ const emit = defineEmits(["change","hide"])
 onMounted(() => {
   layerRef.value.show()
 });
+const getSrc = (imgName) => {
+  return new URL(`../../assets/imgs/contact-icon/${imgName}.svg`, import.meta.url).href
+}
 </script>
 <template>
   <Layer ref="layerRef" :title="$t('orders.orderContactAs')" class="layer" :positionTop="positionTop" :positionLeft="positionLeft" v-once @hide="$emit('hide')">
     <div class="contact-info">
       <div v-for="item in contactData" :key="item.value" v-show="contactInfo[item.value]" class="contact-info-item">
         <div class="contact-info-item-icon">
-          <img class="scope-other-info-icon2" :src="item.icon" lazy>
+          <img v-if="contactInfo[item.value]" class="scope-other-info-icon2" :src="getSrc(item.icon.replace('.svg', ''))" loading="lazy">
         </div>
         <span class="contact-info-item-name">{{contactInfo[item.value]}}</span>
         <div
