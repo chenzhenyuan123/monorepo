@@ -175,6 +175,7 @@
                   :start-placeholder="$t('wallet.referralFormPlaceholderPurchaseDateStart')"
                   :end-placeholder="$t('wallet.referralFormPlaceholderPurchaseDateEnd')"
                   @change="getOrderList"
+                  @clear="getOrderList"
           />
         </el-form-item>
         <el-form-item class="search-form-buttons">
