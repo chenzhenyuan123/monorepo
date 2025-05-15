@@ -7,6 +7,15 @@ const isCollapse = ref(false)
 provide('isCollapse', isCollapse)
 const isMobile = useIsMobile()
 const route = useRoute()
+const router = useRouter()
+
+const mWrapRef = ref(null)
+const pcWrapRef = ref(null)
+router.afterEach((to, from) => {
+  // console.log('afterEach')
+  mWrapRef.value?.scrollTo?.(0, 0)
+  pcWrapRef.value?.scrollTo?.(0, 0)
+})
 
 </script>
 
@@ -25,7 +34,7 @@ const route = useRoute()
           </template>
         </navbar>
       </div>
-      <div class="m-wrap" :class="{ 'full-page': settingStore.isFullPage, ['main-wrap-' + route.name]: true }">
+      <div ref="mWrapRef" class="m-wrap" :class="{ 'full-page': settingStore.isFullPage, ['main-wrap-' + route.name]: true }">
         <div>
           <slot />
         </div>
@@ -57,7 +66,7 @@ const route = useRoute()
         </navbar>
       </div>
       <!-- 内容区 -->
-      <div class="main-wrap" :class="{ 'full-page': settingStore.isFullPage, ['main-wrap-' + route.name]: true }">
+      <div ref="pcWrapRef" class="main-wrap" :class="{ 'full-page': settingStore.isFullPage, ['main-wrap-' + route.name]: true }">
         <div>
           <slot />
         </div>

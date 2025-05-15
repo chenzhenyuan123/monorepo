@@ -45,6 +45,9 @@ const jumpToShop = () => {
     const url = 's/' + orderInfo.value.orderDetailCO?.sellerStoreId
     window.open(previewFlylinkStoreUrl(url), '_blank')
 }
+const getSrc = (imgName) => {
+  return new URL(`../../assets/imgs/contact-icon/${imgName}.svg`, import.meta.url).href
+}
 </script>
 <template>
   <div class="orders-detail-box" :class="{'m': isMobile}">
@@ -101,7 +104,7 @@ const jumpToShop = () => {
           <b>{{$t('orders.ordersContactSeller')}}</b>
           <div class="order-text-icon">
             <div v-for="item in contactData" :key="item.value" v-show="orderInfo.orderDetailCO[item.value]" class="contact-info-item-icon">
-              <img v-if="orderInfo.orderDetailCO[item.value]" :src="item.icon" lazy />
+              <img v-if="orderInfo.orderDetailCO[item.value]" :src="getSrc(item.icon.replace('.svg', ''))" loading="lazy" />
             </div>
           </div>
           
