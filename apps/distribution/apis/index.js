@@ -6,6 +6,7 @@ import * as userApi from './web/member/user'
 import * as clientApi from './web/distribution/client'
 import * as walletApi from './web/member/wallet'
 import * as withdrawApi from './web/account/client/withdraw'
+import * as googleMapApi from './web/googleMap'
 export default {
   contactInfoApi,
   homeApi,
@@ -14,5 +15,6 @@ export default {
   userApi,
   clientApi,
   walletApi,
-  withdrawApi
+  withdrawApi,
+  googleMapApi
 }
