@@ -214,6 +214,7 @@ watch(props.natureData, (newCurrent, oldCurrent) => {
 
 const edit = () => {
     Object.assign(form.value, props.natureData)
+    if (form.value.country) getBaseProvinceByCountry(form.value.country)
     isEdit.value = true
 }
 const getBaseProvinceByCountry = async(countryId) => {
