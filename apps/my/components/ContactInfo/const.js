@@ -4,8 +4,8 @@ import { getHrefForWhatsApp, getHrefForInstagram, getHrefForFacebook, getHrefFor
 export const contactData = [
   { value: 'contactEmail', label: '客服邮箱', geturl: getHrefForEmail, icon: 'https://kamelnet-prod-oss-public.oss-cn-beijing.aliyuncs.com/ttwallet/1709541804548_mail-line.svg', goIcon: 'https://kamelnet-prod-oss-public.oss-cn-beijing.aliyuncs.com/ttwallet/1709541804548_mail-line.svg' },
   { value: 'contactMobile', label: '客服电话', geturl: getHrefForMobile, icon: 'https://kamelnet-prod-oss-public.oss-cn-beijing.aliyuncs.com/ttwallet/1709541906590_mobile.svg', goIcon: 'https://kamelnet-prod-oss-public.oss-cn-beijing.aliyuncs.com/ttwallet/1712656516197_vector.svg' },
-  { value: 'contactWhatsApp', label: 'WhatsApp', geturl: getHrefForWhatsApp, icon: 'https://kamelnet-prod-oss-public.oss-cn-beijing.aliyuncs.com/ttwallet/1709542044082_whatsapp.svg' },
-  { value: 'contactFaceBook', label: 'FaceBook', geturl: getHrefForFacebook, icon: 'https://kamelnet-prod-oss-public.oss-cn-beijing.aliyuncs.com/ttwallet/1709542101013_fb.svg' },
+  { value: 'contactWhatsapp', label: 'WhatsApp', geturl: getHrefForWhatsApp, icon: 'https://kamelnet-prod-oss-public.oss-cn-beijing.aliyuncs.com/ttwallet/1709542044082_whatsapp.svg' },
+  { value: 'contactFacebook', label: 'FaceBook', geturl: getHrefForFacebook, icon: 'https://kamelnet-prod-oss-public.oss-cn-beijing.aliyuncs.com/ttwallet/1709542101013_fb.svg' },
   { value: 'contactSkype', label: 'Skype', geturl: getHrefForSkype, icon: 'https://kamelnet-prod-oss-public.oss-cn-beijing.aliyuncs.com/ttwallet/1713927383392_skype.svg' },
   { value: 'contactInstagram', label: 'Instagram', geturl: getHrefForInstagram, icon: 'https://kamelnet-prod-oss-public.oss-cn-beijing.aliyuncs.com/ttwallet/1713927567733_instgram.svg' },
   { value: 'contactTelegram', label: 'Telegram', geturl: getHrefForTelegram, icon: 'https://kamelnet-prod-oss-public.oss-cn-beijing.aliyuncs.com/ttwallet/1741770614913_Artboard.svg' },

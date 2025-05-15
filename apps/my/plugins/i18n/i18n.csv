@@ -484,6 +484,7 @@ orders,ordersStatus5,1,,Cancel Order,取消订单,Cancelar pedido,Cancelar encom
 orders,ordersPayNow,1,,Go to Pay,去支付,Ir a pagar,Ir para pagar,اذهب للدفع,Aller au paiement,Zur Zahlung gehen,Перейти к оплате,支払いに行く,결제하러 가기,Đi thanh toán,Vai a pagare,עבור לתשלום,,,,,
 orders,ordersMarkAsReceived,1,,Mark as Received,确认收货,Marcar como recibido,Marcar como recebido,وضع علامة كمستلم,Marquer comme reçu,Als erhalten markieren,Отметить как получено,受け取ったとマークする,수령으로 표시,Đánh dấu là đã nhận,Contrassegna come ricevuto,סמן כתקבל,,,,,
 orders,ordersTrackShipment,1,,Track Shipment,跟踪物流,Seguir envío,Rastrear envio,تتبع الشحنة,Suivre l'expédition,Sendung verfolgen,Отследить отправление,配送状況を追跡,배송 추적,Theo dõi lô hàng,Traccia spedizione,עקוב אחר משלוח,,,,,
+orders,searchFormFilterLabel,1,,Filter orders,筛选订单,Filtrar pedidos,Ordens de filtro,تصفية الطلبات,Filtrer les commandes,Bestellungen filtern,Фильтр заказов,フィルター注文,필터 주문,Lưu trữ đơn đặt hàng,Ordini di filtro,סנן הזמנות,,,,,
 orders,searchFormLabelStore,1,,Store,商店,Tienda,Loja,المتجر,Boutique,Shop,Магазин,ストア,상점,Cửa hàng,Negozio,חנות,,,,,
 orders,searchFormLabelOrderID,1,,Order ID,订单ID,ID del pedido,ID da encomenda,معرف الطلب,ID de commande,Bestell-ID,ID заказа,注文ID,주문 ID,ID đơn hàng,ID ordine,מזהה הזמנה,,,,,
 orders,searchFormLabelProducts,1,,Product,商品,Producto,Produto,المنتج,Produit,Produkt,Продукт,製品,제품,Sản phẩm,Prodotto,מוצר,,,,,

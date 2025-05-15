@@ -197,11 +197,22 @@ userStore.getUserInfo()
         <el-form-item v-else-if="isPersonal(form.type)" :label="$t('profile.companyEditLabelName')" class="nature-form-item">
             <div class="nature-form-group">
                 <el-form-item prop="firstName" class="nature-form-item">
-                    <el-input v-model="form.firstName" class="nature-form-input input-default" @change="e => { form.firstName = e.trim() }" />
+                    <el-input
+                            v-model="form.firstName"
+                            :placeholder="$t('profile.shippingAddressLabelFirstName')"
+                            class="nature-form-input input-default"
+                            @change="e => { form.firstName = e.trim() }"
+                    />
                 </el-form-item>
                 <div class="flex-center-8"></div>
                 <el-form-item prop="lastName" class="nature-form-item">
-                    <el-input v-model="form.lastName" class="nature-form-input input-default" @change="e => { form.lastName = e.trim() }" />
+                    <el-input
+                            v-model="form.lastName"
+                            :placeholder="$t('profile.shippingAddressLabelLastName')"
+                            class="nature-form-input
+                            input-default"
+                            @change="e => { form.lastName = e.trim() }"
+                    />
                 </el-form-item>
             </div>
         </el-form-item>
