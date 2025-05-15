@@ -7,7 +7,7 @@
   import { Check, Search } from '@element-plus/icons-vue';
   import { checkResponseData, currencyFormat } from "@/util/index.js"
   import {arrToDict} from "@flylinking/core/utils/common";
-  import {splitDateRange} from "@flylinking/core/utils/dateUtil";
+  import {splitDateRange, formatDate} from "@flylinking/core/utils/dateUtil";
   import {getCleanFormData, theAll} from "@flylinking/core/utils/dataUtil";
   import { ordersStatus } from "@/util/const.js";
 
@@ -63,7 +63,9 @@
       pageNo,
       pageSize,
       orderState: activeName.value,
-      ...formData.value
+      ...formData.value,
+      startDateTime: formData.value.startDateTime ? formatDate(formData.value.startDateTime) : '',
+      endDateTime: formData.value.endDateTime ? formatDate(formData.value.endDateTime) : '',
     })
     buyerOrderApi.listPage(params).then(result => {
       const res = checkResponseData(result)
@@ -131,7 +133,7 @@
     <SearchFormBox
             ref="searchFormRef"
             class="search-form"
-            filterLabel="Filter orders"
+            :filterLabel="$t('orders.searchFormFilterLabel')"
     >
       <el-form :model="formData" :inline="!isMobile" label-position="top" novalidate>
         <el-form-item :label="$t('orders.searchFormLabelStore')" style="width: 200px;">

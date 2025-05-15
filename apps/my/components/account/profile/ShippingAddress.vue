@@ -129,11 +129,22 @@ userStore.getUserInfo()
         <el-form-item :label="$t('profile.shippingAddressEditLabelName')" class="nature-form-item">
             <div class="nature-form-group">
                 <el-form-item prop="" class="nature-form-item">
-                    <el-input v-model="form.firstName" class="nature-form-input input-default" @change="e => { form.firstName = e.trim() }" />
+                    <el-input
+                            v-model="form.firstName"
+                            :placeholder="$t('profile.shippingAddressLabelFirstName')"
+                            class="nature-form-input input-default"
+                            @change="e => { form.firstName = e.trim() }"
+                    />
                 </el-form-item>
                 <div class="flex-center-8"></div>
                 <el-form-item prop="" class="nature-form-item">
-                    <el-input v-model="form.lastName" class="nature-form-input input-default" @change="e => { form.lastName = e.trim() }" />
+                    <el-input
+                            v-model="form.lastName"
+                            :placeholder="$t('profile.shippingAddressLabelLastName')"
+                            class="nature-form-input
+                            input-default"
+                            @change="e => { form.lastName = e.trim() }"
+                    />
                 </el-form-item>
             </div>
         </el-form-item>

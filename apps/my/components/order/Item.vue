@@ -160,6 +160,7 @@
                 }
                 .goods-attr {
                     padding: 0 12px;
+                    max-width: calc(100% - 160px);
                     .goods-spu {
                         font-size: 12px;
                         line-height: 18px;
@@ -251,6 +252,8 @@
             .goods-attr {
                 flex: 1;
                 padding: 0 20px;
+                max-width: calc(100% - 260px);
+                box-sizing: border-box;
                 .goods-spu {
                     color: #101828;
                     font-family: Inter;
