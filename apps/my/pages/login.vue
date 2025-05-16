@@ -231,7 +231,7 @@ const sendAgain = async() => {
                 :label="$t('login.loginFormCodeplaceholder')"
                 prop="code"
               >
-                <el-input v-model="loginForm.code" maxlength="254" :placeholder="$t('login.loginFormCodeplaceholder')" :class="{'error':showError}"
+                <el-input v-model="loginForm.code" maxlength="254" :placeholder="$t('login.loginFormCodeplaceholder')" class="direction-ltr-input" :class="{'error':showError}"
                 @input="e => { loginForm.code = formatCreditCardNumber(e);removeCodeVerify(); }" />
               </el-form-item>
               <!-- 输入过即展示剩余几次的提示 -->

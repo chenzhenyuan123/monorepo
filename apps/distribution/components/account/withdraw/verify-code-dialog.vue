@@ -226,7 +226,7 @@ onUnmounted(()=>{
                 <el-input
                         v-model="form.verificationCode"
                         :maxlength="9"
-                        class="form-input input-default"
+                        class="form-input input-default direction-ltr-input"
                         placeholder="0000 0000"
                         @input="e => { form.verificationCode = formatCreditCardNumber(e);removeCodeVerify(); }"
                 />
