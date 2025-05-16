@@ -27,6 +27,12 @@
   .direction-flex-right {
     justify-content: left;
   }
+  .direction-ltr-input {
+    input {
+      direction: ltr;
+      text-align: right;
+    }
+  }
 }
 .ltr {
   direction: ltr;
