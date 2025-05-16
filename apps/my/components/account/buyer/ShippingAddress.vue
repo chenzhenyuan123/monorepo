@@ -34,12 +34,6 @@ const showDeleteDialog = () => {
     isShowDeleteDialog.value = true
 }
 
-const countryDict = computed(() => {
-    return arrToDict(props.countryData, { value: 'countryId', label: 'name' })
-})
-const provinceDict = computed(() => {
-    return arrToDict(locationData.provinceData, { value: 'provinceId', label: 'name' })
-})
 const countryToCallingCode = computed(() => {
     return arrToDict(props.countryData, { value: 'countryId', label: 'callingCode' })
 })
@@ -189,40 +183,48 @@ const rules = () => {
         ],
     }
 }
-const locationData = reactive({
-    provinceData: [
-        // {
-        //     "countryId": "CN",
-        //         "name": "China",
-        //         "description": "中国大陆",
-        //         "valid": "1",
-        //         "area": "N",
-        //         "chinaArea": "亚洲",
-        //         "sort": 0E-30,
-        //         "countryCode": "457",
-        //         "threeCountryCode": null,
-        //         "currency": "RMB",
-        //         "callingCode": "86",
-        //         "ecCountryId": "CN"
-        // }
-    ]
-})
-
-watch(props.natureData, (newCurrent, oldCurrent) => {
-    if (props.natureData.country) getBaseProvinceByCountry(props.natureData.country)
-})
 
 const edit = () => {
     Object.assign(form.value, props.natureData)
     if (form.value.country) getBaseProvinceByCountry(form.value.country)
     isEdit.value = true
 }
+
+
+const countryDict = computed(() => {
+    return arrToDict(props.countryData, { value: 'countryId', label: 'name' })
+})
+const provinceData = ref([
+    // {
+    //     "countryId": "CN",
+    //         "name": "China",
+    //         "description": "中国大陆",
+    //         "valid": "1",
+    //         "area": "N",
+    //         "chinaArea": "亚洲",
+    //         "sort": 0E-30,
+    //         "countryCode": "457",
+    //         "threeCountryCode": null,
+    //         "currency": "RMB",
+    //         "callingCode": "86",
+    //         "ecCountryId": "CN"
+    // }
+])
+const provinceDataByLang = computed(() => {
+    const key = locale.value === 'zh-CN' ? 'zhCn' : 'enUs'
+    return provinceData.value.map(item => {
+        return { ...item, name: item[key] }
+    })
+})
+const provinceDict = computed(() => {
+    return arrToDict(provinceDataByLang.value, { value: 'provinceId', label: 'name' })
+})
 const getBaseProvinceByCountry = async(countryId) => {
   const result = await userApi.getBaseProvinceByCountry(countryId)
   const res = checkResponseData(result)
   if (res) {
-      res.forEach(item => item.name = item.name || item.enUs)
-    locationData.provinceData = res
+      // res.forEach(item => item.name = item.name || item.enUs)
+    provinceData.value = res
   }
 }
 const changeCountry = () => {
@@ -231,12 +233,13 @@ const changeCountry = () => {
     form.value.callingCode = countryToCallingCode.value[form.value.country]
 }
 
+
 const setGoogleMapData = (data) => {
     if (!isUseless(data.address_line)) form.value.addressLineOne = data.address_line;
     if (!isUseless(data.address_line_2)) form.value.addressLineTwo = data.address_line_2;
     if (!isUseless(data.city)) form.value.city = data.city;
     if (!isUseless(data.zipcode)) form.value.postal = data.zipcode;
-    locationData.provinceData.some(item => {
+    provinceData.value.some(item => {
         if (item.name === data.state) {
             form.value.province = item.provinceId;
             return true
@@ -286,6 +289,7 @@ onMounted(() => {
     if (props.isAdd) {
         form.value = {}
     }
+    if (props.natureData.country) getBaseProvinceByCountry(props.natureData.country)
 })
 
 userStore.getUserInfo()
@@ -379,7 +383,7 @@ userStore.getUserInfo()
                         class="nature-form-input select-default"
                     >
                         <el-option
-                            v-for="item in locationData.provinceData"
+                            v-for="item in provinceData"
                             :key="item.provinceId"
                             :value="item.provinceId"
                             :label="item.name"
