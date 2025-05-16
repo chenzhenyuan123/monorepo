@@ -4,7 +4,7 @@ import { isName } from '@/util/validate.js'
 import { checkResponseData, isEMpty, arrToDict } from "@/util/index.js"
 import { useI18n } from "vue-i18n";
 
-const { t } = useI18n();
+const { t, locale } = useI18n();
 const { userApi } = useApi()
 const userStore = useUserStore()
 const props = defineProps({
@@ -63,35 +63,14 @@ const rules = () => {
         // ]
     }
 }
-const locationData = reactive({
-    provinceData: [
-        // {
-        //     "countryId": "CN",
-        //         "name": "China",
-        //         "description": "中国大陆",
-        //         "valid": "1",
-        //         "area": "N",
-        //         "chinaArea": "亚洲",
-        //         "sort": 0E-30,
-        //         "countryCode": "457",
-        //         "threeCountryCode": null,
-        //         "currency": "RMB",
-        //         "callingCode": "86",
-        //         "ecCountryId": "CN"
-        // }
-    ]
-})
-const countryDict = computed(() => {
-    return arrToDict(props.countryData, { value: 'countryId', label: 'name' })
-})
-const provinceDict = computed(() => {
-    return arrToDict(locationData.provinceData, { value: 'provinceId', label: 'name' })
-})
 const companyTypeData = computed(() => {
     return [
         { value: 'Company', label: t('profile.companyEditDataTypeCompany') },
         { value: 'Personal', label: t('profile.companyEditDataTypePersonal') },
     ]
+})
+const companyTypeDict = computed(() => {
+    return arrToDict(companyTypeData.value)
 })
 const emit = defineEmits(["updateData"])
 
@@ -120,18 +99,50 @@ const changeCompanyType = () => {
         console.log('form: ', form)
     }
 }
+
+
+const countryDict = computed(() => {
+    return arrToDict(props.countryData, { value: 'countryId', label: 'name' })
+})
+const provinceData = ref([
+    // {
+    //     "countryId": "CN",
+    //         "name": "China",
+    //         "description": "中国大陆",
+    //         "valid": "1",
+    //         "area": "N",
+    //         "chinaArea": "亚洲",
+    //         "sort": 0E-30,
+    //         "countryCode": "457",
+    //         "threeCountryCode": null,
+    //         "currency": "RMB",
+    //         "callingCode": "86",
+    //         "ecCountryId": "CN"
+    // }
+])
+const provinceDataByLang = computed(() => {
+    const key = locale.value === 'zh-CN' ? 'zhCn' : 'enUs'
+    return provinceData.value.map(item => {
+        return { ...item, name: item[key] }
+    })
+})
+const provinceDict = computed(() => {
+    return arrToDict(provinceDataByLang.value, { value: 'provinceId', label: 'name' })
+})
 const getBaseProvinceByCountry = async(countryId) => {
   const result = await userApi.getBaseProvinceByCountry(countryId)
   const res = checkResponseData(result)
   if (res) {
-      res.forEach(item => item.name = item.name || item.enUs)
-    locationData.provinceData = res
+      // res.forEach(item => item.name = item.name || item.enUs)
+    provinceData.value = res
   }
 }
 const changeCountry = () => {
     getBaseProvinceByCountry(form.country)
     form.province = undefined
 }
+
+
 // 编辑用户基础信息
 const submit = () => {
     formRef.value.validate(async valid => {
@@ -204,7 +215,7 @@ userStore.getUserInfo()
                             @change="e => { form.firstName = e.trim() }"
                     />
                 </el-form-item>
-                <div class="nature-form-group-center"></div>
+                <div class="flex-center-8"></div>
                 <el-form-item prop="lastName" class="nature-form-item">
                     <el-input
                             v-model="form.lastName"
@@ -241,7 +252,7 @@ userStore.getUserInfo()
                     <el-form-item prop="" class="nature-form-item">
                         <el-input v-model="form.city" :placeholder="$t('profile.companyEditPlaceholderCity')" class="nature-form-input input-default" @change="e => { form.city = e.trim() }" />
                     </el-form-item>
-                    <div class="nature-form-group-center"></div>
+                    <div class="flex-center-8"></div>
                     <el-form-item prop="" class="nature-form-item">
                         <el-input v-model="form.postal" :placeholder="$t('profile.companyEditPlaceholderPostal')" class="nature-form-input input-default" @change="e => { form.postal = e.trim() }" />
                     </el-form-item>
@@ -254,7 +265,7 @@ userStore.getUserInfo()
                         class="nature-form-input select-default"
                     >
                         <el-option
-                            v-for="item in locationData.provinceData"
+                            v-for="item in provinceDataByLang"
                             :key="item.provinceId"
                             :value="item.provinceId"
                             :label="item.name"
@@ -279,7 +290,7 @@ userStore.getUserInfo()
     <div v-else class="nature-list">
         <div class="nature-item">
             <div class="nature-item-label">{{$t('profile.companyLabelType')}}</div>
-            <div class="nature-item-value">{{ natureData.type || '-' }}</div>
+            <div class="nature-item-value">{{ companyTypeDict[natureData.type] || '-' }}</div>
         </div>
         <div class="nature-item">
             <div class="nature-item-label">{{$t('profile.companyLabelName')}}</div>

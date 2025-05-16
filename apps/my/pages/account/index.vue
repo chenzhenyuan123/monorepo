@@ -4,34 +4,13 @@
     import { checkResponseData, arrToDict } from "@/util/index.js"
     import { useI18n } from "vue-i18n";
 
-    const { t } = useI18n();
+    const { t, locale } = useI18n();
     const { userApi } = useApi()
     const userStore = useUserStore()
     const isMobile = useIsMobile()
+
+
     const anchorActive = ref()
-    const userData = reactive({})
-    const userBasicData = reactive({})
-    const contactInfoData = reactive({})
-    const companyData = reactive({})
-    const shippingData = ref([])
-    const locationData = reactive({
-        countryData: [
-            // {
-            //     "countryId": "CN",
-            //         "name": "China",
-            //         "description": "中国大陆",
-            //         "valid": "1",
-            //         "area": "N",
-            //         "chinaArea": "亚洲",
-            //         "sort": 0E-30,
-            //         "countryCode": "457",
-            //         "threeCountryCode": null,
-            //         "currency": "RMB",
-            //         "callingCode": "86",
-            //         "ecCountryId": "CN"
-            // }
-        ]
-    })
     const anchorData = computed(() => {
         return [
             { value: 'general', label: t('profile.general') },
@@ -44,7 +23,18 @@
     const anchorDict = computed(() => {
         return arrToDict(anchorData.value)
     })
+    const changeMenu = id => {
+        anchorActive.value = id
+        scrollToAnchor(id)
+    }
 
+
+
+    const userData = reactive({})
+    const userBasicData = reactive({})
+    const contactInfoData = reactive({})
+    const companyData = reactive({})
+    const shippingData = ref([])
     // 获取用户账号关联信息
     const getUserAccountInfo = async() => {
         const result = await userApi.getUserAccountInfo()
@@ -63,19 +53,41 @@
             shippingData.value = [...res.shipping]
         }
     }
+
+
+    const countryData = ref([
+        // {
+        //     "countryId": "CN",
+        //         "name": "China",
+        //         "description": "中国大陆",
+        //         "valid": "1",
+        //         "area": "N",
+        //         "chinaArea": "亚洲",
+        //         "sort": 0E-30,
+        //         "countryCode": "457",
+        //         "threeCountryCode": null,
+        //         "currency": "RMB",
+        //         "callingCode": "86",
+        //         "ecCountryId": "CN"
+        // }
+    ])
+    const countryDataByLang = computed(() => {
+        const key = locale.value === 'zh-CN' ? 'zhCn' : 'enUs'
+        return countryData.value.map(item => {
+            return { ...item, name: item[key] }
+        })
+    })
     // 获取所有国家列表
     const getAllCountry = async() => {
         const result = await userApi.getAllCountry()
         const res = checkResponseData(result)
         if (res) {
-            res.forEach(item => item.name = item.name || item.enUs)
-            locationData.countryData = res
+            // res.forEach(item => item.name = item.name || item.enUs)
+            countryData.value = res
         }
     }
-    const changeMenu = id => {
-        anchorActive.value = id
-        scrollToAnchor(id)
-    }
+
+
     // 自适应
     let mainWrapDom
     const headerScroll = () => {
@@ -156,7 +168,7 @@
                     <AccountProfileGeneral
                             :user-data="userData"
                             :nature-data="userBasicData"
-                            :country-data="locationData.countryData"
+                            :country-data="countryDataByLang"
                             @update-data="getUserAccountInfo"
                     ></AccountProfileGeneral>
                 </div>
@@ -172,14 +184,14 @@
                 <div id="company" class="profile">
                     <AccountProfileCompany
                             :nature-data="companyData"
-                            :country-data="locationData.countryData"
+                            :country-data="countryDataByLang"
                             @update-data="getUserAccountInfo"
                     ></AccountProfileCompany>
                 </div>
                 <div id="shippingAddress" class="profile">
                     <AccountBuyerShippingAddressGroup
                             :nature-data="shippingData"
-                            :country-data="locationData.countryData"
+                            :country-data="countryDataByLang"
                             @update-data="getUserAccountInfo"
                     ></AccountBuyerShippingAddressGroup>
                 </div>
