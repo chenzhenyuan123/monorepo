@@ -37,7 +37,7 @@ const { userApi, withdrawApi } = useApi()
 const settingStore = useSettingStore()
 const router = useRouter()
 const isMobile = useIsMobile()
-const formRef = ref()
+const formValidateRef = ref()
 const isShowVerifyGialog = ref(false)
 const limitAmount = ref(50)
 const ableBalanceAmount = ref(0)
@@ -382,7 +382,7 @@ const qryWithdrawFee = async() => {
   const result = await withdrawApi.qryWithdrawFee({ swiftCode: form.swiftCode })
   fee.value = checkResponseData(result) || 0
     isGetFee.value = true
-    formRef.value.validateField('swiftCode')
+    formValidateRef.value?.formRef?.validateField('swiftCode')
 }
 // 风控校验
 const risk_control_check = async(key) => {
@@ -390,11 +390,11 @@ const risk_control_check = async(key) => {
     obj[key] = form[key]
     const result = await withdrawApi.risk_control_check(obj)
     checkResultData[key] = checkResponseData(result)
-    formRef.value.validateField(key)
+    formValidateRef.value?.formRef?.validateField(key)
 }
 // 提现申请前校验
 const validateApply = () => {
-    formRef.value.validate(async (valid) => {
+    formValidateRef.value?.formRef?.validate(async (valid) => {
         if (!valid) {
             console.log('error submit!!');
             return false;
@@ -453,7 +453,7 @@ onUnmounted(()=>{
             <h1>{{ $t('withdraw.applyTitle') }}</h1>
         </div>
         <FormValidate
-            ref="formRef"
+            ref="formValidateRef"
             :model="form"
             :rules="rules()"
             label-position="top"
