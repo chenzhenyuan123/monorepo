@@ -85,7 +85,7 @@ const routerGo = path => {
       
       <FormValidate ref="signupFormRef" :model="signupForm" label-position="top" :rules="rules()" require-asterisk-position="right" class="login-box" novalidate>
         <el-form-item :label="$t('login.loginFormEmail')" prop="email">
-          <el-input v-model="signupForm.email" maxlength="254" :placeholder="$t('signup.signupValidateEmailEmpty')" :class="{'error':showError}" />
+          <el-input v-model="signupForm.email" maxlength="254" :placeholder="$t('signup.signupValidateEmailEmpty')" class="direction-ltr-input" :class="{'error':showError}" />
         </el-form-item>
       </FormValidate>
       <el-button type="primary" id="password-btn-reset" class="email-verify-btn reset-password-btn" :loading="loading" @click="onSubmit()">{{$t('password.passwordSaveButton')}}</el-button>
