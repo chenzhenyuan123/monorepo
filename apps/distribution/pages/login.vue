@@ -101,7 +101,7 @@ const codeSubmit = () => {
       const body = {
         email: loginForm.value.email,
         verifyCode: normalCreditCardNumber(loginForm.value.code),
-        userRole: 'buyer' // distributor:分销员 buyer:买家
+        userRole: 'distributor' // distributor:分销员 buyer:买家
       }
       const result = await contactInfoApi.loginWithVerifyCode(body)
       const res = checkResponseData(result)
