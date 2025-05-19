@@ -217,7 +217,7 @@ const sendAgain = async() => {
           >
             <template v-if="isMy && !isPasswordLogin">
               <el-form-item
-                :label="$t('login.flyLinkAccount')"
+                :label="$t('login.loginFormEmail')"
                 prop="email"
               >
                 <el-input v-model="loginForm.email" maxlength="254" :placeholder="$t('login.flyLinkAccount')" :class="{'error':showError}" />

@@ -9,13 +9,16 @@ const isMobile = useIsMobile()
 const route = useRoute()
 const router = useRouter()
 
-// const mWrapRef = ref(null)
-// const pcWrapRef = ref(null)
-// router.afterEach((to, from) => {
-//   console.log('afterEach')
-//   mWrapRef.value?.scrollTo?.(0, 0)
-//   pcWrapRef.value?.scrollTo?.(0, 0)
-// })
+const mWrapRef = ref(null)
+const pcWrapRef = ref(null)
+router.afterEach((to, from) => {
+  console.log('afterEach')
+  if (to.path !== from.path) {
+    // console.log('to: ', to)
+    mWrapRef.value?.scrollTo?.(0, 0)
+    pcWrapRef.value?.scrollTo?.(0, 0)
+  }
+})
 
 </script>
 
