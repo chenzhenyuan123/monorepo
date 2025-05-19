@@ -452,7 +452,7 @@ onUnmounted(()=>{
             </el-link>
             <h1>{{ $t('withdraw.applyTitle') }}</h1>
         </div>
-        <el-form
+        <FormValidate
             ref="formRef"
             :model="form"
             :rules="rules()"
@@ -500,7 +500,7 @@ onUnmounted(()=>{
                 />
             </el-form-item>
             <div class="account-number-container">
-                <el-form-item :label="$t('withdraw.applyFormLabelAccountNumber')" prop="accountNumber" class="form-item account-number">
+                <el-form-item :label="$t('withdraw.applyFormLabelAccountNumber')" prop="accountNumber" class="form-item account-number direction-ltr-input">
                     <el-input
                         v-model="form.accountNumber"
                         class="form-input input-default"
@@ -585,7 +585,7 @@ onUnmounted(()=>{
                 <el-button class="button-default m-adaptive" @click="jumpToWallet">{{ $t('withdraw.applyFormButtonCancel') }}</el-button>
                 <el-button v-if="!isMobile" key="pcsubmit" type="primary" class="button-default m-adaptive" :loading="loading" @click="validateApply">{{ $t('withdraw.applyFormButtonSubmit') }}</el-button>
             </el-form-item>
-        </el-form>
+        </FormValidate>
     </div>
       <AccountWithdrawVerifyTipDialog
               v-model="isShowVerifyGialog"
