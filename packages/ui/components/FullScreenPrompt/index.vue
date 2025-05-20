@@ -99,8 +99,9 @@ const getImage = (url) => {
     h = h > maxH ? maxH : h
     width.value = w + 'px'
     height.value = h + 'px'
-    if(props.isMobile) {
+    if(props.isMobile) { // 移动端高度自适应
       width.value = '100%'
+      height.value = 'auto'
     }
   }
 }
@@ -113,8 +114,9 @@ const getBtnImage = (url) => {
     const rate = 2
     btnWidth.value = tImamge.width / rate + 'px'
     btnHeight.value = tImamge.height / rate + 'px'
-    if(props.isMobile) {
-      width.value = '100%'
+    if(props.isMobile) { // 移动端高度自适应
+      btnWidth.value = 'calc(100% - 24px)'
+      btnHeight.value = 'auto'
     }
   }
 }
@@ -145,20 +147,20 @@ const toPage = () => {
   >
     <div v-if="data.category === 2" :style="{ width, height }" class="container container-img">
       <template v-if="data.content">
-        <img :src="previewImg(data.content)" :class="{ cursor: data.comfirmButtonView === 0 }" alt="" @click="imgClick">
+        <img :src="previewImg(data.content)" :class="{ cursor: data.comfirmButtonView === 0 }" alt="fullimg" lazy @click="imgClick">
         <div v-if="data.comfirmButtonView === 1" class="btn-bg" :style="{ bottom: data.buttonDistance + 'px' }" @click="save">
           <div v-if="!data.buttonPicture" :style="{ background: data.buttonColour ? ('#' + data.buttonColour) : '#3369FF' }" class="text-btn">
             {{ data.confirmButton }}
           </div>
           <div v-else class="btn" :style="{ height: btnHeight }">
-            <img v-if="data.buttonPicture" class="btn-img" :style="{ width: btnWidth }" :src="previewImg(data.buttonPicture)" alt="">
+            <img v-if="data.buttonPicture" class="btn-img" :style="{ width: btnWidth }" :src="previewImg(data.buttonPicture)" lazy alt="fullimg">
             <div class="btn-img-text">{{ data.confirmButton }}</div>
           </div>
         </div>
       </template>
     </div>
     <div v-if="data.category === 2 && data.closeButtonView" class="close-custom-bg" @click="cancel">
-      <img src="https://kamelnet-prod-oss-public.oss-cn-beijing.aliyuncs.com/ttwallet/1726038462676_modal-close.svg" alt="">
+      <i class="close-custom Flylink icon-x-close"></i>
     </div>
     <div v-if="data.category === 1" class="container">
       <div class="title">
@@ -245,14 +247,25 @@ const toPage = () => {
 .close-custom-bg {
   position: absolute;
   left: 0;
-  bottom: -60px;
+  bottom: -70px;
   width: 100%;
   height: 48px;
   display: flex;
   justify-content: center;
   align-items: center;
-  img {
+  .icon-x-close {
     cursor: pointer;
+    width: 24px;
+    height: 24px;
+    background: rgba(0, 0, 0, 0.4);
+    padding: 12px;
+    text-align: center;
+    font-size: 24px;
+    color: #fff;
+    border-radius: 50%;
+    &:hover {
+      background: rgba(0, 0, 0, 0.3);
+    }
   }
 }
 .container-img {
@@ -276,9 +289,12 @@ const toPage = () => {
       justify-content: center;
       align-items: center;
       border-radius: 10px;
-      background: #3369FF;
+      background: #5548FF;
       color: #fff;
       font-weight: 600;
+      &:hover {
+        background: #887fff;
+      }
     }
     .btn { 
       // cursor: pointer;
