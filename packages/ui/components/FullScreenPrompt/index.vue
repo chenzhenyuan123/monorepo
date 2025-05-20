@@ -141,6 +141,7 @@ const toPage = () => {
     :before-close="cancel"
     class="custom-class"
     ref="fullDialogRef"
+    :class="{ 'm': isMobile }"
   >
     <div v-if="data.category === 2" :style="{ width, height }" class="container container-img">
       <template v-if="data.content">
@@ -198,8 +199,8 @@ const toPage = () => {
     font-weight: 600;
     font-size: 20px;
     color: #222;
-    line-height: 64px;
-    min-height: 64px;
+    line-height: 30px;
+    padding: 16px 0
   }
   .content {
     padding: 24px 0 48px;
@@ -235,9 +236,10 @@ const toPage = () => {
   .close-custom {
     cursor: pointer;
     position: absolute;
-    right: 24px;
-    top: 24px;
+    right: 8px;
+    top: 14px;
     font-size: 16px;
+    padding: 10px;
   }
 }
 .close-custom-bg {
@@ -298,6 +300,14 @@ const toPage = () => {
         justify-content: center;
         align-items: center;
       }
+    }
+  }
+}
+
+.m {
+  .container {
+    .title {
+      width: calc(100% - 16px);
     }
   }
 }
