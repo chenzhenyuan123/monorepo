@@ -9,14 +9,19 @@ const isMobile = useIsMobile()
 const route = useRoute()
 const router = useRouter()
 
-// const mWrapRef = ref(null)
-// const pcWrapRef = ref(null)
-// router.afterEach((to, from) => {
-//   // console.log('afterEach')
-//   mWrapRef.value?.scrollTo?.(0, 0)
-//   pcWrapRef.value?.scrollTo?.(0, 0)
-// })
-
+const mWrapRef = ref(null)
+const pcWrapRef = ref(null)
+const scrollTop = () => {
+  mWrapRef.value?.scrollTo?.(0, 0)
+  pcWrapRef.value?.scrollTo?.(0, 0)
+}
+router.afterEach((to, from) => {
+  // console.log('afterEach')
+  if (to.path !== from.path) {
+    // console.log('to: ', to)
+    scrollTop()
+  }
+})
 </script>
 
 <template>
@@ -36,7 +41,7 @@ const router = useRouter()
       </div>
       <div ref="mWrapRef" class="m-wrap" :class="{ 'full-page': settingStore.isFullPage, ['main-wrap-' + route.name]: true }">
         <div>
-          <slot />
+          <slot/>
         </div>
 
         <Footer />

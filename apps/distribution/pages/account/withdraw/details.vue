@@ -195,7 +195,7 @@ onUnmounted(()=>{
                 <el-input v-model="form.accountName" class="form-input input-default" disabled />
             </el-form-item>
             <div class="account-number-container">
-                <el-form-item :label="$t('withdraw.detailFormLabelAccountNumber')" prop="accountNumber" class="form-item account-number">
+                <el-form-item :label="$t('withdraw.detailFormLabelAccountNumber')" prop="accountNumber" class="form-item account-number direction-ltr-input">
                     <el-input v-model="form.formatAccountNumber" class="form-input input-default" disabled>
                         <template #prefix>
                             <img

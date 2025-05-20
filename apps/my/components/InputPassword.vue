@@ -3,7 +3,7 @@
  * @Description: 密码框-点击展示明文和密文
 -->
 <template>
-  <div class="input-password-container">
+  <div class="input-password-container direction-ltr-input">
     <el-input ref="inputRef" :type="flag?'text':'password'" v-bind="$attrs" @focus="focused" @blur="blured" >
       <template #suffix>
         <el-icon :class="{'password-icon': flag}" @click="flag=!flag">

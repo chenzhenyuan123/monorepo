@@ -103,7 +103,7 @@ const routerGo = (path) => {
           </div>
           <el-form ref="signupFormRef" :model="signupForm" label-position="top" require-asterisk-position="right" :rules="rules()" class="login-box" novalidate>
             <el-form-item :label="$t('login.loginFormEmail')" prop="email">
-              <el-input v-model="signupForm.email" type="email" maxlength="254" :placeholder="$t('signup.signupValidateEmailEmpty')" :class="{'error':showError}" />
+              <el-input v-model="signupForm.email" type="email" maxlength="254" :placeholder="$t('signup.signupValidateEmailEmpty')" class="direction-ltr-input" :class="{'error':showError}" />
             </el-form-item>
             <el-form-item :label="$t('login.loginFormPassword')" prop="loginPassword">
               <InputPassword v-model="signupForm.loginPassword" :placeholder="$t('signup.signupValidatePasswordEmpty')" maxlength="20" minlength="8" :class="{'error':showError}" @isFocusedChange="(e)=>isFocused=e" />

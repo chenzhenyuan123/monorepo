@@ -37,7 +37,7 @@ const { userApi, withdrawApi } = useApi()
 const settingStore = useSettingStore()
 const router = useRouter()
 const isMobile = useIsMobile()
-const formRef = ref()
+const formValidateRef = ref()
 const isShowVerifyGialog = ref(false)
 const limitAmount = ref(50)
 const ableBalanceAmount = ref(0)
@@ -382,7 +382,7 @@ const qryWithdrawFee = async() => {
   const result = await withdrawApi.qryWithdrawFee({ swiftCode: form.swiftCode })
   fee.value = checkResponseData(result) || 0
     isGetFee.value = true
-    formRef.value.validateField('swiftCode')
+    formValidateRef.value?.formRef?.validateField('swiftCode')
 }
 // 风控校验
 const risk_control_check = async(key) => {
@@ -390,11 +390,11 @@ const risk_control_check = async(key) => {
     obj[key] = form[key]
     const result = await withdrawApi.risk_control_check(obj)
     checkResultData[key] = checkResponseData(result)
-    formRef.value.validateField(key)
+    formValidateRef.value?.formRef?.validateField(key)
 }
 // 提现申请前校验
 const validateApply = () => {
-    formRef.value.validate(async (valid) => {
+    formValidateRef.value?.formRef?.validate(async (valid) => {
         if (!valid) {
             console.log('error submit!!');
             return false;
@@ -452,8 +452,8 @@ onUnmounted(()=>{
             </el-link>
             <h1>{{ $t('withdraw.applyTitle') }}</h1>
         </div>
-        <el-form
-            ref="formRef"
+        <FormValidate
+            ref="formValidateRef"
             :model="form"
             :rules="rules()"
             label-position="top"
@@ -500,7 +500,7 @@ onUnmounted(()=>{
                 />
             </el-form-item>
             <div class="account-number-container">
-                <el-form-item :label="$t('withdraw.applyFormLabelAccountNumber')" prop="accountNumber" class="form-item account-number">
+                <el-form-item :label="$t('withdraw.applyFormLabelAccountNumber')" prop="accountNumber" class="form-item account-number direction-ltr-input">
                     <el-input
                         v-model="form.accountNumber"
                         class="form-input input-default"
@@ -585,7 +585,7 @@ onUnmounted(()=>{
                 <el-button class="button-default m-adaptive" @click="jumpToWallet">{{ $t('withdraw.applyFormButtonCancel') }}</el-button>
                 <el-button v-if="!isMobile" key="pcsubmit" type="primary" class="button-default m-adaptive" :loading="loading" @click="validateApply">{{ $t('withdraw.applyFormButtonSubmit') }}</el-button>
             </el-form-item>
-        </el-form>
+        </FormValidate>
     </div>
       <AccountWithdrawVerifyTipDialog
               v-model="isShowVerifyGialog"

@@ -101,7 +101,7 @@ const codeSubmit = () => {
       const body = {
         email: loginForm.value.email,
         verifyCode: normalCreditCardNumber(loginForm.value.code),
-        userRole: 'buyer' // distributor:分销员 buyer:买家
+        userRole: 'distributor' // distributor:分销员 buyer:买家
       }
       const result = await contactInfoApi.loginWithVerifyCode(body)
       const res = checkResponseData(result)
@@ -217,10 +217,10 @@ const sendAgain = async() => {
           >
             <template v-if="isMy && !isPasswordLogin">
               <el-form-item
-                :label="$t('login.flyLinkAccount')"
+                :label="$t('login.loginFormEmail')"
                 prop="email"
               >
-                <el-input v-model="loginForm.email" maxlength="254" :placeholder="$t('login.flyLinkAccount')" :class="{'error':showError}" />
+                <el-input v-model="loginForm.email" maxlength="254" :placeholder="$t('login.flyLinkAccount')" class="direction-ltr-input" :class="{'error':showError}" />
               </el-form-item>
               <el-form-item>
                 <el-button type="primary" id="login-btn-login" class="signup-btn" :loading="loading" @click="goEmailCode()">{{ $t('email-verify.emailVerifyContinue') }}</el-button>
@@ -260,7 +260,7 @@ const sendAgain = async() => {
                 :label="$t('login.loginFormEmail')"
                 prop="email"
               >
-                <el-input v-model="loginForm.email" maxlength="254" :placeholder="$t('login.loginFormEmailplaceholder')" :class="{'error':showError}" />
+                <el-input v-model="loginForm.email" maxlength="254" :placeholder="$t('login.loginFormEmailplaceholder')" class="direction-ltr-input" :class="{'error':showError}" />
               </el-form-item>
               <el-form-item :label="$t('login.loginFormPassword')" prop="loginPassword">
                 <InputPassword v-model="loginForm.loginPassword" maxlength="20" minlength="8" :class="{'error':showError}" />

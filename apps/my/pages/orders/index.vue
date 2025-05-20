@@ -15,6 +15,7 @@
   const { buyerOrderApi } = useApi();
   const { t } = useI18n();
   const isMobile = useIsMobile()
+  const emit = defineEmits(['pageChange'])
 
 
   const activeName = ref('')
@@ -79,6 +80,8 @@
     })
   }
   const pageChange = (pageNo) => {
+    console.log('pageChange')
+    scrollTopByClass()
     getOrderList({ pageNo })
   }
   const pageSizeChange = (pageSize) => {
@@ -93,6 +96,12 @@
     searchFormRef.value.hideLayer()
     formData.value = {}
     getOrderList()
+  }
+  const scrollTopByClass = () => {
+    const mWraps = document.querySelectorAll('.m-wrap') || []
+    const pcWraps = document.querySelectorAll('.main-wrap') || []
+    mWraps[0]?.scrollTo?.(0, 0)
+    pcWraps[0]?.scrollTo?.(0, 0)
   }
 
 
