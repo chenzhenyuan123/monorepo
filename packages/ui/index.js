@@ -1,5 +1,6 @@
 import Message from "./components/Message.vue";
 import PrivacyPolicy from "./components/legal/PrivacyPolicy.vue";
 import TermsOfUsage from "./components/legal/TermsOfUsage.vue";
+import FullScreenPrompt from "./components/FullScreenPrompt";
 
-export { Message, PrivacyPolicy, TermsOfUsage };
+export { Message, PrivacyPolicy, TermsOfUsage, FullScreenPrompt };
