@@ -12,7 +12,7 @@ const baseFlylinkStoreMap = {
  */
 export function previewFlylinkStoreUrl(filePath) {
     // 从useRuntimeConfig中取baseURL
-    const { public: { VITE_HOST, VITE_NODE_ENV } } = useRuntimeConfig()
+    const { public: { VITE_NODE_ENV } } = useRuntimeConfig()
     const baseOrigin = baseFlylinkStoreMap[VITE_NODE_ENV] || baseFlylinkStoreMap.DEV
 
     if (!filePath) return
