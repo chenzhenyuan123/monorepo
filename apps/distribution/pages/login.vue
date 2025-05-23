@@ -41,7 +41,7 @@ const rules = ()=>{
   return {
     email: [
       { required: true, message: t('signup.signupValidateEmailEmpty'), trigger: 'change' },
-      { validator: validateEmail, trigger: 'change' }
+      { type: 'email', message: t('signup.signupValidateEmailFormat'), trigger: 'change' }
     ],
     loginPassword: [
       { required: true, message: t('signup.signupValidatePasswordRequired'), trigger: 'change' }

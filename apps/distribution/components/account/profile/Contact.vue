@@ -34,7 +34,7 @@ if (value && !isEmail(value)) {
 const rules = computed(() => {
     return {
         email: [
-            { validator: validateEmail, trigger: 'blur', message: t('profile.contactEditValidateEmail') }
+            { type: 'email', trigger: 'blur', message: t('profile.contactEditValidateEmail') }
         ]
     }
 })

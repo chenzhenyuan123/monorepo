@@ -29,7 +29,7 @@ const rules = ()=>{
   return {
     email: [
       { required: true, message: t('signup.signupValidateEmailEmpty'), trigger: 'blur' },
-      { validator: validateEmail, trigger: 'change' }
+      { type: 'email', message: t('signup.signupValidateEmailFormat'), trigger: 'change' }
     ]
   }
 }
