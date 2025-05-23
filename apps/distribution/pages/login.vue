@@ -17,14 +17,7 @@ definePageMeta({
 const loginForm = ref({})
 const loginFormRef = ref()
 
-// 校验邮箱格式
-const validateEmail = (rule, value, callback) => {
-  if (!isEmail(value) && value) {
-    callback(new Error(t('signup.signupValidateEmailFormat')))
-  } else {
-    callback()
-  }
-}
+
 // 校验验证码
 const validateCode = (rule, value, callback) => {
   if (checkResultData.errorForExceedingLimit) {

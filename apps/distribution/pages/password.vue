@@ -17,14 +17,7 @@ definePageMeta({
 
 const signupForm = ref({})
 const signupFormRef = ref()
-// 校验邮箱格式
-const validateEmail = (rule, value, callback) => {
-  if (!isEmail(value)) {
-    callback(new Error(t('signup.signupValidateEmailFormat')))
-  } else {
-    callback()
-  }
-}
+
 const rules = ()=>{
   return {
     email: [
