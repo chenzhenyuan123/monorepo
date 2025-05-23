@@ -1,8 +1,11 @@
 <script setup name="FormValidate">
+import {myFormLogKey} from "@flylinking/core/utils/const";
+
 const { $locale } = useNuxtApp()
 
 const formRef = ref(null);
 const msgLog = reactive({});
+provide(myFormLogKey, msgLog)
 /** 监听表单校验并缓存 */
 const cacheMsg = (prop, isValid, message) => (msgLog[prop] = isValid ? void 0 : message);
 
