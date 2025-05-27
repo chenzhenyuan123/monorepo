@@ -163,6 +163,3 @@ const routerGo = (path) => {
   max-width: calc(100% - 32px)
 }
 </style>
-<style lang="scss">
-@import url("@/assets/css/global.scss");
-</style>
