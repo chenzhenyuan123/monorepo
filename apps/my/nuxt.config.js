@@ -28,8 +28,8 @@ export default defineNuxtConfig({
     '@pinia/nuxt'
   ],
   css: [
-    '@/assets/css/reset.css',
-    '@/assets/css/global.scss',
+    '@flylinking/ui/styles/css/reset.css',
+    '@flylinking/ui/styles/css/global.scss',
   ],
   nitro: {
     storage: {

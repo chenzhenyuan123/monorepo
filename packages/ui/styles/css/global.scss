@@ -22,7 +22,7 @@
 .custom-loading-svg {
   .el-loading-spinner{
     .circular {
-      background: url('@/assets/imgs/loading.svg') 50% / cover no-repeat;
+      background: url('../imgs/loading.svg') 50% / cover no-repeat;
     }
     .el-loading-text {
       margin: 16px 0;
@@ -201,7 +201,7 @@
         display: block;
         width: 24px;
         height: 24px;
-        background: url('@/assets/imgs/alert-circle.svg') 50% / cover no-repeat;
+        background: url('../imgs/alert-circle.svg') 50% / cover no-repeat;
       }
     }
     .circle-box {
@@ -284,5 +284,49 @@
       background: #FFF;
       box-shadow: 0px 0px 0px 1px rgba(16, 24, 40, 0.18) inset, 0px -2px 0px 0px rgba(16, 24, 40, 0.05) inset, 0px 1px 2px 0px rgba(16, 24, 40, 0.05);
     }
+  }
+}
+
+// 顶部返回按钮样式
+.header-back {
+  margin-bottom: 20px;
+  a {
+    text-decoration: none;
+    color: #5548FF;
+    font-family: Inter;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 20px;
+    .icon-arrow-left {
+      margin-right: 6px;
+    }
+  }
+}
+// 溢出...，限制1行
+.ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+// 溢出...，限制2行
+.ellipsis2 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2; /* 限制为两行 */
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+// 兼容多语言从右向左
+.flex-center {
+  flex: 1;
+}
+// 固定宽度
+$flex-center-width-max: 24;
+@for $i from 1 through $flex-center-width-max {
+  .flex-center-#{$i} {
+    width: $i * 1px;
+    min-width: $i * 1px;
+    align-self: stretch;
   }
 }
