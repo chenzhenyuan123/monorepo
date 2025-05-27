@@ -23,18 +23,11 @@ const form = reactive({
     line: undefined,
     skype: undefined
 })
-// 校验邮箱格式
-const validateEmail = (rule, value, callback) => {
-if (value && !isEmail(value)) {
-    callback(new Error())
-  } else {
-    callback()
-  }
-}
+
 const rules = computed(() => {
     return {
         email: [
-            { validator: validateEmail, trigger: 'blur', message: t('profile.contactEditValidateEmail') }
+            { type: 'email', trigger: 'blur', message: t('profile.contactEditValidateEmail') }
         ]
     }
 })

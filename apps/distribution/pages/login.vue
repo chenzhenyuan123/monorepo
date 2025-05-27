@@ -17,14 +17,7 @@ definePageMeta({
 const loginForm = ref({})
 const loginFormRef = ref()
 
-// 校验邮箱格式
-const validateEmail = (rule, value, callback) => {
-  if (!isEmail(value) && value) {
-    callback(new Error(t('signup.signupValidateEmailFormat')))
-  } else {
-    callback()
-  }
-}
+
 // 校验验证码
 const validateCode = (rule, value, callback) => {
   if (checkResultData.errorForExceedingLimit) {
@@ -41,7 +34,7 @@ const rules = ()=>{
   return {
     email: [
       { required: true, message: t('signup.signupValidateEmailEmpty'), trigger: 'change' },
-      { validator: validateEmail, trigger: 'change' }
+      { type: 'email', message: t('signup.signupValidateEmailFormat'), trigger: 'change' }
     ],
     loginPassword: [
       { required: true, message: t('signup.signupValidatePasswordRequired'), trigger: 'change' }

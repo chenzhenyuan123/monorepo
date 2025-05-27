@@ -4,10 +4,11 @@ import { checkResponseData, arrToDict, currencyFormat, isEMpty , errorMessage} f
 import { flagUrl } from '@/util/dataUtil'
 import { useUserStore } from '@/store/userState.js'
 import { useI18n } from "vue-i18n";
+import { FullScreenPrompt } from '@flylinking/ui';
 
 const router = useRouter()
 const { t } = useI18n();
-const { walletApi, withdrawApi, userApi } = useApi()
+const { walletApi, withdrawApi, userApi, homeApi } = useApi()
 const userStore = useUserStore()
 const isMobile = useIsMobile()
 // const popoverVisible = ref(false)
@@ -274,6 +275,9 @@ onMounted(() => {
         v-model="isShowSuspendedGialog"
         :lockTime="lockStatusData.lockTime"
     ></AccountWithdrawTemporarilySuspendedDialog>
+    
+    <!-- 全屏弹窗 -->
+    <FullScreenPrompt system="102" :homeApi="homeApi" :checkResponseData="checkResponseData" :isMobile="isMobile" />
   </div>
 </template>
 
