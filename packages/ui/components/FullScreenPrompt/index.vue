@@ -169,6 +169,7 @@ const toPage = () => {
       <div class="content" v-html="contentBr" />
       <div class="btns">
         <el-button v-if="data.cancelButtonView === 1" @click="cancel">{{ data.cancelButton }}</el-button>
+        <div class="flex-center-12"></div>
         <el-button type="primary" @click="save">{{ data.confirmButton }}</el-button>
       </div>
       <i v-if="data.closeButtonView" class="close-custom Flylink icon-x-close" @click="cancel"></i>
