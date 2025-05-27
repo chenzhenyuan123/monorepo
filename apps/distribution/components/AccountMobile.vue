@@ -33,7 +33,7 @@ const toLogin = async() => {
     </div>
     <div class="flex-center"></div>
     <div class="logout">
-      <i class="Flylink icon-log-out-01" @click="toLogin()"></i>
+      <img src="@flylinking/ui/styles/imgs/log-out-01.svg" alt="log-out" class="icon-log-out-01" @click="toLogin()">
     </div>
   </div>
 </template>
@@ -66,7 +66,8 @@ const toLogin = async() => {
     cursor: pointer;
     align-self: flex-start;
     .icon-log-out-01 {
-      font-size: 20px;
+      width: 20px;
+      height: 20px;
     }
   }
 }

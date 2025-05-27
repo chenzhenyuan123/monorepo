@@ -87,6 +87,90 @@ $--button-padding-vertical: (
   // $button-padding-horizontal: ("default": 50px)
 );
 
-@use "./popover.scss" as *;
+.el-popover.el-popper {
+  max-width: calc(100vw - 12px);
+}
 
-@use "./reset.scss" as *;
+[dir="rtl"] .el-menu {
+  right: 0; /* 菜单靠右 */
+  text-align: right; /* 文本右对齐 */
+}
+[dir="rtl"] .el-form-item__label {
+  text-align: left; /* 表单标签左对齐（RTL 下可能需反向调整） */
+}
+[dir="rtl"] .el-icon-arrow-left {
+  transform: scaleX(-1); /* 水平翻转箭头图标 */
+}
+
+.rtl {
+  direction: rtl;
+  text-align: right;
+  .direction-ltr {
+    direction: ltr;
+  }
+  .direction-inline-block {
+    display: inline-block;
+  }
+  .direction-text-align-right {
+    text-align: left;
+  }
+  .direction-text-align-left {
+    text-align: right;
+  }
+  .direction-flex-right {
+    justify-content: left;
+  }
+  .direction-ltr-input {
+    input {
+      direction: ltr;
+      text-align: right;
+    }
+  }
+}
+.ltr {
+  direction: ltr;
+  text-align: unset;
+  .direction-text-align-right {
+    text-align: right;
+  }
+  .direction-text-align-left {
+    text-align: left;
+  }
+  .direction-flex-right {
+    justify-content: right;
+  }
+}
+
+.rtl {
+  .el-form {
+    text-align: initial;
+  }
+  .el-form-item--label-top .el-form-item__label {
+    text-align: unset;
+  }
+  .el-form-item__error {
+    width: 100%;
+  }
+  .el-select__wrapper {
+    text-align: right;
+  }
+  .el-table .el-table__cell {
+    text-align: unset;
+  }
+  .el-table__body-wrapper {
+    .el-scrollbar__wrap--hidden-default {
+      scrollbar-width: auto;
+      &::-webkit-scrollbar {
+        display: block;
+      }
+    }
+    .el-scrollbar__bar.is-horizontal {
+      display: none;
+    }
+  }
+  .el-dialog__headerbtn {
+    right: auto;
+    left: 0;
+  }
+}
+
