@@ -1,6 +1,11 @@
 .orders-detail-box {
   margin: 20px auto 32px;
   max-width: 1200px;
+  .header-back{
+    .header-back-link {
+      display: flex;
+    }
+  }
 }
 .order-detail-title {
   .title {
@@ -85,12 +90,11 @@
           font-weight: 600;
           line-height: 20px;
         }
-        i {
+        svg {
           display: block;
           float: left;
           margin-left: 4px;
-          font-size: 12px;
-          line-height: 20px;
+          margin-top: 4px;
         }
       }
     }
