@@ -140,6 +140,3 @@ onUnmounted(() => {
   max-width: 380px;
 }
 </style>
-<style lang="scss">
-@import url("@/assets/css/global.scss");
-</style>
