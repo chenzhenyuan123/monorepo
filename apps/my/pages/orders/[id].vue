@@ -249,13 +249,13 @@ const getSrc = (imgName) => {
             <dl class="margin-top36">
               <dt>{{$t('orders.orderVatID')}}:</dt>
               <dd>
-                <p>{{ orderInfo.orderDetailCO.buyerMessage || '--' }}</p>
+                <p>{{ orderInfo.shipping.vatNo || '--' }}</p>
               </dd>
             </dl>
             <dl>
               <dt>{{$t('orders.orderNotes')}}:</dt>
               <dd>
-                <p>{{ orderInfo.shipping.vatNo || '--' }}</p>
+                <p>{{ orderInfo.orderDetailCO.buyerMessage || '--' }}</p>
               </dd>
             </dl>
           </div>
