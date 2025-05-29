@@ -8,7 +8,7 @@ userStore.getUserInfo()
 const router = useRouter()
 const emit = defineEmits(['hiddenSetting'])
 const goAccount = () => {
-  navigateTo('/account/profile')
+  navigateTo('/account')
   emit('hiddenSetting')
 }
 // 退出
