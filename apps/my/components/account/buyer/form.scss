@@ -111,6 +111,9 @@
         }
 
         :deep(.el-checkbox) {
+            .el-checkbox__label {
+                padding: 0 8px;
+            }
             .el-checkbox__label, .el-checkbox__input.is-checked + .el-checkbox__label {
                 color: #222;
             }
