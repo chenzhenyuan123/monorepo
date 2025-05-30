@@ -1,6 +1,7 @@
 import store from './index'
 import { defineStore } from "pinia"
 import Cookies from 'js-cookie'
+import { parseJwt } from "@flylinking/core/utils/urlUtil";
 
 export const useUserStore = defineStore('user', {
   state: () => {
@@ -49,7 +50,7 @@ export const useUserStore = defineStore('user', {
  * 获取本地数据
  * 刷新页面时，数据清空，从 localStorage 还原
  */
- function getInfo() {
+function getInfo() {
   let info;
   try {
     info = localStorage.getItem("userInfo");
@@ -59,6 +60,13 @@ export const useUserStore = defineStore('user', {
   const token = Cookies.get('Flylinking-Access-Token')
   if(!info?.token && token) {
     info.token = token
+    // 如果只存在token，则从token中获取用户信息
+    const  parseJwtToken = parseJwt(token)
+    if(parseJwtToken && parseJwtToken?.sub) {
+      info.loginAccount = parseJwtToken.sub
+      info.userName = parseJwtToken?.userName
+      localStorage.setItem("userInfo", JSON.stringify(info))
+    }
   }
 
   return info;
