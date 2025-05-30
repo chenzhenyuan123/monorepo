@@ -50,7 +50,8 @@ const form = ref({
     postal: undefined,
     province: undefined,
     callingCode: undefined,
-    phone: undefined
+    phone: undefined,
+    defaultAddress: undefined,
 })
 const rules = () => {
     return {
@@ -186,6 +187,11 @@ const rules = () => {
 
 const edit = () => {
     Object.assign(form.value, props.natureData)
+    if (form.value.defaultAddress === 1) {
+        form.value.defaultAddressBlo = true
+    } else {
+        form.value.defaultAddressBlo = false
+    }
     if (form.value.country) getBaseProvinceByCountry(form.value.country)
     isEdit.value = true
 }
@@ -256,6 +262,11 @@ const submit = () => {
         if (!valid) return
         loading.value = true
         const param = Object.assign({}, form.value)
+        if (form.value.defaultAddressBlo) {
+            param.defaultAddress = 1
+        } else {
+            param.defaultAddress = 0
+        }
         let result
         // if (props.isAdd) {
         //     //
@@ -410,6 +421,11 @@ userStore.getUserInfo()
                 </template>
             </el-input>
         </el-form-item>
+
+        <el-form-item width="100%" class="nature-form-item">
+            <el-checkbox v-model="form.defaultAddressBlo" label="As the default shipping address" size="large" />
+        </el-form-item>
+
         <el-form-item class="nature-form-buttons">
             <el-button id="profile-btn-shipping-address-cancel" class="button-default" @click="cancel">{{$t('profile.cancel')}}</el-button>
             <div class="flex-center-12"></div>
@@ -418,6 +434,9 @@ userStore.getUserInfo()
     </FormValidate>
 
     <div v-else class="nature-list">
+        <div v-if="natureData.defaultAddress === 1" class="nature-position-right-icon">
+            Default address
+        </div>
         <div class="nature-item">
             <div class="nature-item-label">{{$t('profile.shippingAddressLabelFirstName')}}</div>
             <div class="nature-item-value">{{ natureData.firstName || '-' }}</div>
