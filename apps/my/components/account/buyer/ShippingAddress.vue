@@ -422,9 +422,9 @@ userStore.getUserInfo()
             </el-input>
         </el-form-item>
 
-        <el-form-item width="100%" class="nature-form-item">
-            <el-checkbox v-model="form.defaultAddressBlo" :label="$t('profile.shippingAddressEditLabelDefaultAddress')" size="large" />
-        </el-form-item>
+<!--        <el-form-item width="100%" class="nature-form-item">-->
+<!--            <el-checkbox v-model="form.defaultAddressBlo" :label="$t('profile.shippingAddressEditLabelDefaultAddress')" size="large" />-->
+<!--        </el-form-item>-->
 
         <el-form-item class="nature-form-buttons">
             <el-button id="profile-btn-shipping-address-cancel" class="button-default" @click="cancel">{{$t('profile.cancel')}}</el-button>
@@ -434,9 +434,9 @@ userStore.getUserInfo()
     </FormValidate>
 
     <div v-else class="nature-list">
-        <div v-if="natureData.defaultAddress === 1" class="nature-position-right-icon">
-            {{$t('profile.shippingAddressIconDefaultAddress')}}
-        </div>
+<!--        <div v-if="natureData.defaultAddress === 1" class="nature-position-right-icon">-->
+<!--            {{$t('profile.shippingAddressIconDefaultAddress')}}-->
+<!--        </div>-->
         <div class="nature-item">
             <div class="nature-item-label">{{$t('profile.shippingAddressLabelFirstName')}}</div>
             <div class="nature-item-value">{{ natureData.firstName || '-' }}</div>
