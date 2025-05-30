@@ -230,6 +230,18 @@ const getSrc = (imgName) => {
                 <p>{{ orderInfo.shipping.zipcode || '--' }}</p>
               </dd>
             </dl>
+            <dl class="margin-top36">
+              <dt>{{$t('orders.orderVatID')}}:</dt>
+              <dd>
+                <p>{{ orderInfo.shipping.vatNo || '--' }}</p>
+              </dd>
+            </dl>
+            <dl>
+              <dt>{{$t('orders.orderNotes')}}:</dt>
+              <dd>
+                <p>{{ orderInfo.orderDetailCO.buyerMessage || '--' }}</p>
+              </dd>
+            </dl>
           </div>
         </div>
       </div>
