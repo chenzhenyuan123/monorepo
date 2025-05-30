@@ -423,7 +423,7 @@ userStore.getUserInfo()
         </el-form-item>
 
         <el-form-item width="100%" class="nature-form-item">
-            <el-checkbox v-model="form.defaultAddressBlo" label="As the default shipping address" size="large" />
+            <el-checkbox v-model="form.defaultAddressBlo" :label="$t('profile.shippingAddressEditLabelDefaultAddress')" size="large" />
         </el-form-item>
 
         <el-form-item class="nature-form-buttons">
@@ -435,7 +435,7 @@ userStore.getUserInfo()
 
     <div v-else class="nature-list">
         <div v-if="natureData.defaultAddress === 1" class="nature-position-right-icon">
-            Default address
+            {{$t('profile.shippingAddressIconDefaultAddress')}}
         </div>
         <div class="nature-item">
             <div class="nature-item-label">{{$t('profile.shippingAddressLabelFirstName')}}</div>
