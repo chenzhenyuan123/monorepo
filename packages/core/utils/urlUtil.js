@@ -53,3 +53,22 @@ export function previewImg(filePath) {
     }
     return tarUrl
 }
+
+// 用atob方法解析Jwt的token令牌里包含的信息：email、姓名
+export function parseJwt(token) {
+    try {
+        // 提取 payload 部分
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(
+        atob(base64)
+            .split('')
+            .map((c) => `%${(`00${c.charCodeAt(0).toString(16)}`).slice(-2)}`)
+            .join('')
+        );
+        return JSON.parse(jsonPayload);
+    } catch (e) {
+        console.error('JWT的token令牌解析失败:', e);
+        return null;
+    }
+}
