@@ -7,9 +7,12 @@ import { checkResponseData, scrollTo } from "@/util/index.js";
 import { Search, Plus, Warning } from '@element-plus/icons-vue'
 import NoData from '@/components/svg/NoData.svg'
 import { useUserStore } from '@/store/userState.js'
-const { productsApi } = useApi();
+import { FullScreenPrompt } from '@flylinking/ui';
+
+const { productsApi, homeApi } = useApi();
 const userStore = useUserStore()
 userStore.getUserInfo()
+const isMobile = useIsMobile()
 
 const search = ref('')
 const loading = ref(false)
@@ -169,8 +172,6 @@ const storeSearchChange = e => {
       </div>
     </div>
 
-    
-
     <!-- join-->
     <JoinStore
       v-if="showJoin"
@@ -178,6 +179,9 @@ const storeSearchChange = e => {
       :data="[]"
       @joinSave="joinSave"
     />
+
+    <!-- 全屏弹窗 -->
+    <FullScreenPrompt system="108" :homeApi="homeApi" :checkResponseData="checkResponseData" :isMobile="isMobile" />
 
   </div>
 </template>

@@ -4,7 +4,9 @@ import { flagUrl } from '@/util/dataUtil'
 import { Search, Plus, Warning } from '@element-plus/icons-vue'
 import NoData from '@/components/svg/NoData.svg'
 import { useUserStore } from '@/store/userState.js'
-const { productsApi, walletApi, withdrawApi, userApi } = useApi();
+import { FullScreenPrompt } from '@flylinking/ui';
+
+const { productsApi, walletApi, withdrawApi, userApi, homeApi } = useApi();
 const router = useRouter();
 const userStore = useUserStore()
 userStore.getUserInfo()
@@ -299,6 +301,9 @@ const routerGo = path => {
       :data="[]"
       @joinSave="joinSave"
     />
+
+    <!-- 全屏弹窗 -->
+    <FullScreenPrompt system="101" :homeApi="homeApi" :checkResponseData="checkResponseData" :isMobile="isMobile" />
 
   </div>
 </template>

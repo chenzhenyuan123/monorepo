@@ -38,3 +38,7 @@ export const loginWithVerifyCode = (data) => {
 export const setPassword = (data) => {
     return useHttp.post('/member/user/setPassword', data, { server: false })
 }
+// 获取当前登录的用户信息
+export const getEmailIfLoginIn = () => {
+    return useHttp.get(`/member/user/getEmailIfLoginIn`, {}, { server: false })
+}

@@ -7,8 +7,27 @@ userStore.getUserInfo()
 
 const router = useRouter()
 const emit = defineEmits(['hiddenSetting'])
+
+onMounted(() => {
+  if(userStore.userInfo.token && !userStore.userInfo.loginAccount) {
+    getEmailIfLoginIn()
+  }
+})
+// 获取登录邮箱姓名
+const getEmailIfLoginIn = async() => {
+  const result = await contactInfoApi.getEmailIfLoginIn()
+  const res = checkResponseData(result)
+  if(res) {
+    userStore.setToken({
+      token: userStore.userInfo.token,
+      userName: res.userName,
+      loginAccount: res.loginAccount
+    })
+  }
+}
+
 const goAccount = () => {
-  navigateTo('/account/profile')
+  navigateTo('/account')
   emit('hiddenSetting')
 }
 // 退出

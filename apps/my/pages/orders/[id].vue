@@ -14,9 +14,11 @@ const route = useRoute();
 const isMobile = useIsMobile()
 
 const orderInfo = ref({
-  goodsList: [],
-  orderDetailCO: {},
-  shipping: {}
+  goodsList: [], // 商品列表信息
+  orderDetailCO: {}, // 订单信息
+  shipping: {}, // 收货地址
+  LogisticsListStr: '', // 物流单号拼接，用于跳转17track
+  tradeOrderLogisticsList: [] // 物流信息
 })
 onMounted(() => { 
   getInfo()
@@ -27,6 +29,11 @@ const getInfo = async () => {
   const res = checkResponseData(result)
   if(res) {
     orderInfo.value = Object.assign(res)
+    if(res?.tradeOrderLogisticsList && res.tradeOrderLogisticsList.length>0) {
+      orderInfo.value.LogisticsListStr = res.tradeOrderLogisticsList.map(ele => {
+        return ele.logisticsCode;
+      }).join(',');
+    }
   }
 }
 
@@ -73,7 +80,7 @@ const getSrc = (imgName) => {
           <!-- 联系方式弹窗 -->
           <ContactInfo v-if="showContactInfo2" :contactInfo="orderInfo.orderDetailCO" left="0" @hide="showContactInfo2=false" />
         </div>
-        <a v-if="orderInfo.orderDetailCO.buyerOrderStatus===2 && orderInfo.orderDetailCO.logisticsCode" :href="`https://t.17track.net/en#nums=${orderInfo.orderDetailCO.logisticsCode}`" target="_blank">
+        <a v-if="orderInfo.orderDetailCO.buyerOrderStatus===2 && orderInfo.orderDetailCO.logisticsCode" :href="`https://t.17track.net/en#nums=${orderInfo.LogisticsListStr}`" target="_blank">
           <el-button type="primary" id="Track-Shipment-btn">{{$t('orders.ordersTrackShipment')}}</el-button>
         </a>
         <div v-if="orderInfo.orderDetailCO.buyerOrderStatus===2 && orderInfo.orderDetailCO.logisticsCode" class="flex-center-8"></div>
@@ -93,8 +100,14 @@ const getSrc = (imgName) => {
         <div v-if="orderInfo.orderDetailCO.logisticsCode" class="order-text">
           <b>{{$t('orders.ordersShipmentTrackNo')}}</b>
           <p>
-            <a :href="`https://t.17track.net/en#nums=${orderInfo.orderDetailCO.logisticsCode}`" target="_blank" class="shipment-tag-a">
-              <span class="ellipsis">{{orderInfo.orderDetailCO.logisticsCode}}</span>
+            <a
+              v-for="item in orderInfo.tradeOrderLogisticsList"
+              :key="item.id"
+              :href="`https://t.17track.net/en#nums=${orderInfo.LogisticsListStr}`"
+              target="_blank"
+              class="shipment-tag-a"
+             >
+              <span class="ellipsis">{{item.logisticsCode}}</span>
               <i class="Flylink icon-share-04"></i>
             </a>
           </p>
@@ -215,6 +228,18 @@ const getSrc = (imgName) => {
               <dt>{{$t('orders.ordersPostalCode')}}:</dt>
               <dd>
                 <p>{{ orderInfo.shipping.zipcode || '--' }}</p>
+              </dd>
+            </dl>
+            <dl class="margin-top36">
+              <dt>{{$t('orders.orderVatID')}}:</dt>
+              <dd>
+                <p>{{ orderInfo.shipping.vatNo || '--' }}</p>
+              </dd>
+            </dl>
+            <dl>
+              <dt>{{$t('orders.orderNotes')}}:</dt>
+              <dd>
+                <p>{{ orderInfo.orderDetailCO.buyerMessage || '--' }}</p>
               </dd>
             </dl>
           </div>

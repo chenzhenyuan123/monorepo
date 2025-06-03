@@ -5,3 +5,12 @@ export const getBanner = (data) => {
 export const msgCarouselMessageClick = (data) => {
   return useHttp.post('/member/home/pushBannerClick', data)
 }
+
+// 获取全屏弹窗消息
+export const getPopMessage = (params) => {
+  return useHttp.get(`/flylinking-basedata/client/popMessage/messages`, params, { server: true })
+}
+// 点击全屏弹窗消息
+export const clickPopMessage = (data) => {
+  return useHttp.post(`/flylinking-basedata/client/popMessage/click`, data, { server: true })
+}

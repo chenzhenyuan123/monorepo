@@ -109,6 +109,15 @@
                 margin-bottom: 4px;
             }
         }
+
+        :deep(.el-checkbox) {
+            .el-checkbox__label {
+                padding: 0 8px;
+            }
+            .el-checkbox__label, .el-checkbox__input.is-checked + .el-checkbox__label {
+                color: #222;
+            }
+        }
     }
     .nature-form-buttons {
         margin: 32px -32px 0;
@@ -125,6 +134,24 @@
     background: #F9FAFB;
     box-shadow: 0px 1px 2px 0px rgba(16, 24, 40, 0.05);
     padding: 32px;
+    position: relative;
+    .nature-position-right-icon {
+        position: absolute;
+        top: 12px;
+        right: 16px;
+        padding: 2px 8px;
+        border-radius: 12px;
+        border: 1.5px solid #5548FF;
+        color: #443ACC;
+        font-size: 12px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 18px;
+        .rtl & {
+            left: 16px;
+            right: auto;
+        }
+    }
     .nature-item {
         display: flex;
         + .nature-item {

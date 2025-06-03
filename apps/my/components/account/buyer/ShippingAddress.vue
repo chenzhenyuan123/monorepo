@@ -38,7 +38,7 @@ const countryToCallingCode = computed(() => {
     return arrToDict(props.countryData, { value: 'countryId', label: 'callingCode' })
 })
 const isEdit = ref(false)
-const formRef = ref(null)
+const formValidateRef = ref(null)
 const loading = ref(false)
 const form = ref({
     firstName: undefined,
@@ -50,7 +50,8 @@ const form = ref({
     postal: undefined,
     province: undefined,
     callingCode: undefined,
-    phone: undefined
+    phone: undefined,
+    defaultAddress: undefined,
 })
 const rules = () => {
     return {
@@ -58,12 +59,12 @@ const rules = () => {
             {
                 asyncValidator(rule, value, cb) {
                     if (!value)
-                        return cb(new Error(t("cashier.firstNameRequired")));
+                        return cb(new Error(t("profile.firstNameRequired")));
                     else {
                         if (hasChinese(value)){
-                            return cb(new Error(t("cashier.hasChineseLimit")))
+                            return cb(new Error(t("profile.hasChineseLimit")))
                         } else if (hasArabic(value)){
-                            return cb(new Error(t("cashier.hasArabicLimit")))
+                            return cb(new Error(t("profile.hasArabicLimit")))
                         }
                     }
                     cb();
@@ -75,12 +76,12 @@ const rules = () => {
             {
                 asyncValidator(rule, value, cb) {
                     if (!value)
-                        return cb(new Error(t("cashier.lastNameRequired")));
+                        return cb(new Error(t("profile.lastNameRequired")));
                     else {
                         if (hasChinese(value)){
-                            return cb(new Error(t("cashier.hasChineseLimit")))
+                            return cb(new Error(t("profile.hasChineseLimit")))
                         } else if (hasArabic(value)){
-                            return cb(new Error(t("cashier.hasArabicLimit")))
+                            return cb(new Error(t("profile.hasArabicLimit")))
                         }
                     }
                     cb();
@@ -91,7 +92,7 @@ const rules = () => {
         "country": [
             {
                 asyncValidator(rule, value, cb) {
-                    if (!value) return cb(new Error(""));
+                    if (!value) return cb(new Error(t("profile.CountryRequired")));
                     cb();
                 },
                 trigger: "change",
@@ -101,12 +102,12 @@ const rules = () => {
             {
                 asyncValidator(rule, value, cb) {
                     if (!value)
-                        return cb(new Error(t("cashier.AddressRequired")));
+                        return cb(new Error(t("profile.AddressRequired")));
                     else {
                         if (hasChinese(value)){
-                            return cb(new Error(t("cashier.hasChineseLimit")))
+                            return cb(new Error(t("profile.hasChineseLimit")))
                         } else if (hasArabic(value)){
-                            return cb(new Error(t("cashier.hasArabicLimit")))
+                            return cb(new Error(t("profile.hasArabicLimit")))
                         }
                     }
                     cb();
@@ -119,9 +120,9 @@ const rules = () => {
                 asyncValidator(rule, value, cb) {
                     if (value) {
                         if (hasChinese(value)){
-                            return cb(new Error(t("cashier.hasChineseLimit")))
+                            return cb(new Error(t("profile.hasChineseLimit")))
                         } else if (hasArabic(value)){
-                            return cb(new Error(t("cashier.hasArabicLimit")))
+                            return cb(new Error(t("profile.hasArabicLimit")))
                         }
                     }
                     cb();
@@ -133,12 +134,12 @@ const rules = () => {
             {
                 asyncValidator(rule, value, cb) {
                     if (!value)
-                        return cb(new Error(t("cashier.CityRequired")));
+                        return cb(new Error(t("profile.CityRequired")));
                     else {
                         if (hasChinese(value)){
-                            return cb(new Error(t("cashier.hasChineseLimit")))
+                            return cb(new Error(t("profile.hasChineseLimit")))
                         } else if (hasArabic(value)){
-                            return cb(new Error(t("cashier.hasArabicLimit")))
+                            return cb(new Error(t("profile.hasArabicLimit")))
                         }
                     }
                     cb();
@@ -150,10 +151,10 @@ const rules = () => {
             {
                 asyncValidator(rule, value, cb) {
                     if (!value)
-                        return cb(new Error(t("cashier.ZIPRequired")));
+                        return cb(new Error(t("profile.ZIPRequired")));
                     else {
                         if (!isValidZipcode(value)){
-                            return cb(new Error(t("cashier.zipcodeLimit")))
+                            return cb(new Error(t("profile.zipcodeLimit")))
                         }
                     }
                     cb();
@@ -171,11 +172,11 @@ const rules = () => {
         //     trigger: "change",
         //   },
         // ],
-        "shipping.phone": [
+        "phone": [
             {
                 asyncValidator(rule, value, cb) {
                     if (!value)
-                        return cb(new Error(t("cashier.MobileNumberRequired")));
+                        return cb(new Error(t("profile.MobileNumberRequired")));
                     cb();
                 },
                 trigger: "change",
@@ -186,6 +187,11 @@ const rules = () => {
 
 const edit = () => {
     Object.assign(form.value, props.natureData)
+    if (form.value.defaultAddress === 1) {
+        form.value.defaultAddressBlo = true
+    } else {
+        form.value.defaultAddressBlo = false
+    }
     if (form.value.country) getBaseProvinceByCountry(form.value.country)
     isEdit.value = true
 }
@@ -252,10 +258,15 @@ const addressChange = (val) => {
 }
 // 编辑用户基础信息
 const submit = () => {
-    formRef.value.validate(async valid => {
+    formValidateRef.value?.formRef.validate(async valid => {
         if (!valid) return
         loading.value = true
         const param = Object.assign({}, form.value)
+        if (form.value.defaultAddressBlo) {
+            param.defaultAddress = 1
+        } else {
+            param.defaultAddress = 0
+        }
         let result
         // if (props.isAdd) {
         //     //
@@ -298,27 +309,27 @@ userStore.getUserInfo()
 
 <template>
 
-    <el-form
+    <FormValidate
         v-if="isEdit || isAdd"
-        ref="formRef"
+        ref="formValidateRef"
         :model="form"
+        :rules="rules()"
         label-width="auto"
         class="nature-form"
         novalidate
     >
-<!--        :rules="rules()"-->
-        <el-form-item :label="$t('profile.shippingAddressEditLabelName')" class="nature-form-item">
+        <FormGroup :label="$t('profile.shippingAddressEditLabelName')" class="nature-form-item">
             <div class="nature-form-group">
-                <el-form-item prop="firstName" class="nature-form-item">
+                <FormGroupItem prop="firstName" class="nature-form-item">
                     <el-input
                             v-model="form.firstName"
                             :placeholder="$t('profile.shippingAddressLabelFirstName')"
                             class="nature-form-input input-default"
                             @change="e => { form.firstName = e.trim() }"
                     />
-                </el-form-item>
+                </FormGroupItem>
                 <div class="flex-center-8"></div>
-                <el-form-item prop="lastName" class="nature-form-item">
+                <FormGroupItem prop="lastName" class="nature-form-item">
                     <el-input
                             v-model="form.lastName"
                             :placeholder="$t('profile.shippingAddressLabelLastName')"
@@ -326,12 +337,12 @@ userStore.getUserInfo()
                             input-default"
                             @change="e => { form.lastName = e.trim() }"
                     />
-                </el-form-item>
+                </FormGroupItem>
             </div>
-        </el-form-item>
-        <el-form-item :label="$t('profile.shippingAddressEditLabelAddress')" prop="" class="nature-form-item">
+        </FormGroup>
+        <FormGroup :label="$t('profile.shippingAddressEditLabelAddress')" prop="" class="nature-form-item">
             <div class="nature-form-group wrap">
-                <el-form-item prop="country" class="nature-form-item-col12">
+                <FormGroupItem prop="country" class="nature-form-item-col12">
                     <el-select
                         v-model="form.country"
                         filterable
@@ -346,8 +357,8 @@ userStore.getUserInfo()
                             :label="item.name"
                         />
                     </el-select>
-                </el-form-item>
-                <el-form-item prop="addressLineOne" class="nature-form-item-col12">
+                </FormGroupItem>
+                <FormGroupItem prop="addressLineOne" class="nature-form-item-col12">
 <!--                    <el-input v-model="form.addressLineOne" :placeholder="$t('profile.shippingAddressEditPlaceholderAddress1')" class="nature-form-input input-default" @change="e => { form.addressLineOne = e.trim() }" />-->
                     <AddressComplete
                             :placeholder="$t('profile.shippingAddressEditPlaceholderAddress1')"
@@ -357,25 +368,25 @@ userStore.getUserInfo()
                             @selected="setGoogleMapData"
                             @change="addressChange"
                     />
-                </el-form-item>
-                <el-form-item prop="addressLineTwo" class="nature-form-item-col12">
+                </FormGroupItem>
+                <FormGroupItem prop="addressLineTwo" class="nature-form-item-col12">
                     <el-input
                             v-model="form.addressLineTwo"
                             :placeholder="$t('profile.shippingAddressEditPlaceholderAddress2')"
                             class="nature-form-input input-default"
                             @change="e => { form.addressLineTwo = e.trim() }"
                     />
-                </el-form-item>
+                </FormGroupItem>
                 <div class="nature-form-group">
-                    <el-form-item prop="city" class="nature-form-item">
+                    <FormGroupItem prop="city" class="nature-form-item">
                         <el-input v-model="form.city" :placeholder="$t('profile.shippingAddressEditPlaceholderCity')" class="nature-form-input input-default" @change="e => { form.city = e.trim() }" />
-                    </el-form-item>
+                    </FormGroupItem>
                     <div class="flex-center-8"></div>
-                    <el-form-item prop="postal" class="nature-form-item">
+                    <FormGroupItem prop="postal" class="nature-form-item">
                         <el-input v-model="form.postal" :placeholder="$t('profile.shippingAddressEditPlaceholderPostal')" class="nature-form-input input-default" @change="e => { form.postal = e.trim() }" />
-                    </el-form-item>
+                    </FormGroupItem>
                 </div>
-                <el-form-item prop="province" class="nature-form-item-col12">
+                <FormGroupItem prop="province" class="nature-form-item-col12">
                     <el-select
                         v-model="form.province"
                         filterable
@@ -389,9 +400,9 @@ userStore.getUserInfo()
                             :label="item.name"
                         />
                     </el-select>
-                </el-form-item>
+                </FormGroupItem>
             </div>
-        </el-form-item>
+        </FormGroup>
         <el-form-item :label="$t('profile.shippingAddressEditLabelPhone')" prop="phone" class="nature-form-item">
             <el-input v-model="form.phone" :placeholder="$t('profile.shippingAddressEditPlaceholderPhone')" class="nature-form-input input-default" @change="e => { form.phone = e.trim() }">
                 <template #prepend>
@@ -410,14 +421,22 @@ userStore.getUserInfo()
                 </template>
             </el-input>
         </el-form-item>
+
+<!--        <el-form-item width="100%" class="nature-form-item">-->
+<!--            <el-checkbox v-model="form.defaultAddressBlo" :label="$t('profile.shippingAddressEditLabelDefaultAddress')" size="large" />-->
+<!--        </el-form-item>-->
+
         <el-form-item class="nature-form-buttons">
             <el-button id="profile-btn-shipping-address-cancel" class="button-default" @click="cancel">{{$t('profile.cancel')}}</el-button>
             <div class="flex-center-12"></div>
             <el-button id="profile-btn-shipping-address-save" type="primary" class="button-default" :loading="loading" @click="submit">{{$t('profile.save')}}</el-button>
         </el-form-item>
-    </el-form>
+    </FormValidate>
 
     <div v-else class="nature-list">
+<!--        <div v-if="natureData.defaultAddress === 1" class="nature-position-right-icon">-->
+<!--            {{$t('profile.shippingAddressIconDefaultAddress')}}-->
+<!--        </div>-->
         <div class="nature-item">
             <div class="nature-item-label">{{$t('profile.shippingAddressLabelFirstName')}}</div>
             <div class="nature-item-value">{{ natureData.firstName || '-' }}</div>
