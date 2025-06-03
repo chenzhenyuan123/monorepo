@@ -3,6 +3,7 @@
  * @Description: 全屏消息弹窗
 -->
 <script name="FullScreenPrompt" setup>
+import { Close } from '@element-plus/icons-vue';
 import { previewImg } from '@flylinking/core/utils/urlUtil'
 
 const props = defineProps({
@@ -160,7 +161,7 @@ const toPage = () => {
       </template>
     </div>
     <div v-if="data.category === 2 && data.closeButtonView" class="close-custom-bg" @click="cancel">
-      <i class="close-custom Flylink icon-x-close"></i>
+      <el-icon class="close-custom"><Close /></el-icon>
     </div>
     <div v-if="data.category === 1" class="container">
       <div class="title">
@@ -172,7 +173,7 @@ const toPage = () => {
         <div class="flex-center-12"></div>
         <el-button type="primary" @click="save">{{ data.confirmButton }}</el-button>
       </div>
-      <i v-if="data.closeButtonView" class="close-custom Flylink icon-x-close" @click="cancel"></i>
+      <el-icon v-if="data.closeButtonView" class="close-custom" @click="cancel"><Close /></el-icon>
     </div>
   </el-dialog>
 </template>
@@ -254,7 +255,7 @@ const toPage = () => {
   display: flex;
   justify-content: center;
   align-items: center;
-  .icon-x-close {
+  .close-custom {
     cursor: pointer;
     width: 24px;
     height: 24px;
