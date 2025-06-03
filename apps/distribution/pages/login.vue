@@ -207,6 +207,7 @@ const sendAgain = async() => {
             require-asterisk-position="right"
             class="login-box"
             novalidate
+            onsubmit="return false;"
           >
             <template v-if="isMy && !isPasswordLogin">
               <el-form-item
