@@ -1,4 +1,5 @@
 <script setup>
+import { Close } from '@element-plus/icons-vue';
 import { useSettingStore } from '@/store/settingState.js'
 const settingStore = useSettingStore()
 
@@ -32,7 +33,7 @@ router.afterEach((to, from) => {
           <template #collapse>
             <div class="collapse-btn-m" @click="showSetting = !showSetting">
               <img v-if="!showSetting" src="~@/assets/imgs/menu.svg" alt="">
-              <i v-else class="Flylink icon-x-close"></i>
+              <el-icon v-else><Close /></el-icon>
             </div>
           </template>
         </navbar>
@@ -130,7 +131,6 @@ router.afterEach((to, from) => {
 }
 .collapse-btn-m {
   cursor: pointer;
-  padding: 8px;
   .icon-x-close {
     font-size: 20px;
   }

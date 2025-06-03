@@ -1,4 +1,5 @@
 <script setup>
+import { Close } from '@element-plus/icons-vue';
 import Cookies from 'js-cookie'
 
 const isMobile = useIsMobile()
@@ -33,7 +34,7 @@ const toPrivacy = () => {
       <button id="cookieProtocol-btn-allow" class="btn allow" @click="tracking('1')">
         {{ $t('home.cookieProtocolAllow') }}
       </button>
-      <i id="cookieProtocol-btn-allow" class="Flylink icon-x-close" @click="tracking('1')"></i>
+      <el-icon id="cookieProtocol-btn-allow" class="icon-x-close" @click="tracking('1')"><Close /></el-icon>
     </div>
     <div v-else class="container">
       <div>
