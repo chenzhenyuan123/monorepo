@@ -59,8 +59,11 @@ const getSrc = (imgName) => {
 <template>
   <div class="orders-detail-box" :class="{'m': isMobile}">
     <div class="header-back">
-      <NuxtLink to="/orders">
-        <i class="Flylink icon-arrow-left"></i>{{$t('router.Orders')}}
+      <NuxtLink to="/orders" class="header-back-link">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon-arrow-left" width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <path d="M15.8334 9.99999H4.16675M4.16675 9.99999L10.0001 15.8333M4.16675 9.99999L10.0001 4.16666" stroke="#5548FF" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>{{$t('router.Orders')}}</span>
       </NuxtLink>
     </div>
     <div class="order-detail-title">
@@ -108,7 +111,16 @@ const getSrc = (imgName) => {
               class="shipment-tag-a"
              >
               <span class="ellipsis">{{item.logisticsCode}}</span>
-              <i class="Flylink icon-share-04"></i>
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none">
+                <g clip-path="url(#clip0_5855_4663)">
+                  <path d="M10.5 4.5L10.5 1.5M10.5 1.5H7.5M10.5 1.5L6.5 5.5M5 2.5H3.9C3.05992 2.5 2.63988 2.5 2.31901 2.66349C2.03677 2.8073 1.8073 3.03677 1.66349 3.31901C1.5 3.63988 1.5 4.05992 1.5 4.9V8.1C1.5 8.94008 1.5 9.36012 1.66349 9.68099C1.8073 9.96323 2.03677 10.1927 2.31901 10.3365C2.63988 10.5 3.05992 10.5 3.9 10.5H7.1C7.94008 10.5 8.36012 10.5 8.68099 10.3365C8.96323 10.1927 9.1927 9.96323 9.33651 9.68099C9.5 9.36012 9.5 8.94008 9.5 8.1V7" stroke="#5548FF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </g>
+                <defs>
+                  <clipPath id="clip0_5855_4663">
+                    <rect width="12" height="12" fill="white"/>
+                  </clipPath>
+                </defs>
+              </svg>
             </a>
           </p>
         </div>
@@ -128,9 +140,13 @@ const getSrc = (imgName) => {
       <div class="left ">
         <div class="order-detail-content-top">
           <div class="header" @click="jumpToShop()">
-            <i class="Flylink icon-Shop"></i>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M12.5 17.5V13C12.5 12.5333 12.5 12.2999 12.4092 12.1217C12.3293 11.9649 12.2018 11.8374 12.045 11.7575C11.8667 11.6667 11.6334 11.6667 11.1667 11.6667H8.83333C8.36662 11.6667 8.13327 11.6667 7.95501 11.7575C7.79821 11.8374 7.67072 11.9649 7.59083 12.1217C7.5 12.2999 7.5 12.5333 7.5 13V17.5M2.5 5.83333C2.5 7.21404 3.61929 8.33333 5 8.33333C6.38071 8.33333 7.5 7.21404 7.5 5.83333C7.5 7.21404 8.61929 8.33333 10 8.33333C11.3807 8.33333 12.5 7.21404 12.5 5.83333C12.5 7.21404 13.6193 8.33333 15 8.33333C16.3807 8.33333 17.5 7.21404 17.5 5.83333M5.16667 17.5H14.8333C15.7668 17.5 16.2335 17.5 16.59 17.3183C16.9036 17.1586 17.1586 16.9036 17.3183 16.59C17.5 16.2335 17.5 15.7668 17.5 14.8333V5.16667C17.5 4.23325 17.5 3.76654 17.3183 3.41002C17.1586 3.09641 16.9036 2.84144 16.59 2.68166C16.2335 2.5 15.7668 2.5 14.8333 2.5H5.16667C4.23325 2.5 3.76654 2.5 3.41002 2.68166C3.09641 2.84144 2.84144 3.09641 2.68166 3.41002C2.5 3.76654 2.5 4.23325 2.5 5.16667V14.8333C2.5 15.7668 2.5 16.2335 2.68166 16.59C2.84144 16.9036 3.09641 17.1586 3.41002 17.3183C3.76654 17.5 4.23325 17.5 5.16667 17.5Z" stroke="#475467" stroke-width="1.44444" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
             <span class="goods-text">{{orderInfo.orderDetailCO.sellerBusinessName}}</span>
-            <i class="Flylink icon-chevron-right"></i>
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <path d="M6.75 13.5L11.25 9L6.75 4.5" stroke="#475467" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
           </div>
           <dl v-for="kv in orderInfo.goodsList" :key="kv.id" class="goods-content">
             <dt class="goods-name">

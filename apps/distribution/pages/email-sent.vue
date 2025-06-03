@@ -94,7 +94,6 @@ onUnmounted(() => {
   </div>
 </template>
 <style lang="scss" scoped>
-@import url("@/assets/css/global.scss");
 @import url("@/assets/css/signup-login/style.scss");
 
 .login-box {

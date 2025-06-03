@@ -63,5 +63,6 @@ table {
 } */
 @font-face {
   font-family: "Inter";
-  src: url('../font/InterVariable.woff2');
+  src: url('../font/InterVariable.woff2') format('woff2');
+  font-display: swap; /* 避免FOIT页面空白 */
 }

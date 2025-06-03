@@ -106,6 +106,3 @@ const routerGo = path => {
   }
 }
 </style>
-<style lang="scss">
-@import url("@/assets/css/global.scss");
-</style>
