@@ -30,7 +30,7 @@ export const useUserStore = defineStore('user', {
       return new Promise(resolve => {
         this.token = undefined
         this.userInfo = {}
-        Cookies.remove('Flylinking-Access-Token')
+        Cookies.remove('Flylinking-Access-Token', { domain: '.flylinking.com' })
         localStorage.removeItem('userInfo')
         
         resolve()
