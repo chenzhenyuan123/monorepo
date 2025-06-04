@@ -51,12 +51,12 @@ export const useUserStore = defineStore('user', {
  * 刷新页面时，数据清空，从 localStorage 还原
  */
 function getInfo() {
-  let info;
-  try {
-    info = localStorage.getItem("userInfo");
-  } catch (e) {
-  }
-  info = info ? JSON.parse(info) : {};
+  let info = {};
+  // try {
+  //   info = localStorage.getItem("userInfo");
+  // } catch (e) {
+  // }
+  // info = info ? JSON.parse(info) : {};
   const token = Cookies.get('Flylinking-Access-Token')
   if(!info?.token && token) {
     info.token = token
