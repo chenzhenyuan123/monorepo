@@ -100,10 +100,7 @@ const codeSubmit = () => {
       const res = checkResponseData(result)
       if(res) {
         if(res.isVerify && res?.loginCO) {
-          if(res?.loginCO?.token) {
-            userStore.setToken(res.loginCO)
-            routerGo('/home')
-          }
+          onResult(res)
           return
         }
         checkResultData.numberTimes = res?.numberTimes
@@ -134,16 +131,24 @@ const onSubmit = () => {
       const result = await contactInfoApi.userLogin(loginForm.value)
       const res = checkResponseData(result)
       if(res && res?.isVerify) {
-        if(res?.loginCO?.token) {
-          userStore.setToken(res.loginCO)
-          routerGo('/home')
-        }
+        onResult(res)
       } else {
         showError.value = true
         if(res?.failReason && !res?.isVerify) errorMessage(t(`service.${res.failCode}`) || res.failReason)
       }
       loading.value = false
     })
+}
+// 登录成功-跳转
+const onResult = (res) => {
+  if(res?.loginCO?.token) {
+    userStore.setToken(res.loginCO)
+    if(route.query?.store) {
+      routerGo('/join')
+    } else {
+      routerGo('/home')
+    }
+  }
 }
 const routerGo = (path) => {
   navigateTo({
