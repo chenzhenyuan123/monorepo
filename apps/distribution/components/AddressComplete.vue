@@ -5,7 +5,7 @@
 
     const props = defineProps({
         merchantId: { type: String, default: '' },
-        busType: { type: String, default: 'FlyPay' },
+        busType: { type: String, default: 'FlyLinkBuyer' },
         value: { type: String, default: '' },
         country: { type: String, default: '' },
         lang: { type: String, default: 'en' },
