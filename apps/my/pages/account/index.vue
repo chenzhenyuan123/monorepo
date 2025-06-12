@@ -3,9 +3,10 @@
     import { useUserStore } from '@/store/userState.js'
     import { checkResponseData, arrToDict } from "@/util/index.js"
     import { useI18n } from "vue-i18n";
+  import { FullScreenPrompt } from '@flylinking/ui';
 
     const { t, locale } = useI18n();
-    const { userApi } = useApi()
+    const { userApi, homeApi } = useApi()
     const userStore = useUserStore()
     const isMobile = useIsMobile()
 
@@ -197,6 +198,10 @@
                 </div>
             </div>
         </div>
+        
+
+        <!-- 全屏弹窗 -->
+        <FullScreenPrompt system="107" :homeApi="homeApi" :checkResponseData="checkResponseData" :isMobile="isMobile" />
     </div>
 </template>
 

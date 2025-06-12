@@ -10,9 +10,9 @@
   import {splitDateRange, formatDate} from "@flylinking/core/utils/dateUtil";
   import {getCleanFormData, theAll} from "@flylinking/core/utils/dataUtil";
   import { ordersStatus } from "@/util/const.js";
+  import { FullScreenPrompt } from '@flylinking/ui';
 
-
-  const { buyerOrderApi } = useApi();
+  const { buyerOrderApi, homeApi } = useApi();
   const { t } = useI18n();
   const isMobile = useIsMobile()
   const emit = defineEmits(['pageChange'])
@@ -203,9 +203,8 @@
             @pageSizeChange="pageSizeChange"
     ></OrderList>
 
-<!--    <NuxtLink :to="`/orders/${order.id}`">-->
-<!--      {{ order.title }}-->
-<!--    </NuxtLink>-->
+    <!-- 全屏弹窗 -->
+    <FullScreenPrompt system="106" :homeApi="homeApi" :checkResponseData="checkResponseData" :isMobile="isMobile" />
   </div>
 </template>
 
