@@ -67,7 +67,7 @@ export default defineNuxtConfig({
   },
   devServer: {
     host: '0.0.0.0',
-    port: 3000,
+    port: 80,
   },
   app: {
     pageTransition: { name: 'fade-transform', mode: 'out-in' }

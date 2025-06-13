@@ -6,7 +6,7 @@ import NoData from '@/components/svg/NoData.svg'
 import { useUserStore } from '@/store/userState.js'
 import { FullScreenPrompt } from '@flylinking/ui';
 
-const { productsApi, walletApi, withdrawApi, userApi, homeApi } = useApi();
+const { productsApi, walletApi, withdrawApi, userApi, homeApi, countryApi } = useApi();
 const router = useRouter();
 const userStore = useUserStore()
 userStore.getUserInfo()
@@ -91,7 +91,7 @@ const qrySettlementAmount = async() => {
 const currencyToCountryId = ref({})
 // 获取所有国家列表
 const getAllCountry = async() => {
-  const result = await userApi.getAllCountry()
+  const result = await countryApi.getAllCountry()
   const res = checkResponseData(result)
   if (res) {
     res.forEach(item => item.name = item.name || item.enUs)

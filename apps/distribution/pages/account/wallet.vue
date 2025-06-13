@@ -8,7 +8,7 @@ import { FullScreenPrompt } from '@flylinking/ui';
 
 const router = useRouter()
 const { t } = useI18n();
-const { walletApi, withdrawApi, userApi, homeApi } = useApi()
+const { walletApi, withdrawApi, userApi, homeApi, countryApi } = useApi()
 const userStore = useUserStore()
 const isMobile = useIsMobile()
 // const popoverVisible = ref(false)
@@ -67,7 +67,7 @@ const qryBalance = async() => {
 const currencyToCountryId = ref({})
 // 获取所有国家列表
 const getAllCountry = async() => {
-  const result = await userApi.getAllCountry()
+  const result = await countryApi.getAllCountry()
   const res = checkResponseData(result)
   if (res) {
       res.forEach(item => item.name = item.name || item.enUs)
