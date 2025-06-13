@@ -6,7 +6,7 @@
   import { FullScreenPrompt } from '@flylinking/ui';
 
     const { t, locale } = useI18n();
-    const { userApi, homeApi } = useApi()
+    const { userApi, homeApi, countryApi } = useApi()
     const userStore = useUserStore()
     const isMobile = useIsMobile()
 
@@ -80,7 +80,7 @@
     })
     // 获取所有国家列表
     const getAllCountry = async() => {
-        const result = await userApi.getAllCountry()
+        const result = await countryApi.getAllCountry()
         const res = checkResponseData(result)
         if (res) {
             // res.forEach(item => item.name = item.name || item.enUs)
@@ -198,10 +198,6 @@
                 </div>
             </div>
         </div>
-        
-
-        <!-- 全屏弹窗 -->
-        <FullScreenPrompt system="107" :homeApi="homeApi" :checkResponseData="checkResponseData" :isMobile="isMobile" />
     </div>
 </template>
 

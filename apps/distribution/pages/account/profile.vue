@@ -5,7 +5,7 @@
     import { useI18n } from "vue-i18n";
 
     const { t, locale } = useI18n();
-    const { userApi } = useApi()
+    const { userApi, countryApi } = useApi()
     const userStore = useUserStore()
     const isMobile = useIsMobile()
 
@@ -79,7 +79,7 @@
     })
     // 获取所有国家列表
     const getAllCountry = async() => {
-        const result = await userApi.getAllCountry()
+        const result = await countryApi.getAllCountry()
         const res = checkResponseData(result)
         if (res) {
             // res.forEach(item => item.name = item.name || item.enUs)

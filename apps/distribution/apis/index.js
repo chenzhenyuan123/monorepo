@@ -7,6 +7,7 @@ import * as clientApi from './web/distribution/client'
 import * as walletApi from './web/member/wallet'
 import * as withdrawApi from './web/account/client/withdraw'
 import * as googleMapApi from './web/googleMap'
+import * as countryApi from './basedata/client/country'
 export default {
   contactInfoApi,
   homeApi,
@@ -16,5 +17,6 @@ export default {
   clientApi,
   walletApi,
   withdrawApi,
-  googleMapApi
+  googleMapApi,
+  countryApi
 }

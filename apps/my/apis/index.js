@@ -8,6 +8,7 @@ import * as walletApi from './web/member/wallet'
 import * as withdrawApi from './web/account/client/withdraw'
 import * as buyerOrderApi from './web/trade/buyer/order'
 import * as googleMapApi from './googleMap'
+import * as countryApi from './basedata/client/country'
 export default {
   contactInfoApi,
   homeApi,
@@ -18,5 +19,6 @@ export default {
   walletApi,
   withdrawApi,
   buyerOrderApi,
-  googleMapApi
+  googleMapApi,
+  countryApi
 }

@@ -10,7 +10,7 @@ import {
 import {isUseless} from "@flylinking/core/utils/dataUtil";
 
 const { t, locale } = useI18n();
-const { userApi } = useApi()
+const { userApi, countryApi } = useApi()
 const userStore = useUserStore()
 const props = defineProps({
     isAdd: {
@@ -226,7 +226,7 @@ const provinceDict = computed(() => {
     return arrToDict(provinceDataByLang.value, { value: 'provinceId', label: 'name' })
 })
 const getBaseProvinceByCountry = async(countryId) => {
-  const result = await userApi.getBaseProvinceByCountry(countryId)
+  const result = await countryApi.getProvinceByCountry(countryId)
   const res = checkResponseData(result)
   if (res) {
       // res.forEach(item => item.name = item.name || item.enUs)

@@ -33,7 +33,7 @@ hasCountryCodeForIBAN,
 } from "@/util/validate";
 
 const { t } = useI18n();
-const { userApi, withdrawApi } = useApi()
+const { userApi, withdrawApi, countryApi } = useApi()
 const settingStore = useSettingStore()
 const router = useRouter()
 const isMobile = useIsMobile()
@@ -359,7 +359,7 @@ const triggerCycle = () => {
 }
 // 获取所有国家列表
 const getAllCountry = async() => {
-    const result = await userApi.getAllCountry()
+    const result = await countryApi.getAllCountry()
     const res = checkResponseData(result)
     if (res) {
         res.forEach(item => item.name = item.name || item.enUs)
