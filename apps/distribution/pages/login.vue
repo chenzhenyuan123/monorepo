@@ -128,7 +128,11 @@ const onSubmit = () => {
       if (!valid) return
       showError.value = false
       loading.value = true
-      const result = await contactInfoApi.userLogin(loginForm.value)
+      const body = {
+        ...loginForm.value,
+        userRole: 'distributor' // distributor:分销员 buyer:买家
+      }
+      const result = await contactInfoApi.userLogin(body)
       const res = checkResponseData(result)
       if(res && res?.isVerify) {
         onResult(res)
