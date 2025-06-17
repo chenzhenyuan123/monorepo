@@ -1,7 +1,7 @@
 <script setup name="Profile">
   import { arrToDict } from "@/util/index.js"
   import { useI18n } from "vue-i18n";
-  import { TermsOfUsage } from '@flylinking/ui';
+  import { TermsOfUsage, TermsOfUsageForBuyer } from '@flylinking/ui';
   import {changeHash} from "@flylinking/core/utils/router";
 
   definePageMeta({
@@ -131,7 +131,7 @@
           <TermsOfUsage />
         </div>
         <div v-else-if="anchorActive === 'Buyer'" id="Buyer" class="profile">
-          123
+          <TermsOfUsageForBuyer />
         </div>
       </div>
     </div>
