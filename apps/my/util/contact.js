@@ -6,9 +6,9 @@ export function encodeURIFn(str) {
   return str
 }
 
-export function getHrefForWhatsApp({ contactWhatsApp, orderUrl }) {
-  const content = encodeURIFn(`Hi! I hope you're doing well. I came across your listing for the following goods and I'm quite interested! \r\n\r\n${orderUrl}`)
-  return `https://wa.me/${contactWhatsApp}?text=${content}`
+export function getHrefForWhatsApp({ contactWhatsapp, orderLinkurl }) {
+  const content = encodeURIFn(`Hi! I hope you're doing well. I came across your listing for the following goods and I'm quite interested! \r\n\r\n${orderLinkurl}`)
+  return `https://wa.me/${contactWhatsapp}?text=${content}`
 }
 
 export function getHrefForInstagram({ contactInstagram }) {
@@ -16,15 +16,15 @@ export function getHrefForInstagram({ contactInstagram }) {
   return `https://ig.me/m/${USERNAME}`
 }
 
-export function getHrefForFacebook({ contactFaceBook }) {
-  return `https://facebook.com/${contactFaceBook}`
+export function getHrefForFacebook({ contactFacebook }) {
+  return `https://facebook.com/${contactFacebook}`
 }
 
-export function getHrefForEmail({ contactEmail, orderUrl, goodsNo, businessName }) {
+export function getHrefForEmail({ contactEmail, orderLinkurl, goodsNo, businessName }) {
   const isIOS = isIos() || false
   const title = encodeURIFn(`Inquiry about ${goodsNo} on FlyLink`)
   const content = encodeURIFn(`Hello ${businessName},${isIOS ? '' : '<br>'}
-  I hope this email finds you well. I recently came across your listing for the following goods on FlyLink (Link: ${orderUrl}), and I'm quite interested in learning more about it.`)
+  I hope this email finds you well. I recently came across your listing for the following goods on FlyLink (Link: ${orderLinkurl}), and I'm quite interested in learning more about it.`)
   return `mailto:${contactEmail}?subject=${title}&body=${content}`
 }
 
