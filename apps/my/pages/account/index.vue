@@ -3,7 +3,7 @@
     import { useUserStore } from '@/store/userState.js'
     import { checkResponseData, arrToDict } from "@/util/index.js"
     import { useI18n } from "vue-i18n";
-  import { FullScreenPrompt } from '@flylinking/ui';
+    import { FullScreenPrompt } from '@flylinking/ui';
 
     const { t, locale } = useI18n();
     const { userApi, homeApi, countryApi } = useApi()
