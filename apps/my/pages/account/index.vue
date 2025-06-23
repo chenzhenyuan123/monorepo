@@ -198,6 +198,10 @@
                 </div>
             </div>
         </div>
+        
+
+        <!-- 全屏弹窗 -->
+        <FullScreenPrompt system="107" :homeApi="homeApi" :checkResponseData="checkResponseData" :isMobile="isMobile" />
     </div>
 </template>
 
