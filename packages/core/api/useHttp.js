@@ -43,15 +43,20 @@ export const fetch = (url, option, userStore, errorMessage, toLogout) => {
       options.baseURL = option.baseUrl || VITE_HOST
       const language = localStorage.getItem("language") || 'en-US'
       // 设置头部国际化语言
-      // 设置token
       options.headers = {
         "Accept-Language": language
       }
+      // 设置token
       userStore.getUserInfo()
       if(userStore?.token) {
         options.headers['Flylinking-Access-Token'] = userStore.token
       }
-
+      // 同盾SDK
+      let blackBox = sessionStorage.getItem('blackBox')
+      if (blackBox) {
+        options.headers["Black-Box"] = blackBox
+      }
+      // 设备id
       let result = await getDeviceId();
       if (result.visitorId) {
         options.headers["Visitor-Id"] = result.visitorId;
