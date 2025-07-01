@@ -171,12 +171,14 @@ onUnmounted(()=>{
             <message v-if="statusType === 'primary'" type="warn" class="message">{{ $t('withdraw.detailMessageProcess') }}</message>
             <message v-else-if="statusType === 'success'" type="success" class="message">{{ $t('withdraw.detailMessageSuccess') }}</message>
             <message v-else-if="statusType === 'danger'" type="error" class="message">
-                {{ $t('withdraw.detailMessageError') }}
-                <br>
-                <el-link type="primary" class="message-link" @click="jumpToCreate">
-                    {{ $t('withdraw.detailLinkCreateNew') }}
-                    <el-icon><Right /></el-icon>
-                </el-link>
+                <div>
+                    {{ $t('withdraw.detailMessageError') }}
+                    <br>
+                    <el-link type="primary" class="message-link" @click="jumpToCreate">
+                        {{ $t('withdraw.detailLinkCreateNew') }}
+                        <el-icon><Right /></el-icon>
+                    </el-link>
+                </div>
             </message>
         </div>
         <el-form
