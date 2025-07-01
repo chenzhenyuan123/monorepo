@@ -43,13 +43,6 @@ const sortedLangs = (() => {
   return arr
 })();
 
-const LANG_ENUM = {
-  "en-US": "en-US",
-  "en_US": "en-US",
-  "zh-CN": "zh-CN",
-  "zh_CN": "zh-CN",
-}
-
 const isRTL = useState('isRTL', () => {
   return false
 })
@@ -99,10 +92,8 @@ const initLang = () => {
    * 规则：url传参 > 本地 > 浏览器语言 > en-US
    */
   const Q = parseQuery()
-  // 默认英文，取浏览器语言，除了中文，其他都给英文
-  const language = (navigator.language === 'zh' || navigator.language === 'zh-CN') ? "zh-CN" : "en-US";
   // 默认语种（列表，以优先级排序）
-  const localLangArr = [(LANG_ENUM[Q.lang] || Q.lang), localStorage.getItem("language"), language];
+  const localLangArr = [mapLanguage(Q.lang), localStorage.getItem("language"), mapLanguage(navigator.language || navigator.userLanguage)];
   let localLang = "en-US";
   // 考虑到可能会删除语种配置，取值有踏空风险
   localLangArr.some(item => {
@@ -116,6 +107,15 @@ const initLang = () => {
     emit('langLoaded', true)
   })
 };
+const mapLanguage = (langStr) => {
+  if (!langStr) return
+  let str = langStr.replace(/-|_/g, '-')
+  if (str.length === 2) {
+    str = str.toLowerCase()
+  }
+  return Object.keys(langs).find(key => key.startsWith(str))
+}
+
 const isDown = ref(false)
 onMounted(() => {
   initLang();
