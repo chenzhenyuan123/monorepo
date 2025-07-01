@@ -10,13 +10,15 @@
   import {splitDateRange, formatDate} from "@flylinking/core/utils/dateUtil";
   import {getCleanFormData, theAll} from "@flylinking/core/utils/dataUtil";
   import { ordersStatus } from "@/util/const.js";
-  import { FullScreenPrompt } from '@flylinking/ui';
-
+  import { FullScreenPrompt, Message } from '@flylinking/ui';
+  import { useSettingStore } from '@/store/settingState.js'
+  
   const { buyerOrderApi, homeApi } = useApi();
   const { t } = useI18n();
   const isMobile = useIsMobile()
   const emit = defineEmits(['pageChange'])
 
+  const settingStore = useSettingStore()
 
   const activeName = ref('')
   const tabsData = ref([
@@ -104,7 +106,7 @@
     pcWraps[0]?.scrollTo?.(0, 0)
   }
 
-
+  const isLinkOrders = ref(false)
   onMounted(async () => {
     const hash = window.location.hash ? window.location.hash.substring(1) : ''
     if (tabsDict.value[hash]) {
@@ -114,7 +116,18 @@
     }
 
     getOrderList()
+
+    isLinkOrders.value = settingStore.getLinkOrders() || false
   })
+
+  // 隐藏导入关联订单Message
+  const hideLinkOrderBtn = () => {
+    settingStore.setLinkOrders(true)
+    isLinkOrders.value = true
+  }
+  
+  // 点击导入关联订单
+  const showLinkOrders = ref(false)
 </script>
 
 <template>
@@ -139,60 +152,83 @@
       <el-tab-pane v-for="item in tabsData" :key="item.value" :id="'order-' + item.value" :label="$t(item.label)" :name="item.value"></el-tab-pane>
     </el-tabs>
 
-    <SearchFormBox
+    <div class="orders-position">
+      <SearchFormBox
             ref="searchFormRef"
             class="search-form"
             :filterLabel="$t('orders.searchFormFilterLabel')"
-    >
-      <el-form :model="formData" :inline="!isMobile" label-position="top" novalidate>
-        <el-form-item :label="$t('orders.searchFormLabelStore')" style="width: 200px;">
-          <el-input
-                  v-model="formData.storeName"
-                  clearable
-                  :placeholder="$t('orders.searchFormPlaceholderStore')"
-                  :suffix-icon="Search"
-                  @keyup.enter.native="getOrderList"
-                  @clear="getOrderList"
-          />
-        </el-form-item>
-        <el-form-item :label="$t('orders.searchFormLabelOrderID')" style="width: 200px;">
-          <el-input
-                  v-model="formData.orderId"
-                  clearable
-                  :placeholder="$t('orders.searchFormLabelOrderID')"
-                  :suffix-icon="Search"
-                  @keyup.enter.native="getOrderList"
-                  @clear="getOrderList"
-          />
-        </el-form-item>
-        <el-form-item :label="$t('orders.searchFormLabelProducts')" style="width: 200px;">
-          <el-input
-                  v-model="formData.products"
-                  clearable
-                  :placeholder="$t('orders.searchFormLabelProducts')"
-                  :suffix-icon="Search"
-                  @keyup.enter.native="getOrderList"
-                  @clear="getOrderList"
-          />
-        </el-form-item>
-        <el-form-item :label="$t('orders.searchFormLabelDatetime')" style="width: 280px;">
-          <el-date-picker
-                  v-model="dataRange"
-                  type="daterange"
-                  format="YYYY-MM-DD"
-                  range-separator="~"
-                  :start-placeholder="$t('wallet.referralFormPlaceholderPurchaseDateStart')"
-                  :end-placeholder="$t('wallet.referralFormPlaceholderPurchaseDateEnd')"
-                  @change="getOrderList"
-                  @clear="getOrderList"
-          />
-        </el-form-item>
-        <el-form-item class="search-form-buttons">
-          <el-button type="primary" @click="formSearch">{{ t('orders.searchFormButtonSearch') }}</el-button>
-          <el-button @click="formReset">{{ t('orders.searchFormButtonReset') }}</el-button>
-        </el-form-item>
-      </el-form>
-    </SearchFormBox>
+      >
+        <el-form :model="formData" :inline="!isMobile" label-position="top" novalidate>
+          <el-form-item :label="$t('orders.searchFormLabelStore')" style="width: 200px;">
+            <el-input
+                    v-model="formData.storeName"
+                    clearable
+                    :placeholder="$t('orders.searchFormPlaceholderStore')"
+                    :suffix-icon="Search"
+                    @keyup.enter.native="getOrderList"
+                    @clear="getOrderList"
+            />
+          </el-form-item>
+          <el-form-item :label="$t('orders.searchFormLabelOrderID')" style="width: 200px;">
+            <el-input
+                    v-model="formData.orderId"
+                    clearable
+                    :placeholder="$t('orders.searchFormLabelOrderID')"
+                    :suffix-icon="Search"
+                    @keyup.enter.native="getOrderList"
+                    @clear="getOrderList"
+            />
+          </el-form-item>
+          <el-form-item :label="$t('orders.searchFormLabelProducts')" style="width: 200px;">
+            <el-input
+                    v-model="formData.products"
+                    clearable
+                    :placeholder="$t('orders.searchFormLabelProducts')"
+                    :suffix-icon="Search"
+                    @keyup.enter.native="getOrderList"
+                    @clear="getOrderList"
+            />
+          </el-form-item>
+          <el-form-item :label="$t('orders.searchFormLabelDatetime')" style="width: 280px;">
+            <el-date-picker
+                    v-model="dataRange"
+                    type="daterange"
+                    format="YYYY-MM-DD"
+                    range-separator="~"
+                    :start-placeholder="$t('wallet.referralFormPlaceholderPurchaseDateStart')"
+                    :end-placeholder="$t('wallet.referralFormPlaceholderPurchaseDateEnd')"
+                    @change="getOrderList"
+                    @clear="getOrderList"
+            />
+          </el-form-item>
+          <el-form-item class="search-form-buttons">
+            <el-button type="primary" @click="formSearch">{{ t('orders.searchFormButtonSearch') }}</el-button>
+            <el-button @click="formReset">{{ t('orders.searchFormButtonReset') }}</el-button>
+          </el-form-item>
+        </el-form>
+      </SearchFormBox>
+      
+      <div class="orders-import-btn">
+        <el-button id="link-orders-btn" @click="showLinkOrders=true">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <path d="M11.6667 18.3334C11.6667 18.3334 12.3744 18.2323 15.3033 15.3033C18.2322 12.3744 18.2322 7.62565 15.3033 4.69672C14.2656 3.65899 12.9994 2.98893 11.6667 2.68654M11.6667 18.3334H16.6667M11.6667 18.3334L11.6667 13.3334M8.33333 1.66685C8.33333 1.66685 7.62563 1.76795 4.6967 4.69688C1.76777 7.62582 1.76777 12.3746 4.6967 15.3035C5.73443 16.3412 7.0006 17.0113 8.33333 17.3137M8.33333 1.66685L3.33333 1.66669M8.33333 1.66685L8.33333 6.66669" stroke="#344054" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <div class="flex-center-6"></div>
+          {{ t('orders.linkOrdersBtn') }}
+        </el-button>
+      </div>
+    </div>
+
+    <!-- 导入关联订单Message -->
+    <div v-if="!isLinkOrders" class="order-list-container order-message-box">
+      <message type="warn" class="message" :isClose="true" @hideBtn="hideLinkOrderBtn">
+        <div class="flex-box">
+          <span class="text">{{ t('orders.linkOrdersBtnTip1') }}</span>
+          <div class="flex-center-6"></div>
+          <a class="link" id="link-orders-btn" @click="showLinkOrders=true">{{ t('orders.linkOrdersBtnTip2') }}</a>
+        </div>
+      </message>
+    </div>
 
     <OrderList
             class="order-list-container"
@@ -205,6 +241,7 @@
 
     <!-- 全屏弹窗 -->
     <FullScreenPrompt system="106" :homeApi="homeApi" :checkResponseData="checkResponseData" :isMobile="isMobile" />
+    <LinkOrders v-if="showLinkOrders" v-model="showLinkOrders" />
   </div>
 </template>
 
@@ -215,7 +252,9 @@
   * {
     box-sizing: border-box;
   }
-  .orders {}
+  .orders-position {
+    position: relative;
+  }
   .carousel-image {
     margin: 28px 0 32px;
   }
@@ -228,6 +267,65 @@
   .order-list-container {
     margin: 0 -32px;
   }
+
+  .order-message-box {
+    padding-left: 32px;
+    background: #FFFAEB;
+    .message {
+      border-radius: 0;
+      border: 0;
+      border-top: 1px solid #D0D5DD;
+      box-shadow: none;
+      background: #FFFAEB;
+      position: relative;
+      .text {
+        color: #344054;
+        font-family: Inter;
+        font-size: 14px;
+        font-weight: 600;
+      }
+      .link {
+        color: #475467;
+        font-family: Inter;
+        font-size: 14px;
+        font-weight: 400;
+        margin-left: 6px;
+        text-decoration: underline;
+        text-underline-position: under;
+        cursor: pointer;
+        &:hover {
+          color: #1D2939;
+        }
+      }
+    }
+    .flex-box {
+      display: flex;
+      align-items: center;
+    }
+  }
+  .orders-import-btn {
+    position: absolute;
+    right: 0px;
+    top: -78px;
+    z-index: 2;
+    .rtl & {
+      left: 0;
+      right: auto;
+    }
+    .el-button {
+      border-radius: 8px;
+      border: 1px solid  #D0D5DD;
+      box-shadow: 0px -2px 0px 0px rgba(16, 24, 40, 0.05) inset, 0px 1px 2px 0px rgba(16, 24, 40, 0.05);
+      padding: 8px 12px;
+      color: #344054;
+      font-family: Inter;
+      font-size: 14px;
+      font-weight: 600;
+      height: 36px;
+      background: #fff;
+    }
+  }
+
 
   .m {
     .orders {
@@ -247,6 +345,28 @@
     }
     .order-list-container {
       margin: 0 -16px;
+    }
+    .order-message-box {
+      padding: 0;
+      .flex-box {
+        display: block;
+      }
+      .message {
+        .link{
+          display: block;
+          margin: 0;
+        }
+      }
+    }
+    .orders-import-btn {
+      position: relative;
+      top: -9px;
+      left: -6px;
+      margin-bottom: 5px;
+      .rtl & {
+        left: auto;
+        right: -6px;
+      }
     }
   }
 </style>

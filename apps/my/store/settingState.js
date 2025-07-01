@@ -9,6 +9,8 @@ export const useSettingStore = defineStore('setting', {
       isFormPage: false,
       // 设置内容占满一页
       isFullPage: false,
+      // 隐藏导入关联订单Message
+      isLinkOrders: false,
     }
   },
   actions: {
@@ -34,6 +36,15 @@ export const useSettingStore = defineStore('setting', {
     },
     setFullPage(isFullPage = true) {
       this.isFullPage = isFullPage
+    },
+    getLinkOrders() {
+      const isLinkOrders = localStorage.getItem("isLinkOrders")
+      this.isLinkOrders = isLinkOrders ? true : false
+      return this.isLinkOrders
+    },
+    setLinkOrders(isLinkOrders = true) {
+      this.isLinkOrders = isLinkOrders
+      localStorage.setItem("isLinkOrders", JSON.stringify(isLinkOrders))
     }
   }
 })

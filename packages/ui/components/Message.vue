@@ -5,6 +5,10 @@ const props = defineProps({
     type: {
         type: String,
         default: 'info'
+    },
+    isClose: {
+        type: Boolean,
+        default: false
     }
 })
 
@@ -25,6 +29,9 @@ const messageTypeClass = computed(() => {
     return messageDict.value[props.type].class
 });
 
+const hideBtn = () => {
+    emit('hideBtn', true);
+}
 </script>
 
 <template>
@@ -100,15 +107,23 @@ const messageTypeClass = computed(() => {
                 </defs>
             </svg>
         </div>
+        <div class="flex-center-6"></div>
 
         <slot />
+        <div class="flex-center"></div>
+
+        <div v-if="isClose" class="close" @click="hideBtn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <path d="M15.5 5.9043L5.5 15.9043M5.5 5.9043L15.5 15.9043" stroke="#98A2B3" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </div>
     </div>
 </template>
 
 <style lang="scss" scoped>
 .message {
     position: relative;
-    padding: 16px 16px 16px 52px;
+    padding: 12px 10px;
     border-radius: 12px;
     border: 1px solid #D0D5DD;
     background: #FFF;
@@ -117,6 +132,7 @@ const messageTypeClass = computed(() => {
     font-style: normal;
     font-weight: 600;
     line-height: 20px;
+    display: flex;
 
     /* 142.857% */
     &.message-type-success {
@@ -132,9 +148,12 @@ const messageTypeClass = computed(() => {
     }
 
     .icon {
-        position: absolute;
-        left: 9px;
-        top: 9px;
+        line-height: 0;
+    }
+    .close {
+        padding: 8px;
+        cursor: pointer;
+        line-height: 0;
     }
 }
 </style>
