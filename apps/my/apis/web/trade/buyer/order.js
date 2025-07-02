@@ -10,5 +10,13 @@ export const orderDetail = (data) => {
 }
 // 确认收货
 export const confirmReceipt = (data) => {
-    return useHttp.post(`/trade/buyer/order/confirmReceipt`, data, { server: true })
+    return useHttp.post(`/trade/buyer/order/confirmReceipt`, data, { server: false })
+}
+// 查询是否存在未关联旧订单
+export const existHistoricalOrder = (data) => {
+    return useHttp.post(`/trade/buyer/order/existHistoricalOrder`, data, { server: false })
+}
+// 导入关联旧订单
+export const linkHistoricalOrders = (data) => {
+    return useHttp.post(`/trade/buyer/order/linkHistoricalOrders`, data, { server: false })
 }

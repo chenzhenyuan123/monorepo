@@ -106,7 +106,8 @@
     pcWraps[0]?.scrollTo?.(0, 0)
   }
 
-  const isLinkOrders = ref(false)
+  const isLinkOrders = ref(false) // 导入关联订单入口tip条，点击x关闭后存localStorage不再展示
+  const isHistoryLinkOrders = ref(false) // 查询是否存在未关联旧订单
   onMounted(async () => {
     const hash = window.location.hash ? window.location.hash.substring(1) : ''
     if (tabsDict.value[hash]) {
@@ -118,7 +119,13 @@
     getOrderList()
 
     isLinkOrders.value = settingStore.getLinkOrders() || false
+    // 查询是否存在未关联旧订单
+    getHistoryLinkOrders()
   })
+  const getHistoryLinkOrders = async () => {
+    const result = await buyerOrderApi.existHistoricalOrder()
+    isHistoryLinkOrders.value = checkResponseData(result) || false
+  }
 
   // 隐藏导入关联订单Message
   const hideLinkOrderBtn = () => {
@@ -128,6 +135,11 @@
   
   // 点击导入关联订单
   const showLinkOrders = ref(false)
+  const saveLinkOrders = () => {
+    showLinkOrders.value = false
+    getOrderList()
+    getHistoryLinkOrders()
+  }
 </script>
 
 <template>
@@ -208,7 +220,7 @@
         </el-form>
       </SearchFormBox>
       
-      <div class="orders-import-btn">
+      <div v-if="isHistoryLinkOrders" class="orders-import-btn">
         <el-button id="link-orders-btn" @click="showLinkOrders=true">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
             <path d="M11.6667 18.3334C11.6667 18.3334 12.3744 18.2323 15.3033 15.3033C18.2322 12.3744 18.2322 7.62565 15.3033 4.69672C14.2656 3.65899 12.9994 2.98893 11.6667 2.68654M11.6667 18.3334H16.6667M11.6667 18.3334L11.6667 13.3334M8.33333 1.66685C8.33333 1.66685 7.62563 1.76795 4.6967 4.69688C1.76777 7.62582 1.76777 12.3746 4.6967 15.3035C5.73443 16.3412 7.0006 17.0113 8.33333 17.3137M8.33333 1.66685L3.33333 1.66669M8.33333 1.66685L8.33333 6.66669" stroke="#344054" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
@@ -220,7 +232,7 @@
     </div>
 
     <!-- 导入关联订单Message -->
-    <div v-if="!isLinkOrders" class="order-list-container order-message-box">
+    <div v-if="!isLinkOrders && isHistoryLinkOrders" class="order-list-container order-message-box">
       <message type="warn" class="message" :isClose="true" @hideBtn="hideLinkOrderBtn">
         <div class="flex-box">
           <span class="text">{{ t('orders.linkOrdersBtnTip1') }}</span>
@@ -241,7 +253,7 @@
 
     <!-- 全屏弹窗 -->
     <FullScreenPrompt system="106" :homeApi="homeApi" :checkResponseData="checkResponseData" :isMobile="isMobile" />
-    <LinkOrders v-if="showLinkOrders" v-model="showLinkOrders" />
+    <LinkOrders v-if="showLinkOrders" v-model="showLinkOrders" @save="saveLinkOrders" />
   </div>
 </template>
 
@@ -289,7 +301,6 @@
         font-family: Inter;
         font-size: 14px;
         font-weight: 400;
-        margin-left: 6px;
         text-decoration: underline;
         text-underline-position: under;
         cursor: pointer;

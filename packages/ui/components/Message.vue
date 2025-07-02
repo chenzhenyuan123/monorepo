@@ -12,6 +12,8 @@ const props = defineProps({
     }
 })
 
+const emit = defineEmits(['hideBtn'])
+
 const messageData = reactive({
     arr: [
         { value: 'info', label: '信息', class: 'message-type-info' },
@@ -30,7 +32,7 @@ const messageTypeClass = computed(() => {
 });
 
 const hideBtn = () => {
-    emit('hideBtn', true);
+    emit('hideBtn', true)
 }
 </script>
 
