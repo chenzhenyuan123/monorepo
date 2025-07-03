@@ -162,10 +162,10 @@ const rules = () => {
                     else {
                         if (!isValidZipcode(value)){
                             return cb(new Error(t("profile.zipcodeLimit")))
-                        } else if (value.length < 2){
-                            return cb(new Error(t("profile.validMin", { num: 2 })))
-                        } else if (value.length > 14){
-                            return cb(new Error(t("profile.validMax", { num: 14 })))
+                        // } else if (value.length < 2){
+                        //     return cb(new Error(t("profile.validMin", { num: 2 })))
+                        // } else if (value.length > 14){
+                        //     return cb(new Error(t("profile.validMax", { num: 14 })))
                         }
                     }
                     cb();
