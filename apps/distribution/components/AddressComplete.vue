@@ -117,21 +117,30 @@
         _value.value = val
         emit('change', val)
     }
+
+    const handleKeydown = (event) => {
+        if (event.key === ' ' || event.keyCode === 32) {
+            event.stopPropagation(); // 阻止事件冒泡到 Dropdown
+        }
+    }
 </script>
 
 <template>
     <el-dropdown trigger="click" @command="dropdownCommand" style="width: 100%;" max-height="300px" ref="dropdownRef" popper-class="popper-2025225114306"
                  :popper-options="{modifiers: [{ name: 'offset', options: { offset: [0, 1] }}]}" :triggerKeys="[]">
-        <el-input
-                size="large"
-                cashier_inputInfo
-                class="input-default"
-                v-model="_value"
-                @update:model-value="inputHandle"
-                :placeholder="$attrs.placeholder"
-                clearable
-                @blur="trim"
-        />
+        <div style="width: 100%;">
+            <el-input
+                    size="large"
+                    cashier_inputInfo
+                    class="input-default"
+                    v-model="_value"
+                    @update:model-value="inputHandle"
+                    :placeholder="$attrs.placeholder"
+                    clearable
+                    @keydown="handleKeydown"
+                    @blur="trim"
+            />
+        </div>
         <template v-if="options.length > 0" #dropdown>
             <el-dropdown-menu placement="bottom" :style="{width: W+'px', maxHeight: '250px', overflowY: 'auto'}">
                 <el-dropdown-item v-for="(item, index) in options" :key="index" :command="index" :class="{active: placeId === item.placeId}">
