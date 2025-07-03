@@ -1,13 +1,14 @@
 <script setup>
 import { useI18n } from "vue-i18n";
 import { useUserStore } from '@/store/userState.js'
-import { checkResponseData, isEMpty, arrToDict } from "@/util/index.js"
+import { checkResponseData, isEMpty, arrToDict, errorMessage } from "@/util/index.js"
 import {
     hasChinese,
     hasArabic,
     isValidZipcode,
 } from "@/util/validate";
 import {isUseless} from "@flylinking/core/utils/dataUtil";
+import {validatePhoneByLibphonenumber} from "@flylinking/core/utils/validate";
 
 const { t, locale } = useI18n();
 const { userApi, countryApi } = useApi()
@@ -29,11 +30,6 @@ const props = defineProps({
 const emit = defineEmits(['updateData', 'cancel', 'delete'])
 
 
-const isShowDeleteDialog = ref(false)
-const showDeleteDialog = () => {
-    isShowDeleteDialog.value = true
-}
-
 const countryToCallingCode = computed(() => {
     return arrToDict(props.countryData, { value: 'countryId', label: 'callingCode' })
 })
@@ -49,6 +45,7 @@ const form = ref({
     city: undefined,
     postal: undefined,
     province: undefined,
+    callingCodeCountry: undefined,
     callingCode: undefined,
     phone: undefined,
     defaultAddress: undefined,
@@ -65,6 +62,10 @@ const rules = () => {
                             return cb(new Error(t("profile.hasChineseLimit")))
                         } else if (hasArabic(value)){
                             return cb(new Error(t("profile.hasArabicLimit")))
+                        } else if (value.length < 3){
+                            return cb(new Error(t("profile.validMin", { num: 3 })))
+                        } else if (value.length > 50){
+                            return cb(new Error(t("profile.validMax", { num: 50 })))
                         }
                     }
                     cb();
@@ -82,6 +83,10 @@ const rules = () => {
                             return cb(new Error(t("profile.hasChineseLimit")))
                         } else if (hasArabic(value)){
                             return cb(new Error(t("profile.hasArabicLimit")))
+                        } else if (value.length < 3){
+                            return cb(new Error(t("profile.validMin", { num: 3 })))
+                        } else if (value.length > 50){
+                            return cb(new Error(t("profile.validMax", { num: 50 })))
                         }
                     }
                     cb();
@@ -140,6 +145,8 @@ const rules = () => {
                             return cb(new Error(t("profile.hasChineseLimit")))
                         } else if (hasArabic(value)){
                             return cb(new Error(t("profile.hasArabicLimit")))
+                        } else if (value.length > 50){
+                            return cb(new Error(t("profile.validMax", { num: 50 })))
                         }
                     }
                     cb();
@@ -155,6 +162,10 @@ const rules = () => {
                     else {
                         if (!isValidZipcode(value)){
                             return cb(new Error(t("profile.zipcodeLimit")))
+                        } else if (value.length < 2){
+                            return cb(new Error(t("profile.validMin", { num: 2 })))
+                        } else if (value.length > 14){
+                            return cb(new Error(t("profile.validMax", { num: 14 })))
                         }
                     }
                     cb();
@@ -177,9 +188,14 @@ const rules = () => {
                 asyncValidator(rule, value, cb) {
                     if (!value)
                         return cb(new Error(t("profile.MobileNumberRequired")));
+                    else {
+                        if (!validatePhoneByLibphonenumber(value, form.value.callingCodeCountry)){
+                            return cb(new Error(t("profile.validPhone")))
+                        }
+                    }
                     cb();
                 },
-                trigger: "change",
+                trigger: "blur",
             },
         ],
     }
@@ -236,6 +252,7 @@ const getBaseProvinceByCountry = async(countryId) => {
 const changeCountry = () => {
     getBaseProvinceByCountry(form.value.country)
     form.value.province = undefined
+    form.value.callingCodeCountry = form.value.country
     form.value.callingCode = countryToCallingCode.value[form.value.country]
 }
 
@@ -257,15 +274,27 @@ const addressChange = (val) => {
     form.value.addressLineOne = val;
 }
 // 编辑用户基础信息
-const submit = () => {
+const submit = (isForce) => {
     formValidateRef.value?.formRef.validate(async valid => {
         if (!valid) return
         loading.value = true
-        const param = Object.assign({}, form.value)
+        const param = Object.assign({}, form.value, {
+            callingCode: countryToCallingCode.value[form.value.callingCodeCountry]
+        })
         if (form.value.defaultAddressBlo) {
             param.defaultAddress = 1
         } else {
             param.defaultAddress = 0
+        }
+        if (isForce) {
+            param.forceDefaultAddress = 1
+        } else {
+            param.forceDefaultAddress = 0
+        }
+        for(const key in param) {
+            if (param[key]?.trim) {
+                param[key] = param[key].trim()
+            }
         }
         let result
         // if (props.isAdd) {
@@ -273,11 +302,16 @@ const submit = () => {
         // } else {
         result = await userApi.editUserShippingInfo(param)
         // }
-        const res = checkResponseData(result, 'NO_RETURN_DATA')
-        if (res) {
+        // const res = checkResponseData(result)
+        console.log('result: ', result)
+        if (result?.success) {
             form.value = {}
             emit('updateData')
             isEdit.value = false
+        } else if (result?.code === 'FM300004') {
+            showChangeDialog()
+        } else {
+            errorMessage(t(`service.${result?.code}`) || result?.desc || result?.message)
         }
         loading.value = false
 
@@ -288,6 +322,12 @@ const cancel = () => {
     isEdit.value = false
     emit('cancel')
 }
+
+
+const isShowDeleteDialog = ref(false)
+const showDeleteDialog = () => {
+    isShowDeleteDialog.value = true
+}
 const deleteAddress = async () => {
     const result = await userApi.deleteUserShippingInfoById(props.natureData.id)
     const res = checkResponseData(result, 'NO_RETURN_DATA')
@@ -295,6 +335,16 @@ const deleteAddress = async () => {
         emit('updateData')
     }
 }
+
+
+const isShowChangeDialog = ref(false)
+const showChangeDialog = () => {
+    isShowChangeDialog.value = true
+}
+const changeDefault = () => {
+    submit(true)
+}
+
 
 onMounted(() => {
     if (props.isAdd) {
@@ -324,6 +374,8 @@ userStore.getUserInfo()
                     <el-input
                             v-model="form.firstName"
                             :placeholder="$t('profile.shippingAddressLabelFirstName')"
+                            minlength="3"
+                            maxlength="50"
                             class="nature-form-input input-default"
                             @change="e => { form.firstName = e.trim() }"
                     />
@@ -333,6 +385,8 @@ userStore.getUserInfo()
                     <el-input
                             v-model="form.lastName"
                             :placeholder="$t('profile.shippingAddressLabelLastName')"
+                            :minlength="3"
+                            :maxlength="50"
                             class="nature-form-input
                             input-default"
                             @change="e => { form.lastName = e.trim() }"
@@ -379,11 +433,24 @@ userStore.getUserInfo()
                 </FormGroupItem>
                 <div class="nature-form-group">
                     <FormGroupItem prop="city" class="nature-form-item">
-                        <el-input v-model="form.city" :placeholder="$t('profile.shippingAddressEditPlaceholderCity')" class="nature-form-input input-default" @change="e => { form.city = e.trim() }" />
+                        <el-input
+                                v-model="form.city"
+                                :placeholder="$t('profile.shippingAddressEditPlaceholderCity')"
+                                maxlength="50"
+                                class="nature-form-input input-default"
+                                @change="e => { form.city = e.trim() }"
+                        />
                     </FormGroupItem>
                     <div class="flex-center-8"></div>
                     <FormGroupItem prop="postal" class="nature-form-item">
-                        <el-input v-model="form.postal" :placeholder="$t('profile.shippingAddressEditPlaceholderPostal')" class="nature-form-input input-default" @change="e => { form.postal = e.trim() }" />
+                        <el-input
+                                v-model="form.postal"
+                                :placeholder="$t('profile.shippingAddressEditPlaceholderPostal')"
+                                minlength="2"
+                                maxlength="14"
+                                class="nature-form-input input-default"
+                                @change="e => { form.postal = e.trim() }"
+                        />
                     </FormGroupItem>
                 </div>
                 <FormGroupItem prop="province" class="nature-form-item-col12">
@@ -407,14 +474,14 @@ userStore.getUserInfo()
             <el-input v-model="form.phone" :placeholder="$t('profile.shippingAddressEditPlaceholderPhone')" class="nature-form-input input-default" @change="e => { form.phone = e.trim() }">
                 <template #prepend>
                     <el-select
-                      v-model="form.callingCode"
+                      v-model="form.callingCodeCountry"
                       placeholder=""
                       style="width: 115px"
                     >
                         <el-option
                             v-for="item in countryData"
                             :key="item.countryId"
-                            :value="item.callingCode"
+                            :value="item.countryId"
                             :label="item.countryId + ' +' + item.callingCode"
                         />
                     </el-select>
@@ -422,21 +489,21 @@ userStore.getUserInfo()
             </el-input>
         </el-form-item>
 
-<!--        <el-form-item width="100%" class="nature-form-item">-->
-<!--            <el-checkbox v-model="form.defaultAddressBlo" :label="$t('profile.shippingAddressEditLabelDefaultAddress')" size="large" />-->
-<!--        </el-form-item>-->
+        <el-form-item width="100%" class="nature-form-item">
+            <el-checkbox v-model="form.defaultAddressBlo" :label="$t('profile.shippingAddressEditLabelDefaultAddress')" size="large" />
+        </el-form-item>
 
         <el-form-item class="nature-form-buttons">
             <el-button id="profile-btn-shipping-address-cancel" class="button-default" @click="cancel">{{$t('profile.cancel')}}</el-button>
             <div class="flex-center-12"></div>
-            <el-button id="profile-btn-shipping-address-save" type="primary" class="button-default" :loading="loading" @click="submit">{{$t('profile.save')}}</el-button>
+            <el-button id="profile-btn-shipping-address-save" type="primary" class="button-default" :loading="loading" @click="submit(false)">{{$t('profile.save')}}</el-button>
         </el-form-item>
     </FormValidate>
 
     <div v-else class="nature-list">
-<!--        <div v-if="natureData.defaultAddress === 1" class="nature-position-right-icon">-->
-<!--            {{$t('profile.shippingAddressIconDefaultAddress')}}-->
-<!--        </div>-->
+        <div v-if="natureData.defaultAddress === 1" class="nature-position-right-icon">
+            {{$t('profile.shippingAddressIconDefaultAddress')}}
+        </div>
         <div class="nature-item">
             <div class="nature-item-label">{{$t('profile.shippingAddressLabelFirstName')}}</div>
             <div class="nature-item-value">{{ natureData.firstName || '-' }}</div>
@@ -487,6 +554,12 @@ userStore.getUserInfo()
             v-model="isShowDeleteDialog"
             @delete="deleteAddress"
     ></AccountBuyerDeleteDialog>
+
+    <AccountBuyerChangeDialog
+            v-if="isShowChangeDialog"
+            v-model="isShowChangeDialog"
+            @submit="changeDefault"
+    ></AccountBuyerChangeDialog>
 </template>
 
 <style lang="scss" scoped>

@@ -274,7 +274,7 @@ const getSrc = (imgName) => {
 </style>
 <style lang="scss">
 .main-container .main-wrap.main-wrap-orders-id, .main-container .m-wrap.main-wrap-orders-id {
-  background: linear-gradient(0deg, var(--Colors-Background-bg-secondary, #F9FAFB) 0%, var(--Colors-Background-bg-secondary, #F9FAFB) 100%), var(--Colors-Background-bg-primary, #FFF);
+  background: linear-gradient(0deg, #F9FAFB 0%, #F9FAFB 100%), #FFF;
   border-top: 1px solid #E4E7EC;
 }
 .main-container .m-wrap.main-wrap-orders-id {
