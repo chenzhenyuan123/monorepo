@@ -25,22 +25,27 @@ const resultData = ref({})
 // 提交
 const submit = async() => {
   loading.value = true
-  // const result = await buyerOrderApi.confirmReceipt({orderId: props.data.id})
-  // const res = checkResponseData(result, 'NO_RETURN_DATA')
-  // if(res) {
-  //   successMessage(t('orders.ordersMarkAsReceiptSuccess'))
-  //   emit('save')
-  // }
-  // loading.value = false
-  setTimeout(() => {
-    resultData.value = {
-      type: 'Success',
-      num: 19
+  const result = await buyerOrderApi.linkHistoricalOrders()
+  const res = checkResponseData(result)
+  if(res) {
+    if(res.successCount) {
+      resultData.value = {
+        type: 'Success',
+        num: res.successCount
+      }
+    } else {
+      resultData.value = {
+        type: 'Error'
+      }
     }
-  }, 2000)
-  // resultData.value = {
-  //   type: 'Error'
-  // }
+  } else {
+    resultData.value = {
+      type: 'Error'
+    }
+  }
+}
+const save = () => {
+  emit('save', true)
 }
 </script>
 
@@ -106,7 +111,7 @@ const submit = async() => {
       </div>
       <template #footer>
         <span v-if="['Success', 'Error'].includes(resultData.type)" class="dialog-footer">
-          <el-button type="primary" @click="close()">{{ t('login.accountDeactivatedOk') }}</el-button>
+          <el-button type="primary" @click="save()">{{ t('login.accountDeactivatedOk') }}</el-button>
         </span>
         <span v-else class="dialog-footer">
           <el-button @click="close()">{{ t('orders.linkOrdersCancel') }}</el-button>
