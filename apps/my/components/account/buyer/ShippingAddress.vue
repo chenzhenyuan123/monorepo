@@ -45,7 +45,7 @@ const form = ref({
     city: undefined,
     postal: undefined,
     province: undefined,
-    countryIdByCallingCode: undefined,
+    callingCodeCountry: undefined,
     callingCode: undefined,
     phone: undefined,
     defaultAddress: undefined,
@@ -63,9 +63,9 @@ const rules = () => {
                         } else if (hasArabic(value)){
                             return cb(new Error(t("profile.hasArabicLimit")))
                         } else if (value.length < 3){
-                            return cb(new Error('不少于3个字符'))
+                            return cb(new Error(t("profile.validMin", { num: 3 })))
                         } else if (value.length > 50){
-                            return cb(new Error('最多不超过50字符'))
+                            return cb(new Error(t("profile.validMax", { num: 50 })))
                         }
                     }
                     cb();
@@ -84,9 +84,9 @@ const rules = () => {
                         } else if (hasArabic(value)){
                             return cb(new Error(t("profile.hasArabicLimit")))
                         } else if (value.length < 3){
-                            return cb(new Error('不少于3个字符'))
+                            return cb(new Error(t("profile.validMin", { num: 3 })))
                         } else if (value.length > 50){
-                            return cb(new Error('最多不超过50字符'))
+                            return cb(new Error(t("profile.validMax", { num: 50 })))
                         }
                     }
                     cb();
@@ -146,7 +146,7 @@ const rules = () => {
                         } else if (hasArabic(value)){
                             return cb(new Error(t("profile.hasArabicLimit")))
                         } else if (value.length > 50){
-                            return cb(new Error('最多不超过50字符'))
+                            return cb(new Error(t("profile.validMax", { num: 50 })))
                         }
                     }
                     cb();
@@ -163,9 +163,9 @@ const rules = () => {
                         if (!isValidZipcode(value)){
                             return cb(new Error(t("profile.zipcodeLimit")))
                         } else if (value.length < 2){
-                            return cb(new Error('不少于2个字符'))
+                            return cb(new Error(t("profile.validMin", { num: 2 })))
                         } else if (value.length > 14){
-                            return cb(new Error('最多不超过14字符'))
+                            return cb(new Error(t("profile.validMax", { num: 14 })))
                         }
                     }
                     cb();
@@ -189,8 +189,8 @@ const rules = () => {
                     if (!value)
                         return cb(new Error(t("profile.MobileNumberRequired")));
                     else {
-                        if (!validatePhoneByLibphonenumber(value, form.value.countryIdByCallingCode)){
-                            return cb(new Error('手机号错误'))
+                        if (!validatePhoneByLibphonenumber(value, form.value.callingCodeCountry)){
+                            return cb(new Error(t("profile.validPhone")))
                         }
                     }
                     cb();
@@ -252,7 +252,7 @@ const getBaseProvinceByCountry = async(countryId) => {
 const changeCountry = () => {
     getBaseProvinceByCountry(form.value.country)
     form.value.province = undefined
-    form.value.countryIdByCallingCode = form.value.country
+    form.value.callingCodeCountry = form.value.country
     form.value.callingCode = countryToCallingCode.value[form.value.country]
 }
 
@@ -274,17 +274,22 @@ const addressChange = (val) => {
     form.value.addressLineOne = val;
 }
 // 编辑用户基础信息
-const submit = () => {
+const submit = (isForce) => {
     formValidateRef.value?.formRef.validate(async valid => {
         if (!valid) return
         loading.value = true
         const param = Object.assign({}, form.value, {
-            callingCode: countryToCallingCode.value[form.value.countryIdByCallingCode]
+            callingCode: countryToCallingCode.value[form.value.callingCodeCountry]
         })
         if (form.value.defaultAddressBlo) {
             param.defaultAddress = 1
         } else {
             param.defaultAddress = 0
+        }
+        if (isForce) {
+            param.forceDefaultAddress = 1
+        } else {
+            param.forceDefaultAddress = 0
         }
         for(const key in param) {
             if (param[key]?.trim) {
@@ -303,7 +308,7 @@ const submit = () => {
             form.value = {}
             emit('updateData')
             isEdit.value = false
-        } else if (result?.code === 'change') {
+        } else if (result?.code === 'FM300004') {
             showChangeDialog()
         } else {
             errorMessage(t(`service.${result?.code}`) || result?.desc || result?.message)
@@ -336,12 +341,8 @@ const isShowChangeDialog = ref(false)
 const showChangeDialog = () => {
     isShowChangeDialog.value = true
 }
-const changeDefault = async () => {
-    const result = await userApi.deleteUserShippingInfoById(props.natureData.id)
-    const res = checkResponseData(result, 'NO_RETURN_DATA')
-    if (res) {
-        emit('updateData')
-    }
+const changeDefault = () => {
+    submit(true)
 }
 
 
@@ -473,7 +474,7 @@ userStore.getUserInfo()
             <el-input v-model="form.phone" :placeholder="$t('profile.shippingAddressEditPlaceholderPhone')" class="nature-form-input input-default" @change="e => { form.phone = e.trim() }">
                 <template #prepend>
                     <el-select
-                      v-model="form.countryIdByCallingCode"
+                      v-model="form.callingCodeCountry"
                       placeholder=""
                       style="width: 115px"
                     >
@@ -495,7 +496,7 @@ userStore.getUserInfo()
         <el-form-item class="nature-form-buttons">
             <el-button id="profile-btn-shipping-address-cancel" class="button-default" @click="cancel">{{$t('profile.cancel')}}</el-button>
             <div class="flex-center-12"></div>
-            <el-button id="profile-btn-shipping-address-save" type="primary" class="button-default" :loading="loading" @click="submit">{{$t('profile.save')}}</el-button>
+            <el-button id="profile-btn-shipping-address-save" type="primary" class="button-default" :loading="loading" @click="submit(false)">{{$t('profile.save')}}</el-button>
         </el-form-item>
     </FormValidate>
 

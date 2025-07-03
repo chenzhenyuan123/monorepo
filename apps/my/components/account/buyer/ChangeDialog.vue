@@ -4,10 +4,10 @@ import { useI18n } from "vue-i18n";
 const { t } = useI18n();
 const isMobile = useIsMobile()
 const attrs = useAttrs()
-const emit = defineEmits(['delete'])
+const emit = defineEmits(['submit'])
 
 const submit = () => {
-    emit('delete')
+    emit('submit')
     cancel()
 }
 
@@ -36,21 +36,19 @@ const cancel = () => {
                   <path d="M12 22C16 18 20 14.4183 20 10C20 5.58172 16.4183 2 12 2C7.58172 2 4 5.58172 4 10C4 14.4183 8 18 12 22Z" stroke="#344054" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
             </span>
-<!--            <h1>{{$t('profile.shippingAddressDeleteDialogTitle')}}</h1>-->
-<!--            <p>{{$t('profile.shippingAddressDeleteDialogMessage')}}</p>-->
-            <h1>Replace default shipping addres?</h1>
+            <h1>{{$t('shippingChangeDialog.h1')}}</h1>
             <p class="mt4">
-                You already have a default address.
+                {{$t('shippingChangeDialog.p1')}}
                 <br>
             </p>
-            <p>If you set this one as default, it will replace your current default address.  </p>
+            <p>{{$t('shippingChangeDialog.p2')}}</p>
         </template>
 
         <template #footer>
             <div class="dialog-footer">
-                <el-button type="primary" id="profile-btn-dialog-delete" class="dialog-footer-button button-default dialog-adaptive" @click="submit">Save and Set as Default</el-button>
+                <el-button type="primary" id="profile-btn-dialog-delete" class="dialog-footer-button button-default dialog-adaptive" @click="submit">{{$t('shippingChangeDialog.submit')}}</el-button>
                 <div class="flex-center-12"></div>
-                <el-button id="profile-btn-dialog-cancel" class="dialog-footer-button button-default dialog-adaptive" @click="cancel">Just Save</el-button>
+                <el-button id="profile-btn-dialog-cancel" class="dialog-footer-button button-default dialog-adaptive" @click="cancel">{{$t('shippingChangeDialog.cancel')}}</el-button>
             </div>
         </template>
     </el-dialog>
