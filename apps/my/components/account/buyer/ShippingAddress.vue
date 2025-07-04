@@ -8,7 +8,7 @@ import {
     isValidZipcode,
 } from "@/util/validate";
 import {isUseless} from "@flylinking/core/utils/dataUtil";
-import {validatePhoneByLibphonenumber} from "@flylinking/core/utils/validate";
+import { validatePhoneByLibphonenumberNum } from "@flylinking/core/utils/validate";
 
 const { t, locale } = useI18n();
 const { userApi, countryApi } = useApi()
@@ -41,10 +41,10 @@ const form = ref({
     lastName: undefined,
     country: undefined,
     addressLineOne: undefined,
-    addressLineTwo: undefined,
+    addressLineTwo: '',
     city: undefined,
     postal: undefined,
-    province: undefined,
+    province: '',
     callingCodeCountry: undefined,
     callingCode: undefined,
     phone: undefined,
@@ -189,7 +189,7 @@ const rules = () => {
                     if (!value)
                         return cb(new Error(t("profile.MobileNumberRequired")));
                     else {
-                        if (!validatePhoneByLibphonenumber(value, form.value.callingCodeCountry)){
+                        if (!validatePhoneByLibphonenumberNum('+'+form.value.callingCode+value)){
                             return cb(new Error(t("profile.validPhone")))
                         }
                     }
@@ -251,9 +251,12 @@ const getBaseProvinceByCountry = async(countryId) => {
 }
 const changeCountry = () => {
     getBaseProvinceByCountry(form.value.country)
-    form.value.province = undefined
+    form.value.province = ''
     form.value.callingCodeCountry = form.value.country
     form.value.callingCode = countryToCallingCode.value[form.value.country]
+}
+const callingCodeCountryChange = () => {
+    form.value.callingCode = countryToCallingCode.value[form.value.callingCodeCountry]
 }
 
 
@@ -477,6 +480,7 @@ userStore.getUserInfo()
                       v-model="form.callingCodeCountry"
                       placeholder=""
                       style="width: 115px"
+                      @change="callingCodeCountryChange"
                     >
                         <el-option
                             v-for="item in countryData"

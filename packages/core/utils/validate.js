@@ -1,12 +1,19 @@
-import { parsePhoneNumberFromString } from 'libphonenumber-js'
+import { parsePhoneNumberFromString, isValidNumber } from 'libphonenumber-js'
 
 /**
  * 验证手机号
  */
- export function validatePhoneByLibphonenumber(phone, country = 'CN') {
+ export function validatePhoneByLibphonenumberStr(phone, country = 'CN') {
    if (!country) return false
   const number = parsePhoneNumberFromString(phone, country);
   return number?.isValid() || false;
+}
+
+/**
+ * 验证手机号
+ */
+ export function validatePhoneByLibphonenumberNum(phone) {
+   return isValidNumber(phone)
 }
 
 /**
