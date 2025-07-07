@@ -4,14 +4,16 @@ import { useI18n } from "vue-i18n";
 const { t } = useI18n();
 const isMobile = useIsMobile()
 const attrs = useAttrs()
-const emit = defineEmits(['submit'])
+const emit = defineEmits(['submit', 'cancel'])
 
 const submit = () => {
     emit('submit')
-    cancel()
+    const fn = attrs['onUpdate:modelValue']
+    fn && fn(false)
 }
 
 const cancel = () => {
+    emit('cancel')
     const fn = attrs['onUpdate:modelValue']
     fn && fn(false)
 }
