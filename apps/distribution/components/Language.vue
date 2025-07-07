@@ -26,7 +26,7 @@ const langs = {
   'ko-KR': '한국어',
   'vi-VN': 'Tiếng Việt',
   'it-IT': 'Italiano',
-  'he-IL': 'היברית',
+  'he-IL': 'עברית',
 };
 
 // flex布局是横向递增换行的，UI效果是纵向递增成2列的，所以需要手动排序
