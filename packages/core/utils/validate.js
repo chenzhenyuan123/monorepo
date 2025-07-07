@@ -1,11 +1,15 @@
-import { parsePhoneNumberFromString, isValidNumber } from 'libphonenumber-js'
+import { parsePhoneNumberFromString, isValidNumberForRegion, isValidNumber } from 'libphonenumber-js'
 
 /**
  * 验证手机号
  */
- export function validatePhoneByLibphonenumberStr(phone, country = 'CN') {
+ export function validatePhoneByLibphonenumberStr(phone, country = 'CN', isValidateCountry = false) {
    if (!country) return false
   const number = parsePhoneNumberFromString(phone, country);
+   if (isValidateCountry && number?.country !== country) {
+     console.log('number.country: ', number.country)
+     return false
+   }
   return number?.isValid() || false;
 }
 

@@ -8,7 +8,7 @@ import {
     isValidZipcode,
 } from "@/util/validate";
 import {isUseless} from "@flylinking/core/utils/dataUtil";
-import { validatePhoneByLibphonenumberNum } from "@flylinking/core/utils/validate";
+import {validatePhoneByLibphonenumberNum, validatePhoneByLibphonenumberStr} from "@flylinking/core/utils/validate";
 
 const { t, locale } = useI18n();
 const { userApi, countryApi } = useApi()
@@ -30,9 +30,6 @@ const props = defineProps({
 const emit = defineEmits(['updateData', 'cancel', 'delete'])
 
 
-const countryToCallingCode = computed(() => {
-    return arrToDict(props.countryData, { value: 'countryId', label: 'callingCode' })
-})
 const isEdit = ref(false)
 const formValidateRef = ref(null)
 const loading = ref(false)
@@ -189,8 +186,14 @@ const rules = () => {
                     if (!value)
                         return cb(new Error(t("profile.MobileNumberRequired")));
                     else {
-                        if (!validatePhoneByLibphonenumberNum('+'+form.value.callingCode+value)){
-                            return cb(new Error(t("profile.validPhone")))
+                        if (countryToCallingCodeRepeat.value[form.value.callingCode]) {
+                            if (!validatePhoneByLibphonenumberStr(value, form.value.callingCodeCountry, true)){
+                                return cb(new Error(t("profile.validPhone")))
+                            }
+                        } else {
+                            if (!validatePhoneByLibphonenumberNum('+'+form.value.callingCode+value)){
+                                return cb(new Error(t("profile.validPhone")))
+                            }
                         }
                     }
                     cb();
@@ -213,6 +216,24 @@ const edit = () => {
 }
 
 
+const countryToCallingCode = computed(() => {
+    return arrToDict(props.countryData, { value: 'countryId', label: 'callingCode' })
+})
+const countryToCallingCodeRepeat = computed(() => {
+    const dict = {}
+    const repeatDict = {}
+    props.countryData.forEach(item => {
+        if (dict[item.callingCode]) {
+            // 记录重复
+            repeatDict[item.callingCode] = true
+        } else {
+            // 记录第一次
+            dict[item.callingCode] = true
+        }
+    })
+
+    return repeatDict
+})
 const countryDict = computed(() => {
     return arrToDict(props.countryData, { value: 'countryId', label: 'name' })
 })
@@ -277,7 +298,7 @@ const addressChange = (val) => {
     form.value.addressLineOne = val;
 }
 // 编辑用户基础信息
-const submit = (isForce) => {
+const submit = (option = {}) => {
     formValidateRef.value?.formRef.validate(async valid => {
         if (!valid) return
         loading.value = true
@@ -289,11 +310,7 @@ const submit = (isForce) => {
         } else {
             param.defaultAddress = 0
         }
-        if (isForce) {
-            param.forceDefaultAddress = 1
-        } else {
-            param.forceDefaultAddress = 0
-        }
+        Object.assign(param, option)
         for(const key in param) {
             if (param[key]?.trim) {
                 param[key] = param[key].trim()
@@ -345,7 +362,15 @@ const showChangeDialog = () => {
     isShowChangeDialog.value = true
 }
 const changeDefault = () => {
-    submit(true)
+    submit({
+        forceDefaultAddress: 1
+    })
+}
+// 保持原默认值
+const maintainDefault = () => {
+    submit({
+        defaultAddress: 0
+    })
 }
 
 
@@ -500,7 +525,7 @@ userStore.getUserInfo()
         <el-form-item class="nature-form-buttons">
             <el-button id="profile-btn-shipping-address-cancel" class="button-default" @click="cancel">{{$t('profile.cancel')}}</el-button>
             <div class="flex-center-12"></div>
-            <el-button id="profile-btn-shipping-address-save" type="primary" class="button-default" :loading="loading" @click="submit(false)">{{$t('profile.save')}}</el-button>
+            <el-button id="profile-btn-shipping-address-save" type="primary" class="button-default" :loading="loading" @click="submit()">{{$t('profile.save')}}</el-button>
         </el-form-item>
     </FormValidate>
 
@@ -563,6 +588,7 @@ userStore.getUserInfo()
             v-if="isShowChangeDialog"
             v-model="isShowChangeDialog"
             @submit="changeDefault"
+            @cancel="maintainDefault"
     ></AccountBuyerChangeDialog>
 </template>
 
