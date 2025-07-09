@@ -59,8 +59,8 @@ const rules = () => {
                             return cb(new Error(t("profile.hasChineseLimit")))
                         } else if (hasArabic(value)){
                             return cb(new Error(t("profile.hasArabicLimit")))
-                        } else if (value.length < 3){
-                            return cb(new Error(t("profile.validMin", { num: 3 })))
+                        } else if (value.length < 1){
+                            return cb(new Error(t("profile.validMin", { num: 1 })))
                         } else if (value.length > 50){
                             return cb(new Error(t("profile.validMax", { num: 50 })))
                         }
@@ -80,8 +80,8 @@ const rules = () => {
                             return cb(new Error(t("profile.hasChineseLimit")))
                         } else if (hasArabic(value)){
                             return cb(new Error(t("profile.hasArabicLimit")))
-                        } else if (value.length < 3){
-                            return cb(new Error(t("profile.validMin", { num: 3 })))
+                        } else if (value.length < 1){
+                            return cb(new Error(t("profile.validMin", { num: 1 })))
                         } else if (value.length > 50){
                             return cb(new Error(t("profile.validMax", { num: 50 })))
                         }
