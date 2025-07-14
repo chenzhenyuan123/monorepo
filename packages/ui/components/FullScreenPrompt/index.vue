@@ -170,7 +170,7 @@ const toPage = () => {
       <div class="content" v-html="contentBr" />
       <div class="btns">
         <el-button v-if="data.cancelButtonView === 1" @click="cancel">{{ data.cancelButton }}</el-button>
-        <div class="flex-center-12"></div>
+        <div class="flex-center-12" style="height: 12px;"></div>
         <el-button type="primary" @click="save">{{ data.confirmButton }}</el-button>
       </div>
       <el-icon v-if="data.closeButtonView" class="close-custom" @click="cancel"><Close /></el-icon>
@@ -221,9 +221,12 @@ const toPage = () => {
     display: flex;
     justify-content: flex-end;
     align-items: center;
+    flex-wrap: wrap;
     padding-bottom: 24px;
     .el-button {
       height: 38px;
+      max-width: 100%;
+      white-space: normal;
     }
   }
   img {
