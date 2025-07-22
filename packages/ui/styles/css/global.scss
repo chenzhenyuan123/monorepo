@@ -317,16 +317,37 @@
   text-overflow: ellipsis;
 }
 
-// 兼容多语言从右向左
+// flex 通用类
+.flex-box {
+  display: flex;
+  align-items: center;
+}
+
 .flex-center {
   flex: 1;
 }
 // 固定宽度
-$flex-center-width-max: 24;
+$flex-center-width-max: 48;
 @for $i from 1 through $flex-center-width-max {
   .flex-center-#{$i} {
     width: $i * 1px;
     min-width: $i * 1px;
     align-self: stretch;
   }
+  .mt#{$i} {
+    margin-top: $i * 1px;
+  }
+  .mb#{$i} {
+    margin-bottom: $i * 1px;
+  }
+  .ml#{$i} {
+    margin-left: $i * 1px;
+  }
+  .mr#{$i} {
+    margin-right: $i * 1px;
+  }
+}
+
+.svg-container {
+  line-height: 0;
 }

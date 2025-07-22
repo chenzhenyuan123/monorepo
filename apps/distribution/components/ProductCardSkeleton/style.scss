@@ -56,6 +56,17 @@
       height: 16px;
       margin-bottom: 12px;
     }
+    .underline-dotted {
+      text-decoration-line: underline;
+      text-decoration-style: dotted;
+      text-decoration-skip-ink: none;
+      text-decoration-thickness: auto;
+      text-underline-offset: auto;
+      text-underline-position: from-font;
+    }
+    .pointer {
+      cursor: pointer
+    }
     .goods-title{
       color:#475467;
       font-size: 16px;
