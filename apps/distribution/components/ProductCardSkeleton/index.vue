@@ -175,27 +175,27 @@ const generateLinkClick = (item) => {
                             placement="bottom-start"
                             :show-arrow="false"
                     >
-                      <div class="li flex-box mb20">
+                      <div class="li flex-box">
                         <div class="label">{{$t('productCard.rateTipLabel1')}}</div>
                         <div class="flex-center"></div>
                         <div class="value bold">{{ currencyFormat(item.commissionRate * 100) }}%</div>
                       </div>
                       <template v-if="item.goodsCommissionRate && item.distributorCommissionRate">
-                        <div class="li flex-box mb20">
+                        <div class="li flex-box mt20">
                           <div class="label">{{$t('productCard.rateTipLabel2')}}</div>
                           <div class="flex-center"></div>
                           <div class="value">{{ currencyFormat(item.goodsCommissionRate * 100) }}%</div>
                         </div>
-                        <div class="li flex-box mb20">
+                        <div class="li flex-box mt20">
                           <div class="label">{{$t('productCard.rateTipLabel3')}}</div>
                           <div class="flex-center"></div>
                           <div class="value">{{ currencyFormat(item.distributorCommissionRate * 100) }}%</div>
                         </div>
                       </template>
-                      <div class="li flex-box">
+                      <div v-if="item.shareCommissionRate" class="li flex-box mt20">
                         <div class="label">{{$t('productCard.rateTipLabel4')}}</div>
                         <div class="flex-center"></div>
-                        <div class="value">{{ currencyFormat(item.commissionRate * 100) }}%</div>
+                        <div class="value">{{ currencyFormat(item.shareCommissionRate * 100) }}%</div>
                       </div>
                       <template #reference>
                         <b class="underline-dotted pointer direction-ltr direction-inline-block">{{currencyFormat(item.commissionRate * 100)}}% </b>
