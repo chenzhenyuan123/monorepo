@@ -113,12 +113,26 @@ const routerGo = (path) => {
         </h3>
         <template v-if="!issuccess && !storeError">
           <ul class="email-verify-error-box">
-            <template v-if="storeInfo.ver === 2">
+            <template v-if="storeInfo.ver === 1">
+              <li>
+                <span>{{$t('join.joinDescription1', {rate: (storeInfo.storeCommissionRate ? currencyFormat(storeInfo.storeCommissionRate * 100) : 0)})}}</span>
+              </li>
+              <li>
+                <span>{{$t('join.joinDescription3')}}</span>
+              </li>
+              <li>
+                <span>{{$t('join.joinDescription4')}}</span>
+              </li>
+              <li v-if="storeData.invitationCode">
+                <span>{{$t('join.joinDescription5')}}</span>
+              </li>
+            </template>
+            <template v-else-if="storeInfo.distributorDefaultCommissionRate">
               <li>
                 <span>{{$t('join.joinDescriptionV2_1')}}</span>
               </li>
               <li>
-                <span>{{$t('join.joinDescriptionV2_2', {rate: (storeInfo.storeCommissionRate ? currencyFormat(storeInfo.distributorDefaultCommissionRate * 100) : 0)})}}</span>
+                <span>{{$t('join.joinDescriptionV2_2', {rate: (storeInfo.distributorDefaultCommissionRate ? currencyFormat(storeInfo.distributorDefaultCommissionRate * 100) : 0)})}}</span>
               </li>
               <li>
                 <span>{{$t('join.joinDescriptionV2_3')}}</span>
@@ -134,20 +148,6 @@ const routerGo = (path) => {
               </li>
               <li>
                 <span>{{$t('join.joinDescriptionV2_7')}}</span>
-              </li>
-            </template>
-            <template v-else-if="storeInfo.storeCommissionRate">
-              <li>
-                <span>{{$t('join.joinDescription1', {rate: (storeInfo.storeCommissionRate ? currencyFormat(storeInfo.storeCommissionRate * 100) : 0)})}}</span>
-              </li>
-              <li>
-                <span>{{$t('join.joinDescription3')}}</span>
-              </li>
-              <li>
-                <span>{{$t('join.joinDescription4')}}</span>
-              </li>
-              <li v-if="storeData.invitationCode">
-                <span>{{$t('join.joinDescription5')}}</span>
               </li>
             </template>
           </ul>
