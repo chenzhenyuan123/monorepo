@@ -68,6 +68,28 @@ useHead({
       type: 'text/javascript',
       body: true
     },
+    {
+      innerHTML: `
+      (function () {
+        window._fmOpt = {
+          partner: "Camel",
+          success: function (data) {
+            data && sessionStorage.setItem("blackBox", data);
+          },
+        };
+        var fm = document.createElement("script");
+        fm.type = "text/javascript";
+        fm.async = true;
+        fm.src =
+          "https://static.trustdecision.com/tdfp/us/cc2ab7c6ae66eb02190b5f8389b91bd3/fm.js" +
+          "?t=" +
+          (new Date().getTime() / 3600000).toFixed(0);
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(fm, s);
+      })();`,
+      type: 'text/javascript',
+      body: true
+    },
   ],
   __dangerouslyDisableSanitizers: ['script']
 })
