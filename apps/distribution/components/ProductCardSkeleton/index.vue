@@ -134,9 +134,73 @@ const generateLinkClick = (item) => {
               <el-divider />
               <div class="card-bottom">
                 <div class="commission-rate">
-                  <div>{{$t('home.homeCommissionRate')}}</div>
+                  <div class="flex-box">
+                    <div>{{$t('home.homeCommissionRate')}}</div>
+                    <div class="flex-center-4"></div>
+                    <el-popover
+                            v-if="item.goodsCommissionRate && item.distributorCommissionRate"
+                            width="320"
+                            offset="0"
+                            popper-class="popover-1753155721553"
+                            placement="top-start"
+                            :show-arrow="false"
+                    >
+                      <b>{{$t('productCard.commissionRateTipP1')}}</b>
+                      <br>
+                      <b>{{$t('productCard.commissionRateTipP2')}}</b>
+                      <br>
+                      {{$t('productCard.commissionRateTipP3')}}
+                      <template #reference>
+                        <div class="pointer svg-container">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="17" viewBox="0 0 16 17" fill="none">
+                            <g clip-path="url(#clip0_4201_12069)">
+                              <path d="M7.99992 10.9964V8.32975M7.99992 5.66309H8.00659M14.6666 8.32975C14.6666 12.0117 11.6818 14.9964 7.99992 14.9964C4.31802 14.9964 1.33325 12.0117 1.33325 8.32975C1.33325 4.64785 4.31802 1.66309 7.99992 1.66309C11.6818 1.66309 14.6666 4.64785 14.6666 8.32975Z" stroke="#667085" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
+                            </g>
+                            <defs>
+                              <clipPath id="clip0_4201_12069">
+                                <rect width="16" height="16" fill="white" transform="translate(0 0.32959)"/>
+                              </clipPath>
+                            </defs>
+                          </svg>
+                        </div>
+                      </template>
+                    </el-popover>
+                  </div>
                   <div class="commission-rate-text">
-                    <b class="direction-ltr direction-inline-block">{{currencyFormat(item.commissionRate * 100)}}% </b>
+
+                    <el-popover
+                            width="320"
+                            offset="0"
+                            popper-class="popover-1753155721553"
+                            placement="bottom-start"
+                            :show-arrow="false"
+                    >
+                      <div class="li flex-box mb20">
+                        <div class="label">{{$t('productCard.rateTipLabel1')}}</div>
+                        <div class="flex-center"></div>
+                        <div class="value bold">{{ currencyFormat(item.commissionRate * 100) }}%</div>
+                      </div>
+                      <template v-if="item.goodsCommissionRate && item.distributorCommissionRate">
+                        <div class="li flex-box mb20">
+                          <div class="label">{{$t('productCard.rateTipLabel2')}}</div>
+                          <div class="flex-center"></div>
+                          <div class="value">{{ currencyFormat(item.goodsCommissionRate * 100) }}%</div>
+                        </div>
+                        <div class="li flex-box mb20">
+                          <div class="label">{{$t('productCard.rateTipLabel3')}}</div>
+                          <div class="flex-center"></div>
+                          <div class="value">{{ currencyFormat(item.distributorCommissionRate * 100) }}%</div>
+                        </div>
+                      </template>
+                      <div class="li flex-box">
+                        <div class="label">{{$t('productCard.rateTipLabel4')}}</div>
+                        <div class="flex-center"></div>
+                        <div class="value">{{ currencyFormat(item.commissionRate * 100) }}%</div>
+                      </div>
+                      <template #reference>
+                        <b class="underline-dotted pointer direction-ltr direction-inline-block">{{currencyFormat(item.commissionRate * 100)}}% </b>
+                      </template>
+                    </el-popover>
                     <span>(≈{{item.saleCurrency}} {{ currencyFormat(parseFloat(item.minSalePrice)*parseFloat(item.commissionRate)) }}</span>
                     <span>{{ (item.maxSalePrice&&parseFloat(item.maxSalePrice)>parseFloat(item.minSalePrice)) ? `~${currencyFormat(parseFloat(item.maxSalePrice)*parseFloat(item.commissionRate))})` : ')' }}</span>
                   </div>
@@ -179,6 +243,41 @@ const generateLinkClick = (item) => {
   </div>
 </template>
 
+<style lang="scss">
+  .popover-1753155721553.el-popover.el-popper {
+    box-sizing: border-box;
+    padding: 14px 16px;
+    border-radius: 8px;
+    border: 1px solid #E4E7EC;
+    background: #FFF;
+    box-shadow: 0px 12px 16px -4px rgba(16, 24, 40, 0.08), 0px 4px 6px -2px rgba(16, 24, 40, 0.03);
+    color: #344054;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px;
+    .li {
+      .label {
+        color: #344054;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: 20px;
+      }
+      .value {
+        max-width: 200px;
+        color: #667085;
+        font-size: 12px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 18px;
+        &.bold {
+          font-weight: 600;
+        }
+      }
+    }
+  }
+</style>
 <style scoped lang="scss">
 @import url("./style.scss");
 @import url("@/assets/css/home/style.scss");
