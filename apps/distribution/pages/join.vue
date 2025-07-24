@@ -189,6 +189,9 @@ const routerGo = (path) => {
   }
   .email-verify-error-box{
     margin: 16px 0 16px 22px;
+    .rtl & {
+      margin: 16px 22px 16px 0;
+    }
     li {
       font-size: 16px;
       padding-left: 4px;
