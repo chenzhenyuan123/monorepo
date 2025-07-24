@@ -151,16 +151,16 @@ const formatterRate = (v) => {
                     {{ formatterAmount(row.orderAmt, row.orderCurrency) }}
                 </template>
             </el-table-column>
-            <el-table-column prop="goodsCommissionRate" :label="$t('wallet.subReferralTableLabelProductCommissionRate')" min-width="300" align="right">
-                <template #default="{ row }">
-                    {{ formatterRate(row.goodsCommissionRate) }}
-                </template>
-            </el-table-column>
-            <el-table-column prop="distributorCommissionRate" :label="$t('wallet.subReferralTableLabelProgramCommissionRate')" min-width="300" align="right">
-                <template #default="{ row }">
-                    {{ formatterRate(row.distributorCommissionRate) }}
-                </template>
-            </el-table-column>
+<!--            <el-table-column prop="goodsCommissionRate" :label="$t('wallet.subReferralTableLabelProductCommissionRate')" min-width="300" align="right">-->
+<!--                <template #default="{ row }">-->
+<!--                    {{ formatterRate(row.goodsCommissionRate) }}-->
+<!--                </template>-->
+<!--            </el-table-column>-->
+<!--            <el-table-column prop="distributorCommissionRate" :label="$t('wallet.subReferralTableLabelProgramCommissionRate')" min-width="300" align="right">-->
+<!--                <template #default="{ row }">-->
+<!--                    {{ formatterRate(row.distributorCommissionRate) }}-->
+<!--                </template>-->
+<!--            </el-table-column>-->
             <el-table-column prop="commission" :label="$t('wallet.subReferralTableLabelCommissionPayment')" min-width="300" align="right">
                 <template #default="{ row }">
                     {{ formatterAmount(row.commission, row.commissionCurrency) }}
