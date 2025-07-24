@@ -48,6 +48,10 @@ const page = reactive({
   pageNo: 1
 })
 
+const isRTL = useState('isRTL', () => {
+  return false
+})
+
 const imageRef = ref()
   // 设置图片高度与宽度相同
 const getHeight = () => {
@@ -142,7 +146,7 @@ const generateLinkClick = (item) => {
                             width="320"
                             offset="0"
                             popper-class="popover-1753155721553"
-                            placement="top-start"
+                            :placement="isRTL ? 'top-end' : 'top-start'"
                             :show-arrow="false"
                     >
                       <b>{{$t('productCard.commissionRateTipP1')}}</b>
@@ -172,7 +176,7 @@ const generateLinkClick = (item) => {
                             width="320"
                             offset="0"
                             popper-class="popover-1753155721553"
-                            placement="bottom-start"
+                            :placement="isRTL ? 'bottom-end' : 'bottom-start'"
                             :show-arrow="false"
                     >
                       <div class="li flex-box">
