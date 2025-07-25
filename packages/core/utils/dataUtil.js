@@ -128,3 +128,69 @@ export const getCleanFormData = (params) => {
 
     return obj
 }
+
+/**
+ * 相加（转整数，避免小数相加溢出）
+ * @param arg1
+ * @param arg2
+ * @returns {number}
+ */
+export function accurate_add(arg1, arg2) {
+    arg1 = Number(arg1)
+    arg2 = Number(arg2)
+
+    let r = 0
+    let r1 = 0
+    let r2 = 0
+
+    try {
+        r1 = arg1.toString().split('.')[1].length
+    } catch (e) {
+        r1 = 0
+    }
+    try {
+        r2 = arg2.toString().split('.')[1].length
+    } catch (e) {
+        r2 = 0
+    }
+
+    r = Math.max(r1, r2)
+
+    return accurate_toFixed(arg1 + arg2, r)
+}
+
+/**
+ * 数字 num 保留 n 位小数
+ * 四舍五入
+ * @param num
+ * @param n
+ * @returns {number}
+ */
+export function accurate_toFixed(num, n) {
+    num = Number(num)
+    let symbol = 1
+    if (num < 0) {
+        // 符号为负
+        symbol = -1
+        num *= -1
+    }
+    // 加一位不影响四舍五入的小数，且避免溢出的影响
+    // num = num + Math.pow(10, -(n + 2))
+    num = num + Math.pow(10, -(n + 4))
+    // 保留 n 位小数
+    num = num * Math.pow(10, n)
+    // n 位之后的小数，四舍五入
+    num = Math.round(num)
+    // 还原 n 位小数
+    num = num / Math.pow(10, n)
+    // 加一位不小数，避免溢出的影响
+    num = num + Math.pow(10, -(n + 1))
+    // 还原符号
+    num = num * symbol
+    // 舍去多于小数
+    num = num.toFixed(n)
+    // 转数字
+    num = Number(num)
+
+    return num
+}

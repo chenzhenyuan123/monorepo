@@ -3,7 +3,7 @@ import { Check, Search } from '@element-plus/icons-vue';
 import { checkResponseData, currencyFormat, arrToDict, previewImg } from "@/util/index.js"
 import { formatDate, splitDateRange } from "@/util/dateUtil.js"
 import { useI18n } from "vue-i18n";
-import {isUseless} from "@flylinking/core/utils/dataUtil";
+import {accurate_toFixed, isUseless} from "@flylinking/core/utils/dataUtil";
 
 const { t } = useI18n();
 const { clientApi } = useApi()
@@ -68,7 +68,7 @@ const formatterAmount = (v, c) => {
 }
 
 const formatterRate = (v) => {
-  return isUseless(v) ? '' : (v * 100 +'%')
+  return isUseless(v) ? '' : (accurate_toFixed(v * 100, 2) +'%')
 }
 </script>
 
