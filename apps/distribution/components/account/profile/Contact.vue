@@ -3,6 +3,7 @@ import { useUserStore } from '@/store/userState.js'
 import { isEmail } from '@/util/validate.js'
 import { checkResponseData } from "@/util/index.js"
 import { useI18n } from "vue-i18n";
+import {checkEmail, checkEmailLength} from "@flylinking/core/utils/validate";
 
 const { t } = useI18n();
 const { userApi } = useApi()
@@ -24,10 +25,20 @@ const form = reactive({
     skype: undefined
 })
 
+// 校验邮件
+const validateEmail = (rule, value, callback) => {
+    if (!(checkEmailLength(value) && checkEmail(value))){
+        callback(new Error(t('profile.contactEditValidateEmail')))
+    } else {
+        callback()
+    }
+}
+
 const rules = computed(() => {
     return {
         email: [
-            { type: 'email', trigger: 'blur', message: t('profile.contactEditValidateEmail') }
+            { type: 'email', trigger: 'change', message: t('profile.contactEditValidateEmail') },
+            { validator: validateEmail, trigger: 'change' },
         ]
     }
 })

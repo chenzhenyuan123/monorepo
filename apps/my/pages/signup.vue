@@ -1,6 +1,7 @@
 <script setup name="Signup">
 import { checkResponseData } from "@/util/index.js";
 import { isEmail, isEmailPassword, specialCharacterstr } from '@/util/validate.js'
+import {checkEmail, checkEmailLength} from "@flylinking/core/utils/validate";
 const { contactInfoApi } = useApi();
 import { useI18n } from "vue-i18n";
 const { t } = useI18n();
@@ -26,11 +27,22 @@ const validatePassword = (rule, value, callback) => {
     callback()
   }
 }
+
+// 校验邮件
+const validateEmail = (rule, value, callback) => {
+  if (!(checkEmailLength(value) && checkEmail(value))){
+    callback(new Error(t('signup.signupValidateEmailFormat')))
+  } else {
+    callback()
+  }
+}
+
 const rules = ()=>{
   return {
     email: [
       { required: true, message: t('signup.signupValidateEmailEmpty'), trigger: 'change' },
-      { type: 'email', message: t('signup.signupValidateEmailFormat'), trigger: 'blur' }
+      { type: 'email', message: t('signup.signupValidateEmailFormat'), trigger: 'change' },
+      { validator: validateEmail, trigger: 'change' },
     ],
     loginPassword: [
       { required: true, message: t('signup.signupValidatePasswordRequired'), trigger: 'change' },
