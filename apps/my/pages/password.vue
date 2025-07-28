@@ -31,7 +31,7 @@ const validateEmail = (rule, value, callback) => {
 const rules = ()=>{
   return {
     email: [
-      { required: true, message: t('signup.signupValidateEmailEmpty'), trigger: 'blur' },
+      { required: true, message: t('signup.signupValidateEmailEmpty'), trigger: 'change' },
       { type: 'email', message: t('signup.signupValidateEmailFormat'), trigger: 'change' },
       { validator: validateEmail, trigger: 'change' },
     ]

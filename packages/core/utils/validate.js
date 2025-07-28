@@ -41,7 +41,7 @@ export function checkEmailLength(s) {
  * @param {*} s
  */
 export function checkEmail(s) {
-  return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+\.[a-zA-Z]{2,}$/.test(s)
+  return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(\.[a-zA-Z]{2,})+$/.test(s)
 }
 
 /**
