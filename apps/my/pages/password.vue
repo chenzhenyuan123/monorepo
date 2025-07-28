@@ -9,6 +9,7 @@ import { checkResponseData } from "@/util/index.js";
 const { contactInfoApi } = useApi();
 const router = useRouter();
 import { useI18n } from "vue-i18n";
+import {checkEmail, checkEmailLength} from "@flylinking/core/utils/validate";
 const { t } = useI18n();
 
 definePageMeta({
@@ -18,11 +19,21 @@ definePageMeta({
 const signupForm = ref({})
 const signupFormRef = ref()
 
+// 校验邮件
+const validateEmail = (rule, value, callback) => {
+  if (!(checkEmailLength(value) && checkEmail(value))){
+    callback(new Error(t('signup.signupValidateEmailFormat')))
+  } else {
+    callback()
+  }
+}
+
 const rules = ()=>{
   return {
     email: [
-      { required: true, message: t('signup.signupValidateEmailEmpty'), trigger: 'blur' },
-      { type: 'email', message: t('signup.signupValidateEmailFormat'), trigger: 'change' }
+      { required: true, message: t('signup.signupValidateEmailEmpty'), trigger: 'change' },
+      { type: 'email', message: t('signup.signupValidateEmailFormat'), trigger: 'change' },
+      { validator: validateEmail, trigger: 'change' },
     ]
   }
 }

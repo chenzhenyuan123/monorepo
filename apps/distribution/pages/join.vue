@@ -113,18 +113,43 @@ const routerGo = (path) => {
         </h3>
         <template v-if="!issuccess && !storeError">
           <ul class="email-verify-error-box">
-            <li>
-              <span>{{$t('join.joinDescription1', {rate: (storeInfo.storeCommissionRate ? currencyFormat(storeInfo.storeCommissionRate * 100) : 0)})}}</span>
-            </li>
-            <li>
-              <span>{{$t('join.joinDescription3')}}</span>
-            </li>
-            <li>
-              <span>{{$t('join.joinDescription4')}}</span>
-            </li>
-            <li v-if="storeData.invitationCode">
-              <span>{{$t('join.joinDescription5')}}</span>
-            </li>
+            <template v-if="storeInfo.ver === 1">
+              <li>
+                <span>{{$t('join.joinDescription1', {rate: (storeInfo.storeCommissionRate ? currencyFormat(storeInfo.storeCommissionRate * 100) : 0)})}}</span>
+              </li>
+              <li>
+                <span>{{$t('join.joinDescription3')}}</span>
+              </li>
+              <li>
+                <span>{{$t('join.joinDescription4')}}</span>
+              </li>
+              <li v-if="storeData.invitationCode">
+                <span>{{$t('join.joinDescription5')}}</span>
+              </li>
+            </template>
+            <template v-else-if="storeInfo.distributorDefaultCommissionRate">
+              <li>
+                <span>{{$t('join.joinDescriptionV2_1')}}</span>
+              </li>
+              <li>
+                <span>{{$t('join.joinDescriptionV2_2', {rate: (storeInfo.distributorDefaultCommissionRate ? currencyFormat(storeInfo.distributorDefaultCommissionRate * 100) : 0)})}}</span>
+              </li>
+              <li>
+                <span>{{$t('join.joinDescriptionV2_3')}}</span>
+              </li>
+              <li>
+                <span>{{$t('join.joinDescriptionV2_4')}}</span>
+              </li>
+              <li>
+                <span>{{$t('join.joinDescriptionV2_5')}}</span>
+              </li>
+              <li>
+                <span>{{$t('join.joinDescriptionV2_6')}}</span>
+              </li>
+              <li>
+                <span>{{$t('join.joinDescriptionV2_7')}}</span>
+              </li>
+            </template>
           </ul>
           <el-button type="primary" id="join-btn-Join" class="email-verify-btn" :loading="loading" :disabled="!storeInfo.storeId" @click="onSubmit()">{{$t('join.joinSaveButton')}}</el-button>
         </template>
@@ -164,6 +189,9 @@ const routerGo = (path) => {
   }
   .email-verify-error-box{
     margin: 16px 0 16px 22px;
+    .rtl & {
+      margin: 16px 22px 16px 0;
+    }
     li {
       font-size: 16px;
       padding-left: 4px;

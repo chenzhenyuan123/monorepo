@@ -27,6 +27,23 @@ import { parsePhoneNumberFromString, isValidNumberForRegion, isValidNumber } fro
  export function isEmail(s) {
   return /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/.test(s)
 }
+
+/**
+ * 校验邮箱长度 64 + @ + 255
+ * @param {*} s
+ */
+export function checkEmailLength(s) {
+  return /^[^@]{1,64}@[^@]{1,255}$/.test(s)
+}
+
+/**
+ * 校验邮箱
+ * @param {*} s
+ */
+export function checkEmail(s) {
+  return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(\.[a-zA-Z]{2,})+$/.test(s)
+}
+
 /**
  * email格式校验
  * 1. 邮箱名最长 64 个字符，域名部分不包含 @ 符号最长 254 字符

@@ -1,8 +1,9 @@
 <script setup name="AccountWalletReferral">
 import { Check, Search } from '@element-plus/icons-vue';
-import { checkResponseData, isEMpty, currencyFormat, arrToDict, previewImg } from "@/util/index.js"
+import { checkResponseData, currencyFormat, arrToDict, previewImg } from "@/util/index.js"
 import { formatDate, splitDateRange } from "@/util/dateUtil.js"
 import { useI18n } from "vue-i18n";
+import {accurate_toFixed, isUseless} from "@flylinking/core/utils/dataUtil";
 
 const { t } = useI18n();
 const { clientApi } = useApi()
@@ -63,7 +64,11 @@ const request = async({ pageNo, pageSize }) => {
 }
 
 const formatterAmount = (v, c) => {
-  return isEMpty(v) ? '' : (c || 'USD') + ' ' + currencyFormat(v)
+  return isUseless(v) ? '' : (c || 'USD') + ' ' + currencyFormat(v)
+}
+
+const formatterRate = (v) => {
+  return isUseless(v) ? '' : (accurate_toFixed(v * 100, 2) +'%')
 }
 </script>
 
@@ -144,6 +149,16 @@ const formatterAmount = (v, c) => {
             <el-table-column prop="orderAmt" :label="$t('wallet.referralTableLabelOrderSubtotal')" min-width="300" align="right">
                 <template #default="{ row }">
                     {{ formatterAmount(row.orderAmt, row.orderCurrency) }}
+                </template>
+            </el-table-column>
+            <el-table-column prop="goodsCommissionRate" :label="$t('wallet.referralTableLabelProductCommissionRate')" min-width="300" align="right">
+                <template #default="{ row }">
+                    {{ formatterRate(row.goodsCommissionRate) }}
+                </template>
+            </el-table-column>
+            <el-table-column prop="distributorCommissionRate" :label="$t('wallet.referralTableLabelProgramCommissionRate')" min-width="300" align="right">
+                <template #default="{ row }">
+                    {{ formatterRate(row.distributorCommissionRate) }}
                 </template>
             </el-table-column>
             <el-table-column prop="commission" :label="$t('wallet.referralTableLabelCommissionPayment')" min-width="300" align="right">

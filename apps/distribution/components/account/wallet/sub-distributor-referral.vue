@@ -3,6 +3,7 @@ import { Check, Search } from '@element-plus/icons-vue';
 import { checkResponseData, isEMpty, currencyFormat, arrToDict, previewImg } from "@/util/index.js"
 import { formatDate, splitDateRange } from "@/util/dateUtil.js"
 import { useI18n } from "vue-i18n";
+import {isUseless} from "@flylinking/core/utils/dataUtil";
 
 const { t } = useI18n();
 const { clientApi } = useApi()
@@ -63,7 +64,11 @@ const request = async({ pageNo, pageSize }) => {
 }
 
 const formatterAmount = (v, c) => {
-    return isEMpty(v) ? '' : (c || 'USD') + ' ' + currencyFormat(v)
+    return isUseless(v) ? '' : (c || 'USD') + ' ' + currencyFormat(v)
+}
+
+const formatterRate = (v) => {
+    return isUseless(v) ? '' : (v * 100 +'%')
 }
 </script>
 
@@ -146,6 +151,16 @@ const formatterAmount = (v, c) => {
                     {{ formatterAmount(row.orderAmt, row.orderCurrency) }}
                 </template>
             </el-table-column>
+<!--            <el-table-column prop="goodsCommissionRate" :label="$t('wallet.subReferralTableLabelProductCommissionRate')" min-width="300" align="right">-->
+<!--                <template #default="{ row }">-->
+<!--                    {{ formatterRate(row.goodsCommissionRate) }}-->
+<!--                </template>-->
+<!--            </el-table-column>-->
+<!--            <el-table-column prop="distributorCommissionRate" :label="$t('wallet.subReferralTableLabelProgramCommissionRate')" min-width="300" align="right">-->
+<!--                <template #default="{ row }">-->
+<!--                    {{ formatterRate(row.distributorCommissionRate) }}-->
+<!--                </template>-->
+<!--            </el-table-column>-->
             <el-table-column prop="commission" :label="$t('wallet.subReferralTableLabelCommissionPayment')" min-width="300" align="right">
                 <template #default="{ row }">
                     {{ formatterAmount(row.commission, row.commissionCurrency) }}
