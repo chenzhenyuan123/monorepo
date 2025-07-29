@@ -185,18 +185,18 @@ const generateLinkClick = (item) => {
                         <div class="value bold">{{ currencyFormat(item.commissionRate * 100) }}%</div>
                       </div>
                       <template v-if="item.goodsCommissionRate && item.distributorCommissionRate">
-                        <div class="li flex-box mt20">
+                        <div class="li flex-box mt12">
                           <div class="label">{{$t('productCard.rateTipLabel2')}}</div>
                           <div class="flex-center"></div>
                           <div class="value">{{ currencyFormat(item.goodsCommissionRate * 100) }}%</div>
                         </div>
-                        <div class="li flex-box mt20">
+                        <div class="li flex-box mt12">
                           <div class="label">{{$t('productCard.rateTipLabel3')}}</div>
                           <div class="flex-center"></div>
                           <div class="value">{{ currencyFormat(item.distributorCommissionRate * 100) }}%</div>
                         </div>
                       </template>
-                      <div v-if="item.shareCommissionRate" class="li flex-box mt20">
+                      <div v-if="item.shareCommissionRate" class="li flex-box mt12">
                         <div class="label">{{$t('productCard.rateTipLabel4')}}</div>
                         <div class="flex-center"></div>
                         <div class="value">{{ currencyFormat(item.shareCommissionRate * 100) }}%</div>
