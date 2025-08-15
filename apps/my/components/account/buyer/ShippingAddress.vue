@@ -441,15 +441,15 @@ userStore.getUserInfo()
                     </el-select>
                 </FormGroupItem>
                 <FormGroupItem prop="addressLineOne" class="nature-form-item-col12">
-<!--                    <el-input v-model="form.addressLineOne" :placeholder="$t('profile.shippingAddressEditPlaceholderAddress1')" class="nature-form-input input-default" @change="e => { form.addressLineOne = e.trim() }" />-->
-                    <AddressComplete
-                            :placeholder="$t('profile.shippingAddressEditPlaceholderAddress1')"
-                            :country="form.country"
-                            :lang="locale"
-                            :value="form.addressLineOne"
-                            @selected="setGoogleMapData"
-                            @change="addressChange"
-                    />
+                    <el-input v-model="form.addressLineOne" :placeholder="$t('profile.shippingAddressEditPlaceholderAddress1')" class="nature-form-input input-default" @change="e => { form.addressLineOne = e.trim() }" />
+<!--                    <AddressComplete-->
+<!--                            :placeholder="$t('profile.shippingAddressEditPlaceholderAddress1')"-->
+<!--                            :country="form.country"-->
+<!--                            :lang="locale"-->
+<!--                            :value="form.addressLineOne"-->
+<!--                            @selected="setGoogleMapData"-->
+<!--                            @change="addressChange"-->
+<!--                    />-->
                 </FormGroupItem>
                 <FormGroupItem prop="addressLineTwo" class="nature-form-item-col12">
                     <el-input
