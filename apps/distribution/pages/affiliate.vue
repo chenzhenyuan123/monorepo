@@ -3,13 +3,49 @@
  * @Description: 分销员招募平台
 -->
 <script setup name="Affiliate">
+import {checkResponseData} from "@/util";
+import { currencyFormat } from "@/util/index.js";
+
 definePageMeta({
   layout: 'noside'
 })
+const router = useRouter();
+const route = useRoute();
+const { affiliateApi, joinApi } = useApi()
 const isMobile = useIsMobile()
 
 
-const join = () => {
+const storeData = ref({
+  storeId: '',
+  invitationCode: route.query?.code
+})
+
+
+const storeList = ref([])
+// 获取店铺数据
+const getStoreData = async() => {
+  const result = await affiliateApi.listStoreCanJoin({
+    pageNo: 1,
+    pageSize: 4
+  })
+
+  const res = checkResponseData(result)
+  storeList.value = res?.list || []
+}
+getStoreData().then(() => {})
+
+
+const loadingForJoin = ref(false)
+const join = async (storeId) => {
+  storeData.value.storeId = storeId
+  if (loadingForJoin.value) return
+  loadingForJoin.value = true
+  const result = await joinApi.joinStore(storeData.value)
+  const res = checkResponseData(result, 'NO_RETURN_DATA')
+  // if(res) {
+  // } else {
+  // }
+  loadingForJoin.value = false
 }
 
 
@@ -119,7 +155,12 @@ const showStoreDialog = (id) => {
       <section>
         <h2 class="text-2xl font-bold text-center mb-8">可加入的店铺组织</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          <div class="rounded-lg border bg-card text-card-foreground shadow-sm hover:shadow-lg transition-shadow cursor-pointer" @click="showStoreDialog(123)">
+          <div
+                  v-for="item in storeList"
+                  :key="item.storeId"
+                  class="rounded-lg border bg-card text-card-foreground shadow-sm hover:shadow-lg transition-shadow cursor-pointer"
+                  @click="showStoreDialog(item.storeId)"
+          >
             <div class="flex flex-col space-y-1.5 p-6">
               <div class="flex items-center justify-between">
                 <h3 class="font-semibold tracking-tight text-lg flex items-center gap-2">
@@ -132,111 +173,27 @@ const showStoreDialog = (id) => {
                     <path d="M2 7h20"></path>
                     <path d="M22 7v3a2 2 0 0 1-2 2a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12a2 2 0 0 1-2-2V7"></path>
                   </svg>
-                  时尚服饰专营店
+                  {{ item.storeName }}
                 </h3>
-                <div class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80">
-                  服饰
+                <div class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80 whitespace-normal">
+                  {{ item.storeFlag }}
                 </div>
               </div>
-              <p class="text-sm text-muted-foreground">专注女性时尚服饰，包含连衣裙、外套、配饰等</p></div>
+              <p v-if="item.storeDesc" class="text-sm text-muted-foreground">{{ item.storeDesc }}</p>
+            </div>
             <div class="p-6 pt-0">
               <div class="flex items-center justify-between"><span class="text-sm text-gray-600">佣金比例：</span><span
-                      class="text-2xl font-bold text-green-600">15%</span></div>
+                      class="text-2xl font-bold text-green-600">{{currencyFormat(item.commissionRate * 100)}}%</span></div>
             </div>
             <div class="flex items-center p-6 pt-0">
-              <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 w-full">
+              <el-button
+                      class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 w-full"
+                      :loading="loadingForJoin && storeData.storeId === item.storeId"
+                      :disabled="loadingForJoin && storeData.storeId !== item.storeId"
+                      @click.stop="join(item.storeId)"
+              >
                 加入分销组织
-              </button>
-            </div>
-          </div>
-          <div class="rounded-lg border bg-card text-card-foreground shadow-sm hover:shadow-lg transition-shadow cursor-pointer">
-            <div class="flex flex-col space-y-1.5 p-6">
-              <div class="flex items-center justify-between">
-                <h3 class="font-semibold tracking-tight text-lg flex items-center gap-2">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                       stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                       class="lucide lucide-store w-5 h-5">
-                    <path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"></path>
-                    <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
-                    <path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"></path>
-                    <path d="M2 7h20"></path>
-                    <path d="M22 7v3a2 2 0 0 1-2 2a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12a2 2 0 0 1-2-2V7"></path>
-                  </svg>
-                  数码3C精品店
-                </h3>
-                <div class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80">
-                  数码
-                </div>
-              </div>
-              <p class="text-sm text-muted-foreground">销售手机、耳机、充电器等数码产品</p></div>
-            <div class="p-6 pt-0">
-              <div class="flex items-center justify-between"><span class="text-sm text-gray-600">佣金比例：</span><span
-                      class="text-2xl font-bold text-green-600">12%</span></div>
-            </div>
-            <div class="flex items-center p-6 pt-0">
-              <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 w-full">
-                加入分销组织
-              </button>
-            </div>
-          </div>
-          <div class="rounded-lg border bg-card text-card-foreground shadow-sm hover:shadow-lg transition-shadow cursor-pointer">
-            <div class="flex flex-col space-y-1.5 p-6">
-              <div class="flex items-center justify-between">
-                <h3 class="font-semibold tracking-tight text-lg flex items-center gap-2">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                       stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                       class="lucide lucide-store w-5 h-5">
-                    <path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"></path>
-                    <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
-                    <path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"></path>
-                    <path d="M2 7h20"></path>
-                    <path d="M22 7v3a2 2 0 0 1-2 2a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12a2 2 0 0 1-2-2V7"></path>
-                  </svg>
-                  美妆护肤旗舰店
-                </h3>
-                <div class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80">
-                  美妆
-                </div>
-              </div>
-              <p class="text-sm text-muted-foreground">知名品牌化妆品、护肤品、香水等美妆产品</p></div>
-            <div class="p-6 pt-0">
-              <div class="flex items-center justify-between"><span class="text-sm text-gray-600">佣金比例：</span><span
-                      class="text-2xl font-bold text-green-600">20%</span></div>
-            </div>
-            <div class="flex items-center p-6 pt-0">
-              <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 w-full">
-                加入分销组织
-              </button>
-            </div>
-          </div>
-          <div class="rounded-lg border bg-card text-card-foreground shadow-sm hover:shadow-lg transition-shadow cursor-pointer">
-            <div class="flex flex-col space-y-1.5 p-6">
-              <div class="flex items-center justify-between">
-                <h3 class="font-semibold tracking-tight text-lg flex items-center gap-2">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                       stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                       class="lucide lucide-store w-5 h-5">
-                    <path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"></path>
-                    <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
-                    <path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"></path>
-                    <path d="M2 7h20"></path>
-                    <path d="M22 7v3a2 2 0 0 1-2 2a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12a2 2 0 0 1-2-2V7"></path>
-                  </svg>
-                  家居生活馆
-                </h3>
-                <div class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80">
-                  家居
-                </div>
-              </div>
-              <p class="text-sm text-muted-foreground">家居用品、厨房用具、收纳整理等生活必需品</p></div>
-            <div class="p-6 pt-0">
-              <div class="flex items-center justify-between"><span class="text-sm text-gray-600">佣金比例：</span><span
-                      class="text-2xl font-bold text-green-600">18%</span></div>
-            </div>
-            <div class="flex items-center p-6 pt-0">
-              <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 w-full">
-                加入分销组织
-              </button>
+              </el-button>
             </div>
           </div>
         </div>
@@ -252,7 +209,7 @@ const showStoreDialog = (id) => {
             v-if="isShowStoreDialog"
             v-model="isShowStoreDialog"
             :id="storeDialogId"
-            @submit="join"
+            @submit="join(storeDialogId)"
     ></AffiliateStoreDialog>
   </div>
 </template>

@@ -1,7 +1,8 @@
 <script setup>
-import { useI18n } from "vue-i18n";
+import {checkResponseData} from "@/util";
+import { previewImg, currencyFormat } from "@/util/index.js";
 
-const { t } = useI18n();
+const { affiliateApi } = useApi()
 const isMobile = useIsMobile()
 const attrs = useAttrs()
 const props = defineProps({
@@ -23,6 +24,17 @@ const cancel = () => {
     const fn = attrs['onUpdate:modelValue']
     fn && fn(false)
 }
+
+
+const goodsList = ref([])
+// 获取商品数据
+const getGoodsData = async() => {
+    const result = await affiliateApi.listGoodsByStoreId(props.id)
+
+    const res = checkResponseData(result)
+    goodsList.value = res?.list || []
+}
+getGoodsData().then(() => {})
 
 </script>
 
@@ -75,68 +87,24 @@ const cancel = () => {
                         店铺商品 (最多展示10个)
                     </h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        <div class="rounded-lg border bg-card text-card-foreground shadow-sm hover:shadow-md transition-shadow">
-                            <div class="p-4"><img
-                                    src="https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=300&amp;h=300&amp;fit=crop"
-                                    alt="春季连衣裙" class="w-full h-32 object-cover rounded-md mb-3"><h4
-                                    class="font-semibold text-sm mb-2">春季连衣裙</h4>
+                        <div v-for="item in goodsList" :key="item.goodsLinkUrl" class="rounded-lg border bg-card text-card-foreground shadow-sm hover:shadow-md transition-shadow">
+                            <div class="p-4">
+                                <img
+                                    :src="previewImg(item.imageUrl)"
+                                    class="w-full h-32 object-cover rounded-md mb-3"
+                                >
+                                <h4 class="font-semibold text-sm mb-2">{{ item.goodsTitle }}</h4>
                                 <div class="space-y-1">
-                                    <div class="flex justify-between text-sm"><span class="text-gray-600">商品价格：</span><span
-                                            class="font-semibold">¥299</span></div>
-                                    <div class="flex justify-between text-sm"><span class="text-gray-600">获得佣金：</span><span
-                                            class="font-semibold text-green-600">¥44.85</span></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="rounded-lg border bg-card text-card-foreground shadow-sm hover:shadow-md transition-shadow">
-                            <div class="p-4"><img
-                                    src="https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=300&amp;h=300&amp;fit=crop"
-                                    alt="时尚外套" class="w-full h-32 object-cover rounded-md mb-3"><h4
-                                    class="font-semibold text-sm mb-2">时尚外套</h4>
-                                <div class="space-y-1">
-                                    <div class="flex justify-between text-sm"><span class="text-gray-600">商品价格：</span><span
-                                            class="font-semibold">¥599</span></div>
-                                    <div class="flex justify-between text-sm"><span class="text-gray-600">获得佣金：</span><span
-                                            class="font-semibold text-green-600">¥89.85</span></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="rounded-lg border bg-card text-card-foreground shadow-sm hover:shadow-md transition-shadow">
-                            <div class="p-4"><img
-                                    src="https://images.unsplash.com/photo-1583496661160-fb5886a13d35?w=300&amp;h=300&amp;fit=crop"
-                                    alt="优雅半身裙" class="w-full h-32 object-cover rounded-md mb-3"><h4
-                                    class="font-semibold text-sm mb-2">优雅半身裙</h4>
-                                <div class="space-y-1">
-                                    <div class="flex justify-between text-sm"><span class="text-gray-600">商品价格：</span><span
-                                            class="font-semibold">¥199</span></div>
-                                    <div class="flex justify-between text-sm"><span class="text-gray-600">获得佣金：</span><span
-                                            class="font-semibold text-green-600">¥29.85</span></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="rounded-lg border bg-card text-card-foreground shadow-sm hover:shadow-md transition-shadow">
-                            <div class="p-4"><img
-                                    src="https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=300&amp;h=300&amp;fit=crop"
-                                    alt="职业套装" class="w-full h-32 object-cover rounded-md mb-3"><h4
-                                    class="font-semibold text-sm mb-2">职业套装</h4>
-                                <div class="space-y-1">
-                                    <div class="flex justify-between text-sm"><span class="text-gray-600">商品价格：</span><span
-                                            class="font-semibold">¥899</span></div>
-                                    <div class="flex justify-between text-sm"><span class="text-gray-600">获得佣金：</span><span
-                                            class="font-semibold text-green-600">¥134.85</span></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="rounded-lg border bg-card text-card-foreground shadow-sm hover:shadow-md transition-shadow">
-                            <div class="p-4"><img
-                                    src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=300&amp;h=300&amp;fit=crop"
-                                    alt="休闲T恤" class="w-full h-32 object-cover rounded-md mb-3"><h4
-                                    class="font-semibold text-sm mb-2">休闲T恤</h4>
-                                <div class="space-y-1">
-                                    <div class="flex justify-between text-sm"><span class="text-gray-600">商品价格：</span><span
-                                            class="font-semibold">¥99</span></div>
-                                    <div class="flex justify-between text-sm"><span class="text-gray-600">获得佣金：</span><span
-                                            class="font-semibold text-green-600">¥14.85</span></div>
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-gray-600">商品价格：</span>
+                                        <span class="font-semibold">
+                                            {{item.saleCurrency}} {{currencyFormat(item.minSalePrice)}}{{(item.maxSalePrice&&parseFloat(item.maxSalePrice)>parseFloat(item.minSalePrice)) ? `~${currencyFormat(item.maxSalePrice)}` : ''}}
+                                        </span>
+                                    </div>
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-gray-600">获得佣金：</span>
+                                        <span class="font-semibold text-green-600">{{currencyFormat(item.commissionRate * 100)}}% </span>
+                                    </div>
                                 </div>
                             </div>
                         </div>

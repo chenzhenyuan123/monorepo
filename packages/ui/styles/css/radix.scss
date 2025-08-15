@@ -69,6 +69,11 @@ button, [role=button] {
   overflow-x: hidden
 }
 
+.whitespace-normal {
+  white-space: normal;
+  word-break: break-word;
+}
+
 .whitespace-nowrap {
   white-space: nowrap
 }
