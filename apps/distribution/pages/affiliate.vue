@@ -36,8 +36,8 @@ getStoreData().then(() => {})
 
 
 const loadingForJoin = ref(false)
-const join = async (storeId) => {
-  storeData.value.storeId = storeId
+const join = async (obj) => {
+  storeData.value.storeId = obj.storeId
   if (loadingForJoin.value) return
   loadingForJoin.value = true
   const result = await joinApi.joinStore(storeData.value)
@@ -50,9 +50,9 @@ const join = async (storeId) => {
 
 
 const isShowStoreDialog = ref(false)
-const storeDialogId = ref()
-const showStoreDialog = (id) => {
-  storeDialogId.value = id
+const storeDialogData = ref({})
+const showStoreDialog = (obj) => {
+  storeDialogData.value = obj
   isShowStoreDialog.value = true
 }
 
@@ -61,13 +61,13 @@ const showStoreDialog = (id) => {
   <div class="main-box bg-gradient-to-br min-h-screen" :class="{ m: isMobile }">
     <div class="affiliate-header bg-white shadow-sm">
       <div class="affiliate-header-center max-w-7xl mx-auto">
-        <h1 class="text-3xl font-bold text-gray-900">分销员招募平台</h1>
-        <p class="text-gray-600 mt-2">加入我们，开启您的分销赚钱之旅</p>
+        <h1 class="text-3xl font-bold text-gray-900">FlyLink Distributor Recruitment Platform</h1>
+        <p class="text-gray-600 mt-2">Join us and embark on your journey of making money through distribution</p>
       </div>
     </div>
     <div class="max-w-7xl mx-auto px-4 py-8 space-y-12">
       <section>
-        <h2 class="text-2xl font-bold text-center mb-8">四步轻松赚佣金</h2>
+        <h2 class="text-2xl font-bold text-center mb-8">Four easy steps to earn commissions</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <div class="rounded-lg border bg-card text-card-foreground shadow-sm text-center hover:shadow-lg transition-shadow">
             <div class="flex flex-col space-y-1.5 p-6">
@@ -81,8 +81,8 @@ const showStoreDialog = (id) => {
                   <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
                 </svg>
               </div>
-              <h3 class="font-semibold tracking-tight text-lg">注册加入</h3></div>
-            <div class="p-6 pt-0"><p class="text-gray-600">填写基本信息，成为分销员</p></div>
+              <h3 class="font-semibold tracking-tight text-lg">Register to join</h3></div>
+            <div class="p-6 pt-0"><p class="text-gray-600">Fill in basic information to become a distributor</p></div>
             <div class="hidden lg:block absolute top-1/2 -right-3 transform -translate-y-1/2">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -105,8 +105,8 @@ const showStoreDialog = (id) => {
                   <line x1="15.41" x2="8.59" y1="6.51" y2="10.49"></line>
                 </svg>
               </div>
-              <h3 class="font-semibold tracking-tight text-lg">分享链接</h3></div>
-            <div class="p-6 pt-0"><p class="text-gray-600">获取专属推广链接，分享给买家</p></div>
+              <h3 class="font-semibold tracking-tight text-lg">Share link</h3></div>
+            <div class="p-6 pt-0"><p class="text-gray-600">Obtain exclusive promotional links and share them with buyers</p></div>
             <div class="hidden lg:block absolute top-1/2 -right-3 transform -translate-y-1/2">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -126,8 +126,8 @@ const showStoreDialog = (id) => {
                   <line x1="2" x2="22" y1="10" y2="10"></line>
                 </svg>
               </div>
-              <h3 class="font-semibold tracking-tight text-lg">买家支付</h3></div>
-            <div class="p-6 pt-0"><p class="text-gray-600">买家通过您的链接完成购买</p></div>
+              <h3 class="font-semibold tracking-tight text-lg">Buyer payment</h3></div>
+            <div class="p-6 pt-0"><p class="text-gray-600">The buyer completes the purchase through your link</p></div>
             <div class="hidden lg:block absolute top-1/2 -right-3 transform -translate-y-1/2">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -147,19 +147,19 @@ const showStoreDialog = (id) => {
                   <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
                 </svg>
               </div>
-              <h3 class="font-semibold tracking-tight text-lg">获得佣金</h3></div>
-            <div class="p-6 pt-0"><p class="text-gray-600">系统自动结算，获得丰厚佣金</p></div>
+              <h3 class="font-semibold tracking-tight text-lg">Get commission</h3></div>
+            <div class="p-6 pt-0"><p class="text-gray-600">The system automatically settles and earns generous commissions</p></div>
           </div>
         </div>
       </section>
       <section>
-        <h2 class="text-2xl font-bold text-center mb-8">可加入的店铺组织</h2>
+        <h2 class="text-2xl font-bold text-center mb-8">Stores that can join distribution</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           <div
                   v-for="item in storeList"
                   :key="item.storeId"
                   class="rounded-lg border bg-card text-card-foreground shadow-sm hover:shadow-lg transition-shadow cursor-pointer"
-                  @click="showStoreDialog(item.storeId)"
+                  @click="showStoreDialog(item)"
           >
             <div class="flex flex-col space-y-1.5 p-6">
               <div class="flex items-center justify-between">
@@ -182,7 +182,7 @@ const showStoreDialog = (id) => {
               <p v-if="item.storeDesc" class="text-sm text-muted-foreground">{{ item.storeDesc }}</p>
             </div>
             <div class="p-6 pt-0">
-              <div class="flex items-center justify-between"><span class="text-sm text-gray-600">佣金比例：</span><span
+              <div class="flex items-center justify-between"><span class="text-sm text-gray-600">Commission Rate:</span><span
                       class="text-2xl font-bold text-green-600">{{currencyFormat(item.commissionRate * 100)}}%</span></div>
             </div>
             <div class="flex items-center p-6 pt-0">
@@ -190,9 +190,9 @@ const showStoreDialog = (id) => {
                       class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 w-full"
                       :loading="loadingForJoin && storeData.storeId === item.storeId"
                       :disabled="loadingForJoin && storeData.storeId !== item.storeId"
-                      @click.stop="join(item.storeId)"
+                      @click.stop="join(item)"
               >
-                加入分销组织
+                  Join Store Distribution
               </el-button>
             </div>
           </div>
@@ -208,8 +208,8 @@ const showStoreDialog = (id) => {
     <AffiliateStoreDialog
             v-if="isShowStoreDialog"
             v-model="isShowStoreDialog"
-            :id="storeDialogId"
-            @submit="join(storeDialogId)"
+            :storeData="storeDialogData"
+            @submit="join(storeDialogData)"
     ></AffiliateStoreDialog>
   </div>
 </template>

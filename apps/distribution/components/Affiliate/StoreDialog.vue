@@ -6,9 +6,9 @@ const { affiliateApi } = useApi()
 const isMobile = useIsMobile()
 const attrs = useAttrs()
 const props = defineProps({
-    id: {
-        type: String,
-        default: ''
+    storeData: {
+        type: Object,
+        default: () => ({})
     }
 })
 const emit = defineEmits(['submit', 'cancel'])
@@ -29,7 +29,7 @@ const cancel = () => {
 const goodsList = ref([])
 // 获取商品数据
 const getGoodsData = async() => {
-    const result = await affiliateApi.listGoodsByStoreId(props.id)
+    const result = await affiliateApi.listGoodsByStoreId(props.storeData.storeId)
 
     const res = checkResponseData(result)
     goodsList.value = res?.list || []
@@ -70,9 +70,12 @@ getGoodsData().then(() => {})
                         <path d="M2 7h20"></path>
                         <path d="M22 7v3a2 2 0 0 1-2 2a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12a2 2 0 0 1-2-2V7"></path>
                     </svg>
-                    时尚服饰专营店
+                    {{ storeData.storeName }}
                 </h2>
-                <p id="radix-:r2:" class="text-sm text-muted-foreground">专注女性时尚服饰，包含连衣裙、外套、配饰等 · 佣金比例：15%</p></div>
+                <p id="radix-:r2:" class="text-sm text-muted-foreground">
+                    <template v-if="storeData.storeDesc">{{ storeData.storeDesc }} · </template>Commission Rate: {{currencyFormat(storeData.commissionRate * 100)}}%
+                </p>
+            </div>
             <div class="space-y-6">
                 <div>
                     <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
@@ -84,7 +87,7 @@ getGoodsData().then(() => {})
                             <path d="m3.3 7 7.703 4.734a2 2 0 0 0 1.994 0L20.7 7"></path>
                             <path d="m7.5 4.27 9 5.15"></path>
                         </svg>
-                        店铺商品 (最多展示10个)
+                        Store products(Join Distribution View More)
                     </h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         <div v-for="item in goodsList" :key="item.goodsLinkUrl" class="rounded-lg border bg-card text-card-foreground shadow-sm hover:shadow-md transition-shadow">
@@ -95,14 +98,14 @@ getGoodsData().then(() => {})
                                 >
                                 <h4 class="font-semibold text-sm mb-2">{{ item.goodsTitle }}</h4>
                                 <div class="space-y-1">
-                                    <div class="flex justify-between text-sm">
-                                        <span class="text-gray-600">商品价格：</span>
+                                    <div class="flex justify-between text-sm mb-2">
+<!--                                        <span class="text-gray-600"></span>-->
                                         <span class="font-semibold">
                                             {{item.saleCurrency}} {{currencyFormat(item.minSalePrice)}}{{(item.maxSalePrice&&parseFloat(item.maxSalePrice)>parseFloat(item.minSalePrice)) ? `~${currencyFormat(item.maxSalePrice)}` : ''}}
                                         </span>
                                     </div>
                                     <div class="flex justify-between text-sm">
-                                        <span class="text-gray-600">获得佣金：</span>
+                                        <span class="text-gray-600">Commission Rate:</span>
                                         <span class="font-semibold text-green-600">{{currencyFormat(item.commissionRate * 100)}}% </span>
                                     </div>
                                 </div>
@@ -115,7 +118,7 @@ getGoodsData().then(() => {})
                             class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 bg-primary text-primary-foreground hover:bg-primary/90 h-11 rounded-md px-8"
                             @click="submit"
                     >
-                        加入 时尚服饰专营店 分销组织
+                        Join Store Distribution
                     </button>
                 </div>
             </div>
