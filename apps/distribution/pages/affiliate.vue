@@ -5,6 +5,7 @@
 <script setup name="Affiliate">
 import {checkResponseData} from "@/util";
 import { currencyFormat } from "@/util/index.js";
+import {sendLog} from "@/util/logUtil";
 
 definePageMeta({
   layout: 'noside'
@@ -36,6 +37,18 @@ const showStoreDialog = (obj) => {
   storeDialogData.value = obj
   isShowStoreDialog.value = true
 }
+
+onMounted(async () => {
+
+  // 刷新页面，第一个 await 不会执行
+  await console.log('onMounted')
+
+  sendLog({
+    eventType: 1,
+    eventCode: 'da-affiliate-load',
+    eventDesc: '分销端-ai推广页-加载'
+  })
+})
 
 </script>
 <template>
