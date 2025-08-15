@@ -36,6 +36,9 @@ const getGoodsData = async() => {
     goodsList.value = res?.list || []
 }
 getGoodsData().then(() => {})
+const jumpToGoods = (url) => {
+    window.open(url, '_blank')
+}
 
 </script>
 
@@ -99,7 +102,12 @@ getGoodsData().then(() => {})
                         <p class="no-data-text">No Data</p>
                     </div>
                     <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        <div v-for="item in goodsList" :key="item.goodsLinkUrl" class="rounded-lg border bg-card text-card-foreground shadow-sm hover:shadow-md transition-shadow">
+                        <div
+                                v-for="item in goodsList"
+                                :key="item.goodsLinkUrl"
+                                class="rounded-lg border bg-card text-card-foreground shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+                                @click="jumpToGoods(item.goodsLinkUrl)"
+                        >
                             <div class="p-4">
                                 <img
                                     :src="previewImg(item.imageUrl)"
@@ -107,7 +115,7 @@ getGoodsData().then(() => {})
                                 >
                                 <h4 class="font-semibold text-sm mb-2">{{ item.goodsTitle }}</h4>
                                 <div class="space-y-1">
-                                    <div class="flex justify-between text-sm mb-2">
+                                    <div class="flex justify-between text-sm mb-1">
 <!--                                        <span class="text-gray-600"></span>-->
                                         <span class="font-semibold">
                                             {{item.saleCurrency}} {{currencyFormat(item.minSalePrice)}}{{(item.maxSalePrice&&parseFloat(item.maxSalePrice)>parseFloat(item.minSalePrice)) ? `~${currencyFormat(item.maxSalePrice)}` : ''}}
@@ -115,7 +123,11 @@ getGoodsData().then(() => {})
                                     </div>
                                     <div class="flex justify-between text-sm">
                                         <span class="text-gray-600">Commission Rate:</span>
+                                    </div>
+                                    <div class="text-sm">
                                         <span class="font-semibold text-green-600">{{currencyFormat(item.commissionRate * 100)}}% </span>
+                                        <span>(≈{{item.saleCurrency}} {{ currencyFormat(parseFloat(item.minSalePrice)*parseFloat(item.commissionRate)) }}</span>
+                                        <span>{{ (item.maxSalePrice&&parseFloat(item.maxSalePrice)>parseFloat(item.minSalePrice)) ? `~${currencyFormat(parseFloat(item.maxSalePrice)*parseFloat(item.commissionRate))})` : ')' }}</span>
                                     </div>
                                 </div>
                             </div>
