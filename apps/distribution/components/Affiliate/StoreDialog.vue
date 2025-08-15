@@ -28,12 +28,15 @@ const cancel = () => {
 
 
 const goodsList = ref([])
+const loading = ref(true)
 // 获取商品数据
 const getGoodsData = async() => {
+    loading.value = true
     const result = await affiliateApi.listGoodsByStoreId(props.storeData.storeId)
 
     const res = checkResponseData(result)
     goodsList.value = res?.list || []
+    loading.value = false
 }
 getGoodsData().then(() => {})
 const jumpToGoods = (url) => {
@@ -94,14 +97,19 @@ const jumpToGoods = (url) => {
                         Store products(Join Distribution View More)
                     </h3>
                     <!-- 暂无数据时展示 -->
-                    <div v-if="goodsList.length<=0" class="no-data-box">
+                    <div v-if="!loading && goodsList.length<=0" class="no-data-box">
                         <div class="grid-box" />
                         <div class="no-data-icon">
                         <el-icon class="no-data-icon-Search"><img :src="NoData" /></el-icon>
                         </div>
                         <p class="no-data-text">No Data</p>
                     </div>
-                    <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div
+                            v-else
+                            v-loading="loading"
+                            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+                            style="min-height: 30vh"
+                    >
                         <div
                                 v-for="item in goodsList"
                                 :key="item.goodsLinkUrl"
@@ -141,7 +149,7 @@ const jumpToGoods = (url) => {
                         :underline="false"
                         class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-base font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 bg-primary text-primary-foreground hover:bg-primary/90 h-11 rounded-md px-8"
                     >
-                        Join Store Distribution
+                        Join Now
                     </el-link>
                 </div>
             </div>
