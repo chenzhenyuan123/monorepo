@@ -33,7 +33,7 @@ button, [role=button] {
   background-color: #f1f5f9;
 }
 .bg-primary {
-  background-color: #0f172a;
+  background: linear-gradient(#695dff, #5548ff);;
 }
 .hover\:bg-primary:hover {
   background-color: #0f172a;
@@ -1000,5 +1000,64 @@ button, [role=button] {
   }
   .xl\:grid-cols-4 {
     grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.grid-box {
+  display: grid;
+  align-items: end;
+}
+.object-cover {
+  object-fit: cover;
+}
+
+// 暂无数据
+.no-data-box {
+  min-height: 232px;
+  padding: 40px 32px;
+  position: relative;
+  overflow: hidden;
+  width: 480px;
+  margin: 0 auto;
+  text-align: center;
+
+  // 底部网格
+  .grid-box {
+    width: 480px;
+    height: 480px;
+    position: absolute;
+    top: -146px;
+    left: calc(50% - 240px);
+    z-index: 0;
+    background: url('@/assets/imgs/decorative-img.svg') 50% / cover no-repeat;
+  }
+
+  .no-data-icon {
+    width: 48px;
+    height: 48px;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #E4E7EC;
+    background: #fff;
+    box-shadow: 0px 0px 0px 1px rgba(16, 24, 40, 0.18) inset, 0px -2px 0px 0px rgba(16, 24, 40, 0.05) inset, 0px 1px 2px 0px rgba(16, 24, 40, 0.05);
+    margin: 100px auto 16px;
+    position: relative;
+    z-index: 11;
+
+    .no-data-icon-Search {
+      font-size: 24px;
+      color: #344054;
+    }
+    .no-data-icon-Warning {
+      color: #F04438;
+    }
+  }
+
+  .no-data-text {
+    color: #101828;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 24px;
+    margin: 0 52px;
   }
 }

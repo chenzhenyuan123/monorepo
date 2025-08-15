@@ -14,12 +14,9 @@ const route = useRoute();
 const { affiliateApi, joinApi } = useApi()
 const isMobile = useIsMobile()
 
-
-const storeData = ref({
-  storeId: '',
-  invitationCode: route.query?.code
+onMounted(()=>{
+  getStoreData()
 })
-
 
 const storeList = ref([])
 // 获取店铺数据
@@ -32,22 +29,6 @@ const getStoreData = async() => {
   const res = checkResponseData(result)
   storeList.value = res?.list || []
 }
-getStoreData().then(() => {})
-
-
-const loadingForJoin = ref(false)
-const join = async (obj) => {
-  storeData.value.storeId = obj.storeId
-  if (loadingForJoin.value) return
-  loadingForJoin.value = true
-  const result = await joinApi.joinStore(storeData.value)
-  const res = checkResponseData(result, 'NO_RETURN_DATA')
-  // if(res) {
-  // } else {
-  // }
-  loadingForJoin.value = false
-}
-
 
 const isShowStoreDialog = ref(false)
 const storeDialogData = ref({})
@@ -156,10 +137,10 @@ const showStoreDialog = (obj) => {
         <h2 class="text-2xl font-bold text-center mb-8">Stores that can join distribution</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           <div
-                  v-for="item in storeList"
-                  :key="item.storeId"
-                  class="rounded-lg border bg-card text-card-foreground shadow-sm hover:shadow-lg transition-shadow cursor-pointer"
-                  @click="showStoreDialog(item)"
+            v-for="item in storeList"
+            :key="item.storeId"
+            class="rounded-lg border bg-card text-card-foreground shadow-sm hover:shadow-lg transition-shadow cursor-pointer grid-box"
+            @click="showStoreDialog(item)"
           >
             <div class="flex flex-col space-y-1.5 p-6">
               <div class="flex items-center justify-between">
@@ -186,22 +167,21 @@ const showStoreDialog = (obj) => {
                       class="text-2xl font-bold text-green-600">{{currencyFormat(item.commissionRate * 100)}}%</span></div>
             </div>
             <div class="flex items-center p-6 pt-0">
-              <el-button
-                      class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 w-full"
-                      :loading="loadingForJoin && storeData.storeId === item.storeId"
-                      :disabled="loadingForJoin && storeData.storeId !== item.storeId"
-                      @click.stop="join(item)"
+              <el-link
+                :href="item.joinUrl"
+                target="_blank"
+                :underline="false"
+                class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-base font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 w-full"
               >
                   Join Store Distribution
-              </el-button>
+              </el-link>
             </div>
           </div>
         </div>
       </section>
     </div>
 
-
-    <div class="footer-main affiliate-footer">
+    <div class="footer-main affiliate-footer max-w-7xl mx-auto">
       <Footer />
     </div>
 
@@ -209,7 +189,6 @@ const showStoreDialog = (obj) => {
             v-if="isShowStoreDialog"
             v-model="isShowStoreDialog"
             :storeData="storeDialogData"
-            @submit="join(storeDialogData)"
     ></AffiliateStoreDialog>
   </div>
 </template>
@@ -227,6 +206,6 @@ const showStoreDialog = (obj) => {
   }
 }
 .affiliate-footer {
-  padding: 0 20px;
+  padding: 50px 16px;
 }
 </style>
