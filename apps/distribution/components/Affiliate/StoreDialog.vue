@@ -1,6 +1,7 @@
 <script setup>
 import {checkResponseData} from "@/util";
 import { previewImg, currencyFormat } from "@/util/index.js";
+import NoData from '@/components/svg/NoData.svg'
 
 const { affiliateApi } = useApi()
 const isMobile = useIsMobile()
@@ -89,7 +90,15 @@ getGoodsData().then(() => {})
                         </svg>
                         Store products(Join Distribution View More)
                     </h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- 暂无数据时展示 -->
+                    <div v-if="goodsList.length<=0" class="no-data-box">
+                        <div class="grid-box" />
+                        <div class="no-data-icon">
+                        <el-icon class="no-data-icon-Search"><img :src="NoData" /></el-icon>
+                        </div>
+                        <p class="no-data-text">No Data</p>
+                    </div>
+                    <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         <div v-for="item in goodsList" :key="item.goodsLinkUrl" class="rounded-lg border bg-card text-card-foreground shadow-sm hover:shadow-md transition-shadow">
                             <div class="p-4">
                                 <img
@@ -114,12 +123,14 @@ getGoodsData().then(() => {})
                     </div>
                 </div>
                 <div class="flex justify-center pt-4">
-                    <button
-                            class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 bg-primary text-primary-foreground hover:bg-primary/90 h-11 rounded-md px-8"
-                            @click="submit"
+                    <el-link
+                        :href="storeData.joinUrl"
+                        target="_blank"
+                        :underline="false"
+                        class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-base font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 bg-primary text-primary-foreground hover:bg-primary/90 h-11 rounded-md px-8"
                     >
                         Join Store Distribution
-                    </button>
+                    </el-link>
                 </div>
             </div>
         </div>
