@@ -78,8 +78,16 @@ watch(
 onUnmounted(()=>{
   window.removeEventListener("resize", getHeight);
 })
+// 更新分页
+const setPage = _page => {
+  if(_page && _page?.pageNo) {
+    page.pageSize = _page.pageSize
+    page.pageNo = _page.pageNo
+  }
+}
 
 const emit = defineEmits(['pageChange', 'sizeChange'])
+defineExpose({ setPage })
 
 const handleSizeChange = val => {
   page.pageSize = val
@@ -144,7 +152,7 @@ const generateLinkClick = (item) => {
                     <el-popover
                             v-if="item.goodsCommissionRate && item.distributorCommissionRate"
                             width="320"
-                            offset="0"
+                            :offset="0"
                             popper-class="popover-1753155721553"
                             :placement="isRTL ? 'top-end' : 'top-start'"
                             :show-arrow="false"
@@ -174,7 +182,7 @@ const generateLinkClick = (item) => {
 
                     <el-popover
                             width="320"
-                            offset="0"
+                            :offset="0"
                             popper-class="popover-1753155721553"
                             :placement="isRTL ? 'bottom-end' : 'bottom-start'"
                             :show-arrow="false"
