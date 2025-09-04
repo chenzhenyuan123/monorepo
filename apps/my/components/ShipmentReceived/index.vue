@@ -62,7 +62,6 @@ const submit = async() => {
         <div class="dialog-text-box">
           <p class="dialog-text">{{$t('orders.ordersShipmenReceivedTip1')}}</p>
           <p class="dialog-text">{{$t('orders.ordersShipmenReceivedTip2')}}</p>
-          <p class="dialog-text">{{$t('orders.ordersShipmenReceivedTip3')}}</p>
         </div>
       </div>
       <template #footer>
