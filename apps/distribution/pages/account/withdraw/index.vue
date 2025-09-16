@@ -426,6 +426,11 @@ const jumpToWallet = () => {
     })
 }
 
+
+// 是否显示“获取等级错误”弹窗
+const isShowErrorLevelDialog = ref(false)
+
+
 onMounted(()=>{
     nextTick(() => {
         settingStore.setFormPage(true)
@@ -576,8 +581,8 @@ onUnmounted(()=>{
                 />
             </el-form-item>
             <div class="fee-container">
-                <p class="p">{{ $t('withdraw.applyFormMessageFee1') }} ${{ currencyFormat(actualWithdrawAmount) }} USD</p>
-                <p class="p b8">{{ $t('withdraw.applyFormMessageFee2') }} ${{ currencyFormat(fee) }} USD</p>
+                <p class="p mb4">{{ $t('withdraw.applyFormMessageFee1') }} ${{ currencyFormat(actualWithdrawAmount) }} USD</p>
+                <p class="p flex-box mb8">{{ $t('withdraw.applyFormMessageFee2') }} ${{ currencyFormat(fee) }} USD<span class="flex-center-8"></span><del v-if="true">${{ currencyFormat(fee) }} USD</del></p>
                 <p class="p">{{ $t('withdraw.applyFormMessageFee3') }}</p>
             </div>
             <el-form-item class="form-buttons">
@@ -591,6 +596,7 @@ onUnmounted(()=>{
               v-model="isShowVerifyGialog"
               @submit="apply"
       ></AccountWithdrawVerifyTipDialog>
+      <AccountWithdrawErrorLevelDialog v-model="isShowErrorLevelDialog"></AccountWithdrawErrorLevelDialog>
 </div>
 </template>
 
@@ -802,12 +808,8 @@ onUnmounted(()=>{
             font-style: normal;
             font-weight: 400;
             line-height: 20px; /* 142.857% */
-            margin-bottom: 4px;
-            &.b8 {
-                margin-bottom: 8px;
-            }
-            &:last-child {
-                margin-bottom: 0;
+            del {
+                opacity: 0.7;
             }
         }
     }
