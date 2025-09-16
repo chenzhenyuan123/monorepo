@@ -42,15 +42,20 @@ const isJoinDistribution = async() => {
   }
 }
 const productsRef = ref(null)
+const productCardSkeletonRef = ref(null)
 // 获取商品列表
 const getGoodsList = async() => {
   loading.value = true
   const body = {
     userId: userStore?.userInfo?.userId,
     pageNo: page.pageNo,
-    pageSize: page.pageSize,
-    searchContent: search.value,
-    storeId: storeSearchStr.value
+    pageSize: page.pageSize
+  }
+  if(search.value) {
+    body.searchContent = search.value
+  }
+  if(storeSearchStr.value) {
+    body.storeId = storeSearchStr.value
   }
   const result = await productsApi.getRecommendGoodsList(body)
   const res = checkResponseData(result)
@@ -61,6 +66,7 @@ const getGoodsList = async() => {
     goodsList.value = []
   }
   loading.value = false
+  productCardSkeletonRef.value?.setPage(page)
 }
 // 滚动到顶部
 const scrollToTop = () => {
@@ -99,8 +105,9 @@ const joinSave = () => {
 // 店铺搜索
 const storeSearchStr = ref()
 const storeSearchChange = e => {
-  if(e && e!==storeSearchStr.value) {
+  if(e!==storeSearchStr.value) {
     storeSearchStr.value = e
+    page.pageNo = 1
     getGoodsList()
   }
 }
@@ -114,7 +121,7 @@ const storeSearchChange = e => {
         <div class="products-box-top">
           <div class="title">{{$t('home.homeProducts')}}</div>
           <div class="products-box-top-right">
-            <div><el-input v-model="search" id="home-btn-Search" :prefix-icon="Search" :placeholder="$t('home.homeSearch')" clearable @change="getGoodsList" /></div>
+            <div><el-input v-model="search" id="home-btn-Search" :prefix-icon="Search" :placeholder="$t('home.homeSearch')" clearable @change="page.pageNo=1;getGoodsList()" /></div>
             <div>
               <StoreListSearch @change="storeSearchChange" />
             </div>
@@ -149,6 +156,7 @@ const storeSearchChange = e => {
           <!-- 有数据时展示 只给十条，不用分页 -->
           <div v-if="isJoin" class="content-Products">
             <ProductCardSkeleton
+              ref="productCardSkeletonRef"
               :loading="loading"
               :lists="goodsList"
               :showPagination="total>0"
