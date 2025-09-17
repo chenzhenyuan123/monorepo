@@ -1,6 +1,6 @@
 <script setup>
 import { CloseBold, Check } from '@element-plus/icons-vue';
-import { checkResponseData, copyToClipboard, readClipboard, arrToDict, errorMessage, currencyFormat, successMessage } from "@/util/index.js";
+import { checkResponseData, arrToDict, errorMessage, currencyFormat, successMessage } from "@/util/index.js";
 import { useI18n } from "vue-i18n";
 import {formatCreditCardNumber, normalCreditCardNumber} from "@/util/dataUtil";
 import { CircleCheck } from '@element-plus/icons-vue';

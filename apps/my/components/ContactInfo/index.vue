@@ -1,6 +1,9 @@
 <script setup>
 import { copyToClipboard, successMessage } from "@/util/index.js";
 import { contactData } from './const.js'
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
 const props = defineProps({
   contactInfo: {
     type: Object,
@@ -18,7 +21,7 @@ const props = defineProps({
 
 const copyText = (text) => {
   copyToClipboard(text)
-  successMessage('复制成功')
+  successMessage(t('invitation.inviteDialogButtonCopied'))
 }
 
 const layerRef = ref(null)

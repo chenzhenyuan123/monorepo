@@ -1,6 +1,6 @@
 <script setup>
 import { CloseBold, Check } from '@element-plus/icons-vue';
-import { checkResponseData, copyToClipboard, readClipboard, arrToDict, errorMessage } from "@/util/index.js";
+import { checkResponseData, copyToClipboard, arrToDict, errorMessage } from "@/util/index.js";
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
@@ -63,15 +63,13 @@ const submit = () => {
         return
     }
 
-    copyToClipboard(inviteItemData.value.signupUrl)
-    readClipboard().then(str => {
-        if (str) {
-            isCopySuccess.value = true
-            setTimeout(() => {
-                cancel()
-            }, 500)
-        }
-    })
+    const isCopy = copyToClipboard(inviteItemData.value.signupUrl)
+    if (isCopy) {
+        isCopySuccess.value = true
+        setTimeout(() => {
+            cancel()
+        }, 500)
+    }
 }
 
 getInviteData()
