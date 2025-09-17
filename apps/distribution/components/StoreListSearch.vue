@@ -4,7 +4,7 @@
 -->
 <script setup name="StoreListSearch">
 import { Search } from '@element-plus/icons-vue'
-import { checkResponseData, copyToClipboard, readClipboard, arrToDict, errorMessage } from "@/util/index.js";
+import { checkResponseData, arrToDict, errorMessage } from "@/util/index.js";
 const { clientApi } = useApi()
 
 const isMobile = useIsMobile()
