@@ -113,7 +113,7 @@ getInviteData()
                         :label="item.label"
                     />
                 </el-select>
-                <div class="dialog-form-item-p">{{$t('invitation.inviteDialogDescribeStoreBefore')}} <span class="dialog-form-item-span-primary direction-ltr direction-inline-block">{{ inviteData.distributorCommissionRateStr }}%</span> {{$t('invitation.inviteDialogDescribeStoreafter')}}</div>
+                <div class="dialog-form-item-p">{{$t('invitation.inviteDialogDescribeStoreBefore')}} <span class="dialog-form-item-span-primary direction-ltr direction-inline-block">10</span> {{$t('invitation.inviteDialogDescribeStoreafter')}}</div>
             </el-form-item>
             <el-form-item :label="$t('invitation.inviteDialogLabelLink')" class="dialog-form-item">
                 <el-input
