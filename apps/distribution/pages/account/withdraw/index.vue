@@ -41,8 +41,6 @@ const formValidateRef = ref()
 const isShowVerifyGialog = ref(false)
 const limitAmount = ref(50)
 const ableBalanceAmount = ref(0)
-const fee = ref(0)
-const isGetFee = ref(false)
 const loading = ref(false)
 const form = reactive({
     applyAmt: undefined,
@@ -64,10 +62,56 @@ const checkResultData = reactive({
     openingBankCity: true,
     openingBankAddress: true,
 })
+
+
 const hasSuccessBankcardData = ref(false)
 const obtainedData = (bol) => {
     hasSuccessBankcardData.value = bol
 }
+
+
+// 是否显示“获取等级错误”弹窗
+const isShowErrorLevelDialog = ref(false)
+
+
+// 手续费
+const fee = ref(0)
+const isGetFee = ref(false)
+// 查询手续费
+const qryWithdrawFee = async () => {
+    if (!isSWIFTCode(form.swiftCode, countryCodeArr.value)) {
+        fee.value = 0
+        isGetFee.value = false
+        return
+    }
+    const result = await withdrawApi.qryWithdrawFee({swiftCode: form.swiftCode})
+    if (result?.success) {
+        fee.value = result.data?.withdrawFee || 0
+        isGetFee.value = true
+    } else if (result?.code === 'FA1002') {
+        isShowErrorLevelDialog.value = true
+    } else {
+        errorMessage(result?.message)
+    }
+    formValidateRef.value?.formRef?.validateField('swiftCode')
+}
+// 默认等级手续费
+const defaultWithdrawFee = ref(0)
+const isGetDefaultWithdrawFee = ref(false)
+// 查询默认等级手续费
+const qryDefaultWithdrawFee = async () => {
+    const result = await withdrawApi.qryDefaultWithdrawFee()
+    if (result?.success) {
+        defaultWithdrawFee.value = result.data?.withdrawFee || 0
+        isGetDefaultWithdrawFee.value = true
+    } else if (result?.code === 'FA1002') {
+        isShowErrorLevelDialog.value = true
+    } else {
+        errorMessage(result?.message)
+    }
+}
+
+
 const selectBankcardData = (obj) => {
     Object.assign(form, obj, {
         accountNumber: formatCreditCardNumber(obj.accountNumber),
@@ -371,19 +415,6 @@ const qryBalance = async() => {
   const result = await withdrawApi.qryBalance()
   ableBalanceAmount.value = checkResponseData(result)
 }
-// 查询手续费
-const qryWithdrawFee = async() => {
-    if (!isSWIFTCode(form.swiftCode, countryCodeArr.value)) {
-        fee.value = 0
-        isGetFee.value = false
-        return
-    }
-      // fee.value = 8
-  const result = await withdrawApi.qryWithdrawFee({ swiftCode: form.swiftCode })
-  fee.value = checkResponseData(result) || 0
-    isGetFee.value = true
-    formValidateRef.value?.formRef?.validateField('swiftCode')
-}
 // 风控校验
 const risk_control_check = async(key) => {
     const obj = {}
@@ -427,10 +458,6 @@ const jumpToWallet = () => {
 }
 
 
-// 是否显示“获取等级错误”弹窗
-const isShowErrorLevelDialog = ref(false)
-
-
 onMounted(()=>{
     nextTick(() => {
         settingStore.setFormPage(true)
@@ -438,6 +465,7 @@ onMounted(()=>{
     getAllCountry()
     qryBalance()
     setIntervalForCardIconCycle()
+    qryDefaultWithdrawFee()
     // errorMessage(123, 0)
 })
 
@@ -582,7 +610,11 @@ onUnmounted(()=>{
             </el-form-item>
             <div class="fee-container">
                 <p class="p mb4">{{ $t('withdraw.applyFormMessageFee1') }} ${{ currencyFormat(actualWithdrawAmount) }} USD</p>
-                <p class="p flex-box mb8">{{ $t('withdraw.applyFormMessageFee2') }} ${{ currencyFormat(fee) }} USD<span class="flex-center-8"></span><del v-if="true">${{ currencyFormat(fee) }} USD</del></p>
+                <p class="p flex-box mb8">
+                    {{ $t('withdraw.applyFormMessageFee2') }} ${{ currencyFormat(fee) }} USD
+                    <span class="flex-center-8"></span>
+                    <del v-if="isGetDefaultWithdrawFee">${{ currencyFormat(defaultWithdrawFee) }} USD</del>
+                </p>
                 <p class="p">{{ $t('withdraw.applyFormMessageFee3') }}</p>
             </div>
             <el-form-item class="form-buttons">
