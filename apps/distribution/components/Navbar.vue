@@ -1,6 +1,6 @@
 <script setup>
 import Language from './Language.vue'
-import { checkResponseData } from "@/util/index.js";
+import { checkResponseData, copyToClipboard } from "@/util/index.js";
 const { contactInfoApi } = useApi();
 import { useUserStore } from '@/store/userState.js'
 const userStore = useUserStore()
@@ -24,6 +24,25 @@ const toPassword = () => {
   navigateTo('password')
 }
 
+
+// 复制邮箱
+const visibleForCopy = ref(false)
+let tForCopy
+const copyEmail = () => {
+  visibleForCopy.value = copyToClipboard('distributor@flylinking.com')
+  clearTimeoutFortCopy()
+  tForCopy = setTimeout(() => {
+    visibleForCopy.value = false
+  }, 1000)
+}
+const clearTimeoutFortCopy = () => {
+  clearTimeout(tForCopy)
+}
+
+
+onUnmounted(() => {
+  clearTimeoutFortCopy()
+})
 </script>
 
 <template>
@@ -68,18 +87,26 @@ const toPassword = () => {
             <el-dropdown-item>
               <span>distributor@flylinking.com</span>
               <div class="flex-center-12"></div>
-              <div class="icon-button svg-container">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                  <g clip-path="url(#clip0_4438_22425)">
-                    <path d="M4.16675 12.5C3.39018 12.5 3.00189 12.5 2.69561 12.3731C2.28723 12.2039 1.96277 11.8795 1.79362 11.4711C1.66675 11.1648 1.66675 10.7765 1.66675 9.99996V4.33329C1.66675 3.39987 1.66675 2.93316 1.8484 2.57664C2.00819 2.26304 2.26316 2.00807 2.57676 1.84828C2.93328 1.66663 3.39999 1.66663 4.33341 1.66663H10.0001C10.7767 1.66663 11.1649 1.66663 11.4712 1.79349C11.8796 1.96265 12.2041 2.28711 12.3732 2.69549C12.5001 3.00177 12.5001 3.39006 12.5001 4.16663M10.1667 18.3333H15.6667C16.6002 18.3333 17.0669 18.3333 17.4234 18.1516C17.737 17.9918 17.992 17.7369 18.1518 17.4233C18.3334 17.0668 18.3334 16.6 18.3334 15.6666V10.1666C18.3334 9.23321 18.3334 8.7665 18.1518 8.40998C17.992 8.09637 17.737 7.8414 17.4234 7.68162C17.0669 7.49996 16.6002 7.49996 15.6667 7.49996H10.1667C9.23333 7.49996 8.76662 7.49996 8.4101 7.68162C8.09649 7.8414 7.84153 8.09637 7.68174 8.40998C7.50008 8.7665 7.50008 9.23321 7.50008 10.1666V15.6666C7.50008 16.6 7.50008 17.0668 7.68174 17.4233C7.84153 17.7369 8.09649 17.9918 8.4101 18.1516C8.76662 18.3333 9.23333 18.3333 10.1667 18.3333Z" stroke="#667085" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
-                  </g>
-                  <defs>
-                    <clipPath id="clip0_4438_22425">
-                      <rect width="20" height="20" fill="white"/>
-                    </clipPath>
-                  </defs>
-                </svg>
-              </div>
+              <el-tooltip
+                :visible="visibleForCopy"
+                effect="dark"
+                :show-arrow="false"
+                :content="$t('invitation.inviteDialogButtonCopied')"
+                placement="top"
+              >
+                <div class="icon-button svg-container" @click="copyEmail">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <g clip-path="url(#clip0_4438_22425)">
+                      <path d="M4.16675 12.5C3.39018 12.5 3.00189 12.5 2.69561 12.3731C2.28723 12.2039 1.96277 11.8795 1.79362 11.4711C1.66675 11.1648 1.66675 10.7765 1.66675 9.99996V4.33329C1.66675 3.39987 1.66675 2.93316 1.8484 2.57664C2.00819 2.26304 2.26316 2.00807 2.57676 1.84828C2.93328 1.66663 3.39999 1.66663 4.33341 1.66663H10.0001C10.7767 1.66663 11.1649 1.66663 11.4712 1.79349C11.8796 1.96265 12.2041 2.28711 12.3732 2.69549C12.5001 3.00177 12.5001 3.39006 12.5001 4.16663M10.1667 18.3333H15.6667C16.6002 18.3333 17.0669 18.3333 17.4234 18.1516C17.737 17.9918 17.992 17.7369 18.1518 17.4233C18.3334 17.0668 18.3334 16.6 18.3334 15.6666V10.1666C18.3334 9.23321 18.3334 8.7665 18.1518 8.40998C17.992 8.09637 17.737 7.8414 17.4234 7.68162C17.0669 7.49996 16.6002 7.49996 15.6667 7.49996H10.1667C9.23333 7.49996 8.76662 7.49996 8.4101 7.68162C8.09649 7.8414 7.84153 8.09637 7.68174 8.40998C7.50008 8.7665 7.50008 9.23321 7.50008 10.1666V15.6666C7.50008 16.6 7.50008 17.0668 7.68174 17.4233C7.84153 17.7369 8.09649 17.9918 8.4101 18.1516C8.76662 18.3333 9.23333 18.3333 10.1667 18.3333Z" stroke="#667085" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
+                    </g>
+                    <defs>
+                      <clipPath id="clip0_4438_22425">
+                        <rect width="20" height="20" fill="white"/>
+                      </clipPath>
+                    </defs>
+                  </svg>
+                </div>
+              </el-tooltip>
               <div class="flex-center-12"></div>
               <a class="icon-button svg-container" href="mailto:distributor@flylinking.com" target="_blank">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
