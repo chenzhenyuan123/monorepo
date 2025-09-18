@@ -98,11 +98,34 @@ export function copyContent(str) {
  * @param str
  */
 export function copyToClipboard(str) {
-  if (navigator.clipboard) {
-    navigator.clipboard.writeText(str)
+  function fallbackCopy(text) {
+    try {
+      const textarea = document.createElement('textarea')
+      textarea.value = text
+      textarea.setAttribute('readonly', '')
+      textarea.style.position = 'fixed'
+      textarea.style.top = '0'
+      textarea.style.left = '-9999px'
+      textarea.style.opacity = '0'
+      textarea.style.pointerEvents = 'none'
+      textarea.style.fontSize = '16px'
+      document.body.appendChild(textarea)
+      textarea.focus()
+      textarea.select()
+      textarea.setSelectionRange(0, textarea.value.length)
+      const ok = document.execCommand('copy')
+      document.body.removeChild(textarea)
+      return ok
+    } catch (e) {
+      return false
+    }
+  }
+
+  if (fallbackCopy(str)) {
+    return true
   } else {
-    // errorMessage('该浏览器不支持复制')
     errorMessage(translateI18n('common.browserNotSupportCopy'))
+    return false
   }
 }
 

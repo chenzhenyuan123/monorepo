@@ -1,6 +1,6 @@
 <script setup>
 import { CloseBold, Check } from '@element-plus/icons-vue';
-import { checkResponseData, copyToClipboard, readClipboard, arrToDict, errorMessage } from "@/util/index.js";
+import { checkResponseData, copyToClipboard, arrToDict, errorMessage } from "@/util/index.js";
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
@@ -63,15 +63,13 @@ const submit = () => {
         return
     }
 
-    copyToClipboard(inviteItemData.value.signupUrl)
-    readClipboard().then(str => {
-        if (str) {
-            isCopySuccess.value = true
-            setTimeout(() => {
-                cancel()
-            }, 500)
-        }
-    })
+    const isCopy = copyToClipboard(inviteItemData.value.signupUrl)
+    if (isCopy) {
+        isCopySuccess.value = true
+        setTimeout(() => {
+            cancel()
+        }, 500)
+    }
 }
 
 getInviteData()
@@ -115,7 +113,7 @@ getInviteData()
                         :label="item.label"
                     />
                 </el-select>
-                <div class="dialog-form-item-p">{{$t('invitation.inviteDialogDescribeStoreBefore')}} <span class="dialog-form-item-span-primary direction-ltr direction-inline-block">{{ inviteData.distributorCommissionRateStr }}%</span> {{$t('invitation.inviteDialogDescribeStoreafter')}}</div>
+                <div class="dialog-form-item-p">{{$t('invitation.inviteDialogDescribeStoreBefore')}} <span class="dialog-form-item-span-primary direction-ltr direction-inline-block">10</span> {{$t('invitation.inviteDialogDescribeStoreafter')}}</div>
             </el-form-item>
             <el-form-item :label="$t('invitation.inviteDialogLabelLink')" class="dialog-form-item">
                 <el-input

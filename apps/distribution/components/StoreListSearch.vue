@@ -4,7 +4,7 @@
 -->
 <script setup name="StoreListSearch">
 import { Search } from '@element-plus/icons-vue'
-import { checkResponseData, copyToClipboard, readClipboard, arrToDict, errorMessage } from "@/util/index.js";
+import { checkResponseData, arrToDict, errorMessage } from "@/util/index.js";
 const { clientApi } = useApi()
 
 const isMobile = useIsMobile()
@@ -36,8 +36,10 @@ const checkStore = val => {
   if(val) {
     const obj = storeData.value.find(item => item.storeId === val)
     storeId.value = obj.storeId
-    emit('change', storeId.value)
+  } else {
+    storeId.value = ''
   }
+  emit('change', storeId.value)
 }
 const isShowStoreSearch = ref(false)
 const toggleDropdown = (visible) => {
@@ -61,6 +63,7 @@ const selectRef = ref(null)
       :popper-class="isMobile ? 'home-btn-Store-box-select m' : 'home-btn-Store-box-select'"
       id="home-btn-Store-Search"
       placement="bottom-end"
+      clearable
       @change="checkStore"
       @visible-change="toggleDropdown"
     >
