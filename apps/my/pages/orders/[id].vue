@@ -24,6 +24,8 @@ const orderInfo = ref({
 
 // 是否，可确认收货
 const isReceivedAble = ref(false)
+// 限制收货天数
+const limitDaysForReceived = ref(5)
 let TForReceivedAble
 const clearTForReceivedAble = () => {
   clearTimeout(TForReceivedAble)
@@ -53,7 +55,7 @@ const getInfo = async () => {
     const shippingTime = orderInfo.value.orderDetailCO.shippingTime
     if (shippingTime) {
       const nowTime = new Date().getTime()
-      const limitTime = shippingTime + 5 * 24 * 60 * 60 * 1000
+      const limitTime = shippingTime + limitDaysForReceived.value * 24 * 60 * 60 * 1000
       isReceivedAble.value = nowTime > limitTime
       if (!isReceivedAble.value) {
         TForReceivedAble = setTimeout(() => {
@@ -64,6 +66,7 @@ const getInfo = async () => {
     }
   }
 }
+
 
 // 联系人弹窗
 const showContactInfo = ref(false) 
@@ -115,7 +118,16 @@ const getSrc = (imgName) => {
           <el-button type="primary" id="Track-Shipment-btn">{{$t('orders.ordersTrackShipment')}}</el-button>
         </a>
         <div v-if="orderInfo.orderDetailCO.buyerOrderStatus===2 && orderInfo.orderDetailCO.logisticsCode" class="flex-center-8"></div>
-        <el-button v-if="orderInfo.orderDetailCO.buyerOrderStatus===2" id="Mark-as-Received-btn" :disabled="!isReceivedAble" @click="showReceived=true">{{$t('orders.ordersMarkAsReceived')}}</el-button>
+        <el-tooltip
+          v-if="orderInfo.orderDetailCO.buyerOrderStatus===2"
+          :disabled="isReceivedAble"
+          popper-class="popper-1758164827863"
+          effect="light"
+          placement="top"
+          :content="$t('orders.ordersMarkAsReceivedDisabledTip',{num:limitDaysForReceived})"
+        >
+          <el-button id="Mark-as-Received-btn" :disabled="!isReceivedAble" @click="showReceived=true">{{$t('orders.ordersMarkAsReceived')}}</el-button>
+        </el-tooltip>
       </div>
     </div>
     <div class="order-detail-content">
@@ -295,6 +307,10 @@ const getSrc = (imgName) => {
     <ShipmentReceived v-if="showReceived" v-model="showReceived" :data="orderInfo.orderDetailCO" @save="receivedSave" />
   </div>
 </template>
+
+<style lang="scss">
+  @use "@/assets/css/element-reset/popover.scss" as *;
+</style>
 
 <style lang="scss" scoped>
 @use "@/assets/css/element-reset/tag.scss" as *;
