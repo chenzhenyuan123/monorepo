@@ -71,7 +71,7 @@ const obtainedData = (bol) => {
 
 
 // 是否显示“获取等级错误”弹窗
-const isShowErrorLevelDialog = ref(false)
+const isShowErrorLevelDialog = ref(true)
 
 
 // 手续费
@@ -609,11 +609,17 @@ onUnmounted(()=>{
                 />
             </el-form-item>
             <div class="fee-container">
-                <p class="p mb4">{{ $t('withdraw.applyFormMessageFee1') }} ${{ currencyFormat(actualWithdrawAmount) }} USD</p>
+                <p class="p flex-box mb4">
+                    {{ $t('withdraw.applyFormMessageFee1') }}
+                    <span class="flex-center-6"></span>
+                    ${{ currencyFormat(actualWithdrawAmount) }} USD
+                </p>
                 <p class="p flex-box mb8">
-                    {{ $t('withdraw.applyFormMessageFee2') }} ${{ currencyFormat(fee) }} USD
-                    <span class="flex-center-8"></span>
-                    <del v-if="isGetDefaultWithdrawFee">${{ currencyFormat(defaultWithdrawFee) }} USD</del>
+                    {{ $t('withdraw.applyFormMessageFee2') }}
+                    <span class="flex-center-6"></span>
+                    <span class="success"> ${{ currencyFormat(fee) }} USD</span>
+                    <span class="flex-center-6"></span>
+                    <del>${{ currencyFormat(defaultWithdrawFee) }} USD</del>
                 </p>
                 <p class="p">{{ $t('withdraw.applyFormMessageFee3') }}</p>
             </div>
@@ -840,8 +846,11 @@ onUnmounted(()=>{
             font-style: normal;
             font-weight: 400;
             line-height: 20px; /* 142.857% */
+            .success {
+                color: #079455;
+            }
             del {
-                opacity: 0.7;
+                color: #667085;
             }
         }
     }
