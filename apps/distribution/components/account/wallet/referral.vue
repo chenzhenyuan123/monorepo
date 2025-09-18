@@ -70,6 +70,15 @@ const formatterAmount = (v, c) => {
 const formatterRate = (v) => {
   return isUseless(v) ? '' : (accurate_toFixed(v * 100, 2) +'%')
 }
+
+
+// 物流弹窗
+const isShowTrackShipmentDialog = ref(false)
+const idForTrackShipmentDialog = ref()
+const showTrackShipmentDialog = (orderId) => {
+    idForTrackShipmentDialog.value = orderId
+    isShowTrackShipmentDialog.value = true
+}
 </script>
 
 <template>
@@ -178,6 +187,11 @@ const formatterRate = (v) => {
                     <span class="direction-ltr direction-inline-block">{{ formatDate(row.purchaseTime) }}</span>
                 </template>
             </el-table-column>
+            <el-table-column prop="shippingStatus" :label="$t('wallet.referralTableLabelShippingStatus')" min-width="200">
+                <template #default="{ row }">
+                    <el-link type="primary" @click="showTrackShipmentDialog(row.orderId)">{{ $t('wallet.dataShippingStatus') }}</el-link>
+                </template>
+            </el-table-column>
             <el-table-column prop="commissionStatus" tag :label="$t('wallet.referralTableLabelState')" min-width="200">
             <template #default="{ row }">
                 <el-tag v-if="row.commissionStatus" :type="commissionStatusToType[row.commissionStatus]" class="tag-default">
@@ -188,6 +202,12 @@ const formatterRate = (v) => {
             </template>
             </el-table-column>
         </pro-table>
+
+        <AccountWalletTrackShipmentDialog
+          v-if="isShowTrackShipmentDialog"
+          v-model="isShowTrackShipmentDialog"
+          :orderId="idForTrackShipmentDialog"
+        ></AccountWalletTrackShipmentDialog>
     </TableForm>
 </template>
 

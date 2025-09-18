@@ -33,17 +33,17 @@ const cancel = () => {
                 <img src="@/assets/imgs/alert-circle.svg" alt="">
             </span>
         <h1>
-          Problem Processing Withdrawal Request
+          {{ $t('withdraw.errorLevelDialogTitle') }}
         </h1>
       </template>
 
       <p class="dialog-p">
-        We encountered some issues and are temporarily unable to process your withdrawal request. You may refresh the page and try submitting the request again.
+        {{ $t('withdraw.errorLevelDialogP1') }}
       </p>
       <br>
       <br>
       <p class="dialog-p">
-        If the problem persists, please email <el-link type="primary" href="mailto:distributor@flylinking.com" target="_blank">distributor@flylinking.com↗</el-link> for assistance from the FlyLink support team.
+        {{ $t('withdraw.errorLevelDialogP2Before') }} <el-link type="primary" href="mailto:distributor@flylinking.com" target="_blank">distributor@flylinking.com↗</el-link> {{ $t('withdraw.errorLevelDialogP2After') }}
       </p>
 
       <template #footer>
@@ -56,11 +56,11 @@ const cancel = () => {
                 </svg>
               </div>
               <div class="flex-center-8"></div>
-              <span>Refresh Page</span>
+              <span>{{ $t('withdraw.errorLevelDialogbuttonRefresh') }}</span>
             </div>
           </el-button>
           <div class="dialog-footer-button-center"></div>
-          <el-button type="" class="button-default dialog-adaptive" @click="cancel">Close Dialog</el-button>
+          <el-button type="" class="button-default dialog-adaptive" @click="cancel">{{ $t('withdraw.errorLevelDialogbuttonClose') }}</el-button>
         </div>
       </template>
     </el-dialog>
@@ -69,8 +69,6 @@ const cancel = () => {
 
 <style lang="scss" scoped>
   @import url("@/assets/css/element-reset/button.scss");
-  @import url("@/assets/css/element-reset/input.scss");
-  @import url("@/assets/css/element-reset/select.scss");
   :deep(.el-dialog) {
     max-width: calc(100% - 16px);
     padding: 0;
