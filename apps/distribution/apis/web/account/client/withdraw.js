@@ -22,6 +22,10 @@ export const risk_control_check = (data) => {
 export const qryWithdrawFee = (data) => {
     return useHttp.post(`/flylinking-account/client/withdraw/qryWithdrawFee`, data, { server: true })
 }
+// 查询默认等级手续费
+export const qryDefaultWithdrawFee = (data) => {
+    return useHttp.post(`/flylinking-account/client/withdraw/qryDefaultWithdrawFee`, data, { server: true })
+}
 // 提现申请
 export const apply = (data) => {
     return useHttp.post(`/flylinking-account/client/withdraw/apply`, data, { server: true })

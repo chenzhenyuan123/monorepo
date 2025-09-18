@@ -193,7 +193,7 @@ onMounted(() => {
     cursor: pointer;
     display: flex;
     align-items: center;
-    padding: 12px 16px;
+    padding: 11px 16px;
     border-radius: 8px;
     border: 1px solid #D0D5DD;
     .el-icon {

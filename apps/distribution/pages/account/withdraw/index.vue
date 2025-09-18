@@ -41,8 +41,6 @@ const formValidateRef = ref()
 const isShowVerifyGialog = ref(false)
 const limitAmount = ref(50)
 const ableBalanceAmount = ref(0)
-const fee = ref(0)
-const isGetFee = ref(false)
 const loading = ref(false)
 const form = reactive({
     applyAmt: undefined,
@@ -64,10 +62,56 @@ const checkResultData = reactive({
     openingBankCity: true,
     openingBankAddress: true,
 })
+
+
 const hasSuccessBankcardData = ref(false)
 const obtainedData = (bol) => {
     hasSuccessBankcardData.value = bol
 }
+
+
+// 是否显示“获取等级错误”弹窗
+const isShowErrorLevelDialog = ref(true)
+
+
+// 手续费
+const fee = ref(0)
+const isGetFee = ref(false)
+// 查询手续费
+const qryWithdrawFee = async () => {
+    if (!isSWIFTCode(form.swiftCode, countryCodeArr.value)) {
+        fee.value = 0
+        isGetFee.value = false
+        return
+    }
+    const result = await withdrawApi.qryWithdrawFee({swiftCode: form.swiftCode})
+    if (result?.success) {
+        fee.value = result.data?.withdrawFee || 0
+        isGetFee.value = true
+    } else if (result?.code === 'FA1002') {
+        isShowErrorLevelDialog.value = true
+    } else {
+        errorMessage(result?.message)
+    }
+    formValidateRef.value?.formRef?.validateField('swiftCode')
+}
+// 默认等级手续费
+const defaultWithdrawFee = ref(0)
+const isGetDefaultWithdrawFee = ref(false)
+// 查询默认等级手续费
+const qryDefaultWithdrawFee = async () => {
+    const result = await withdrawApi.qryDefaultWithdrawFee()
+    if (result?.success) {
+        defaultWithdrawFee.value = result.data?.withdrawFee || 0
+        isGetDefaultWithdrawFee.value = true
+    } else if (result?.code === 'FA1002') {
+        isShowErrorLevelDialog.value = true
+    } else {
+        errorMessage(result?.message)
+    }
+}
+
+
 const selectBankcardData = (obj) => {
     Object.assign(form, obj, {
         accountNumber: formatCreditCardNumber(obj.accountNumber),
@@ -371,19 +415,6 @@ const qryBalance = async() => {
   const result = await withdrawApi.qryBalance()
   ableBalanceAmount.value = checkResponseData(result)
 }
-// 查询手续费
-const qryWithdrawFee = async() => {
-    if (!isSWIFTCode(form.swiftCode, countryCodeArr.value)) {
-        fee.value = 0
-        isGetFee.value = false
-        return
-    }
-      // fee.value = 8
-  const result = await withdrawApi.qryWithdrawFee({ swiftCode: form.swiftCode })
-  fee.value = checkResponseData(result) || 0
-    isGetFee.value = true
-    formValidateRef.value?.formRef?.validateField('swiftCode')
-}
 // 风控校验
 const risk_control_check = async(key) => {
     const obj = {}
@@ -426,6 +457,7 @@ const jumpToWallet = () => {
     })
 }
 
+
 onMounted(()=>{
     nextTick(() => {
         settingStore.setFormPage(true)
@@ -433,6 +465,7 @@ onMounted(()=>{
     getAllCountry()
     qryBalance()
     setIntervalForCardIconCycle()
+    qryDefaultWithdrawFee()
     // errorMessage(123, 0)
 })
 
@@ -576,8 +609,18 @@ onUnmounted(()=>{
                 />
             </el-form-item>
             <div class="fee-container">
-                <p class="p">{{ $t('withdraw.applyFormMessageFee1') }} ${{ currencyFormat(actualWithdrawAmount) }} USD</p>
-                <p class="p b8">{{ $t('withdraw.applyFormMessageFee2') }} ${{ currencyFormat(fee) }} USD</p>
+                <p class="p flex-box mb4">
+                    {{ $t('withdraw.applyFormMessageFee1') }}
+                    <span class="flex-center-6"></span>
+                    ${{ currencyFormat(actualWithdrawAmount) }} USD
+                </p>
+                <p class="p flex-box mb8">
+                    {{ $t('withdraw.applyFormMessageFee2') }}
+                    <span class="flex-center-6"></span>
+                    <span class="success"> ${{ currencyFormat(fee) }} USD</span>
+                    <span class="flex-center-6"></span>
+                    <del>${{ currencyFormat(defaultWithdrawFee) }} USD</del>
+                </p>
                 <p class="p">{{ $t('withdraw.applyFormMessageFee3') }}</p>
             </div>
             <el-form-item class="form-buttons">
@@ -591,6 +634,7 @@ onUnmounted(()=>{
               v-model="isShowVerifyGialog"
               @submit="apply"
       ></AccountWithdrawVerifyTipDialog>
+      <AccountWithdrawErrorLevelDialog v-model="isShowErrorLevelDialog"></AccountWithdrawErrorLevelDialog>
 </div>
 </template>
 
@@ -802,12 +846,11 @@ onUnmounted(()=>{
             font-style: normal;
             font-weight: 400;
             line-height: 20px; /* 142.857% */
-            margin-bottom: 4px;
-            &.b8 {
-                margin-bottom: 8px;
+            .success {
+                color: #079455;
             }
-            &:last-child {
-                margin-bottom: 0;
+            del {
+                color: #667085;
             }
         }
     }
