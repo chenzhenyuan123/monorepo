@@ -6,11 +6,15 @@
 import { CircleCheck, Warning } from '@element-plus/icons-vue';
 const { joinApi } = useApi();
 import { checkResponseData, successMessage, errorMessage, currencyFormat } from "@/util/index.js";
+import { toLogout } from '@/util/auth.js'
+import { useUserStore } from '@/store/userState.js'
 import { useI18n } from "vue-i18n";
 const { t } = useI18n();
 const router = useRouter();
 const route = useRoute();
 const isMobile = useIsMobile()
+const userStore = useUserStore()
+userStore.getUserInfo()
 definePageMeta({
   layout: 'noside'
 })
@@ -55,8 +59,12 @@ const startCountdown = (val) => {
 // 是否成功加入
 const issuccess = ref(false)
 const onSubmit = async() => {
-  if(!storeData.value.storeId) {
+  if(!storeData.value.storeId) { // 不存在店铺ID，不允许提交
     errorMessage(t('join.joinNoStore'))
+    return
+  }
+  if(!userStore.userInfo?.token) { // 不存在token，跳转登录页
+    toLogout()
     return
   }
   loading.value = true
@@ -66,6 +74,9 @@ const onSubmit = async() => {
     issuccess.value = true
     startCountdown(5)
   } else {
+    if(result?.code === '000401') {
+      return
+    }
     storeError.value = true
   }
   loading.value = false
