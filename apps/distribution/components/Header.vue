@@ -8,8 +8,11 @@ const isMobile = useIsMobile()
       <a href="" class="logo left">
         <img src="~@/assets/imgs/Flylinking-logo.svg" alt="Flylinking">
       </a>
-
+      <div class="flex-center"></div>
       <Language />
+      <div class="flex-center-12"></div>
+      <!-- 联系我们-->
+      <NavbarContactUs :miniOnMobile="true"></NavbarContactUs>
     </div>
   </header>
 </template>
@@ -17,7 +20,7 @@ const isMobile = useIsMobile()
 <style lang="scss" scoped>
 .header {
   display: flex;
-  justify-content: space-between;
+  /*justify-content: space-between;*/
   align-items: center;
   height: 80px;
   max-width: 1440px;

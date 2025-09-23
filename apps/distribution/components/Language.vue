@@ -211,7 +211,7 @@ onMounted(() => {
 
 .m .lang {
   .switch-lang {
-    padding: 10px 16px;
+    padding: 9px 16px;
   }
   .lang-arrow {
     flex: 1;
