@@ -71,7 +71,7 @@ const obtainedData = (bol) => {
 
 
 // 是否显示“获取等级错误”弹窗
-const isShowErrorLevelDialog = ref(true)
+const isShowErrorLevelDialog = ref(false)
 
 
 // 手续费
