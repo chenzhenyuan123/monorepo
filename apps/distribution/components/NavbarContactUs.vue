@@ -33,6 +33,7 @@
 <template>
   <el-dropdown
     class="avatar-container"
+    :class="{m: isMobile}"
     trigger="click"
     placement="bottom-end"
     popper-class="popper-1758192925090"
@@ -126,6 +127,9 @@
     /* box-shadow: 0 0 0 1px rgba(16, 24, 40, 0.18) inset, 0 -2px 0 0 rgba(16, 24, 40, 0.05) inset, 0 1px 2px 0 rgba(16, 24, 40, 0.05); */
     color: #344054;
     font-size: 16px;
+    .m & {
+      height: 40px;
+    }
   }
   .navbar-m-module {
     .avatar-container {
