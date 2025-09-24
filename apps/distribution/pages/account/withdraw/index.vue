@@ -76,6 +76,7 @@ const isShowErrorLevelDialog = ref(false)
 
 // 手续费
 const fee = ref(0)
+const feeData = ref({})
 const isGetFee = ref(false)
 // 查询手续费
 const qryWithdrawFee = async () => {
@@ -86,6 +87,7 @@ const qryWithdrawFee = async () => {
     }
     const result = await withdrawApi.qryWithdrawFee({swiftCode: form.swiftCode})
     if (result?.success) {
+        feeData.value = result.data || {}
         fee.value = result.data?.withdrawFee || 0
         isGetFee.value = true
     } else if (result?.code === 'FA1002') {
@@ -97,11 +99,13 @@ const qryWithdrawFee = async () => {
 }
 // 默认等级手续费
 const defaultWithdrawFee = ref(0)
+const defaultWithdrawFeeData = ref({})
 const isGetDefaultWithdrawFee = ref(false)
 // 查询默认等级手续费
 const qryDefaultWithdrawFee = async () => {
     const result = await withdrawApi.qryDefaultWithdrawFee()
     if (result?.success) {
+        defaultWithdrawFeeData.value = result.data || {}
         defaultWithdrawFee.value = result.data?.withdrawFee || 0
         isGetDefaultWithdrawFee.value = true
     } else if (result?.code === 'FA1002') {
@@ -614,12 +618,15 @@ onUnmounted(()=>{
                     <span class="flex-center-6"></span>
                     ${{ currencyFormat(actualWithdrawAmount) }} USD
                 </p>
-                <p class="p flex-box mb8">
+                <p v-if="isGetFee" class="p flex-box mb8">
                     {{ $t('withdraw.applyFormMessageFee2') }}
                     <span class="flex-center-6"></span>
-                    <span class="success"> ${{ currencyFormat(fee) }} USD</span>
-                    <span class="flex-center-6"></span>
-                    <del>${{ currencyFormat(defaultWithdrawFee) }} USD</del>
+                    <span v-if="defaultWithdrawFeeData.level === feeData.level"> ${{ currencyFormat(fee) }} USD</span>
+                    <template v-else>
+                        <span class="success"> ${{ currencyFormat(fee) }} USD</span>
+                        <span class="flex-center-6"></span>
+                        <del>${{ currencyFormat(defaultWithdrawFee) }} USD</del>
+                    </template>
                 </p>
                 <p class="p">{{ $t('withdraw.applyFormMessageFee3') }}</p>
             </div>
