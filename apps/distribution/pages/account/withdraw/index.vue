@@ -78,6 +78,7 @@ const isShowErrorLevelDialog = ref(false)
 const fee = ref(0)
 const feeData = ref({})
 const isGetFee = ref(false)
+const isGetLevelError = ref(false)
 // 查询手续费
 const qryWithdrawFee = async () => {
     if (!isSWIFTCode(form.swiftCode, countryCodeArr.value)) {
@@ -90,7 +91,9 @@ const qryWithdrawFee = async () => {
         feeData.value = result.data || {}
         fee.value = result.data?.withdrawFee || 0
         isGetFee.value = true
+        isGetLevelError.value = false
     } else if (result?.code === 'FA1002') {
+        isGetLevelError.value = true
         isShowErrorLevelDialog.value = true
     } else {
         errorMessage(result?.message)
@@ -101,6 +104,7 @@ const qryWithdrawFee = async () => {
 const defaultWithdrawFee = ref(0)
 const defaultWithdrawFeeData = ref({})
 const isGetDefaultWithdrawFee = ref(false)
+const isGetDefaultLevelError = ref(false)
 // 查询默认等级手续费
 const qryDefaultWithdrawFee = async () => {
     const result = await withdrawApi.qryDefaultWithdrawFee()
@@ -108,7 +112,9 @@ const qryDefaultWithdrawFee = async () => {
         defaultWithdrawFeeData.value = result.data || {}
         defaultWithdrawFee.value = result.data?.withdrawFee || 0
         isGetDefaultWithdrawFee.value = true
+        isGetDefaultLevelError.value = false
     } else if (result?.code === 'FA1002') {
+        isGetDefaultLevelError.value = true
         isShowErrorLevelDialog.value = true
     } else {
         errorMessage(result?.message)
@@ -631,9 +637,9 @@ onUnmounted(()=>{
                 <p class="p">{{ $t('withdraw.applyFormMessageFee3') }}</p>
             </div>
             <el-form-item class="form-buttons">
-                <el-button v-if="isMobile" key="msubmit" type="primary" class="button-default m-adaptive" :loading="loading" @click="validateApply">{{ $t('withdraw.applyFormButtonSubmit') }}</el-button>
+                <el-button v-if="isMobile" key="msubmit" type="primary" class="button-default m-adaptive" :loading="loading" :disabled="isGetLevelError || isGetDefaultLevelError" @click="validateApply">{{ $t('withdraw.applyFormButtonSubmit') }}</el-button>
                 <el-button class="button-default m-adaptive" @click="jumpToWallet">{{ $t('withdraw.applyFormButtonCancel') }}</el-button>
-                <el-button v-if="!isMobile" key="pcsubmit" type="primary" class="button-default m-adaptive" :loading="loading" @click="validateApply">{{ $t('withdraw.applyFormButtonSubmit') }}</el-button>
+                <el-button v-if="!isMobile" key="pcsubmit" type="primary" class="button-default m-adaptive" :loading="loading" :disabled="isGetLevelError || isGetDefaultLevelError" @click="validateApply">{{ $t('withdraw.applyFormButtonSubmit') }}</el-button>
             </el-form-item>
         </FormValidate>
     </div>
