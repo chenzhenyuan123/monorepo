@@ -42,6 +42,12 @@ const shippingInfo = ref({
   logisticsList: []
 })
 const isGetData = ref(false)
+const urkFor17track = computed(() => {
+  const arr = shippingInfo.value.logisticsList.map(item => {
+    return item.logisticsNo
+  }).filter(item => item)
+  return 'https://t.17track.net/en#nums='+arr.join()
+})
 // 查询分销订物流信息
 const getOrderShippingInfo = async() => {
   const result = await tradeOrderApi.getOrderShippingInfo({ orderNo: props.orderId })
@@ -81,7 +87,12 @@ onMounted(() => {
         <p v-if="shippingInfo.logisticsList.length" class="p">{{ $t('wallet.trackShipmentDialogTotal',{num:shippingInfo.logisticsList.length}) }}</p>
       </div>
 
-      <div v-if="shippingInfo.logisticsList.length" class="list">
+      <a
+        v-if="shippingInfo.logisticsList.length"
+        class="list"
+        :href="urkFor17track"
+        target="_blank"
+      >
         <div v-for="item in shippingInfo.logisticsList" class="item">
           <div class="svg-container">
             <svg xmlns="http://www.w3.org/2000/svg" width="25" height="24" viewBox="0 0 25 24" fill="none">
@@ -94,8 +105,6 @@ onMounted(() => {
             <p class="p mb12">{{ item.remark }}</p>
             <el-link
               type="primary"
-              :href="'https://t.17track.net/en#nums='+item.logisticsNo"
-              target="_blank"
             >
               <div class="flex-box">
                 <span>{{ $t('wallet.trackShipmentDialogLink') }}</span>
@@ -109,7 +118,7 @@ onMounted(() => {
             </el-link>
           </div>
         </div>
-      </div>
+      </a>
       <div v-else-if="isGetData" class="empty-container">
         <div class="bg svg-container">
           <svg width="481" height="160" viewBox="0 0 481 160" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -642,8 +651,10 @@ onMounted(() => {
       line-height: 20px;
     }
     .list {
+      display: block;
       border-radius: 8px;
       border: 1px solid #D0D5DD;
+      text-decoration: none;
       .item {
         display: flex;
         padding: 10px;

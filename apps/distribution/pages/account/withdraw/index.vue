@@ -511,14 +511,13 @@ onUnmounted(()=>{
                         @input="e => { form.applyAmt = getNumberByInput(e)}"
                     >
                         <template #prefix>$</template>
-                        <template #suffix>USD</template>
                     </el-input>
                 </el-form-item>
                 <p class="amount-p">
-                    {{ $t('withdraw.applyFormMessageWithdrawalAmount1') }} USD {{ currencyFormat(ableBalanceAmount) }}
+                    {{ $t('withdraw.applyFormMessageWithdrawalAmount1') }} ${{ currencyFormat(ableBalanceAmount) }}
                     <br>
                     <br>
-                    {{ $t('withdraw.applyFormMessageWithdrawalAmount2') }} ${{ currencyFormat(limitAmount) }} USD.
+                    {{ $t('withdraw.applyFormMessageWithdrawalAmount2') }} ${{ currencyFormat(limitAmount) }}.
                 </p>
             </div>
             <div v-show="hasSuccessBankcardData" class="account-container">
@@ -622,16 +621,16 @@ onUnmounted(()=>{
                 <p class="p flex-box mb4">
                     {{ $t('withdraw.applyFormMessageFee1') }}
                     <span class="flex-center-6"></span>
-                    ${{ currencyFormat(actualWithdrawAmount) }} USD
+                    ${{ currencyFormat(actualWithdrawAmount) }}
                 </p>
                 <p v-if="isGetFee" class="p flex-box mb8">
                     {{ $t('withdraw.applyFormMessageFee2') }}
                     <span class="flex-center-6"></span>
-                    <span v-if="defaultWithdrawFeeData.level === feeData.level"> ${{ currencyFormat(fee) }} USD</span>
+                    <span v-if="defaultWithdrawFeeData.level === feeData.level"> ${{ currencyFormat(fee) }}</span>
                     <template v-else>
-                        <span class="success"> ${{ currencyFormat(fee) }} USD</span>
+                        <span class="success"> ${{ currencyFormat(fee) }}</span>
                         <span class="flex-center-6"></span>
-                        <del>${{ currencyFormat(defaultWithdrawFee) }} USD</del>
+                        <del>${{ currencyFormat(defaultWithdrawFee) }}</del>
                     </template>
                 </p>
                 <p class="p">{{ $t('withdraw.applyFormMessageFee3') }}</p>

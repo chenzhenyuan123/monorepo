@@ -129,6 +129,10 @@
     font-size: 16px;
     .m & {
       height: 40px;
+      justify-content: left;
+      .rtl & {
+        justify-content: right;
+      }
     }
   }
   .navbar-m-module {
