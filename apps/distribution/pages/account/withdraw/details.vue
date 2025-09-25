@@ -190,7 +190,6 @@ onUnmounted(()=>{
             <el-form-item :label="$t('withdraw.detailFormLabelWithdrawalAmount')" prop="applyAmt" class="form-item amount-container">
                 <el-input v-model="form.applyAmt" class="form-input input-default" disabled>
                     <template #prefix>$</template>
-                    <template #suffix>USD</template>
                 </el-input>
             </el-form-item>
             <el-form-item :label="$t('withdraw.detailFormLabelAccountHolderName')" prop="accountName" class="form-item">
@@ -245,8 +244,8 @@ onUnmounted(()=>{
                 <el-input v-model="form.openingBankAddress" class="form-input input-default" disabled />
             </el-form-item>
             <div class="fee-container">
-                <p class="p">{{ $t('withdraw.applyFormMessageFee1') }} ${{ currencyFormat(actualWithdrawAmount) }} USD</p>
-                <p class="p b8">{{ $t('withdraw.applyFormMessageFee2') }} ${{ currencyFormat(form.withdrawFee) }} USD</p>
+                <p class="p">{{ $t('withdraw.applyFormMessageFee1') }} ${{ currencyFormat(actualWithdrawAmount) }}</p>
+                <p class="p b8">{{ $t('withdraw.applyFormMessageFee2') }} ${{ currencyFormat(form.withdrawFee) }}</p>
                 <p class="p">{{ $t('withdraw.applyFormMessageFee3') }}</p>
             </div>
         </el-form>

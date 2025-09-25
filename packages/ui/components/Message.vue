@@ -111,7 +111,9 @@ const hideBtn = () => {
         </div>
         <div class="flex-center-6"></div>
 
-        <slot />
+        <div class="flex-box">
+            <slot />
+        </div>
         <div class="flex-center"></div>
 
         <div v-if="isClose" class="close" @click="hideBtn">
