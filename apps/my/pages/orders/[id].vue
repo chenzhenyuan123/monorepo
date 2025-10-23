@@ -227,7 +227,7 @@ const getSrc = (imgName) => {
               </div>
               <div class="goods-details-text">
                 <div class="goods-details-text1">
-                  {{$t('orders.ordersSubtotal')}}
+                  {{$t('orders.ordersMargin')}}
                 </div>
                 <div class="goods-details-text2">
                   {{orderInfo.orderDetailCO.paymentCurrency}} {{currencyFormat(orderInfo.orderDetailCO.marginAmount)}}
