@@ -7,7 +7,7 @@ import { parsePhoneNumberFromString, isValidNumberForRegion, isValidNumber } fro
    if (!country) return false
   const number = parsePhoneNumberFromString(phone, country);
    if (isValidateCountry && number?.country !== country) {
-     console.log('number.country: ', number.country)
+     console.log('number.country: ', number?.country)
      return false
    }
   return number?.isValid() || false;
