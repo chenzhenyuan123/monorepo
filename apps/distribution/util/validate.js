@@ -88,7 +88,7 @@ export function isSWIFTCode(s, arr) {
     return false
   }
   const countryStr = s.slice(4, 6).toLowerCase()
-  return arr.includes(countryStr)
+  return arr.includes(countryStr) || countryStr === 'gb'
 }
 
 /**
