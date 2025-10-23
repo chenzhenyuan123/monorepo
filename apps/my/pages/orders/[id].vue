@@ -216,7 +216,25 @@ const getSrc = (imgName) => {
                 {{orderInfo.orderDetailCO.paymentCurrency}} {{currencyFormat(orderInfo.orderDetailCO.goodsAmount)}}
               </div>
             </div>
-            <div class="goods-details-text">
+            <template v-if="orderInfo.orderDetailCO.transSource === 'QUICK_ORDER'">
+              <div class="goods-details-text">
+                <div class="goods-details-text1">
+                  {{$t('orders.ordersShipping')}}
+                </div>
+                <div class="goods-details-text2">
+                  {{orderInfo.orderDetailCO.paymentCurrency}} {{currencyFormat(orderInfo.orderDetailCO.shippingFeeAmount)}}
+                </div>
+              </div>
+              <div class="goods-details-text">
+                <div class="goods-details-text1">
+                  {{$t('orders.ordersSubtotal')}}
+                </div>
+                <div class="goods-details-text2">
+                  {{orderInfo.orderDetailCO.paymentCurrency}} {{currencyFormat(orderInfo.orderDetailCO.marginAmount)}}
+                </div>
+              </div>
+            </template>
+            <div v-else class="goods-details-text">
               <div class="goods-details-text1">
                 {{$t('orders.ordersShipping')}}
               </div>
