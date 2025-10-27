@@ -44,7 +44,7 @@ export function isIos() {
 }
 
 export function currencyFormat(num, precision = 2) {
-  return currency(num, { pattern: '#', precision }).format()
+  return currency(num, { pattern: '#', precision }).format({ symbol: '' })
 }
 
 // window.FingerprintJS = FingerprintJS

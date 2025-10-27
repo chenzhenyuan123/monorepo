@@ -2,7 +2,7 @@ import currency from 'currency.js'
 
 
 export function currencyFormat(num, precision = 2) {
-    return currency(num, { pattern: '#', precision }).format()
+    return currency(num, { pattern: '#', precision }).format({ symbol: '' })
 }
 
 export function formatCreditCardNumber(cardNumber, isEncryption = false) {
