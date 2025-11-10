@@ -142,40 +142,54 @@ const showTrackShipmentDialog = (orderId) => {
             :request="request"
             :is-show-empty="true"
         >
-            <el-table-column prop="orderId" :label="$t('wallet.referralTableLabelOrderID')" min-width="536">
+            <el-table-column prop="orderId" :label="$t('wallet.referralTableLabelOrderID')" min-width="200">
                 <template #default="{ row }">
-                    <template v-if="isMobile">{{ row.orderId }}</template>
-                    <div v-else class="goods-container">
-                        <el-image :src="previewImg(row.mainPicture)" alt="" class="goods-img" fit="contain"></el-image>
-                        <div class="flex-center-12"></div>
-                        <div class="goods-info">
-                            <div class="goods-info-h1" :title="row.goodsName">{{ row.goodsName }}</div>
-                            <div class="goods-info-p">{{ $t('wallet.referralTableLabelOrderID') }}: {{ row.orderId }}</div>
-                        </div>
-                    </div>
+                  {{ row.orderId }}
                 </template>
             </el-table-column>
-            <el-table-column prop="orderAmt" :label="$t('wallet.referralTableLabelOrderSubtotal')" min-width="300" align="right">
+            <el-table-column prop="orderAmt" :label="$t('wallet.referralTableLabelOrderSubtotal')" min-width="160" align="right">
                 <template #default="{ row }">
                     {{ formatterAmount(row.orderAmt, row.orderCurrency) }}
                 </template>
             </el-table-column>
-            <el-table-column prop="goodsCommissionRate" :label="$t('wallet.referralTableLabelProductCommissionRate')" min-width="300" align="right">
+            <el-table-column prop="goodsCommissionRate" :label="$t('wallet.referralTableLabelProductCommissionRate')" min-width="200" align="right">
                 <template #default="{ row }">
-                    {{ formatterRate(row.goodsCommissionRate) }}
+                  <div v-if="isMobile">
+                    <span class="card-amount tip-trigger-style" @click="row.showMore=true">
+                      4 {{$t('wallet.referralTableLabelItemInfo')}}
+                    </span>
+                    <MoreGoodsList v-if="row.showMore" :dataList="[row]" left="0" @hide="row.showMore=false" />
+                  </div>
+                  <div v-else>
+                    <el-popover
+                      placement="bottom-start"
+                      effect="light"
+                      :width="620"
+                      popper-class="popover-dialog goods-popover-box"
+                    >
+                        <div class="statistical-box goods-statistical-box">
+                          <MoreGoodsListSkuTable :dataList="[row]" />
+                        </div>
+                        <template #reference>
+                          <span class="card-amount tip-trigger-style">
+                            4 {{$t('wallet.referralTableLabelItemInfo')}}
+                        </span>
+                        </template>
+                    </el-popover>
+                  </div>
                 </template>
             </el-table-column>
-            <el-table-column prop="distributorCommissionRate" :label="$t('wallet.referralTableLabelProgramCommissionRate')" min-width="300" align="right">
+            <el-table-column prop="distributorCommissionRate" :label="$t('wallet.referralTableLabelProgramCommissionRate')" min-width="200" align="right">
                 <template #default="{ row }">
                     {{ formatterRate(row.distributorCommissionRate) }}
                 </template>
             </el-table-column>
-            <el-table-column prop="commission" :label="$t('wallet.referralTableLabelCommissionPayment')" min-width="300" align="right">
+            <el-table-column prop="commission" :label="$t('wallet.referralTableLabelCommissionPayment')" min-width="200" align="right">
                 <template #default="{ row }">
                     {{ formatterAmount(row.commission, row.commissionCurrency) }}
                 </template>
             </el-table-column>
-            <el-table-column prop="commission" :label="$t('wallet.referralTableLabelCommissionSettlement')" min-width="300" align="right">
+            <el-table-column prop="commission" :label="$t('wallet.referralTableLabelCommissionSettlement')" min-width="200" align="right">
                 <template #default="{ row }">
                     {{ formatterAmount(row.settlementCommission, row.settlementCommissionCurrency) }}
                 </template>
@@ -187,12 +201,12 @@ const showTrackShipmentDialog = (orderId) => {
                     <span class="direction-ltr direction-inline-block">{{ formatDate(row.purchaseTime) }}</span>
                 </template>
             </el-table-column>
-            <el-table-column prop="shippingStatus" :label="$t('wallet.referralTableLabelShippingStatus')" min-width="200">
+            <el-table-column prop="shippingStatus" :label="$t('wallet.referralTableLabelShippingStatus')" min-width="160">
                 <template #default="{ row }">
                     <el-link type="primary" @click="showTrackShipmentDialog(row.orderId)">{{ $t('wallet.dataShippingStatus') }}</el-link>
                 </template>
             </el-table-column>
-            <el-table-column prop="commissionStatus" tag :label="$t('wallet.referralTableLabelState')" min-width="200">
+            <el-table-column prop="commissionStatus" tag :label="$t('wallet.referralTableLabelState')" min-width="100">
             <template #default="{ row }">
                 <el-tag v-if="row.commissionStatus" :type="commissionStatusToType[row.commissionStatus]" class="tag-default">
                     <el-icon v-if="row.commissionStatus === 1" class="tag-icon"><Check /></el-icon>
@@ -224,36 +238,58 @@ const showTrackShipmentDialog = (orderId) => {
     background-color: #6172F3;
     margin: 0 1px 0 3px;
 }
-.goods-container {
-    display: flex;
-    align-items: center;
-    .goods-img {
-        width: 40px;
-        height: 40px;
-        min-width: 40px;
-        min-height: 40px;
-        border-radius: 4px;
-        background: lightgray 50% / cover no-repeat;
-    }
-    .goods-info {
-        .goods-info-h1 {
-            width: 436px;
-            color: #101828;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            font-size: 14px;
-            font-style: normal;
-            font-weight: 500;
-            line-height: 20px; /* 142.857% */
-        }
-        .goods-info-p {
-            color: #475467;
-            font-size: 14px;
-            font-style: normal;
-            font-weight: 400;
-            line-height: 20px; /* 142.857% */
+.position-fixed {
+  position: fixed;
+}
+.card-amount {
+    color: #475467;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 20px;
+    letter-spacing: -0.72px;
+    direction: ltr;
+    font-family: Inter;
+    &.tip-trigger-style {
+        text-decoration-line: underline;
+        text-decoration-style: dotted;
+        text-decoration-skip-ink: none;
+        text-decoration-thickness: 10.5%;
+        text-underline-offset: 25%;
+        text-underline-position: from-font;
+        &:hover {
+        text-decoration-style: solid;
+        text-decoration-skip-ink: none;
         }
     }
+}
+
+.goods-statistical-box {
+  border-radius: 8px;
+  overflow: hidden;
+}
+.goods-popover-title {
+  font-family: Inter;
+  font-size: 14px;
+  line-height: 20px;
+  display: -webkit-box;
+  display: box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2; /* 限制显示的行数为2 */
+  overflow-wrap: anywhere;
+}
+.goods-pro-table {
+  max-height: 400px;
+  overflow-y: auto;
+  :deep(tr) {
+      th.el-table__cell{
+          background-color: #F9FAFB;
+      }
+  }
+  ::v-deep {
+      .pro-table-wrapper {
+          border-radius: 0;
+      }
+  }
 }
 </style>

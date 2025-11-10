@@ -60,6 +60,10 @@ const props = defineProps({
   pageSizes: {
     type: Array,
     default: () => [10, 20, 50, 100, 200]
+  },
+  tableData: { // 静态数据
+    type: Array,
+    default: () => []
   }
 })
 const emit = defineEmits(['sizeChange', 'pageNoChange', 'pageChange'])
@@ -197,7 +201,12 @@ const setMobileTpl = () => {
 setMobileTpl()
 
 onMounted(() => {
-  props.requestOnMounted && _fetch(toRaw(page))
+  dataList.value = props.tableData
+  if(!props.requestOnMounted && props.tableData.length > 0) { // 如果存在静态数据-则直接展示
+    isGetData.value = true
+  } else {
+    props.requestOnMounted && _fetch(toRaw(page))
+  }
 })
 
 </script>
@@ -278,6 +287,7 @@ onMounted(() => {
       min-height: 72px;
       display: flex;
       align-items: center;
+      color: #475467;
     }
     th .cell{
       min-height: 42px;

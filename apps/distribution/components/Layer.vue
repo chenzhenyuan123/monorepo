@@ -1,15 +1,22 @@
 <script setup>
 import { Close } from '@element-plus/icons-vue';
+import { ClickOutside as vClickOutside } from 'element-plus';
 const isMobile = useIsMobile()
+const { $locale } = useNuxtApp()
+const isRtl = ['ar', 'he-IL'].includes($locale.value) // 判断是否为 阿拉伯语和希伯来语，默认靠右
 
 const props = defineProps({
   title: {
     type: String,
     default: ''
   },
-  closeOnClickModal: {
-    type: Boolean,
-    default: true
+  left: {
+    type: [Number,String],
+    default: 0
+  },
+  width: {
+    type: String,
+    default: ''
   }
 })
 const emit = defineEmits(["hide"])
@@ -38,13 +45,22 @@ defineExpose({ show, hide, toggle, getIsShow })
 </script>
 
 <template>
-    <div v-if="isShow" :class="{ 'layer': true, 'is-pc': !isMobile }" @click="closeOnClickModal && hide()">
-        <div :class="{ 'layer-body': true, 'init-animation': isShow }" @click.stop>
+    <div
+      v-if="isShow"
+      :class="{ 'layer': true, 'is-pc': !isMobile }"
+      :style="{left: (!isMobile && left) ? '0px' : ((!isMobile && !left && isRtl) ? '0' : 'auto'), right: (!isMobile && !left && isRtl) ? 'auto' : '0'}"
+      @click.stop="hide"
+      v-click-outside="hide"
+    >
+        <div
+          :class="{ 'layer-body': true, 'init-animation': isShow }"
+          @click.stop
+        >
             <div class="layer-body-title-container">
-                <!-- <h1 class="layer-body-title">{{ title }}</h1> -->
-                <!-- <div class="layer-body-title-close" @click="hide">
+                <h1 class="layer-body-title">{{ title }}</h1>
+                <div class="layer-body-title-close" @click="hide">
                     <el-icon><Close /></el-icon>
-                </div> -->
+                </div>
             </div>
             <div class="layer-body-content">
                 <slot></slot>
@@ -88,17 +104,21 @@ defineExpose({ show, hide, toggle, getIsShow })
     background-color: rgba(0, 0, 0, 0.40);
     min-height: 500px;
     &.is-pc {
+      position: absolute;
+      width: 366px;
+      right: 0;
+      top: auto;
+      .layer-body {
         position: absolute;
-        top: 0;
+        top: 10px;
         right: 0;
-        background-color: transparent;
+      }
     }
     .layer-body {
         position: absolute;
         left: 0;
         bottom: 0;
         width: 100%;
-        max-height: 100%;
         background-color: #ffffff;
         border-radius: 12px 12px 0 0;
         &.init-animation {
@@ -110,8 +130,8 @@ defineExpose({ show, hide, toggle, getIsShow })
             display: flex;
             align-items: center;
             justify-content: space-between;
+            padding: 0 24px;
             .layer-body-title-close {
-                display: none;
                 padding: 4px;
                 color: #424552;
                 font-size: 16px;
@@ -120,11 +140,10 @@ defineExpose({ show, hide, toggle, getIsShow })
         }
         .layer-body-title {
             padding: 16px 0;
-            color: #222;
-            font-size: 16px;
-            font-weight: 500;
-            line-height: 24px; /* 150% */
-            /*text-align: left;*/
+            color: #101828;
+            font-size: 18px;
+            font-weight: 600;
+            line-height: 24px;
         }
         .layer-body-content {
             width: 100%;
@@ -132,7 +151,7 @@ defineExpose({ show, hide, toggle, getIsShow })
             overflow: auto;
         }
         .layer-body-bottom-button {
-            padding: 8px 20px;
+            padding: 8px 20px 24px;
             text-align: center;
             color: #4D74ED;
             font-size: 16px;
@@ -141,4 +160,35 @@ defineExpose({ show, hide, toggle, getIsShow })
         }
     }
 }
+
+
+// 媒体自适应
+@media screen and (min-width: 768px) {
+    .layer {
+      /*width: 0;*/
+      background-color: transparent;
+      :deep(.layer-body) {
+        position: absolute;
+        width: 366px;
+        top: 50px;
+        right: 36px;
+        left: auto;
+        bottom: auto;
+        border-radius: 12px;
+        background: #FFF;
+        box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.1), 0px 4px 20px 0px rgba(0, 0, 0, 0.15);
+        &.init-animation {
+          animation: none;
+        }
+        .layer-body-title-container {
+          .layer-body-title-close {
+            display: none;
+          }
+        }
+        .layer-body-bottom-button {
+          display: none;
+        }
+      }
+    }
+  }
 </style>

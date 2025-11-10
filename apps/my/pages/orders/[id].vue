@@ -98,13 +98,11 @@ const getSrc = (imgName) => {
       </NuxtLink>
     </div>
     <div class="order-detail-title">
-      <div v-if="orderInfo.orderDetailCO.buyerOrderStatus>=0" class="order-detail-title-header">
-        <el-tag class="orders-status-tag" :class="formatInTable(ordersStatus, orderInfo.orderDetailCO.buyerOrderStatus, 'value', 'tag')">{{$t(formatInTable(ordersStatus, orderInfo.orderDetailCO.buyerOrderStatus))}}</el-tag>
-      </div>
-      <h3 v-if="orderInfo.goodsList.length>0" class="title">{{orderInfo.goodsList[0].goodsTitle}}</h3>
+      <!-- <h3 v-if="orderInfo.goodsList.length>0" class="title">{{orderInfo.goodsList[0].goodsTitle}}</h3> -->
       <!-- 待付款：发起支付Pay Now buyerOrderStatus0
            待发货：联系卖家Contact Seller buyerOrderStatus1
-           已发货：查看物流Track Shipment，确认收货Mark as Received buyerOrderStatus2 -->
+           已发货：查看物流Track Shipment，确认收货Mark as Received buyerOrderStatus2 
+           再次购买：已完成3 和 已取消4 buyerOrderStatus-->
       <div class="order-detail-title-fotter">
         <a v-if="orderInfo.orderDetailCO.buyerOrderStatus===0 && orderInfo.orderDetailCO.payNowUrl" :href="orderInfo.orderDetailCO.payNowUrl" target="_blank">
           <el-button type="primary" id="Pay-Now-btn">{{$t('orders.ordersPayNow')}}</el-button>
@@ -116,6 +114,9 @@ const getSrc = (imgName) => {
         </div>
         <a v-if="orderInfo.orderDetailCO.buyerOrderStatus===2 && orderInfo.orderDetailCO.logisticsCode" :href="`https://t.17track.net/en#nums=${orderInfo.LogisticsListStr}`" target="_blank">
           <el-button type="primary" id="Track-Shipment-btn">{{$t('orders.ordersTrackShipment')}}</el-button>
+        </a>
+        <a v-if="([3,4].includes(orderInfo.orderDetailCO.buyerOrderStatus)) && orderInfo.orderDetailCO.orderLinkurl" :href="orderInfo.orderDetailCO.orderLinkurl" target="_blank">
+          <el-button type="primary" id="Buy-Again-btn">{{$t('orders.ordersBuyAgain')}}</el-button>
         </a>
         <div v-if="orderInfo.orderDetailCO.buyerOrderStatus===2 && orderInfo.orderDetailCO.logisticsCode" class="flex-center-8"></div>
         <el-tooltip
@@ -132,6 +133,10 @@ const getSrc = (imgName) => {
     </div>
     <div class="order-detail-content">
       <div class="right">
+        <div v-if="orderInfo.orderDetailCO.buyerOrderStatus>=0" class="order-text">
+          <b>{{$t('wallet.withdrawalRecordsFormLabelStatus')}}:</b>
+          <p><el-tag class="orders-status-tag" :class="formatInTable(ordersStatus, orderInfo.orderDetailCO.buyerOrderStatus, 'value', 'tag')">{{$t(formatInTable(ordersStatus, orderInfo.orderDetailCO.buyerOrderStatus))}}</el-tag></p>
+        </div>
         <div class="order-text">
           <b>{{$t('wallet.subReferralTableLabelOrderID')}}:</b>
           <p>{{orderInfo.orderDetailCO.flylinkOrderId}}</p>
@@ -225,7 +230,7 @@ const getSrc = (imgName) => {
                   {{orderInfo.orderDetailCO.paymentCurrency}} {{currencyFormat(orderInfo.orderDetailCO.shippingFeeAmount)}}
                 </div>
               </div>
-              <div class="goods-details-text">
+              <div v-if="orderInfo.orderDetailCO.transSource==='QUICK_ORDER'" class="goods-details-text">
                 <div class="goods-details-text1">
                   {{$t('orders.ordersMargin')}}
                 </div>
