@@ -287,6 +287,7 @@ onMounted(() => {
       min-height: 72px;
       display: flex;
       align-items: center;
+      flex-wrap: wrap;
       color: #475467;
     }
     th .cell{

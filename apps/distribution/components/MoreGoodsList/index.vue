@@ -21,6 +21,10 @@ const props = defineProps({
   positionLeft: { // PC端对应的左边定位，不传默认在右侧
     type: String,
     default: 'auto'
+  },
+  type: { // 分销员佣金才有
+    type: String,
+    default: ''
   }
 })
 
@@ -28,21 +32,15 @@ const layerRef = ref(null)
 const emit = defineEmits(["change","hide"])
 onMounted(() => {
   layerRef.value.show()
+  console.log('type', props.type)
 });
-
-const formatterAmount = (v, c) => {
-  return isUseless(v) ? '' : (c || 'USD') + ' ' + currencyFormat(v)
-}
-
-const formatterRate = (v) => {
-  return isUseless(v) ? '' : (accurate_toFixed(v * 100, 2) +'%')
-}
 </script>
 <template>
   <div>
     <Layer ref="layerRef" title="Product Commission date" class="layer" :positionTop="positionTop" :positionLeft="positionLeft" v-once @hide="$emit('hide')">
       <div class="contact-info">
-        <MoreGoodsListSkuTable :dataList="dataList" />
+        <MoreGoodsListSkuTable v-if="!type" :dataList="dataList" />
+        <MoreGoodsListCommissionTable v-else :dataList="dataList" :type="type" />
       </div>
     </Layer>
   </div>

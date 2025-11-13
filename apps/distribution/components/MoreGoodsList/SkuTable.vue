@@ -23,6 +23,10 @@ const formatterAmount = (v, c) => {
 const formatterRate = (v) => {
   return isUseless(v) ? '' : (accurate_toFixed(v * 100, 2) +'%')
 }
+
+const getClassName = () => {
+  return isMobile ? 'goods-Mobile-box' : ''
+}
 </script>
 <template>
   <pro-table
@@ -32,27 +36,27 @@ const formatterRate = (v) => {
       :tableData="dataList"
       :max-height="400"
   >
-      <el-table-column prop="goodsName" :label="$t('wallet.referralTableLabelProductName')" min-width="250" :class-name="{'goods-Mobile-box': isMobile}">
+      <el-table-column prop="goodsTitle" :label="$t('wallet.referralTableLabelProductName')" min-width="250" :class-name="isMobile ? {'goods-Mobile-box': isMobile} : ''">
           <template #default="{ row }">
               <div class="goods-container">
                 <el-image :src="previewImg(row.mainPicture)" alt="" class="goods-img" fit="contain"></el-image>
                 <div class="flex-center-12"></div>
                 <div class="goods-info">
-                    <div class="goods-info-h1" :title="row.goodsName">{{ row.goodsName }}</div>
-                    <div v-if="!isMobile" class="goods-info-p">SKU: {{ row.goodsName }}</div>
-                    <div v-if="!isMobile" class="goods-info-p">{{ row.goodsName }}</div>
+                    <div class="goods-info-h1" :title="row.goodsTitle">{{ row.goodsTitle }}</div>
+                    <div v-if="!isMobile" class="goods-info-p">{{$t('orders.ordersSkuCode')}}: {{ row.skuId }}</div>
+                    <div v-if="!isMobile" class="goods-info-p"><span v-html="row.skuDesc"></span></div>
                 </div>
             </div>
           </template>
       </el-table-column>
-      <el-table-column v-if="isMobile" prop="goodsName" label="SKU" min-width="100" align="right">
+      <el-table-column v-if="isMobile" prop="skuId" label="SKU" min-width="100" align="right">
         <template #default="{ row }">
-          {{ row.goodsName }}
+          {{ row.skuId }}
         </template>
       </el-table-column>
-      <el-table-column v-if="isMobile" prop="goodsName" :label="$t('wallet.referralTableLabelVariant')" min-width="100" align="right">
+      <el-table-column v-if="isMobile" prop="skuDesc" :label="$t('wallet.referralTableLabelVariant')" min-width="100" align="right">
         <template #default="{ row }">
-          {{ row.goodsName }}
+          <span v-html="row.skuDesc"></span>
         </template>
       </el-table-column>
       <el-table-column prop="goodsCommissionRate" :label="$t('wallet.referralTableLabelProductCommissionRate')" min-width="100" align="right">
@@ -60,10 +64,9 @@ const formatterRate = (v) => {
             {{ formatterRate(row.goodsCommissionRate) }}
           </template>
       </el-table-column>
-      <el-table-column prop="orderAmt" :label="$t('wallet.referralTableLabelCommissionPayment')" min-width="140" align="right">
+      <el-table-column prop="commissionAmt" :label="$t('wallet.referralTableLabelCommissionPayment')" min-width="140" align="right">
           <template #default="{ row }">
-              {{ formatterAmount(row.orderAmt, row.orderCurrency) }}
-              x {{ row.quantity }}
+              {{ formatterAmount(row.commissionAmt, row.paymentCurrency) }}
           </template>
       </el-table-column>
   </pro-table>
