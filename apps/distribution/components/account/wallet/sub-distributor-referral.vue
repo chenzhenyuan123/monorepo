@@ -28,6 +28,7 @@ const commissionStatusData = computed(() => {
   return [
     { value: 1, label: t('wallet.dataCommissionStatusConfirmed'), type: 'success' },
     { value: 2, label: t('wallet.dataCommissionStatusPending'), type: 'primary' },
+    { value: 3, label: t('wallet.dataCommissionStatusNotEligible'), type: 'warning' }
   ]
 })
 const commissionStatusDict = computed(() => {
@@ -79,6 +80,18 @@ const showTrackShipmentDialog = (orderId) => {
     idForTrackShipmentDialog.value = orderId
     isShowTrackShipmentDialog.value = true
 }
+
+// 弹窗获取商品信息
+const showPopover = async(row) => {
+  const result = await clientApi.qryUserCommissionList({
+    orderId: row.orderId
+  })
+  const res = checkResponseData(result)
+  if(res) {
+    row.distributorList = res || []
+    row.showMore = true
+  }
+}
 </script>
 
 <template>
@@ -115,7 +128,7 @@ const showTrackShipmentDialog = (orderId) => {
                     <el-option v-for="item in commissionStatusData" :key="item.value" :label="item.label" :value="item.value" />
                 </el-select>
             </el-form-item>
-            <el-form-item :label="$t('wallet.subReferralFormLabelDistributor')" style="width: 220px;">
+            <!-- <el-form-item :label="$t('wallet.subReferralFormLabelDistributor')" style="width: 220px;">
                 <el-input
                   v-model="formData.distributor"
                   clearable
@@ -134,7 +147,7 @@ const showTrackShipmentDialog = (orderId) => {
                   @keyup.enter.native="query"
                   @clear="query"
                 />
-            </el-form-item>
+            </el-form-item> -->
         </el-form>
 
         <pro-table
@@ -142,7 +155,7 @@ const showTrackShipmentDialog = (orderId) => {
             :request="request"
             :is-show-empty="true"
         >
-            <el-table-column prop="orderId" :label="$t('wallet.subReferralTableLabelOrderID')"min-width="536">
+            <el-table-column prop="orderId" :label="$t('wallet.subReferralTableLabelOrderID')" min-width="300">
                 <template #default="{ row }">
                     <template v-if="isMobile">{{ row.orderId }}</template>
                     <div v-else class="goods-container">
@@ -155,7 +168,7 @@ const showTrackShipmentDialog = (orderId) => {
                     </div>
                 </template>
             </el-table-column>
-            <el-table-column prop="orderAmt" :label="$t('wallet.subReferralTableLabelOrderSubtotal')" min-width="300" align="right">
+            <el-table-column prop="orderAmt" :label="$t('wallet.subReferralTableLabelOrderSubtotal')" min-width="160" align="right">
                 <template #default="{ row }">
                     {{ formatterAmount(row.orderAmt, row.orderCurrency) }}
                 </template>
@@ -170,33 +183,87 @@ const showTrackShipmentDialog = (orderId) => {
 <!--                    {{ formatterRate(row.distributorCommissionRate) }}-->
 <!--                </template>-->
 <!--            </el-table-column>-->
-            <el-table-column prop="commission" :label="$t('wallet.subReferralTableLabelCommissionPayment')" min-width="300" align="right">
+            <el-table-column prop="commission" :label="$t('wallet.subReferralTableLabelCommissionPayment')" min-width="160" align="right">
                 <template #default="{ row }">
-                    {{ formatterAmount(row.commission, row.commissionCurrency) }}
+                    <div class="color1">{{ formatterAmount(row.commission, row.commissionCurrency) }}</div>
+                    <div v-if="row.distributionDetailNumber && row.commission" class="width100">
+                        <div v-if="isMobile">
+                            <p class="card-amount tip-trigger-style" @click="showPopover(row)">
+                            {{ $t('wallet.referralTableLabelDistributorInfo',{num: row.distributionDetailNumber}) }}
+                            </p>
+                            <MoreGoodsList v-if="row.showMore" :dataList="row.distributorList" type="payment" left="0" @hide="row.showMore=false" />
+                        </div>
+                        <div v-else>
+                            <el-popover
+                                placement="bottom-start"
+                                effect="light"
+                                :width="620"
+                                popper-class="popover-dialog goods-popover-box"
+                                v-model="row.showMore"
+                                @show="showPopover(row)"
+                            >
+                                <div class="statistical-box goods-statistical-box">
+                                    <MoreGoodsListCommissionTable v-if="row.distributorList" :dataList="row.distributorList" type="payment" />
+                                </div>
+                                <template #reference>
+                                    <p class="card-amount tip-trigger-style">
+                                        {{ $t('wallet.referralTableLabelDistributorInfo',{num: row.distributionDetailNumber}) }}
+                                    </p>
+                                </template>
+                            </el-popover>
+                        </div>
+                    </div>
                 </template>
             </el-table-column>
-            <el-table-column prop="commission" :label="$t('wallet.subReferralTableLabelCommissionSettlement')" min-width="300" align="right">
+            <el-table-column prop="commission" :label="$t('wallet.subReferralTableLabelCommissionSettlement')" min-width="160" align="right">
                 <template #default="{ row }">
-                    {{ formatterAmount(row.settlementCommission, row.settlementCommissionCurrency) }}
+                    <div class="color1">{{ formatterAmount(row.settlementCommission, row.settlementCommissionCurrency) }}</div>
+                    <div v-if="row.distributionDetailNumber && row.settlementCommission">
+                        <div v-if="isMobile">
+                          <p class="card-amount tip-trigger-style" @click="showPopover(row)">
+                            {{ $t('wallet.referralTableLabelDistributorInfo',{num: row.distributionDetailNumber}) }}
+                          </p>
+                          <MoreGoodsList v-if="row.showMore" :dataList="row.distributorList" type="settlement" left="0" @hide="row.showMore=false" />
+                        </div>
+                        <div v-else>
+                          <el-popover
+                            placement="bottom-start"
+                            effect="light"
+                            :width="620"
+                            popper-class="popover-dialog goods-popover-box"
+                            v-model="row.showMore"
+                            @show="showPopover(row)"
+                          >
+                              <div class="statistical-box goods-statistical-box">
+                                <MoreGoodsListCommissionTable v-if="row.distributorList" :dataList="row.distributorList" type="settlement" />
+                              </div>
+                              <template #reference>
+                                <p class="card-amount tip-trigger-style">
+                                    {{ $t('wallet.referralTableLabelDistributorInfo',{num: row.distributionDetailNumber}) }}
+                                </p>
+                              </template>
+                          </el-popover>
+                        </div>
+                    </div>
                 </template>
             </el-table-column>
             <el-table-column prop="userEmail" :label="$t('wallet.subReferralTableLabelDistributor')"
-             min-width="240" align="right" />
+             min-width="200" align="right" />
             <el-table-column prop="userNo" :label="$t('wallet.subReferralTableLabelDistributorID')"
              min-width="160" align="right" />
             <el-table-column prop="purchaseTime" :label="$t('wallet.subReferralTableLabelDatetimeOfPurchase')"
-             min-width="200">
+             min-width="170">
                 <template #default="{ row }">
                     <span class="direction-ltr direction-inline-block">{{ formatDate(row.purchaseTime) }}</span>
                 </template>
             </el-table-column>
-            <el-table-column prop="shippingStatus" :label="$t('wallet.referralTableLabelShippingStatus')" min-width="200">
+            <el-table-column prop="shippingStatus" :label="$t('wallet.referralTableLabelShippingStatus')" min-width="120">
                 <template #default="{ row }">
                     <el-link type="primary" @click="showTrackShipmentDialog(row.orderId)">{{ $t('wallet.dataShippingStatus') }}</el-link>
                 </template>
             </el-table-column>
             <el-table-column prop="commissionStatus" tag :label="$t('wallet.subReferralTableLabelState')"
-             min-width="200">
+             min-width="120">
             <template #default="{ row }">
                 <el-tag v-if="row.commissionStatus" :type="commissionStatusToType[row.commissionStatus]" class="tag-default">
                     <el-icon v-if="row.commissionStatus === 1" class="tag-icon"><Check /></el-icon>
@@ -259,5 +326,35 @@ const showTrackShipmentDialog = (orderId) => {
             line-height: 20px; /* 142.857% */
         }
     }
+}
+.card-amount {
+    color: #475467;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 20px;
+    letter-spacing: -0.72px;
+    direction: ltr;
+    font-family: Inter;
+    &.tip-trigger-style {
+        text-decoration-line: underline;
+        text-decoration-style: dotted;
+        text-decoration-skip-ink: none;
+        text-decoration-thickness: 10.5%;
+        text-underline-offset: 25%;
+        text-underline-position: from-font;
+        &:hover {
+        text-decoration-style: solid;
+        text-decoration-skip-ink: none;
+        }
+    }
+}
+.color1{
+    flex-shrink: 0;
+    width: 100%;
+    color: #101828;
+}
+.width100 {
+    flex-shrink: 0;
+    width: 100%;
 }
 </style>

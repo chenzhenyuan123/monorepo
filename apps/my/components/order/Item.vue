@@ -8,7 +8,7 @@
     import { ordersStatus } from "@/util/const.js";
     import {formatDate} from "@flylinking/core/utils/dateUtil";
     import {previewFlylinkStoreUrl} from "@flylinking/core/utils/urlUtil";
-    import { ArrowDown } from '@element-plus/icons-vue';
+    import { ArrowRight } from '@element-plus/icons-vue';
 
     const props = defineProps({
         orderData: {
@@ -23,10 +23,11 @@
     const hasButton = computed(() => {
         return props.orderData.buyerOrderStatus===0 && props.orderData.payNowUrl ||
             props.orderData.buyerOrderStatus===1 ||
-            props.orderData.buyerOrderStatus===2 && props.orderData.logisticsCode
+            props.orderData.buyerOrderStatus===2 && props.orderData.logisticsCode ||
+            ([3,4].includes(props.orderData.buyerOrderStatus)) && props.orderData.orderLinkurl
     })
 
-    const skuLimit = ref(2)
+    const skuLimit = ref(3)
     const isShowSkuMore = ref(false)
     const showSkuMore = () => {
         isShowSkuMore.value = true
@@ -43,8 +44,8 @@
         window.open(previewFlylinkStoreUrl(url), '_blank')
     }
 
-    const jumpToPay = () => {
-        window.open(props.orderData.payNowUrl, '_blank')
+    const jumpToPay = (url) => {
+        window.open(url, '_blank')
     }
 
     const jumpTo17track = () => {
@@ -80,7 +81,7 @@
             <div class="flex-center"></div>
             <el-tag class="orders-status-tag" :class="formatInTable(ordersStatus, orderData.buyerOrderStatus, 'value', 'tag')">{{$t(formatInTable(ordersStatus, orderData.buyerOrderStatus))}}</el-tag>
         </div>
-        <template v-for="(item, i) in orderData.orderGoodsSkuCOList" :key="item.id">
+        <div v-for="(item, i) in orderData.orderGoodsSpuCOList" :key="i">
             <dl v-if="isShowSkuMore || i < skuLimit" class="goods-content">
                 <div class="goods-imgs">
                     <img :src="previewImg(item.mainPicture)" lazy />
@@ -94,13 +95,12 @@
                     <p class="goods-quantity-num">{{$t('orders.orderItemLabelQuantity')}}: {{ item.quantity }}</p>
                 </dd>
             </dl>
-        </template>
-        <div v-if="orderData.orderGoodsSkuCOList.length > skuLimit && !isShowSkuMore" class="goods-sku-more">
+        </div>
+        <div v-if="orderData.orderGoodsSpuCOList.length > skuLimit && !isShowSkuMore" class="goods-sku-more">
             <el-button
                     id="sku-more-btn"
-                    :icon="ArrowDown"
-                    @click.stop="showSkuMore"
-            >{{$t('orders.orderItemButtonMore')}}</el-button>
+                    @click.stop="jumpToDetail"
+            >{{$t('orders.orderItemButtonMore')}}<el-icon class="tag-icon"><ArrowRight /></el-icon></el-button>
         </div>
         <div class="goods-details-bottom direction-text-align-right">
             <div v-if="orderData.shippingFeeAmount >= 0" class="goods-details-text">
@@ -120,13 +120,14 @@
             </div>
         </div>
         <div v-if="hasButton" class="goods-details-bottom-button direction-text-align-right">
-            <el-button v-if="orderData.buyerOrderStatus===0 && orderData.payNowUrl" type="primary" class="button-default" id="Pay-Now-btn" @click.stop="jumpToPay">{{$t('orders.ordersPayNow')}}</el-button>
+            <el-button v-if="orderData.buyerOrderStatus===0 && orderData.payNowUrl" type="primary" class="button-default" id="Pay-Now-btn" @click.stop="jumpToPay(orderData.payNowUrl)">{{$t('orders.ordersPayNow')}}</el-button>
             <div v-if="orderData.buyerOrderStatus===1" class="order-detail-title-fotter-button">
                 <el-button type="primary" class="button-default" id="Contact-seller-btn" @click.stop="showContactInfo = true">{{$t('orders.ordersContactSeller')}}</el-button>
                 <!-- 联系方式 -->
                 <ContactInfo v-if="showContactInfo" :contactInfo="orderData" @hide="showContactInfo=false" />
             </div>
             <el-button v-if="orderData.buyerOrderStatus===2 && orderData.logisticsCode" type="primary" class="button-default" id="Track-Shipment-btn" @click.stop="jumpTo17track">{{$t('orders.ordersTrackShipment')}}</el-button>
+            <el-button v-if="([3,4].includes(orderData.buyerOrderStatus)) && orderData.orderLinkurl" type="primary" class="button-default" id="Pay-Now-btn" @click.stop="jumpToPay(orderData.orderLinkurl)">{{$t('orders.ordersBuyAgain')}}</el-button>
         </div>
 
     </div>

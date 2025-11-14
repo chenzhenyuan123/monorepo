@@ -41,7 +41,7 @@ export default defineComponent({
             { props.tagTpl.node.children ? props.tagTpl.node.children.default({row}) : renderValue(row, props.tagTpl.node) }
           </div>}
           {props.listTpl.map(({ label, node }, j) => (
-            <div key={i+'_'+j} class="row-item">
+            <div key={i+'_'+j} class={{ 'row-item': true, ...node.props['class-name'] }}>
               <div class="label">{label}</div>
               <div class="value">
                 {node.children ? node.children.default({row}) : renderValue(row, node)}
