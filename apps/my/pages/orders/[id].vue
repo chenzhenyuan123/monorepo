@@ -14,7 +14,7 @@ const route = useRoute();
 const isMobile = useIsMobile()
 
 const orderInfo = ref({
-  goodsList: [], // 商品列表信息
+  goodsSpuList: [], // 商品列表信息
   orderDetailCO: {}, // 订单信息
   shipping: {}, // 收货地址
   LogisticsListStr: '', // 物流单号拼接，用于跳转17track
@@ -98,7 +98,7 @@ const getSrc = (imgName) => {
       </NuxtLink>
     </div>
     <div class="order-detail-title">
-      <!-- <h3 v-if="orderInfo.goodsList.length>0" class="title">{{orderInfo.goodsList[0].goodsTitle}}</h3> -->
+      <!-- <h3 v-if="orderInfo.goodsSpuList.length>0" class="title">{{orderInfo.goodsSpuList[0].goodsTitle}}</h3> -->
       <!-- 待付款：发起支付Pay Now buyerOrderStatus0
            待发货：联系卖家Contact Seller buyerOrderStatus1
            已发货：查看物流Track Shipment，确认收货Mark as Received buyerOrderStatus2 
@@ -193,25 +193,32 @@ const getSrc = (imgName) => {
               <path d="M6.75 13.5L11.25 9L6.75 4.5" stroke="#475467" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </div>
-          <dl v-for="kv in orderInfo.goodsList" :key="kv.id" class="goods-content">
-            <dt class="goods-name">
-              <div class="goods-imgs">
-                <PictureForOSSAndCenter :image="previewImg(kv.mainPicture)" ref="imageRef" class="store-goods-module-item-image"></PictureForOSSAndCenter>
-              </div>
-              <div class="goods-attr">
-                <!-- <p class="goods-sku ellipsis">
-                  {{$t('orders.ordersSkuCode')}}: 
-                  <span class="goods-sku-code ellipsis">{{kv.skuCode}}</span>
-                </p> -->
-                <div v-if="kv.skuDesc" class="goods-spu ellipsis2" v-html="kv.skuDesc" />
-                <div v-else>{{$t('orders.orderSkuDesc')}}</div>
-              </div>
-            </dt>
-            <dd class="goods-quantity">
-              <span>{{kv.paymentCurrency}} {{currencyFormat(kv.paymentAmount)}}</span>
-              <span class="quantity">× {{ kv.quantity || '0' }}</span>
-            </dd>
-          </dl>
+          <div v-for="(kv, i) in orderInfo.goodsSpuList" :key="i" class="goods-content-box">
+            <dl v-for="kvSku in kv.orderGoodsSkuCOList" :key="kvSku.id" class="goods-content">
+              <dt class="goods-name">
+                <div class="goods-imgs">
+                  <PictureForOSSAndCenter :image="previewImg(kvSku.mainPicture)" ref="imageRef" class="store-goods-module-item-image"></PictureForOSSAndCenter>
+                </div>
+                <div class="goods-attr">
+                  <!-- <p class="goods-sku ellipsis">
+                    {{$t('orders.ordersSkuCode')}}: 
+                    <span class="goods-sku-code ellipsis">{{kvSku.skuCode}}</span>
+                  </p> -->
+                  <div class="goods-spu ellipsis2">{{kvSku.goodsTitle}}</div>
+                  <div v-if="kvSku.skuDesc" class="goods-sku ellipsis" v-html="kvSku.skuDesc" />
+                  <div v-else>{{$t('orders.orderSkuDesc')}}</div>
+                </div>
+              </dt>
+              <dd class="goods-quantity">
+                <span>{{kvSku.paymentCurrency}} {{currencyFormat(kvSku.paymentAmount)}}</span>
+                <p class="quantity">× {{ kvSku.quantity || '0' }}</p>
+              </dd>
+            </dl>
+            <div class="Subtotal-info-li">
+              <span class="Subtotal-info-li-label">{{$t('orders.ordersSubtotal')}}</span>
+              <div class="Subtotal-info-li-value">{{kv.paymentCurrency}} {{currencyFormat(kv.totalPrice)}}</div>
+            </div>
+          </div>
           <div class="goods-details-bottom">
             <div class="goods-details-text">
               <div class="goods-details-text1">

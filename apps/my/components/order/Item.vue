@@ -81,7 +81,7 @@
             <div class="flex-center"></div>
             <el-tag class="orders-status-tag" :class="formatInTable(ordersStatus, orderData.buyerOrderStatus, 'value', 'tag')">{{$t(formatInTable(ordersStatus, orderData.buyerOrderStatus))}}</el-tag>
         </div>
-        <template v-for="(item, i) in orderData.orderGoodsSkuCOList" :key="item.id">
+        <div v-for="(item, i) in orderData.orderGoodsSpuCOList" :key="i">
             <dl v-if="isShowSkuMore || i < skuLimit" class="goods-content">
                 <div class="goods-imgs">
                     <img :src="previewImg(item.mainPicture)" lazy />
@@ -95,8 +95,8 @@
                     <p class="goods-quantity-num">{{$t('orders.orderItemLabelQuantity')}}: {{ item.quantity }}</p>
                 </dd>
             </dl>
-        </template>
-        <div v-if="orderData.orderGoodsSkuCOList.length > skuLimit && !isShowSkuMore" class="goods-sku-more">
+        </div>
+        <div v-if="orderData.orderGoodsSpuCOList.length > skuLimit && !isShowSkuMore" class="goods-sku-more">
             <el-button
                     id="sku-more-btn"
                     @click.stop="jumpToDetail"
