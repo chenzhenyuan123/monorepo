@@ -200,13 +200,13 @@ const getSrc = (imgName) => {
                   <PictureForOSSAndCenter :image="previewImg(kvSku.mainPicture)" ref="imageRef" class="store-goods-module-item-image"></PictureForOSSAndCenter>
                 </div>
                 <div class="goods-attr">
-                  <!-- <p class="goods-sku ellipsis">
-                    {{$t('orders.ordersSkuCode')}}: 
-                    <span class="goods-sku-code ellipsis">{{kvSku.skuCode}}</span>
-                  </p> -->
                   <div class="goods-spu ellipsis2">{{kvSku.goodsTitle}}</div>
                   <div v-if="kvSku.skuDesc" class="goods-sku ellipsis" v-html="kvSku.skuDesc" />
                   <div v-else>{{$t('orders.orderSkuDesc')}}</div>
+                  <div class="goods-sku">
+                    <span class="goods-sku">{{$t('orders.ordersGoodsNo')}}: {{kvSku.flylinkGoodsNo}}</span>
+                    <span v-if="kvSku.skuId" class="goods-sku SkuCode-box">{{$t('orders.ordersSkuCode')}}: {{kvSku.skuId}}</span>
+                  </div>
                 </div>
               </dt>
               <dd class="goods-quantity">
