@@ -5,6 +5,7 @@
 <script setup>
 import { Check } from '@element-plus/icons-vue';
 import { copyToClipboard, checkResponseData } from "@/util/index.js";
+import { currencyFormat } from "@/util/index.js";
 const { productsApi } = useApi();
 
 const props = defineProps({
@@ -71,7 +72,7 @@ const submit = type => {
     >
       <div class="dialog-content">
         <h3 class="title">{{$t('products.productsGenerateLink')}}</h3>
-        <p class="text">{{$t('products.productsAffiliateLink')}} <span class="direction-ltr direction-inline-block">{{data.commissionRate * 100}}%</span> {{$t('products.productsCommission')}}</p>
+        <p class="text">{{$t('products.productsAffiliateLink')}} <span class="direction-ltr direction-inline-block">{{currencyFormat(data.commissionRate * 100)}}%</span> {{$t('products.productsCommission')}}</p>
         <el-form label-position="top" class="link-form" novalidate>
           <el-form-item>
             <el-input type="textarea" v-model="goodsText" :rows="7" show-word-limit />

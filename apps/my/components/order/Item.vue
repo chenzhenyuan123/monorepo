@@ -115,7 +115,7 @@
                 <div class="goods-details-text">{{$t('orders.orderItemLabelAmount')}}</div>
                 <div class="flex-center-6"></div>
                 <div class="goods-details-text bold">
-                    {{ orderData.paymentCurrency }} {{currencyFormat(orderData.paymentAmount)}}
+                    {{ orderData.paymentCurrency }} {{currencyFormat(orderData.totalPrice)}}
                 </div>
             </div>
         </div>
