@@ -91,7 +91,7 @@
                     <p class="goods-sku ellipsis">{{ item.skuDesc }}</p>
                 </div>
                 <dd class="goods-quantity-container direction-text-align-right">
-                    <p class="goods-quantity-amount">{{ item.paymentCurrency }} {{currencyFormat(item.paymentAmount)}}</p>
+                    <p class="goods-quantity-amount">{{ item.paymentCurrency }} {{currencyFormat(item.totalPrice)}}</p>
                     <p class="goods-quantity-num">{{$t('orders.orderItemLabelQuantity')}}: {{ item.quantity }}</p>
                 </dd>
             </dl>
@@ -115,7 +115,7 @@
                 <div class="goods-details-text">{{$t('orders.orderItemLabelAmount')}}</div>
                 <div class="flex-center-6"></div>
                 <div class="goods-details-text bold">
-                    {{ orderData.paymentCurrency }} {{currencyFormat(orderData.totalPrice)}}
+                    {{ orderData.paymentCurrency }} {{currencyFormat(orderData.paymentAmount)}}
                 </div>
             </div>
         </div>
