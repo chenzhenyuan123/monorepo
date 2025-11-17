@@ -178,8 +178,9 @@
         .goods-attr {
           width: calc(100% - 80px);
           float: left;
+          word-break: break-all;
          .goods-sku {
-            color: #667085;
+            color: #817F86;
             font-family: Inter;
             font-size: 14px;
             line-height: 20px;
@@ -191,6 +192,12 @@
             font-size: 16px;
             line-height: 24px;
             margin-bottom: 8px;
+         }
+         .SkuCode-box {
+          padding-left: 8px;
+          margin-left: 8px;
+          border-left: 1px solid #817F86;
+          height: 20px;
          }
         }
       }
@@ -338,8 +345,11 @@
       .order-detail-content-top {
         border-radius: 0;
         .goods-content {
-          .goods-name .goods-imgs {
-            margin-right: 12px;
+          .goods-name{
+            margin-right: 0;
+            .goods-imgs {
+              margin-right: 12px;
+            }
           }
           .goods-quantity{
             span{
