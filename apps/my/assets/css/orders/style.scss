@@ -157,14 +157,12 @@
       padding: 12px 0;
       .goods-name {
         flex: 1;
-        margin-right: 20px;
         min-width: 0;
         .goods-imgs{
           width: 60px;
           height: 60px;
           border-radius: 2.4px;
           overflow: hidden;
-          margin-right: 20px;
           float: left;
           border-radius: 2.4px;
           background: #f7f7f7;
@@ -319,6 +317,9 @@
       .quantity, .goods-sku-code {
         display: block;
       }
+      .goods-content-box {
+        margin: 12px 20px;
+      }
       .goods-details-bottom {
         padding-left: 20px;
         .goods-details-text {
@@ -333,12 +334,6 @@
       .order-detail-content-top {
         border-radius: 0;
         .goods-content {
-          .goods-name{
-            margin-right: 0;
-            .goods-imgs {
-              margin-right: 12px;
-            }
-          }
           .goods-quantity{
             span{
               font-size: var(--font-size-body, 14px);

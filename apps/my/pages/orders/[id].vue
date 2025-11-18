@@ -107,18 +107,25 @@ const getSrc = (imgName) => {
         <a v-if="orderInfo.orderDetailCO.buyerOrderStatus===0 && orderInfo.orderDetailCO.payNowUrl" :href="orderInfo.orderDetailCO.payNowUrl" target="_blank">
           <el-button type="primary" id="Pay-Now-btn">{{$t('orders.ordersPayNow')}}</el-button>
         </a>
-        <div v-if="orderInfo.orderDetailCO.buyerOrderStatus===1" class="order-detail-title-fotter-button">
+        <div v-if="orderInfo.orderDetailCO.buyerOrderStatus===0 && orderInfo.orderDetailCO.payNowUrl" class="flex-center-12"></div>
+
+        <div v-if="orderInfo.orderDetailCO.buyerOrderStatus===1">
           <el-button type="primary" id="Contact-seller-btn" @click="showContactInfo2=true">{{$t('orders.ordersContactSeller')}}</el-button>
           <!-- 联系方式弹窗 -->
           <ContactInfo v-if="showContactInfo2" :contactInfo="orderInfo.orderDetailCO" left="0" @hide="showContactInfo2=false" />
         </div>
+        <div v-if="orderInfo.orderDetailCO.buyerOrderStatus===1" class="flex-center-12"></div>
+
         <a v-if="orderInfo.orderDetailCO.buyerOrderStatus===2 && orderInfo.orderDetailCO.logisticsCode" :href="`https://t.17track.net/en#nums=${orderInfo.LogisticsListStr}`" target="_blank">
           <el-button type="primary" id="Track-Shipment-btn">{{$t('orders.ordersTrackShipment')}}</el-button>
         </a>
+        <div v-if="orderInfo.orderDetailCO.buyerOrderStatus===2 && orderInfo.orderDetailCO.logisticsCode" class="flex-center-12"></div>
+        
         <a v-if="([3,4].includes(orderInfo.orderDetailCO.buyerOrderStatus)) && orderInfo.orderDetailCO.orderLinkurl" :href="orderInfo.orderDetailCO.orderLinkurl" target="_blank">
           <el-button type="primary" id="Buy-Again-btn">{{$t('orders.ordersBuyAgain')}}</el-button>
         </a>
-        <div v-if="orderInfo.orderDetailCO.buyerOrderStatus===2 && orderInfo.orderDetailCO.logisticsCode" class="flex-center-8"></div>
+        <div v-if="([3,4].includes(orderInfo.orderDetailCO.buyerOrderStatus)) && orderInfo.orderDetailCO.orderLinkurl" class="flex-center-12"></div>
+
         <el-tooltip
           v-if="orderInfo.orderDetailCO.buyerOrderStatus===2"
           :disabled="isReceivedAble"
@@ -195,22 +202,23 @@ const getSrc = (imgName) => {
           </div>
           <div v-for="(kv, i) in orderInfo.goodsSpuList" :key="i" class="goods-content-box">
             <div v-for="kvSku in kv.orderGoodsSkuCOList" :key="kvSku.id" class="goods-content">
-              <div class="goods-name">
+              <div class="goods-name flex-box">
                 <div class="goods-imgs">
                   <PictureForOSSAndCenter :image="previewImg(kvSku.mainPicture)" ref="imageRef" class="store-goods-module-item-image"></PictureForOSSAndCenter>
                 </div>
+                <div :class="`flex-center-${isMobile?'12':'20'}`"></div>
                 <div class="goods-attr">
                   <div class="goods-spu ellipsis2 mb8">{{kvSku.goodsTitle}}</div>
                   <div v-if="kvSku.skuDesc" class="goods-sku ellipsis mb8" v-html="kvSku.skuDesc" />
-                  <div v-else>{{$t('orders.orderSkuDesc')}}</div>
+                  <div v-else class="goods-sku ellipsis mb8">{{$t('orders.orderSkuDesc')}}</div>
                   <div class="goods-sku flex-box">
                     <span class="goods-sku">{{$t('orders.ordersGoodsNo')}}: {{kvSku.flylinkGoodsNo}}</span>
-                    <el-divider direction="vertical" />
+                    <el-divider v-if="kvSku.skuId" direction="vertical" />
                     <span v-if="kvSku.skuId" class="goods-sku">{{$t('orders.ordersSkuCode')}}: {{kvSku.skuId}}</span>
                   </div>
                 </div>
               </div>
-              <div class="flex-center-12"></div>
+              <div :class="`flex-center-${isMobile?'12':'20'}`"></div>
               <div class="goods-quantity direction-text-align-right">
                 <span>{{kvSku.paymentCurrency}} {{currencyFormat(kvSku.paymentAmount)}}</span>
                 <p class="quantity">× {{ kvSku.quantity || '0' }}</p>
@@ -361,10 +369,5 @@ const getSrc = (imgName) => {
 
 .rtl .order-detail-content .left .goods-content .goods-name {
   display: flex;
-  margin: 0;
-  .goods-imgs {
-    margin: 0;
-    margin-left: 20px;
-  }
 }
 </style>
