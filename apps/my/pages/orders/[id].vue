@@ -194,28 +194,32 @@ const getSrc = (imgName) => {
             </svg>
           </div>
           <div v-for="(kv, i) in orderInfo.goodsSpuList" :key="i" class="goods-content-box">
-            <dl v-for="kvSku in kv.orderGoodsSkuCOList" :key="kvSku.id" class="goods-content">
-              <dt class="goods-name">
+            <div v-for="kvSku in kv.orderGoodsSkuCOList" :key="kvSku.id" class="goods-content">
+              <div class="goods-name">
                 <div class="goods-imgs">
                   <PictureForOSSAndCenter :image="previewImg(kvSku.mainPicture)" ref="imageRef" class="store-goods-module-item-image"></PictureForOSSAndCenter>
                 </div>
                 <div class="goods-attr">
-                  <div class="goods-spu ellipsis2">{{kvSku.goodsTitle}}</div>
-                  <div v-if="kvSku.skuDesc" class="goods-sku ellipsis" v-html="kvSku.skuDesc" />
+                  <div class="goods-spu ellipsis2 mb8">{{kvSku.goodsTitle}}</div>
+                  <div v-if="kvSku.skuDesc" class="goods-sku ellipsis mb8" v-html="kvSku.skuDesc" />
                   <div v-else>{{$t('orders.orderSkuDesc')}}</div>
-                  <div class="goods-sku">
+                  <div class="goods-sku flex-box">
                     <span class="goods-sku">{{$t('orders.ordersGoodsNo')}}: {{kvSku.flylinkGoodsNo}}</span>
-                    <span v-if="kvSku.skuId" class="goods-sku SkuCode-box">{{$t('orders.ordersSkuCode')}}: {{kvSku.skuId}}</span>
+                    <el-divider direction="vertical" />
+                    <span v-if="kvSku.skuId" class="goods-sku">{{$t('orders.ordersSkuCode')}}: {{kvSku.skuId}}</span>
                   </div>
                 </div>
-              </dt>
-              <dd class="goods-quantity">
+              </div>
+              <div class="flex-center-12"></div>
+              <div class="goods-quantity direction-text-align-right">
                 <span>{{kvSku.paymentCurrency}} {{currencyFormat(kvSku.paymentAmount)}}</span>
                 <p class="quantity">× {{ kvSku.quantity || '0' }}</p>
-              </dd>
-            </dl>
+              </div>
+            </div>
             <div class="Subtotal-info-li">
+              <div class="flex-center-80"></div>
               <span class="Subtotal-info-li-label">{{$t('orders.ordersSubtotal')}}</span>
+              <div class="flex-center"></div>
               <div class="Subtotal-info-li-value">{{kv.paymentCurrency}} {{currencyFormat(kv.totalPrice)}}</div>
             </div>
           </div>
