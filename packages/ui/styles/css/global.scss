@@ -327,7 +327,7 @@
   flex: 1;
 }
 // 固定宽度
-$flex-center-width-max: 48;
+$flex-center-width-max: 100;
 @for $i from 1 through $flex-center-width-max {
   .flex-center-#{$i} {
     width: $i * 1px;

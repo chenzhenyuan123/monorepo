@@ -138,8 +138,7 @@
       margin: 12px 24px;
       .Subtotal-info-li {
         display: flex;
-        margin-left: 80px;
-        justify-content: space-between;
+        // justify-content: space-between;
         line-height: 30px;
         font-size: 14px;
         color: #817F86;
@@ -183,31 +182,20 @@
             color: #817F86;
             font-family: Inter;
             font-size: 14px;
-            line-height: 20px;
-            margin-bottom: 8px;
           }
          .goods-spu {
             color: #101828;
             font-family: Inter;
             font-size: 16px;
             line-height: 24px;
-            margin-bottom: 8px;
-         }
-         .SkuCode-box {
-          padding-left: 8px;
-          margin-left: 8px;
-          border-left: 1px solid #817F86;
-          height: 20px;
          }
         }
       }
       .goods-quantity {
-        text-align: right;
         color: var(--Basic-color-basic-primary, #5548FF);
         font-family: var(--font-family-Number, "IBM Plex Sans Condensed");
         font-size: var(--font-size-body-l, 16px);
-        line-height: var(--Line-height-text-xl, 30px); /* 187.5% */
-        margin-left: 20px;
+        line-height: var(--Line-height-text-xl, 30px);
         span {
           color: #5548FF;
           font-size: 20px;
