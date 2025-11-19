@@ -296,6 +296,9 @@ onMounted(() => {
     .el-table__body-wrapper .el-table-column--selection>.cell, .el-table__header-wrapper .el-table-column--selection>.cell{
       height: 20px;
     }
+    .is-right .cell, .is-right .cell > div {
+      justify-content: right;
+    }
   }
 }
 .flylinking-pagination{
