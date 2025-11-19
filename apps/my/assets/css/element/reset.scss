@@ -9,7 +9,7 @@
   transform: scaleX(-1); /* 水平翻转箭头图标 */
 }
 
-.rtl {
+.rtl { // 从右到左->阿拉伯文多语言样式兼容
   direction: rtl;
   text-align: right;
   .direction-ltr {
@@ -27,6 +27,9 @@
   .direction-flex-right {
     justify-content: left;
   }
+  .direction-flex-left {
+    justify-content: right;
+  }
   .direction-ltr-input {
     input {
       direction: ltr;
@@ -34,7 +37,7 @@
     }
   }
 }
-.ltr {
+.ltr { // 从左到右->正常样式
   direction: ltr;
   text-align: unset;
   .direction-text-align-right {
