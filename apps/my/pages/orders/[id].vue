@@ -109,7 +109,7 @@ const getSrc = (imgName) => {
         </a>
         <div v-if="orderInfo.orderDetailCO.buyerOrderStatus===0 && orderInfo.orderDetailCO.payNowUrl" class="flex-center-12"></div>
 
-        <div v-if="orderInfo.orderDetailCO.buyerOrderStatus===1">
+        <div v-if="orderInfo.orderDetailCO.buyerOrderStatus===1" class="position">
           <el-button type="primary" id="Contact-seller-btn" @click="showContactInfo2=true">{{$t('orders.ordersContactSeller')}}</el-button>
           <!-- 联系方式弹窗 -->
           <ContactInfo v-if="showContactInfo2" :contactInfo="orderInfo.orderDetailCO" left="0" @hide="showContactInfo2=false" />
