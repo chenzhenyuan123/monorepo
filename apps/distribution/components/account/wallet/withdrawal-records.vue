@@ -206,7 +206,7 @@ const jumpToDetail = (r) => {
                 </el-tag>
             </template>
             </el-table-column>
-            <el-table-column action class-name="operation-col" :label="$t('wallet.withdrawalRecordsTableLabelActions')" width="160" fixed="right" align="left">
+            <el-table-column action class-name="operation-col" :label="$t('wallet.withdrawalRecordsTableLabelActions')" min-width="100" fixed="right">
                 <template #default="{ row }">
                 <el-link type="primary" @click="jumpToDetail(row)">
                     {{ $t('wallet.actionsDetails') }}

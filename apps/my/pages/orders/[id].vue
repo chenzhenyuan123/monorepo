@@ -211,7 +211,7 @@ const getSrc = (imgName) => {
                   <div class="goods-spu ellipsis2 mb8">{{kvSku.goodsTitle}}</div>
                   <div v-if="kvSku.skuDesc" class="goods-sku ellipsis mb8" v-html="kvSku.skuDesc" />
                   <div v-else class="goods-sku ellipsis mb8">{{$t('orders.orderSkuDesc')}}</div>
-                  <div class="goods-sku flex-box">
+                  <div class="goods-sku flex-box direction-ltr direction-flex-left">
                     <span class="goods-sku">{{$t('orders.ordersGoodsNo')}}: {{kvSku.flylinkGoodsNo}}</span>
                     <el-divider v-if="kvSku.skuId" direction="vertical" />
                     <span v-if="kvSku.skuId" class="goods-sku">{{$t('orders.ordersSkuCode')}}: {{kvSku.skuId}}</span>

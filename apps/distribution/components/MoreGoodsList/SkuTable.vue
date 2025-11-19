@@ -49,12 +49,12 @@ const getClassName = () => {
             </div>
           </template>
       </el-table-column>
-      <el-table-column v-if="isMobile" prop="skuId" label="SKU" min-width="100" align="right">
+      <el-table-column v-if="isMobile" prop="skuId" label="SKU" min-width="100">
         <template #default="{ row }">
           {{ row.skuId }}
         </template>
       </el-table-column>
-      <el-table-column v-if="isMobile" prop="skuDesc" :label="$t('wallet.referralTableLabelVariant')" min-width="100" align="right">
+      <el-table-column v-if="isMobile" prop="skuDesc" :label="$t('wallet.referralTableLabelVariant')" min-width="100">
         <template #default="{ row }">
           <span v-html="row.skuDesc"></span>
         </template>

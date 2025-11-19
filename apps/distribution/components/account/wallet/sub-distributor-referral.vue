@@ -83,14 +83,25 @@ const showTrackShipmentDialog = (orderId) => {
 
 // 弹窗获取商品信息
 const showPopover = async(row) => {
-  const result = await clientApi.qryUserCommissionList({
-    orderId: row.orderId
-  })
-  const res = checkResponseData(result)
-  if(res) {
-    row.distributorList = res || []
+    if(!row.distributionDetailNumber) {
+        row.distributorList = [{
+            userNo: row.userNo,
+            userEmail: row.userEmail,
+            commissionAmt: row.commission,
+            paymentCurrency: row.commissionCurrency,
+            settlementCommission: row.settlementCommission,
+            settlementCommissionCurrency: row.settlementCommissionCurrency
+        }]
+    } else {
+        const result = await clientApi.qryUserCommissionList({
+            orderId: row.orderId
+        })
+        const res = checkResponseData(result)
+        if(res) {
+            row.distributorList = res || []
+        }
+    }
     row.showMore = true
-  }
 }
 </script>
 
@@ -162,7 +173,7 @@ const showPopover = async(row) => {
                         <el-image :src="previewImg(row.mainPicture)" alt="" class="goods-img" fit="contain"></el-image>
                         <div class="flex-center-12"></div>
                         <div class="goods-info">
-                            <div class="goods-info-h1" :title="row.goodsName">{{ row.goodsName }}</div>
+                            <div class="goods-info-h1" :title="row.goodsTitle">{{ row.goodsTitle }}</div>
                             <div class="goods-info-p">{{ $t('wallet.subReferralTableLabelOrderID') }}: {{ row.orderId }}</div>
                         </div>
                     </div>
@@ -186,10 +197,10 @@ const showPopover = async(row) => {
             <el-table-column prop="commission" :label="$t('wallet.subReferralTableLabelCommissionPayment')" min-width="160" align="right">
                 <template #default="{ row }">
                     <div class="color1">{{ formatterAmount(row.commission, row.commissionCurrency) }}</div>
-                    <div v-if="row.distributionDetailNumber && row.commission" class="width100">
+                    <div v-if="row.commission" class="width100">
                         <div v-if="isMobile">
                             <p class="card-amount tip-trigger-style" @click="showPopover(row)">
-                            {{ $t('wallet.referralTableLabelDistributorInfo',{num: row.distributionDetailNumber}) }}
+                            {{ $t('wallet.referralTableLabelDistributorInfo',{num: row.distributionDetailNumber || 1}) }}
                             </p>
                             <MoreGoodsList v-if="row.showMore" :dataList="row.distributorList" type="payment" left="0" @hide="row.showMore=false" />
                         </div>
@@ -199,15 +210,13 @@ const showPopover = async(row) => {
                                 effect="light"
                                 :width="620"
                                 popper-class="popover-dialog goods-popover-box"
-                                v-model="row.showMore"
-                                @show="showPopover(row)"
                             >
                                 <div class="statistical-box goods-statistical-box">
                                     <MoreGoodsListCommissionTable v-if="row.distributorList" :dataList="row.distributorList" type="payment" />
                                 </div>
                                 <template #reference>
-                                    <p class="card-amount tip-trigger-style">
-                                        {{ $t('wallet.referralTableLabelDistributorInfo',{num: row.distributionDetailNumber}) }}
+                                    <p class="card-amount tip-trigger-style" @mouseenter="showPopover(row)">
+                                        {{ $t('wallet.referralTableLabelDistributorInfo',{num: row.distributionDetailNumber || 1}) }}
                                     </p>
                                 </template>
                             </el-popover>
@@ -218,10 +227,10 @@ const showPopover = async(row) => {
             <el-table-column prop="commission" :label="$t('wallet.subReferralTableLabelCommissionSettlement')" min-width="160" align="right">
                 <template #default="{ row }">
                     <div class="color1">{{ formatterAmount(row.settlementCommission, row.settlementCommissionCurrency) }}</div>
-                    <div v-if="row.distributionDetailNumber && row.settlementCommission">
+                    <div v-if="row.settlementCommission" class="width100">
                         <div v-if="isMobile">
                           <p class="card-amount tip-trigger-style" @click="showPopover(row)">
-                            {{ $t('wallet.referralTableLabelDistributorInfo',{num: row.distributionDetailNumber}) }}
+                            {{ $t('wallet.referralTableLabelDistributorInfo',{num: row.distributionDetailNumber || 1}) }}
                           </p>
                           <MoreGoodsList v-if="row.showMore" :dataList="row.distributorList" type="settlement" left="0" @hide="row.showMore=false" />
                         </div>
@@ -231,15 +240,13 @@ const showPopover = async(row) => {
                             effect="light"
                             :width="620"
                             popper-class="popover-dialog goods-popover-box"
-                            v-model="row.showMore"
-                            @show="showPopover(row)"
                           >
                               <div class="statistical-box goods-statistical-box">
                                 <MoreGoodsListCommissionTable v-if="row.distributorList" :dataList="row.distributorList" type="settlement" />
                               </div>
                               <template #reference>
-                                <p class="card-amount tip-trigger-style">
-                                    {{ $t('wallet.referralTableLabelDistributorInfo',{num: row.distributionDetailNumber}) }}
+                                <p class="card-amount tip-trigger-style" @mouseenter="showPopover(row)">
+                                    {{ $t('wallet.referralTableLabelDistributorInfo',{num: row.distributionDetailNumber || 1}) }}
                                 </p>
                               </template>
                           </el-popover>
@@ -247,10 +254,10 @@ const showPopover = async(row) => {
                     </div>
                 </template>
             </el-table-column>
-            <el-table-column prop="userEmail" :label="$t('wallet.subReferralTableLabelDistributor')"
+            <!-- <el-table-column prop="userEmail" :label="$t('wallet.subReferralTableLabelDistributor')"
              min-width="200" align="right" />
             <el-table-column prop="userNo" :label="$t('wallet.subReferralTableLabelDistributorID')"
-             min-width="160" align="right" />
+             min-width="160" align="right" /> -->
             <el-table-column prop="purchaseTime" :label="$t('wallet.subReferralTableLabelDatetimeOfPurchase')"
              min-width="170">
                 <template #default="{ row }">

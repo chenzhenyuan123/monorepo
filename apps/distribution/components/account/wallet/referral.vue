@@ -158,12 +158,12 @@ const showPopover = async(row) => {
         >
             <el-table-column prop="orderId" :label="$t('wallet.referralTableLabelOrderID')" min-width="300">
                 <template #default="{ row }">
-                  <template v-if="isMobile || row.distributionDetailNumber">{{ row.orderId }}</template>
-                  <div v-else-if="!row.distributionDetailNumber" class="goods-container">
+                  <template v-if="isMobile">{{ row.orderId }}</template>
+                  <div v-else class="goods-container">
                       <el-image :src="previewImg(row.mainPicture)" alt="" class="goods-img" fit="contain"></el-image>
                       <div class="flex-center-12"></div>
                       <div class="goods-info">
-                          <div class="goods-info-h1" :title="row.goodsName">{{ row.goodsName }}</div>
+                          <div class="goods-info-h1" :title="row.goodsTitle">{{ row.goodsTitle }}</div>
                           <div class="goods-info-p">{{ $t('wallet.subReferralTableLabelOrderID') }}: {{ row.orderId }}</div>
                       </div>
                   </div>
@@ -176,7 +176,7 @@ const showPopover = async(row) => {
             </el-table-column>
             <el-table-column prop="goodsCommissionRate" :label="$t('wallet.referralTableLabelProductCommissionRate')" min-width="160" align="right">
                 <template #default="{ row }">
-                  <div v-if="row.distributionDetailNumber">
+                  <div v-if="row.distributionDetailNumber" class="width100">
                     <div v-if="isMobile">
                       <span class="card-amount tip-trigger-style" @click="showPopover(row)">
                         {{ $t('wallet.referralTableLabelItemInfo',{num: row.distributionDetailNumber}) }}
@@ -349,5 +349,9 @@ const showPopover = async(row) => {
           border-radius: 0;
       }
   }
+}
+.width100 {
+    flex-shrink: 0;
+    width: 100%;
 }
 </style>

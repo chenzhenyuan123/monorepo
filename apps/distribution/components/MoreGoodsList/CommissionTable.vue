@@ -32,12 +32,12 @@ const formatterAmount = (v, c) => {
       :tableData="dataList"
       :max-height="400"
   >
-      <el-table-column prop="userNo" :label="$t('wallet.subReferralTableLabelDistributorID')" min-width="100" align="right">
+      <el-table-column prop="userNo" :label="$t('wallet.subReferralTableLabelDistributorID')" min-width="80">
         <template #default="{ row }">
           {{ row.userNo }}
         </template>
       </el-table-column>
-      <el-table-column prop="userEmail" :label="$t('wallet.subReferralTableLabelDistributor')" min-width="100" align="right">
+      <el-table-column prop="userEmail" :label="$t('wallet.subReferralTableLabelDistributor')" min-width="160">
         <template #default="{ row }">
           {{ row.userEmail }}
         </template>
@@ -47,7 +47,7 @@ const formatterAmount = (v, c) => {
             {{ formatterAmount(row.commissionAmt, row.paymentCurrency) }}
           </template>
       </el-table-column>
-      <el-table-column v-if="type==='settlement'" prop="settlementCommission" :label="$t('wallet.subReferralTableLabelCommissionSettlement')" min-width="140" align="right">
+      <el-table-column v-if="type==='settlement'" prop="settlementCommission" :label="$t('wallet.subReferralTableLabelCommissionSettlement')" min-width="100" align="right">
           <template #default="{ row }">
             {{ formatterAmount(row.settlementCommission, row.settlementCommissionCurrency) }}
           </template>
