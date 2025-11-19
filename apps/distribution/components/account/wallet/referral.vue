@@ -232,7 +232,7 @@ const showPopover = async(row) => {
                     <el-link type="primary" @click="showTrackShipmentDialog(row.orderId)">{{ $t('wallet.dataShippingStatus') }}</el-link>
                 </template>
             </el-table-column>
-            <el-table-column prop="commissionStatus" tag :label="$t('wallet.referralTableLabelState')" min-width="120">
+            <el-table-column prop="commissionStatus" tag :label="$t('wallet.referralTableLabelState')" min-width="140">
               <template #default="{ row }">
                   <el-tag v-if="row.commissionStatus" :type="commissionStatusToType[row.commissionStatus]" class="tag-default">
                       <el-icon v-if="row.commissionStatus === 1" class="tag-icon"><Check /></el-icon>
