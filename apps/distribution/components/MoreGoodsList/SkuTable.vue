@@ -24,9 +24,6 @@ const formatterRate = (v) => {
   return isUseless(v) ? '' : (accurate_toFixed(v * 100, 2) +'%')
 }
 
-const getClassName = () => {
-  return isMobile ? 'goods-Mobile-box' : ''
-}
 </script>
 <template>
   <pro-table
