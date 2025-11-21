@@ -37,7 +37,7 @@ onMounted(() => {
 </script>
 <template>
   <div>
-    <Layer ref="layerRef" :title="$t('wallet.dataCommissionProductCommission')" class="layer" :positionTop="positionTop" :positionLeft="positionLeft" v-once @hide="$emit('hide')">
+    <Layer ref="layerRef" :title="type?$t('wallet.distributorInfoDeatil'):$t('wallet.goodsInfoDeatil')" class="layer" :positionTop="positionTop" :positionLeft="positionLeft" v-once @hide="$emit('hide')">
       <div class="contact-info">
         <MoreGoodsListSkuTable v-if="!type" :dataList="dataList" />
         <MoreGoodsListCommissionTable v-else :dataList="dataList" :type="type" />
