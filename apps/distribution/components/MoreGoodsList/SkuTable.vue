@@ -46,14 +46,14 @@ const formatterRate = (v) => {
             </div>
           </template>
       </el-table-column>
-      <el-table-column v-if="isMobile" prop="skuId" label="SKU" min-width="100">
+      <el-table-column v-if="isMobile" prop="skuId" :label="$t('orders.ordersSkuCode')" min-width="100">
         <template #default="{ row }">
           {{ row.skuId }}
         </template>
       </el-table-column>
       <el-table-column v-if="isMobile" prop="skuDesc" :label="$t('wallet.referralTableLabelVariant')" min-width="100">
         <template #default="{ row }">
-          <span v-html="row.skuDesc"></span>
+          <span v-if="row.skuDesc" v-html="row.skuDesc"></span>
         </template>
       </el-table-column>
       <el-table-column prop="goodsCommissionRate" :label="$t('wallet.referralTableLabelProductCommissionRate')" min-width="100" align="right">
