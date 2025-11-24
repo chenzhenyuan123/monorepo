@@ -88,7 +88,7 @@
                 </div>
                 <div class="goods-attr">
                     <div class="goods-spu ellipsis2">{{ item.goodsTitle }}</div>
-                    <p class="goods-sku ellipsis">{{ item.skuDesc }}</p>
+                    <p class="goods-sku ellipsis">{{$t('orders.ordersGoodsNo')}}: {{item.flylinkGoodsNo}}</p>
                 </div>
                 <dd class="goods-quantity-container direction-text-align-right">
                     <p class="goods-quantity-amount">{{ item.paymentCurrency }} {{currencyFormat(item.totalPrice)}}</p>
