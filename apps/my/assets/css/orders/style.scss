@@ -14,7 +14,17 @@
     font-size: 30px;
     font-weight: 600;
     line-height: 38px;
-    margin: 8px 0 20px;
+    margin: 8px 0 12px;
+  }
+  .text {
+    overflow: hidden;
+    color: #475467;
+    font-family: Inter;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 24px;
+    margin-bottom: 12px;
   }
   .order-detail-title-fotter {
     display: flex;
@@ -186,6 +196,14 @@
             font-family: Inter;
             font-size: 16px;
             line-height: 24px;
+         }
+         .no-flex-box {
+          display: block;
+         }
+         .goods-sku-mobile {
+            display: block;
+            margin-top: 4px;
+            line-height: 18px;
          }
         }
       }
