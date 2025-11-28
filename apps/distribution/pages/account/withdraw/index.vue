@@ -169,7 +169,7 @@ if (value && !isCardIconMatch.value) {
 const validateSWIFTCode = (rule, value, callback) => {
 if (value && !isSWIFTCode(value, countryCodeArr.value)) {
     callback(new Error(t('withdraw.applyFormValidateSWIFTCodeOrBICError')))
-  } else if (value && isGetFee.value && !(fee.value > 0)) {
+  } else if (value && isGetFee.value && !(fee.value >= 0)) {
     callback(new Error(t('withdraw.applyFormValidateSWIFTCodeOrBICError')))
   } else {
     callback()
