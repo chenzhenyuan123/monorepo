@@ -145,6 +145,7 @@ const toPage = () => {
     class="custom-class"
     ref="fullDialogRef"
     :class="{ 'm': isMobile }"
+    :align-center="true"
   >
     <div v-if="data.category === 2" :style="{ width, height }" class="container container-img">
       <template v-if="data.content">
