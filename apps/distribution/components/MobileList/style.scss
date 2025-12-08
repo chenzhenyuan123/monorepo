@@ -1,6 +1,7 @@
 .row-m-list{
   margin-bottom: 12px;
   min-height: 60px;
+  font-family: Inter;
   .empty{
     display: flex;
     align-items: center;
@@ -23,30 +24,24 @@
   }
   .row-item + .row-item{
     .label{
-      margin-top: 8px;
+      margin-top: 12px;
     }
     .value{
-      margin-top: 8px;
+      margin-top: 2px;
     }
   }
-  .row-item{
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    min-height: 20px;
+  .row-item {
     color: #475467;
     line-height: 20px;
     .label{
-      font-weight: 500;
-      flex-shrink: 0;
+      color: #667085;
+      font-size: 14px;
+      line-height: 18px;
     }
     .value{
-      font-weight: 400;
-      text-align: right;
-      flex: 1;
-      .rtl & {
-        text-align: left;
-      }
+      color: #475467;
+      font-size: 16px;
+      font-weight: 500;
     }
   }
 }

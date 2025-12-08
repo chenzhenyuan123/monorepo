@@ -98,7 +98,9 @@ const getSrc = (imgName) => {
       </NuxtLink>
     </div>
     <div class="order-detail-title">
-      <!-- <h3 v-if="orderInfo.goodsSpuList.length>0" class="title">{{orderInfo.goodsSpuList[0].goodsTitle}}</h3> -->
+      <h3 class="title">{{$t(formatInTable(ordersStatus, orderInfo.orderDetailCO.buyerOrderStatus))}}</h3>
+      <!-- 待付款的展示订单有效期 -->
+      <h3 v-if="orderInfo.orderDetailCO.buyerOrderStatus===0 && orderInfo.orderDetailCO.expireTime" class="text">{{$t('orders.ordersValidityPeriod')}}: {{formatDate(orderInfo.orderDetailCO.expireTime)}}</h3>
       <!-- 待付款：发起支付Pay Now buyerOrderStatus0
            待发货：联系卖家Contact Seller buyerOrderStatus1
            已发货：查看物流Track Shipment，确认收货Mark as Received buyerOrderStatus2 
@@ -211,10 +213,10 @@ const getSrc = (imgName) => {
                   <div class="goods-spu ellipsis2 mb8">{{kvSku.goodsTitle}}</div>
                   <div v-if="kvSku.skuDesc" class="goods-sku ellipsis mb8" v-html="kvSku.skuDesc" />
                   <div v-else class="goods-sku ellipsis mb8">{{$t('orders.orderSkuDesc')}}</div>
-                  <div class="goods-sku flex-box direction-ltr direction-flex-left">
+                  <div class="goods-sku flex-box direction-ltr direction-flex-left" :class="{'no-flex-box': isMobile}">
                     <span class="goods-sku">{{$t('orders.ordersGoodsNo')}}: {{kvSku.flylinkGoodsNo}}</span>
-                    <el-divider v-if="kvSku.skuId" direction="vertical" />
-                    <span v-if="kvSku.skuId" class="goods-sku">{{$t('orders.ordersSkuCode')}}: {{kvSku.skuId}}</span>
+                    <div class="flex-center-8"></div>
+                    <span v-if="kvSku.skuId" class="goods-sku" :class="{'goods-sku-mobile': isMobile}">{{$t('orders.ordersSkuCode')}}:<br v-if="isMobile" /> {{kvSku.skuId}}</span>
                   </div>
                 </div>
               </div>

@@ -127,7 +127,7 @@
                 <ContactInfo v-if="showContactInfo" :contactInfo="orderData" @hide="showContactInfo=false" />
             </div>
             <el-button v-if="orderData.buyerOrderStatus===2 && orderData.logisticsCode" type="primary" class="button-default" id="Track-Shipment-btn" @click.stop="jumpTo17track">{{$t('orders.ordersTrackShipment')}}</el-button>
-            <el-button v-if="([3,4].includes(orderData.buyerOrderStatus)) && orderData.orderLinkurl" type="primary" class="button-default" id="Pay-Now-btn" @click.stop="jumpToPay(orderData.orderLinkurl)">{{$t('orders.ordersBuyAgain')}}</el-button>
+            <el-button v-if="([3,4].includes(orderData.buyerOrderStatus)) && orderData.orderLinkurl" type="primary" class="button-default" id="Buy-Again-btn-list" @click.stop="jumpToPay(orderData.orderLinkurl)">{{$t('orders.ordersBuyAgain')}}</el-button>
         </div>
 
     </div>
