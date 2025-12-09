@@ -110,6 +110,8 @@ const rules = () => {
                             return cb(new Error(t("profile.hasChineseLimit")))
                         } else if (hasArabic(value)){
                             return cb(new Error(t("profile.hasArabicLimit")))
+                        } else if (value.length > 256){
+                            return cb(new Error(t("profile.validMax", { num: 256 })))
                         }
                     }
                     cb();
@@ -125,6 +127,8 @@ const rules = () => {
                             return cb(new Error(t("profile.hasChineseLimit")))
                         } else if (hasArabic(value)){
                             return cb(new Error(t("profile.hasArabicLimit")))
+                        } else if (value.length > 256){
+                            return cb(new Error(t("profile.validMax", { num: 256 })))
                         }
                     }
                     cb();
