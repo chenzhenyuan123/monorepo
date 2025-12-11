@@ -17,7 +17,6 @@ const orderInfo = ref({
   goodsSpuList: [], // 商品列表信息
   orderDetailCO: {}, // 订单信息
   shipping: {}, // 收货地址
-  LogisticsListStr: '', // 物流单号拼接，用于跳转17track
   tradeOrderLogisticsList: [] // 物流信息
 })
 
@@ -46,11 +45,6 @@ const getInfo = async () => {
   const res = checkResponseData(result)
   if(res) {
     orderInfo.value = Object.assign(res)
-    if(res?.tradeOrderLogisticsList && res.tradeOrderLogisticsList.length>0) {
-      orderInfo.value.LogisticsListStr = res.tradeOrderLogisticsList.map(ele => {
-        return ele.logisticsCode;
-      }).join(',');
-    }
     // 更新状态（默认为 发货 之后，加5个自然日「S+5」之后，方可确认收货）
     const shippingTime = orderInfo.value.orderDetailCO.shippingTime
     if (shippingTime) {
@@ -118,7 +112,7 @@ const getSrc = (imgName) => {
         </div>
         <div v-if="orderInfo.orderDetailCO.buyerOrderStatus===1" class="flex-center-12"></div>
 
-        <a v-if="orderInfo.orderDetailCO.buyerOrderStatus===2 && orderInfo.orderDetailCO.logisticsCode" :href="`https://t.17track.net/en#nums=${orderInfo.LogisticsListStr}`" target="_blank">
+        <a v-if="orderInfo.orderDetailCO.buyerOrderStatus===2 && orderInfo.tradeOrderLogisticsList.length>0" :href="`https://t.17track.net/en#nums=${orderInfo.tradeOrderLogisticsList[0].logisticsCode}${orderInfo.tradeOrderLogisticsList[0].logisticsProviderCode ? '&fc='+orderInfo.tradeOrderLogisticsList[0].logisticsProviderCode : ''}`" target="_blank">
           <el-button type="primary" id="Track-Shipment-btn">{{$t('orders.ordersTrackShipment')}}</el-button>
         </a>
         <div v-if="orderInfo.orderDetailCO.buyerOrderStatus===2 && orderInfo.orderDetailCO.logisticsCode" class="flex-center-12"></div>
@@ -160,7 +154,7 @@ const getSrc = (imgName) => {
             <a
               v-for="item in orderInfo.tradeOrderLogisticsList"
               :key="item.id"
-              :href="`https://t.17track.net/en#nums=${orderInfo.LogisticsListStr}`"
+              :href="`https://t.17track.net/en#nums=${item.logisticsCode}${item.logisticsProviderCode ? '&fc='+item.logisticsProviderCode : ''}`"
               target="_blank"
               class="shipment-tag-a"
              >
