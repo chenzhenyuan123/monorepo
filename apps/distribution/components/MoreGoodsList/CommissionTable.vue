@@ -37,17 +37,17 @@ const formatterAmount = (v, c) => {
           {{ row.userNo }}
         </template>
       </el-table-column>
-      <el-table-column prop="userEmail" :label="$t('wallet.subReferralTableLabelDistributor')" min-width="160">
+      <el-table-column prop="userEmail" :label="$t('wallet.subReferralTableLabelDistributor')" min-width="140">
         <template #default="{ row }">
           {{ row.userEmail }}
         </template>
       </el-table-column>
-      <el-table-column v-if="type==='payment'" prop="commissionAmt" :label="$t('wallet.subReferralTableLabelCommissionPayment')" min-width="100" align="right">
+      <el-table-column v-if="type==='payment'" prop="commissionAmt" :label="$t('wallet.subReferralTableLabelCommissionPayment')" min-width="160" align="right">
           <template #default="{ row }">
             {{ formatterAmount(row.commissionAmt, row.paymentCurrency) }}
           </template>
       </el-table-column>
-      <el-table-column v-if="type==='settlement'" prop="settlementCommission" :label="$t('wallet.subReferralTableLabelCommissionSettlement')" min-width="100" align="right">
+      <el-table-column v-if="type==='settlement'" prop="settlementCommission" :label="$t('wallet.subReferralTableLabelCommissionSettlement')" min-width="160" align="right">
           <template #default="{ row }">
             {{ formatterAmount(row.settlementCommission, row.settlementCommissionCurrency) }}
           </template>

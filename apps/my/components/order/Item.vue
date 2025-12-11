@@ -49,10 +49,8 @@
     }
 
     const jumpTo17track = () => {
-        const LogisticsListStr = props.orderData.tradeOrderLogisticsList.map(ele => {
-            return ele.logisticsCode;
-        }).join(',');
-        window.open(`https://t.17track.net/en#nums=${LogisticsListStr}`, '_blank')
+        const url = `https://t.17track.net/en#nums=${props.orderData.tradeOrderLogisticsList[0]?.logisticsCode}${props.orderData.tradeOrderLogisticsList[0]?.logisticsProviderCode ? '&fc='+props.orderData.tradeOrderLogisticsList[0].logisticsProviderCode : ''}`
+        window.open(url, '_blank')
     }
 
 

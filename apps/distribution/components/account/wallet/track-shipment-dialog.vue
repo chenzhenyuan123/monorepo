@@ -42,15 +42,9 @@ const shippingInfo = ref({
   logisticsList: []
 })
 const isGetData = ref(false)
-const urkFor17track = computed(() => {
-  const arr = shippingInfo.value.logisticsList.map(item => {
-    return item.logisticsNo
-  }).filter(item => item)
-  return 'https://t.17track.net/en#nums='+arr.join()
-})
 // 查询分销订物流信息
 const getOrderShippingInfo = async() => {
-  const result = await tradeOrderApi.getOrderShippingInfo({ orderNo: props.orderId })
+  const result = await tradeOrderApi.getOrderShippingInfo({ orderId: props.orderId })
   const res = checkResponseData(result)
   shippingInfo.value = res || { logisticsList: [] }
   isGetData.value = true
@@ -80,20 +74,20 @@ onMounted(() => {
       </template>
 
       <div class="flex-box mb20">
-        <el-tag v-if="shippingInfo.shippingStatus" :type="shippingStatusToType[shippingInfo.shippingStatus]" class="tag-default">
+        <!-- <el-tag v-if="shippingInfo.shippingStatus" :type="shippingStatusToType[shippingInfo.shippingStatus]" class="tag-default">
           <span class="tag-span">{{ shippingStatusDict[shippingInfo.shippingStatus] }}</span>
-        </el-tag>
+        </el-tag> -->
         <div class="flex-center-12"></div>
         <p v-if="shippingInfo.logisticsList.length" class="p">{{ $t('wallet.trackShipmentDialogTotal',{num:shippingInfo.logisticsList.length}) }}</p>
       </div>
 
-      <a
-        v-if="shippingInfo.logisticsList.length"
-        class="list"
-        :href="urkFor17track"
-        target="_blank"
-      >
-        <div v-for="item in shippingInfo.logisticsList" class="item">
+      <div v-if="shippingInfo.logisticsList.length" class="list">
+        <a
+          v-for="item in shippingInfo.logisticsList" :key="item.logisticsNo"
+          class="item"
+          :href="`https://t.17track.net/en#nums=${item.logisticsNo}${item.logisticsProviderCode ? '&fc='+item.logisticsProviderCode : ''}`"
+          target="_blank"
+        >
           <div class="svg-container">
             <svg xmlns="http://www.w3.org/2000/svg" width="25" height="24" viewBox="0 0 25 24" fill="none">
               <path d="M14.5 7H16.8373C17.0818 7 17.2041 7 17.3192 7.02763C17.4213 7.05213 17.5188 7.09253 17.6083 7.14736C17.7092 7.2092 17.7957 7.29568 17.9686 7.46863L22.0314 11.5314C22.2043 11.7043 22.2908 11.7908 22.3526 11.8917C22.4075 11.9812 22.4479 12.0787 22.4724 12.1808C22.5 12.2959 22.5 12.4182 22.5 12.6627V15.5C22.5 15.9659 22.5 16.1989 22.4239 16.3827C22.3224 16.6277 22.1277 16.8224 21.8827 16.9239C21.6989 17 21.4659 17 21 17M16 17H14.5M14.5 17V7.2C14.5 6.0799 14.5 5.51984 14.282 5.09202C14.0903 4.71569 13.7843 4.40973 13.408 4.21799C12.9802 4 12.4201 4 11.3 4H5.7C4.5799 4 4.01984 4 3.59202 4.21799C3.21569 4.40973 2.90973 4.71569 2.71799 5.09202C2.5 5.51984 2.5 6.0799 2.5 7.2V15C2.5 16.1046 3.39543 17 4.5 17M14.5 17H10.5M10.5 17C10.5 18.6569 9.15685 20 7.5 20C5.84315 20 4.5 18.6569 4.5 17M10.5 17C10.5 15.3431 9.15685 14 7.5 14C5.84315 14 4.5 15.3431 4.5 17M21 17.5C21 18.8807 19.8807 20 18.5 20C17.1193 20 16 18.8807 16 17.5C16 16.1193 17.1193 15 18.5 15C19.8807 15 21 16.1193 21 17.5Z" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -102,7 +96,7 @@ onMounted(() => {
           <div class="flex-center-16"></div>
           <div class="info">
             <div class="title mb4">{{ item.logisticsProvider }} | {{ item.logisticsNo }}</div>
-            <p class="p mb12">{{ item.remark }}</p>
+            <p v-if="item.remark" class="p mb12">{{ $t('wallet.trackShipmentDialogShippingNote') }}: {{ item.remark }}</p>
             <el-link
               type="primary"
             >
@@ -117,8 +111,8 @@ onMounted(() => {
               </div>
             </el-link>
           </div>
-        </div>
-      </a>
+        </a>
+      </div>
       <div v-else-if="isGetData" class="empty-container">
         <div class="bg svg-container">
           <svg width="481" height="160" viewBox="0 0 481 160" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -651,18 +645,18 @@ onMounted(() => {
       line-height: 20px;
     }
     .list {
-      display: block;
-      border-radius: 8px;
       border: 1px solid #D0D5DD;
-      text-decoration: none;
+      border-radius: 8px;
       .item {
         display: flex;
-        padding: 10px;
+        padding: 16px;
         border-bottom: 1px solid #D0D5DD;
+        text-decoration: none;
         &:last-child {
           border-bottom: 0;
         }
         .info {
+          width: calc(100% - 16px - 25px);
           .title {
             color: #101828;
             font-size: 16px;

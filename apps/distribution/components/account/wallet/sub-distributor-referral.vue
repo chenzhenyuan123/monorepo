@@ -83,23 +83,14 @@ const showTrackShipmentDialog = (orderId) => {
 
 // 弹窗获取商品信息
 const showPopover = async(row) => {
-    if(!row.distributionDetailNumber) {
-        row.distributorList = [{
-            userNo: row.userNo,
-            userEmail: row.userEmail,
-            commissionAmt: row.commission,
-            paymentCurrency: row.commissionCurrency,
-            settlementCommission: row.settlementCommission,
-            settlementCommissionCurrency: row.settlementCommissionCurrency
-        }]
-    } else {
-        const result = await clientApi.qryUserCommissionList({
-            orderId: row.orderId
-        })
-        const res = checkResponseData(result)
-        if(res) {
-            row.distributorList = res || []
-        }
+    const body = {
+        orderId: row.orderId,
+        isSpuCommission: !!row.distributionDetailNumber // 新旧数据参数：没有distributionDetailNumber传false
+    }
+    const result = await clientApi.qryUserCommissionList(body)
+    const res = checkResponseData(result)
+    if(res) {
+        row.distributorList = res || []
     }
     row.showMore = true
 }
