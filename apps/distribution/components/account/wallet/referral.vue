@@ -139,6 +139,16 @@ const showPopover = async(row) => {
                   @clear="query"
                 />
             </el-form-item>
+            <el-form-item :label="$t('wallet.subReferralFormLabelBuyerEmail')" style="width: 220px;">
+              <el-input
+                v-model="formData.buyerEmail"
+                clearable
+                :placeholder="$t('wallet.subReferralFormLabelBuyerEmail')"
+                :suffix-icon="Search"
+                @keyup.enter.native="query"
+                @clear="query"
+              />
+          </el-form-item>
             <!-- <el-form-item :label="$t('wallet.referralFormLabelProduct')" style="width: 220px;">
                 <el-input
                   v-model="formData.goodsName"
@@ -227,12 +237,13 @@ const showPopover = async(row) => {
                     <span class="direction-ltr direction-inline-block">{{ formatDate(row.purchaseTime) }}</span>
                 </template>
             </el-table-column>
-            <el-table-column prop="shippingStatus" :label="$t('wallet.referralTableLabelShippingStatus')" min-width="160">
+            <el-table-column prop="buyerEmail" :label="$t('wallet.subReferralFormLabelBuyerEmail')" min-width="180" />
+            <el-table-column prop="shippingStatus" :label="$t('wallet.referralTableLabelShippingStatus')" min-width="120">
                 <template #default="{ row }">
                     <el-link type="primary" @click="showTrackShipmentDialog(row.orderId)">{{ $t('wallet.dataShippingStatus') }}</el-link>
                 </template>
             </el-table-column>
-            <el-table-column prop="commissionStatus" tag :label="$t('wallet.referralTableLabelState')" min-width="140">
+            <el-table-column prop="commissionStatus" tag :label="$t('wallet.referralTableLabelState')" min-width="120">
               <template #default="{ row }">
                   <el-tag v-if="row.commissionStatus" :type="commissionStatusToType[row.commissionStatus]" class="tag-default">
                       <el-icon v-if="row.commissionStatus === 1" class="tag-icon"><Check /></el-icon>
