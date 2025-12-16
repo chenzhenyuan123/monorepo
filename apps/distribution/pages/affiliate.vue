@@ -6,6 +6,7 @@
 import {checkResponseData} from "@/util";
 import { currencyFormat } from "@/util/index.js";
 import {sendLog} from "@/util/logUtil";
+import { reactive } from "vue";
 
 definePageMeta({
   layout: 'noside'
@@ -15,20 +16,33 @@ const route = useRoute();
 const { affiliateApi, joinApi } = useApi()
 const isMobile = useIsMobile()
 
-onMounted(()=>{
-  getStoreData()
+const page = reactive({
+  pageSize: 8,
+  total: 0,
+  pageNo: 1
 })
+const total = ref(0)
 
 const storeList = ref([])
+
+onMounted(()=>{
+  getStoreData()
+  sendLog({
+    eventType: 1,
+    eventCode: 'da-affiliate-load',
+    eventDesc: '分销端-ai推广页-加载'
+  })
+})
 // 获取店铺数据
 const getStoreData = async() => {
   const result = await affiliateApi.listStoreCanJoin({
-    pageNo: 1,
-    pageSize: 8
+    pageNo: page.pageNo,
+    pageSize: page.pageSize
   })
 
   const res = checkResponseData(result)
   storeList.value = res?.list || []
+  total.value = res.total
 }
 
 const isShowStoreDialog = ref(false)
@@ -38,17 +52,16 @@ const showStoreDialog = (obj) => {
   isShowStoreDialog.value = true
 }
 
-onMounted(async () => {
-
-  // 刷新页面，第一个 await 不会执行
-  await console.log('onMounted')
-
-  sendLog({
-    eventType: 1,
-    eventCode: 'da-affiliate-load',
-    eventDesc: '分销端-ai推广页-加载'
-  })
-})
+const handleSizeChange = val => {
+  page.pageSize = val
+  page.pageNo = 1
+  getStoreData()
+}
+const handleCurrentChange = val => {
+  if (page.pageNo === val) return
+  page.pageNo = val
+  getStoreData()
+}
 
 </script>
 <template>
@@ -183,7 +196,7 @@ onMounted(async () => {
               <el-link
                 :href="item.joinUrl"
                 target="_blank"
-                :underline="false"
+                underline="never"
                 class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-base font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 w-full"
                 @click.stop
               >
@@ -193,6 +206,16 @@ onMounted(async () => {
           </div>
         </div>
       </section>
+      
+      <Pagination
+        v-if="total>0"
+        :current-page="page.pageNo"
+        :page-sizes="[8, 16, 50, 100, 200]"
+        :page-size="page.pageSize"
+        :total="total"
+        @update:page-size="handleSizeChange"
+        @update:current-page="handleCurrentChange"
+      />
     </div>
 
     <div class="footer-main affiliate-footer max-w-7xl mx-auto">

@@ -104,7 +104,7 @@ const routerGo = (path) => {
           <h4 class="signup-title">{{ $t('signup.signupTilte') }}</h4>
           <div class="signup-tip">
             <p class="text">{{ $t('signup.signupHaveAccount') }}</p>
-            <el-link type="primary" :underline="false" @click="routerGo('/login')">{{ $t('login.loginFormSaveButton')}}</el-link>
+            <el-link type="primary" underline="never" @click="routerGo('/login')">{{ $t('login.loginFormSaveButton')}}</el-link>
           </div>
           <el-form ref="signupFormRef" :model="signupForm" label-position="top" require-asterisk-position="right" :rules="rules()" class="login-box" novalidate>
             <el-form-item :label="$t('login.loginFormEmail')" prop="email">
