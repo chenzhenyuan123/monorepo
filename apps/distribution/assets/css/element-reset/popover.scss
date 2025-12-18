@@ -15,3 +15,9 @@
     }
   }
 }
+
+.goods-popover-box.popover-dialog {
+  &.el-popover.el-popper {
+    border: none;
+  }
+}

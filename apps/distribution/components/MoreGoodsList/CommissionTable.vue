@@ -32,7 +32,7 @@ const formatterAmount = (v, c) => {
       :tableData="dataList"
       :max-height="400"
   >
-      <el-table-column prop="userNo" :label="$t('wallet.subReferralTableLabelDistributorID')" min-width="80">
+      <el-table-column prop="userNo" :label="$t('wallet.subReferralTableLabelDistributorID')" min-width="120">
         <template #default="{ row }">
           {{ row.userNo }}
         </template>
@@ -89,6 +89,13 @@ const formatterAmount = (v, c) => {
       overflow: hidden;
       text-overflow: ellipsis;
       margin-top: 4px;
+    }
+  }
+}
+.goods-pro-table {
+  ::v-deep {
+    .pro-table-wrapper {
+      border-radius: 8px;
     }
   }
 }

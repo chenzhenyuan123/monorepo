@@ -136,10 +136,10 @@ const getSrc = (imgName) => {
     </div>
     <div class="order-detail-content">
       <div class="right">
-        <div v-if="orderInfo.orderDetailCO.buyerOrderStatus>=0" class="order-text">
+        <!-- <div v-if="orderInfo.orderDetailCO.buyerOrderStatus>=0" class="order-text">
           <b>{{$t('wallet.withdrawalRecordsFormLabelStatus')}}:</b>
           <p><el-tag class="orders-status-tag" :class="formatInTable(ordersStatus, orderInfo.orderDetailCO.buyerOrderStatus, 'value', 'tag')">{{$t(formatInTable(ordersStatus, orderInfo.orderDetailCO.buyerOrderStatus))}}</el-tag></p>
-        </div>
+        </div> -->
         <div class="order-text">
           <b>{{$t('wallet.subReferralTableLabelOrderID')}}:</b>
           <p>{{orderInfo.orderDetailCO.flylinkOrderId}}</p>
