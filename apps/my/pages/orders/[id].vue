@@ -324,6 +324,12 @@ const getSrc = (imgName) => {
                 <p>{{ orderInfo.shipping.zipcode || '--' }}</p>
               </dd>
             </dl>
+            <dl v-if="orderInfo.shipping.shortAddress">
+              <dt>{{$t('profile.formPlaceholderShortAddress')}}:</dt>
+              <dd>
+                <p>{{ orderInfo.shipping.shortAddress || '--' }}</p>
+              </dd>
+            </dl>
             <dl class="margin-top36">
               <dt>{{$t('orders.orderVatID')}}:</dt>
               <dd>
