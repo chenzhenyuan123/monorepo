@@ -601,7 +601,7 @@ userStore.getUserInfo()
                     <span class="nature-item-value-item">{{ countryDict[natureData.country] }}</span>
                     <template v-if="natureData.shortAddress">
                         <br>
-                        {{ natureData.shortAddress }}
+                        <span class="nature-item-value-item">{{ natureData.shortAddress }}</span>
                     </template>
                 </template>
                 <template v-else>-</template>
