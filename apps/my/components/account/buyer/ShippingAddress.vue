@@ -518,6 +518,7 @@ userStore.getUserInfo()
                           filterable
                           :placeholder="$t('profile.shippingAddressEditPlaceholderProvince')"
                           class="nature-form-input select-default"
+                          :class="{ h44: isCountrySA }"
                         >
                             <el-option
                               v-for="item in provinceData"
