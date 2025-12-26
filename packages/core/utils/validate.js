@@ -93,6 +93,11 @@ export function hasChinese(s = '') {
 export function hasEnglish(s = '') {
   return /[a-zA-Z]+/.test(s)
 }
+
+/** 判断是否是有效的短地址 */
+export const isValidShortAddress = (s = '') => {
+  return /^[A-Za-z]{4}[0-9]{4}$/g.test(s)
+}
 /**
  * SWIFT Code 校验
  * 1. 长度：8 或 11 个字符
