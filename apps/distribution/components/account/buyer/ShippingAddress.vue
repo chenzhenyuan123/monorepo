@@ -338,7 +338,7 @@ const submit = (option = {}) => {
             param.defaultAddress = 0
         }
         if (!isCountrySA.value) {
-            delete param.shortAddress
+            param.shortAddress = ''
         }
         Object.assign(param, option)
         for(const key in param) {
