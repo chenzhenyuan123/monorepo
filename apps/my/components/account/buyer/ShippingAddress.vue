@@ -8,7 +8,11 @@ import {
     isValidZipcode,
 } from "@/util/validate";
 import {isUseless} from "@flylinking/core/utils/dataUtil";
-import {validatePhoneByLibphonenumberNum, validatePhoneByLibphonenumberStr} from "@flylinking/core/utils/validate";
+import {
+    isValidShortAddress,
+    validatePhoneByLibphonenumberNum,
+    validatePhoneByLibphonenumberStr
+} from "@flylinking/core/utils/validate";
 
 const { t, locale } = useI18n();
 const { userApi, countryApi } = useApi()
@@ -42,10 +46,14 @@ const form = ref({
     city: undefined,
     postal: undefined,
     province: '',
+    shortAddress: '',
     callingCodeCountry: undefined,
     callingCode: undefined,
     phone: undefined,
     defaultAddress: undefined,
+})
+const isCountrySA = computed(() => {
+    return form.value.country === 'SA'
 })
 const rules = () => {
     return {
@@ -184,6 +192,21 @@ const rules = () => {
         //     trigger: "change",
         //   },
         // ],
+        "shortAddress": [
+            {
+                asyncValidator(rule, value, cb) {
+                    if (!value)
+                        return cb(new Error(t("profile.shortAddressRequired")));
+                    else {
+                        if (!isValidShortAddress(value)){
+                            return cb(new Error(t("profile.validatorShortAddressError")))
+                        }
+                    }
+                    cb();
+                },
+                trigger: "change",
+            },
+        ],
         "phone": [
             {
                 asyncValidator(rule, value, cb) {
@@ -313,6 +336,9 @@ const submit = (option = {}) => {
             param.defaultAddress = 1
         } else {
             param.defaultAddress = 0
+        }
+        if (!isCountrySA.value) {
+            delete param.shortAddress
         }
         Object.assign(param, option)
         for(const key in param) {
@@ -485,21 +511,34 @@ userStore.getUserInfo()
                         />
                     </FormGroupItem>
                 </div>
-                <FormGroupItem prop="province" class="nature-form-item-col12">
-                    <el-select
-                        v-model="form.province"
-                        filterable
-                        :placeholder="$t('profile.shippingAddressEditPlaceholderProvince')"
-                        class="nature-form-input select-default"
-                    >
-                        <el-option
-                            v-for="item in provinceData"
-                            :key="item.provinceId"
-                            :value="item.provinceId"
-                            :label="item.name"
-                        />
-                    </el-select>
-                </FormGroupItem>
+                <div class="nature-form-group">
+                    <FormGroupItem prop="province" class="nature-form-item">
+                        <el-select
+                          v-model="form.province"
+                          filterable
+                          :placeholder="$t('profile.shippingAddressEditPlaceholderProvince')"
+                          class="nature-form-input select-default"
+                        >
+                            <el-option
+                              v-for="item in provinceData"
+                              :key="item.provinceId"
+                              :value="item.provinceId"
+                              :label="item.name"
+                            />
+                        </el-select>
+                    </FormGroupItem>
+                    <template v-if="isCountrySA">
+                        <div class="flex-center-8"></div>
+                        <FormGroupItem prop="shortAddress" class="nature-form-item">
+                            <el-input
+                              v-model="form.shortAddress"
+                              :placeholder="$t('profile.formPlaceholderShortAddress')"
+                              class="nature-form-input input-default"
+                              @change="e => { form.shortAddress = e.trim() }"
+                            />
+                        </FormGroupItem>
+                    </template>
+                </div>
             </div>
         </FormGroup>
         <el-form-item :label="$t('profile.shippingAddressEditLabelPhone')" prop="phone" class="nature-form-item">
@@ -559,6 +598,10 @@ userStore.getUserInfo()
                     <span class="nature-item-value-item">{{ natureData.postal }}</span>
                     <br>
                     <span class="nature-item-value-item">{{ countryDict[natureData.country] }}</span>
+                    <template v-if="natureData.shortAddress">
+                        <br>
+                        {{ natureData.shortAddress }}
+                    </template>
                 </template>
                 <template v-else>-</template>
             </div>
