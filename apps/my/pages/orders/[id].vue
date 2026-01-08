@@ -8,6 +8,7 @@ import { contactData } from "@/components/ContactInfo/const.js";
 import { ordersStatus } from "@/util/const.js";
 import { formatDate } from "@flylinking/core/utils/dateUtil"
 import {previewFlylinkStoreUrl} from "@flylinking/core/utils/urlUtil"
+import {sendLog} from "@flylinking/core/utils/logUtil";
 const { buyerOrderApi } = useApi();
   
 const route = useRoute();
@@ -80,6 +81,14 @@ const jumpToShop = () => {
 const getSrc = (imgName) => {
   return new URL(`../../assets/imgs/contact-icon/${imgName}.svg`, import.meta.url).href
 }
+
+const sendLogClick = () => {
+  sendLog({
+    eventType: 2,
+    eventCode: 'my-order-click-Buy-Again',
+    eventDesc: '买家中心-订单列表和详情-再次购买Buy-Again'
+  })
+}
 </script>
 <template>
   <div class="orders-detail-box" :class="{'m': isMobile}">
@@ -117,7 +126,7 @@ const getSrc = (imgName) => {
         </a>
         <div v-if="orderInfo.orderDetailCO.buyerOrderStatus===2 && orderInfo.orderDetailCO.logisticsCode" class="flex-center-12"></div>
         
-        <a v-if="([3,4].includes(orderInfo.orderDetailCO.buyerOrderStatus)) && orderInfo.orderDetailCO.orderLinkurl" :href="orderInfo.orderDetailCO.orderLinkurl" target="_blank">
+        <a v-if="([3,4].includes(orderInfo.orderDetailCO.buyerOrderStatus)) && orderInfo.orderDetailCO.orderLinkurl" :href="orderInfo.orderDetailCO.orderLinkurl" target="_blank" @click="sendLogClick()">
           <el-button type="primary" id="Buy-Again-btn">{{$t('orders.ordersBuyAgain')}}</el-button>
         </a>
         <div v-if="([3,4].includes(orderInfo.orderDetailCO.buyerOrderStatus)) && orderInfo.orderDetailCO.orderLinkurl" class="flex-center-12"></div>
