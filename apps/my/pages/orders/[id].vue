@@ -8,6 +8,7 @@ import { contactData } from "@/components/ContactInfo/const.js";
 import { ordersStatus } from "@/util/const.js";
 import { formatDate } from "@flylinking/core/utils/dateUtil"
 import {previewFlylinkStoreUrl} from "@flylinking/core/utils/urlUtil"
+import {sendLog} from "@flylinking/core/utils/logUtil";
 const { buyerOrderApi } = useApi();
   
 const route = useRoute();
@@ -80,6 +81,14 @@ const jumpToShop = () => {
 const getSrc = (imgName) => {
   return new URL(`../../assets/imgs/contact-icon/${imgName}.svg`, import.meta.url).href
 }
+
+const sendLogClick = () => {
+  sendLog({
+    eventType: 2,
+    eventCode: 'my-order-click-Buy-Again',
+    eventDesc: '买家中心-订单列表和详情-再次购买Buy-Again'
+  })
+}
 </script>
 <template>
   <div class="orders-detail-box" :class="{'m': isMobile}">
@@ -117,7 +126,7 @@ const getSrc = (imgName) => {
         </a>
         <div v-if="orderInfo.orderDetailCO.buyerOrderStatus===2 && orderInfo.orderDetailCO.logisticsCode" class="flex-center-12"></div>
         
-        <a v-if="([3,4].includes(orderInfo.orderDetailCO.buyerOrderStatus)) && orderInfo.orderDetailCO.orderLinkurl" :href="orderInfo.orderDetailCO.orderLinkurl" target="_blank">
+        <a v-if="([3,4].includes(orderInfo.orderDetailCO.buyerOrderStatus)) && orderInfo.orderDetailCO.orderLinkurl" :href="orderInfo.orderDetailCO.orderLinkurl" target="_blank" @click="sendLogClick()">
           <el-button type="primary" id="Buy-Again-btn">{{$t('orders.ordersBuyAgain')}}</el-button>
         </a>
         <div v-if="([3,4].includes(orderInfo.orderDetailCO.buyerOrderStatus)) && orderInfo.orderDetailCO.orderLinkurl" class="flex-center-12"></div>
@@ -136,10 +145,10 @@ const getSrc = (imgName) => {
     </div>
     <div class="order-detail-content">
       <div class="right">
-        <div v-if="orderInfo.orderDetailCO.buyerOrderStatus>=0" class="order-text">
+        <!-- <div v-if="orderInfo.orderDetailCO.buyerOrderStatus>=0" class="order-text">
           <b>{{$t('wallet.withdrawalRecordsFormLabelStatus')}}:</b>
           <p><el-tag class="orders-status-tag" :class="formatInTable(ordersStatus, orderInfo.orderDetailCO.buyerOrderStatus, 'value', 'tag')">{{$t(formatInTable(ordersStatus, orderInfo.orderDetailCO.buyerOrderStatus))}}</el-tag></p>
-        </div>
+        </div> -->
         <div class="order-text">
           <b>{{$t('wallet.subReferralTableLabelOrderID')}}:</b>
           <p>{{orderInfo.orderDetailCO.flylinkOrderId}}</p>
@@ -272,6 +281,42 @@ const getSrc = (imgName) => {
                 {{$t('orders.ordersFreeShippingLimit', {curreny: orderInfo.orderDetailCO.paymentCurrency, amt: currencyFormat(orderInfo.orderDetailCO.freeShippingThreshold)})}}
               </div>
             </div>
+            <!-- 商品订单才有优惠字段 -->
+             <template v-if="orderInfo.orderDetailCO.transSource === 'GOODS_ORDER' && orderInfo.orderCouponDetailCO">
+              <div  class="goods-details-text">
+                <div class="goods-details-text1">
+                  {{$t('orders.discount')}}
+                </div>
+                <div class="goods-details-text2 colorRed">
+                  {{orderInfo.orderDetailCO.paymentCurrency}} {{currencyFormat(orderInfo.orderCouponDetailCO.discountAmount)}}
+                </div>
+              </div>
+              <div class="goods-details-text">
+                <div class="goods-details-text2 deliver-p colorTip  font-size12">
+                  <!-- 优惠券类型为折扣码 -->
+                  <span v-if="orderInfo.orderCouponDetailCO.couponType===2">{{$t('orders.promoCode')}} </span>
+                  <!-- 折扣类型为固定金额 -->
+                  <span v-if="orderInfo.orderCouponDetailCO.reductionAmount">{{$t('orders.fixedDiscount', {
+                    currency: orderInfo.orderDetailCO.paymentCurrency,
+                    thresholdAmount: currencyFormat(orderInfo.orderCouponDetailCO.thresholdAmount),
+                    reductionAmount: currencyFormat(orderInfo.orderCouponDetailCO.reductionAmount)
+                  })}} </span>
+                  <!-- 折扣类型为百分比+有上限 -->
+                  <span v-else-if="orderInfo.orderCouponDetailCO.maxDeductionAmount">{{$t('orders.percentageMaxDiscount', {
+                    currency: orderInfo.orderDetailCO.paymentCurrency,
+                    thresholdAmount: currencyFormat(orderInfo.orderCouponDetailCO.thresholdAmount),
+                    reductionDiscount: orderInfo.orderCouponDetailCO.reductionDiscount * 100,
+                    maxDeductionAmount: currencyFormat(orderInfo.orderCouponDetailCO.maxDeductionAmount)
+                  })}} </span>
+                  <!-- 折扣类型为百分比 -->
+                  <span v-else-if="orderInfo.orderCouponDetailCO.reductionDiscount">{{$t('orders.percentageDiscount', {
+                    currency: orderInfo.orderDetailCO.paymentCurrency,
+                    thresholdAmount: currencyFormat(orderInfo.orderCouponDetailCO.thresholdAmount),
+                    reductionDiscount: orderInfo.orderCouponDetailCO.reductionDiscount * 100
+                  })}} </span>
+                </div>
+              </div>
+             </template>
             <div class="goods-details-text">
               <div class="goods-details-text1">
                 {{$t('orders.ordersTotal')}}

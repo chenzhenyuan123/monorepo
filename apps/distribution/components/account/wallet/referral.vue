@@ -87,7 +87,6 @@ const showPopover = async(row) => {
     orderId: row.orderId
   })
   const res = checkResponseData(result)
-  console.log('商品信息', res)
   if(res) {
     row.goodsList = res || []
     row.showMore = true
@@ -357,7 +356,7 @@ const showPopover = async(row) => {
   }
   ::v-deep {
       .pro-table-wrapper {
-          border-radius: 0;
+          border-radius: 8px;
       }
   }
 }

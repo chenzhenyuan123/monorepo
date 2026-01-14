@@ -5,7 +5,7 @@
 <script setup name="Affiliate">
 import {checkResponseData} from "@/util";
 import { currencyFormat } from "@/util/index.js";
-import {sendLog} from "@/util/logUtil";
+import {sendLog} from "@flylinking/core/utils/logUtil";
 import { reactive } from "vue";
 
 definePageMeta({

@@ -9,6 +9,7 @@
     import {formatDate} from "@flylinking/core/utils/dateUtil";
     import {previewFlylinkStoreUrl} from "@flylinking/core/utils/urlUtil";
     import { ArrowRight } from '@element-plus/icons-vue';
+    import {sendLog} from "@flylinking/core/utils/logUtil";
 
     const props = defineProps({
         orderData: {
@@ -44,7 +45,14 @@
         window.open(previewFlylinkStoreUrl(url), '_blank')
     }
 
-    const jumpToPay = (url) => {
+    const jumpToPay = (url, type) => {
+        if (type === 'Buy-Again-btn') { // 给再次购买加日志统计
+            sendLog({
+                eventType: 2,
+                eventCode: 'my-order-click-Buy-Again',
+                eventDesc: '买家中心-订单列表和详情-再次购买Buy-Again'
+            })
+        }
         window.open(url, '_blank')
     }
 
@@ -125,7 +133,7 @@
                 <ContactInfo v-if="showContactInfo" :contactInfo="orderData" @hide="showContactInfo=false" />
             </div>
             <el-button v-if="orderData.buyerOrderStatus===2 && orderData.logisticsCode" type="primary" class="button-default" id="Track-Shipment-btn" @click.stop="jumpTo17track">{{$t('orders.ordersTrackShipment')}}</el-button>
-            <el-button v-if="([3,4].includes(orderData.buyerOrderStatus)) && orderData.orderLinkurl" type="primary" class="button-default" id="Buy-Again-btn-list" @click.stop="jumpToPay(orderData.orderLinkurl)">{{$t('orders.ordersBuyAgain')}}</el-button>
+            <el-button v-if="([3,4].includes(orderData.buyerOrderStatus)) && orderData.orderLinkurl" type="primary" class="button-default" id="Buy-Again-btn-list" @click.stop="jumpToPay(orderData.orderLinkurl, 'Buy-Again-btn')">{{$t('orders.ordersBuyAgain')}}</el-button>
         </div>
 
     </div>

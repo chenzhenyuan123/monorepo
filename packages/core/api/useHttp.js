@@ -90,7 +90,7 @@ export const fetch = (url, option, userStore, errorMessage, toLogout) => {
     // 合并参数
     ...option,
   }).catch(error => {
-    return error.data
+    return error?.data || { data: undefined }
   })
 }
 

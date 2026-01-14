@@ -1,6 +1,6 @@
 import {UAParser} from "ua-parser-js";
 import { v4 as uuidv4 } from 'uuid'
-import * as logApi from "@/apis/trade/web/log";
+import * as logApi from "../api/web/log.js";
 
 /**
  * 获取设备信息
@@ -30,7 +30,6 @@ export function getTabId() {
  */
 export function sendLog(data = {}) {
     if (process.server) {
-        console.log('sendLog server - ', data)
         return
     }
 
