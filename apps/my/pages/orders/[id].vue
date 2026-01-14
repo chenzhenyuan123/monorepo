@@ -281,6 +281,42 @@ const sendLogClick = () => {
                 {{$t('orders.ordersFreeShippingLimit', {curreny: orderInfo.orderDetailCO.paymentCurrency, amt: currencyFormat(orderInfo.orderDetailCO.freeShippingThreshold)})}}
               </div>
             </div>
+            <!-- 商品订单才有优惠字段 -->
+             <template v-if="orderInfo.orderDetailCO.transSource === 'GOODS_ORDER' && orderInfo.orderCouponDetailCO">
+              <div  class="goods-details-text">
+                <div class="goods-details-text1">
+                  {{$t('orders.discount')}}
+                </div>
+                <div class="goods-details-text2 colorRed">
+                  {{orderInfo.orderDetailCO.paymentCurrency}} {{currencyFormat(orderInfo.orderCouponDetailCO.discountAmount)}}
+                </div>
+              </div>
+              <div class="goods-details-text">
+                <div class="goods-details-text2 deliver-p colorTip  font-size12">
+                  <!-- 优惠券类型为折扣码 -->
+                  <span v-if="orderInfo.orderCouponDetailCO.couponType===2">{{$t('orders.promoCode')}} </span>
+                  <!-- 折扣类型为固定金额 -->
+                  <span v-if="orderInfo.orderCouponDetailCO.reductionAmount">{{$t('orders.fixedDiscount', {
+                    currency: orderInfo.orderDetailCO.paymentCurrency,
+                    thresholdAmount: currencyFormat(orderInfo.orderCouponDetailCO.thresholdAmount),
+                    reductionAmount: currencyFormat(orderInfo.orderCouponDetailCO.reductionAmount)
+                  })}} </span>
+                  <!-- 折扣类型为百分比+有上限 -->
+                  <span v-else-if="orderInfo.orderCouponDetailCO.maxDeductionAmount">{{$t('orders.percentageMaxDiscount', {
+                    currency: orderInfo.orderDetailCO.paymentCurrency,
+                    thresholdAmount: currencyFormat(orderInfo.orderCouponDetailCO.thresholdAmount),
+                    reductionDiscount: orderInfo.orderCouponDetailCO.reductionDiscount * 100,
+                    maxDeductionAmount: currencyFormat(orderInfo.orderCouponDetailCO.maxDeductionAmount)
+                  })}} </span>
+                  <!-- 折扣类型为百分比 -->
+                  <span v-else-if="orderInfo.orderCouponDetailCO.reductionDiscount">{{$t('orders.percentageDiscount', {
+                    currency: orderInfo.orderDetailCO.paymentCurrency,
+                    thresholdAmount: currencyFormat(orderInfo.orderCouponDetailCO.thresholdAmount),
+                    reductionDiscount: orderInfo.orderCouponDetailCO.reductionDiscount * 100
+                  })}} </span>
+                </div>
+              </div>
+             </template>
             <div class="goods-details-text">
               <div class="goods-details-text1">
                 {{$t('orders.ordersTotal')}}
