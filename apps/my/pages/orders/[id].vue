@@ -288,7 +288,7 @@ const sendLogClick = () => {
                   {{$t('orders.discount')}}
                 </div>
                 <div class="goods-details-text2 colorRed">
-                  {{orderInfo.orderDetailCO.paymentCurrency}} {{currencyFormat(orderInfo.orderCouponDetailCO.discountAmount)}}
+                  - {{orderInfo.orderDetailCO.paymentCurrency}} {{currencyFormat(orderInfo.orderCouponDetailCO.discountAmount)}}
                 </div>
               </div>
               <div class="goods-details-text">
