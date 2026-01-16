@@ -10,6 +10,7 @@
     import {previewFlylinkStoreUrl} from "@flylinking/core/utils/urlUtil";
     import { ArrowRight } from '@element-plus/icons-vue';
     import {sendLog} from "@flylinking/core/utils/logUtil";
+    import {accurate_toFixed} from "@flylinking/core/utils/dataUtil";
 
     const props = defineProps({
         orderData: {
@@ -122,7 +123,7 @@
                 <div class="goods-details-text-container direction-flex-right">
                     <div class="goods-details-text">{{$t('orders.discount')}}</div>
                     <div class="flex-center-6"></div>
-                    <div class="goods-details-text colorRed">
+                    <div class="goods-details-text colorRed direction-ltr">
                         - {{orderData.paymentCurrency}} {{currencyFormat(orderData.orderDetailCO.discountAmount)}}
                     </div>
                 </div>
@@ -140,14 +141,14 @@
                         <span v-else-if="orderData.orderDetailCO.maxDeductionAmount">{{$t('orders.percentageMaxDiscount', {
                             currency: orderData.paymentCurrency,
                             thresholdAmount: currencyFormat(orderData.orderDetailCO.thresholdAmount),
-                            reductionDiscount: orderData.orderDetailCO.reductionDiscount * 100,
+                            reductionDiscount: accurate_toFixed(orderData.orderDetailCO.reductionDiscount * 100, 2),
                             maxDeductionAmount: currencyFormat(orderData.orderDetailCO.maxDeductionAmount)
                         })}} </span>
                         <!-- 折扣类型为百分比 -->
                         <span v-else-if="orderData.orderDetailCO.reductionDiscount">{{$t('orders.percentageDiscount', {
                             currency: orderData.paymentCurrency,
                             thresholdAmount: currencyFormat(orderData.orderDetailCO.thresholdAmount),
-                            reductionDiscount: orderData.orderDetailCO.reductionDiscount * 100
+                            reductionDiscount: accurate_toFixed(orderData.orderDetailCO.reductionDiscount * 100, 2)
                         })}} </span>
                     </div>
                 </div>

@@ -9,6 +9,7 @@ import { ordersStatus } from "@/util/const.js";
 import { formatDate } from "@flylinking/core/utils/dateUtil"
 import {previewFlylinkStoreUrl} from "@flylinking/core/utils/urlUtil"
 import {sendLog} from "@flylinking/core/utils/logUtil";
+import {accurate_toFixed} from "@flylinking/core/utils/dataUtil";
 const { buyerOrderApi } = useApi();
   
 const route = useRoute();
@@ -242,7 +243,7 @@ const sendLogClick = () => {
                 {{$t('orders.ordersSubtotal')}}
               </div>
               <div class="goods-details-text2">
-                {{orderInfo.orderDetailCO.paymentCurrency}} {{currencyFormat(orderInfo.orderDetailCO.goodsAmount)}}
+                {{orderInfo.orderDetailCO.paymentCurrency}} {{currencyFormat(orderInfo.orderDetailCO.goodsOriginalAmount)}}
               </div>
             </div>
             <template v-if="orderInfo.orderDetailCO.transSource === 'QUICK_ORDER'">
@@ -277,6 +278,7 @@ const sendLogClick = () => {
             </div>
             <!-- 存在邮费并且达到包邮 -->
             <div v-if="orderInfo.orderDetailCO.freeShippingThreshold && orderInfo.orderDetailCO.discountedShippingAmount>0" class="goods-details-text">
+              <div class="flex-center"></div>
               <div class="goods-details-text2 deliver-p active  font-size16">
                 {{$t('orders.ordersFreeShippingLimit', {curreny: orderInfo.orderDetailCO.paymentCurrency, amt: currencyFormat(orderInfo.orderDetailCO.freeShippingThreshold)})}}
               </div>
@@ -287,11 +289,12 @@ const sendLogClick = () => {
                 <div class="goods-details-text1">
                   {{$t('orders.discount')}}
                 </div>
-                <div class="goods-details-text2 colorRed">
+                <div class="goods-details-text2 colorRed direction-ltr">
                   - {{orderInfo.orderDetailCO.paymentCurrency}} {{currencyFormat(orderInfo.orderCouponDetailCO.discountAmount)}}
                 </div>
               </div>
               <div class="goods-details-text">
+                <div class="flex-center"></div>
                 <div class="goods-details-text2 deliver-p colorTip  font-size12">
                   <!-- 优惠券类型为折扣码 -->
                   <span v-if="orderInfo.orderCouponDetailCO.couponType===2">{{$t('orders.promoCode')}} </span>
@@ -305,14 +308,14 @@ const sendLogClick = () => {
                   <span v-else-if="orderInfo.orderCouponDetailCO.maxDeductionAmount">{{$t('orders.percentageMaxDiscount', {
                     currency: orderInfo.orderDetailCO.paymentCurrency,
                     thresholdAmount: currencyFormat(orderInfo.orderCouponDetailCO.thresholdAmount),
-                    reductionDiscount: orderInfo.orderCouponDetailCO.reductionDiscount * 100,
+                    reductionDiscount: accurate_toFixed(orderInfo.orderCouponDetailCO.reductionDiscount * 100, 2),
                     maxDeductionAmount: currencyFormat(orderInfo.orderCouponDetailCO.maxDeductionAmount)
                   })}} </span>
                   <!-- 折扣类型为百分比 -->
                   <span v-else-if="orderInfo.orderCouponDetailCO.reductionDiscount">{{$t('orders.percentageDiscount', {
                     currency: orderInfo.orderDetailCO.paymentCurrency,
                     thresholdAmount: currencyFormat(orderInfo.orderCouponDetailCO.thresholdAmount),
-                    reductionDiscount: orderInfo.orderCouponDetailCO.reductionDiscount * 100
+                    reductionDiscount: accurate_toFixed(orderInfo.orderCouponDetailCO.reductionDiscount * 100, 2)
                   })}} </span>
                 </div>
               </div>
