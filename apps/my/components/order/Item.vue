@@ -98,7 +98,7 @@
                     <p class="goods-sku ellipsis">{{$t('orders.ordersGoodsNo')}}: {{item.flylinkGoodsNo}}</p>
                 </div>
                 <dd class="goods-quantity-container direction-text-align-right">
-                    <p class="goods-quantity-amount">{{ item.paymentCurrency }} {{currencyFormat(item.totalPrice)}}</p>
+                    <p class="goods-quantity-amount">{{ item.paymentCurrency }} {{currencyFormat(item.paymentAmount)}}</p>
                     <p class="goods-quantity-num">{{$t('orders.orderItemLabelQuantity')}}: {{ item.quantity }}</p>
                 </dd>
             </dl>
@@ -119,36 +119,36 @@
                 <div v-else class="active">{{$t('orders.ordersFreeShipping')}}</div>
             </div>
             <!-- 商品订单才有优惠字段 -->
-            <template v-if="orderData.transSource === 'GOODS_ORDER' && orderData.orderDetailCO">
+            <template v-if="orderData.transSource === 'GOODS_ORDER' && orderData.discountAmount">
                 <div class="goods-details-text-container direction-flex-right">
                     <div class="goods-details-text">{{$t('orders.discount')}}</div>
                     <div class="flex-center-6"></div>
                     <div class="goods-details-text colorRed direction-ltr">
-                        - {{orderData.paymentCurrency}} {{currencyFormat(orderData.orderDetailCO.discountAmount)}}
+                        - {{orderData.paymentCurrency}} {{currencyFormat(orderData.discountAmount)}}
                     </div>
                 </div>
                 <div class="goods-details-text">
                     <div class="goods-details-text colorTip">
                         <!-- 优惠券类型为折扣码 -->
-                        <span v-if="orderData.orderDetailCO.couponType===2">{{$t('orders.promoCode')}} </span>
+                        <span v-if="orderData.couponType===2">{{$t('orders.promoCode')}} </span>
                         <!-- 折扣类型为固定金额 -->
-                        <span v-if="orderData.orderDetailCO.reductionAmount">{{$t('orders.fixedDiscount', {
+                        <span v-if="orderData.reductionAmount">{{$t('orders.fixedDiscount', {
                             currency: orderData.paymentCurrency,
-                            thresholdAmount: currencyFormat(orderData.orderDetailCO.thresholdAmount),
-                            reductionAmount: currencyFormat(orderData.orderDetailCO.reductionAmount)
+                            thresholdAmount: currencyFormat(orderData.thresholdAmount),
+                            reductionAmount: currencyFormat(orderData.reductionAmount)
                         })}} </span>
                         <!-- 折扣类型为百分比+有上限 -->
-                        <span v-else-if="orderData.orderDetailCO.maxDeductionAmount">{{$t('orders.percentageMaxDiscount', {
+                        <span v-else-if="orderData.maxDeductionAmount">{{$t('orders.percentageMaxDiscount', {
                             currency: orderData.paymentCurrency,
-                            thresholdAmount: currencyFormat(orderData.orderDetailCO.thresholdAmount),
-                            reductionDiscount: accurate_toFixed(orderData.orderDetailCO.reductionDiscount * 100, 2),
-                            maxDeductionAmount: currencyFormat(orderData.orderDetailCO.maxDeductionAmount)
+                            thresholdAmount: currencyFormat(orderData.thresholdAmount),
+                            reductionDiscount: accurate_toFixed(orderData.reductionDiscount * 100, 2),
+                            maxDeductionAmount: currencyFormat(orderData.maxDeductionAmount)
                         })}} </span>
                         <!-- 折扣类型为百分比 -->
-                        <span v-else-if="orderData.orderDetailCO.reductionDiscount">{{$t('orders.percentageDiscount', {
+                        <span v-else-if="orderData.reductionDiscount">{{$t('orders.percentageDiscount', {
                             currency: orderData.paymentCurrency,
-                            thresholdAmount: currencyFormat(orderData.orderDetailCO.thresholdAmount),
-                            reductionDiscount: accurate_toFixed(orderData.orderDetailCO.reductionDiscount * 100, 2)
+                            thresholdAmount: currencyFormat(orderData.thresholdAmount),
+                            reductionDiscount: accurate_toFixed(orderData.reductionDiscount * 100, 2)
                         })}} </span>
                     </div>
                 </div>
