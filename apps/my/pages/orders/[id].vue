@@ -234,7 +234,7 @@ const sendLogClick = () => {
               <div class="flex-center-80"></div>
               <span class="Subtotal-info-li-label">{{$t('orders.ordersSubtotal')}}</span>
               <div class="flex-center"></div>
-              <div class="Subtotal-info-li-value">{{kv.paymentCurrency}} {{currencyFormat(kv.totalPrice)}}</div>
+              <div class="Subtotal-info-li-value">{{kv.paymentCurrency}} {{currencyFormat(kv.originalPaymentAmount)}}</div>
             </div>
           </div>
           <div class="goods-details-bottom">
