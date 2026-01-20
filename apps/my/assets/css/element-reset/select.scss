@@ -25,4 +25,9 @@
             }
         }
     }
+    &.h44 {
+        :deep(.el-select__wrapper) {
+            height: 44px;
+        }
+    }
 }

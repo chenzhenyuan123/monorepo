@@ -48,7 +48,7 @@ const getInfo = async () => {
   if(res) {
     orderInfo.value = Object.assign(res)
     // 更新状态（默认为 发货 之后，加5个自然日「S+5」之后，方可确认收货）
-    const shippingTime = orderInfo.value.orderDetailCO.shippingTime
+    const shippingTime = orderInfo.value.orderDetailCO?.shippingTime
     if (shippingTime) {
       const nowTime = new Date().getTime()
       const limitTime = shippingTime + limitDaysForReceived.value * 24 * 60 * 60 * 1000
@@ -372,18 +372,26 @@ const sendLogClick = () => {
                 <p>{{ orderInfo.shipping.zipcode || '--' }}</p>
               </dd>
             </dl>
-            <dl class="margin-top36">
-              <dt>{{$t('orders.orderVatID')}}:</dt>
+            <dl v-if="orderInfo.shipping.shortAddress">
+              <dt>{{$t('profile.formPlaceholderShortAddress')}}:</dt>
               <dd>
-                <p>{{ orderInfo.shipping.vatNo || '--' }}</p>
+                <p>{{ orderInfo.shipping.shortAddress || '--' }}</p>
               </dd>
             </dl>
-            <dl>
-              <dt>{{$t('orders.orderNotes')}}:</dt>
-              <dd>
-                <p>{{ orderInfo.orderDetailCO.buyerMessage || '--' }}</p>
-              </dd>
-            </dl>
+            <div class="margin-top36">
+              <dl v-if="orderInfo.shipping.vatNo">
+                <dt>{{$t('orders.orderVatID')}}:</dt>
+                <dd>
+                  <p>{{ orderInfo.shipping.vatNo || '--' }}</p>
+                </dd>
+              </dl>
+              <dl>
+                <dt>{{$t('orders.orderNotes')}}:</dt>
+                <dd>
+                  <p>{{ orderInfo.orderDetailCO.buyerMessage || '--' }}</p>
+                </dd>
+              </dl>
+            </div>
           </div>
         </div>
       </div>
