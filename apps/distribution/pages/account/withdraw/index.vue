@@ -210,6 +210,23 @@ const validateAddress = (rule, value, callback) => {
     callback()
   }
 }
+function validateCardAndSWIFTCodeAndCounty () {
+    if (!isIBANCard()) return true
+
+    const iban = form.accountNumber.replace(/\s+/g, '').toUpperCase();
+    const ibanCounty = iban.slice(0,2)
+
+    const swiftCode = form.swiftCode.toUpperCase();
+    const swiftCodeCounty = swiftCode.slice(4,6)
+
+    const openingBankCountry = form.openingBankCountry.toUpperCase();
+
+    console.log('ibanCounty: ', ibanCounty)
+    console.log('swiftCodeCounty: ', swiftCodeCounty)
+    console.log('openingBankCountry: ', openingBankCountry)
+
+    return ibanCounty === swiftCodeCounty && ibanCounty === openingBankCountry
+}
 const rules = () => {
     return {
         applyAmt: [
@@ -362,6 +379,13 @@ const isCardIconMatch = computed(() => {
     }
     return false
 });
+function isIBANCard() {
+    const cardNum = normalCreditCardNumber(form.accountNumber)
+    if (isIBAN(cardNum)) {
+        return true
+    }
+    return false
+}
 const cardIcon = computed(() => {
     if (isCycleForCardIcon.value) {
         return cardIconList[indexForCardIcon.value]
@@ -438,6 +462,9 @@ const validateApply = () => {
     formValidateRef.value?.formRef?.validate(async (valid) => {
         if (!valid) {
             console.log('error submit!!');
+            return false;
+        }
+        if (!validateCardAndSWIFTCodeAndCounty()) {
             return false;
         }
         isShowVerifyGialog.value = true
