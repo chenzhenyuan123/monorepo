@@ -58,3 +58,7 @@ export const verification_code_verify = (code) => {
 export const lockStatus = (data) => {
     return useHttp.post(`/flylinking-account/client/withdraw/lockStatus`, data, { server: true })
 }
+// 查询权益卡列表
+export const listMembershipCardPage = (data) => {
+    return useHttp.post(`/flylinking-account/client/withdraw/listMembershipCardPage`, data, { server: true })
+}

@@ -302,6 +302,28 @@
     }
   }
 }
+
+* {
+  word-break: break-word;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.margin-auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.full-all {
+  max-width: 100%;
+  max-height: 100%;
+}
+.w-full {
+  width: 100%;
+}
+
 // 溢出...，限制1行
 .ellipsis {
   overflow: hidden;
@@ -348,6 +370,109 @@ $flex-center-width-max: 100;
   }
 }
 
-.svg-container {
+// ========================== 行高
+.lh0 {
   line-height: 0;
+}
+
+// ========================== flex布局相关
+// 启用 Flex 容器
+.flex {
+  display: flex;
+}
+.inline-flex {
+  display: inline-flex;
+}
+
+// 主轴方向（flex-direction）
+.flex-row {
+  flex-direction: row;
+}
+.flex-col {
+  flex-direction: column;
+}
+
+// 换行（flex-wrap）
+.flex-wrap {
+  flex-wrap: wrap;
+}
+.flex-nowrap {
+  flex-wrap: nowrap;
+}
+
+// 主轴对齐（justify-content）
+.justify-start {
+  justify-content: flex-start;
+}
+.justify-end {
+  justify-content: flex-end;
+}
+.justify-center {
+  justify-content: center;
+}
+.justify-between {
+  justify-content: space-between;
+}
+.justify-around {
+  justify-content: space-around;
+}
+
+// 交叉轴对齐（align-items）
+.items-start {
+  align-items: flex-start;
+}
+.items-end {
+  align-items: flex-end;
+}
+.items-center {
+  align-items: center;
+}
+.items-baseline {
+  align-items: baseline;
+}
+.items-stretch {
+  align-items: stretch;
+}
+
+// 子项对齐
+.self-auto {
+  align-self: auto;
+}
+.self-start {
+  align-self: flex-start;
+}
+.self-end {
+  align-self: flex-end;
+}
+.self-center {
+  align-self: center;
+}
+.self-baseline {
+  align-self: baseline;
+}
+.self-stretch {
+  align-self: stretch;
+}
+
+// 子项
+.flex-1 {
+  flex: 1;
+}
+
+// 避免内容过多超出情况
+.white-nowrap {
+  white-space: nowrap;
+}
+.overflow-hidden {
+  overflow: hidden;
+}
+
+.txt-left {
+  text-align: left;
+}
+.txt-center {
+  text-align: center;
+}
+.txt-right {
+  text-align: right;
 }

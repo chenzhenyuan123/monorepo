@@ -244,9 +244,10 @@ onUnmounted(()=>{
                 <el-input v-model="form.openingBankAddress" class="form-input input-default" disabled />
             </el-form-item>
             <div class="fee-container">
-                <p class="p">{{ $t('withdraw.applyFormMessageFee1') }} ${{ currencyFormat(actualWithdrawAmount) }}</p>
-                <p class="p b8">{{ $t('withdraw.applyFormMessageFee2') }} ${{ currencyFormat(form.withdrawFee) }}</p>
-                <p class="p">{{ $t('withdraw.applyFormMessageFee3') }}</p>
+                <p class="p flex-box mb8">{{ $t('withdraw.applyFormFeeModuleWithdrawalLabel') }} <span class="flex-center"></span> ${{ currencyFormat(form.applyAmt) }}</p>
+                <p class="p flex-box mb8 b8">{{ $t('withdraw.applyFormFeeModuleFeeLabel') }} <span class="flex-center"></span> ${{ currencyFormat(form.withdrawFee) }}</p>
+                <p class="p flex-box mb8 b8">{{ $t('withdraw.applyFormFeeModuleReceivedLabel') }} <span class="flex-center"></span> ${{ currencyFormat(actualWithdrawAmount) }}</p>
+                <p class="p">{{ $t('withdraw.applyFormFeeModuleMessage') }}</p>
             </div>
         </el-form>
     </div>

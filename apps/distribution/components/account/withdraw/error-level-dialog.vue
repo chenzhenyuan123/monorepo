@@ -50,7 +50,7 @@ const cancel = () => {
         <div class="dialog-footer">
           <el-button type="primary" class="button-default dialog-adaptive" @click="reload">
             <div class="flex-box">
-              <div class="svg-container">
+              <div class="lh0">
                 <svg xmlns="http://www.w3.org/2000/svg" width="19" height="18" viewBox="0 0 19 18" fill="none">
                   <path d="M17.5003 7.33333C17.5003 7.33333 15.8295 5.05685 14.4721 3.69854C13.1148 2.34022 11.239 1.5 9.16699 1.5C5.02486 1.5 1.66699 4.85786 1.66699 9C1.66699 13.1421 5.02486 16.5 9.16699 16.5C12.5862 16.5 15.4711 14.2119 16.3739 11.0833M17.5003 7.33333V2.33333M17.5003 7.33333H12.5003" stroke="currentColor" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>

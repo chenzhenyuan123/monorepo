@@ -1,5 +1,5 @@
 <script setup>
-import { checkResponseData, currencyFormat, errorMessage, accurate_add } from "@/util/index.js"
+import { checkResponseData, currencyFormat, errorMessage, accurate_add, accurate_toFixed } from "@/util/index.js"
 import { formatDate } from "@/util/dateUtil.js"
 import { normalCreditCardNumber, formatCreditCardNumber, formatSWIFTCode, getNumberByInput, flagUrl } from "@/util/dataUtil.js"
 import { Back } from '@element-plus/icons-vue'
@@ -70,26 +70,42 @@ const obtainedData = (bol) => {
 }
 
 
+// 选中优惠券
+const membershipCardNo = ref()
+const membershipCardData = ref([])
 // 是否显示“获取等级错误”弹窗
-const isShowErrorLevelDialog = ref(false)
+const isShowDiscountDetailsDialog = ref(false)
+function showDiscountDetailsDialog() {
+    isShowDiscountDetailsDialog.value = true
+}
+function changeSelectCoupon(val) {
+    membershipCardNo.value = val
+    qryWithdrawFee()
+}
+function qryMembershipCardData() {
+    withdrawApi.listMembershipCardPage().then(result => {
+        membershipCardData.value = checkResponseData(result) || []
+    })
+}
 
 
 // 手续费
 const fee = ref(0)
+const defaultFeeDiff = ref(0)
+const membershipFeeDiff = ref(0)
 const feeData = ref({})
 const isGetFee = ref(false)
 const isGetLevelError = ref(false)
 // 查询手续费
-const qryWithdrawFee = async () => {
-    if (!isSWIFTCode(form.swiftCode, countryCodeArr.value)) {
-        fee.value = 0
-        isGetFee.value = false
-        return
-    }
-    const result = await withdrawApi.qryWithdrawFee({swiftCode: form.swiftCode})
+async function qryWithdrawFee() {
+    const result = await withdrawApi.qryWithdrawFee({
+        cardNo: membershipCardNo.value
+    })
     if (result?.success) {
         feeData.value = result.data || {}
         fee.value = result.data?.withdrawFee || 0
+        defaultFeeDiff.value = accurate_add(defaultWithdrawFee.value, -feeData.value.receivableFee) || 0
+        membershipFeeDiff.value = accurate_add(feeData.value.receivableFee, -feeData.value.withdrawFee) || 0
         isGetFee.value = true
         isGetLevelError.value = false
     } else if (result?.code === 'FA1002') {
@@ -98,13 +114,14 @@ const qryWithdrawFee = async () => {
     } else {
         errorMessage(result?.message)
     }
-    formValidateRef.value?.formRef?.validateField('swiftCode')
 }
 // 默认等级手续费
 const defaultWithdrawFee = ref(0)
 const defaultWithdrawFeeData = ref({})
 const isGetDefaultWithdrawFee = ref(false)
 const isGetDefaultLevelError = ref(false)
+// 是否显示“获取等级错误”弹窗
+const isShowErrorLevelDialog = ref(false)
 // 查询默认等级手续费
 const qryDefaultWithdrawFee = async () => {
     const result = await withdrawApi.qryDefaultWithdrawFee()
@@ -131,7 +148,6 @@ const selectBankcardData = (obj) => {
     risk_control_check('bankName')
     risk_control_check('openingBankCountry')
     triggerCycle()
-    qryWithdrawFee()
 }
 // 校验金额
 const validateAmt = (rule, value, callback) => {
@@ -210,6 +226,8 @@ const validateAddress = (rule, value, callback) => {
     callback()
   }
 }
+// 是否显示“获取等级错误”弹窗
+const isShowErrorAreaDialog = ref(false)
 function validateCardAndSWIFTCodeAndCounty () {
     if (!isIBANCard()) return true
 
@@ -465,6 +483,7 @@ const validateApply = () => {
             return false;
         }
         if (!validateCardAndSWIFTCodeAndCounty()) {
+            isShowErrorAreaDialog.value = true
             return false;
         }
         isShowVerifyGialog.value = true
@@ -476,6 +495,9 @@ const apply = async (checkCode) => {
 
     const result = await withdrawApi.apply(Object.assign({}, form, {
         withdrawFee: fee.value,
+        receivableFee: feeData.value.receivableFee,
+        cardNo: membershipCardNo.value,
+        discountNumber: feeData.value.discountNumber,
         accountNumber: normalCreditCardNumber(form.accountNumber),
         checkCode
     }))
@@ -495,15 +517,16 @@ const jumpToWallet = () => {
 }
 
 
-onMounted(()=>{
+onMounted(async ()=>{
     nextTick(() => {
         settingStore.setFormPage(true)
     })
     getAllCountry()
     qryBalance()
     setIntervalForCardIconCycle()
-    qryDefaultWithdrawFee()
-    // errorMessage(123, 0)
+    await qryDefaultWithdrawFee()
+    qryWithdrawFee()
+    qryMembershipCardData()
 })
 
 onUnmounted(()=>{
@@ -590,7 +613,6 @@ onUnmounted(()=>{
                         v-model="form.swiftCode"
                         class="form-input input-default"
                         @input="e => { form.swiftCode = formatSWIFTCode(e) }"
-                        @change="qryWithdrawFee"
                     />
                 </el-form-item>
             </div>
@@ -645,22 +667,64 @@ onUnmounted(()=>{
                 />
             </el-form-item>
             <div class="fee-container">
-                <p class="p flex-box mb4">
-                    {{ $t('withdraw.applyFormMessageFee1') }}
-                    <span class="flex-center-6"></span>
+                <p class="p flex-box">
+                    {{ $t('withdraw.applyFormFeeModuleWithdrawalLabel') }}
+                    <span class="flex-center"></span>
+                    ${{ currencyFormat(form.applyAmt) }}
+                </p>
+                <template v-if="isGetFee">
+                    <p class="p flex-box mt8">
+                        {{ $t('withdraw.applyFormFeeModuleFeeLabel') }}
+                        <span class="flex-center"></span>
+                        <span v-if="defaultWithdrawFee === fee"> ${{ currencyFormat(fee) }}</span>
+                        <span v-else class="flex items-center">
+                            <span class="success"> ${{ currencyFormat(fee) }}</span>
+                            <span class="flex-center-6"></span>
+                            <del>${{ currencyFormat(defaultWithdrawFee) }}</del>
+                        </span>
+                    </p>
+                    <div v-if="defaultFeeDiff" class="p flex-box mt8">
+                        <span class="flex-center"></span>
+                        <span>-${{ currencyFormat(defaultFeeDiff) }}</span>
+                    </div>
+                    <div v-if="membershipFeeDiff" class="p flex-box cursor-pointer mt8" @click="showDiscountDetailsDialog">
+                        <span class="flex-center"></span>
+                        <span>-${{ currencyFormat(membershipFeeDiff) }}</span>
+                        <div class="lh0">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M7.5 15L12.5 10L7.5 5" stroke="#667085" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div v-if="feeData.receivableFee > 0 && membershipCardData.length && !membershipCardNo" class="flex mt4">
+                        <div class="flex-center"></div>
+                        <el-button
+                          type="primary"
+                          class="button-default h32 f14"
+                          @click="showDiscountDetailsDialog"
+                        >
+                            <div class="lh0 mr4">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <g clip-path="url(#clip0_5206_681)">
+                                        <path d="M8 2.25C8.41421 2.25 8.75 2.58579 8.75 3V7.25H13C13.4142 7.25 13.75 7.58579 13.75 8C13.75 8.41421 13.4142 8.75 13 8.75H8.75V13C8.75 13.4142 8.41421 13.75 8 13.75C7.58579 13.75 7.25 13.4142 7.25 13V8.75H3C2.58579 8.75 2.25 8.41421 2.25 8C2.25 7.58579 2.58579 7.25 3 7.25H7.25V3C7.25 2.58579 7.58579 2.25 8 2.25Z" fill="currentColor"/>
+                                    </g>
+                                    <defs>
+                                        <clipPath id="clip0_5206_681">
+                                            <rect width="16" height="16" fill="white"/>
+                                        </clipPath>
+                                    </defs>
+                                </svg>
+                            </div>
+                            {{ $t('withdraw.applyFormFeeModuleButtonAdd') }}
+                        </el-button>
+                    </div>
+                </template>
+                <p class="p flex-box mt8">
+                    {{ $t('withdraw.applyFormFeeModuleReceivedLabel') }}
+                    <span class="flex-center"></span>
                     ${{ currencyFormat(actualWithdrawAmount) }}
                 </p>
-                <p v-if="isGetFee" class="p flex-box mb8">
-                    {{ $t('withdraw.applyFormMessageFee2') }}
-                    <span class="flex-center-6"></span>
-                    <span v-if="defaultWithdrawFeeData.level === feeData.level"> ${{ currencyFormat(fee) }}</span>
-                    <template v-else>
-                        <span class="success"> ${{ currencyFormat(fee) }}</span>
-                        <span class="flex-center-6"></span>
-                        <del>${{ currencyFormat(defaultWithdrawFee) }}</del>
-                    </template>
-                </p>
-                <p class="p">{{ $t('withdraw.applyFormMessageFee3') }}</p>
+                <p class="p mt8">{{ $t('withdraw.applyFormFeeModuleMessage') }}</p>
             </div>
             <el-form-item class="form-buttons">
                 <el-button v-if="isMobile" key="msubmit" type="primary" class="button-default m-adaptive" :loading="loading" :disabled="isGetLevelError || isGetDefaultLevelError" @click="validateApply">{{ $t('withdraw.applyFormButtonSubmit') }}</el-button>
@@ -674,6 +738,14 @@ onUnmounted(()=>{
               @submit="apply"
       ></AccountWithdrawVerifyTipDialog>
       <AccountWithdrawErrorLevelDialog v-model="isShowErrorLevelDialog"></AccountWithdrawErrorLevelDialog>
+      <AccountWithdrawErrorAreaDialog v-model="isShowErrorAreaDialog"></AccountWithdrawErrorAreaDialog>
+      <AccountWithdrawDiscountDetailsDialog
+        v-if="isShowDiscountDetailsDialog"
+        v-model="isShowDiscountDetailsDialog"
+        :membershipCardNo="membershipCardNo"
+        :membershipCardData="membershipCardData"
+        @change="changeSelectCoupon"
+      ></AccountWithdrawDiscountDetailsDialog>
 </div>
 </template>
 
@@ -683,6 +755,13 @@ onUnmounted(()=>{
 @import url("@/assets/css/element-reset/select.scss");
 * {
     box-sizing: border-box;
+}
+.grey-span {
+    color: #667085;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 18px;
 }
 .page {
     padding: 32px 0;

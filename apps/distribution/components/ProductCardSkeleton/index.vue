@@ -163,7 +163,7 @@ const generateLinkClick = (item) => {
                       <br>
                       {{$t('productCard.commissionRateTipP3')}}
                       <template #reference>
-                        <div class="pointer svg-container">
+                        <div class="pointer lh0">
                           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="17" viewBox="0 0 16 17" fill="none">
                             <g clip-path="url(#clip0_4201_12069)">
                               <path d="M7.99992 10.9964V8.32975M7.99992 5.66309H8.00659M14.6666 8.32975C14.6666 12.0117 11.6818 14.9964 7.99992 14.9964C4.31802 14.9964 1.33325 12.0117 1.33325 8.32975C1.33325 4.64785 4.31802 1.66309 7.99992 1.66309C11.6818 1.66309 14.6666 4.64785 14.6666 8.32975Z" stroke="#667085" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
