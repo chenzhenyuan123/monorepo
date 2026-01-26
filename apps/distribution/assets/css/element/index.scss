@@ -108,6 +108,9 @@ $--button-padding-vertical: (
   .direction-ltr {
     direction: ltr;
   }
+  .direction-rotate180 {
+    transform: rotate(180deg);
+  }
   .direction-inline-block {
     display: inline-block;
   }

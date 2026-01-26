@@ -47,6 +47,15 @@ const form = reactive({
     status: undefined,
     withdrawFee: 0,
 })
+const membershipFeeDiff = computed(() => {
+    return form.v0WithdrawFee ? 0 : (accurate_add(form.v0WithdrawFee, -form.receivableFee) || 0)
+})
+const couponFeeDiff = computed(() => {
+    return accurate_add(form.receivableFee, -form.withdrawFee) || 0
+})
+const actualWithdrawAmount = computed(() => {
+    return accurate_add(form.applyAmt, -form.withdrawFee) || 0
+})
 const statusData = computed(() => {
   return [
     { value: 'WITHDRAWING', label: t('wallet.dataWithdrawStatusProccessing'), type: 'primary' },
@@ -85,9 +94,6 @@ const locationData = reactive({
         //         "ecCountryId": "CN"
         // }
     ]
-})
-const actualWithdrawAmount = computed(() => {
-    return accurate_add(form.applyAmt, -form.withdrawFee) || 0
 })
 const cardIcon = computed(() => {
     const cardNum = form.accountNumber
@@ -243,11 +249,53 @@ onUnmounted(()=>{
             <el-form-item :label="$t('withdraw.detailFormLabelAddress')" prop="openingBankAddress" class="form-item">
                 <el-input v-model="form.openingBankAddress" class="form-input input-default" disabled />
             </el-form-item>
-            <div class="fee-container">
-                <p class="p flex-box mb8">{{ $t('withdraw.applyFormFeeModuleWithdrawalLabel') }} <span class="flex-center"></span> ${{ currencyFormat(form.applyAmt) }}</p>
-                <p class="p flex-box mb8 b8">{{ $t('withdraw.applyFormFeeModuleFeeLabel') }} <span class="flex-center"></span> ${{ currencyFormat(form.withdrawFee) }}</p>
-                <p class="p flex-box mb8 b8">{{ $t('withdraw.applyFormFeeModuleReceivedLabel') }} <span class="flex-center"></span> ${{ currencyFormat(actualWithdrawAmount) }}</p>
-                <p class="p">{{ $t('withdraw.applyFormFeeModuleMessage') }}</p>
+            <div class="fee-container mt32">
+                <p class="flex items-center">
+                    <span class="black-span">{{ $t('withdraw.applyFormFeeModuleWithdrawalLabel') }}</span>
+                    <span class="flex-center"></span>
+                    <span class="black-span fw600">${{ currencyFormat(form.applyAmt) }}</span>
+                    <span class="flex-center-20"></span>
+                </p>
+                <p class="p flex-box mt8">
+                    <span class="black-span">{{ $t('withdraw.applyFormFeeModuleFeeLabel') }}</span>
+                    <span class="flex-center"></span>
+                    <span :class="[ form.v0WithdrawFee === form.withdrawFee ? 'black-span' : 'green-span', 'fw600' ]"> ${{ currencyFormat(form.withdrawFee) }}</span>
+                    <span class="flex-center-20"></span>
+                </p>
+                <div class="flex mt2">
+                    <span class="flex-center-4"></span>
+                    <div v-if="form.v0WithdrawFee !== form.withdrawFee" class="fee-sub tertiary-span flex-1">
+                        <div v-if="form.v0WithdrawFee" class="flex items-center">
+                            <span>{{ $t('withdraw.applyFormFeeModuleStandardFeeLabel') }}</span>
+                            <span class="flex-center"></span>
+                            <span>${{ currencyFormat(form.v0WithdrawFee) }}</span>
+                            <span class="flex-center-20"></span>
+                        </div>
+                        <div v-if="membershipFeeDiff && form.v0WithdrawFee" class="flex items-center mt2">
+                            <span>{{ $t('withdraw.applyFormFeeModuleMembershipFeeLabel') }}</span>
+                            <span class="flex-center"></span>
+                            <span>-${{ currencyFormat(membershipFeeDiff) }}</span>
+                            <span class="flex-center-20"></span>
+                        </div>
+                        <div v-if="couponFeeDiff" class="flex items-center mt2">
+                            <span>{{ $t('withdraw.applyFormFeeModuleCouponFeeLabel', { rate: form.discountNumber }) }}</span>
+                            <span class="flex-center"></span>
+                            <span>-${{ currencyFormat(couponFeeDiff) }}</span>
+                            <span class="flex-center-20"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="hr mt8"></div>
+                <p class="flex items-center mt8">
+                    <span class="black-span fw600">{{ $t('withdraw.applyFormFeeModuleReceivedLabel') }}</span>
+                    <span class="flex-center"></span>
+                    <span class="black-span f16 fw600">${{ currencyFormat(actualWithdrawAmount) }}</span>
+                    <span class="flex-center-20"></span>
+                </p>
+                <p class="flex items-center black-span mt8">
+                    <span>{{ $t('withdraw.applyFormFeeModuleMessage') }}</span>
+                    <span class="flex-center-20"></span>
+                </p>
             </div>
         </el-form>
     </div>
@@ -260,6 +308,44 @@ onUnmounted(()=>{
 @import url("@/assets/css/element-reset/select.scss");
 * {
     box-sizing: border-box;
+}
+.black-span {
+    color: #475467;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px;
+    &.fw600 {
+        font-weight: 600;
+    }
+    &.f16 {
+        font-size: 16px;
+        line-height: 24px;
+    }
+}
+.green-span {
+    color: #079455;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px;
+    &.fw600 {
+        font-weight: 600;
+    }
+    &.f16 {
+        font-size: 16px;
+        line-height: 24px;
+    }
+}
+.tertiary-span {
+    color: #667085;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px;
+}
+.hr {
+    border-bottom: 1px solid #E4E7EC;
 }
 .page {
     padding: 32px 0;
@@ -420,19 +506,13 @@ onUnmounted(()=>{
     .fee-container {
         padding: 16px 0 0;
         border-top: 1px solid #E4E7EC;
-        margin-top: 32px;
-        .p {
-            color: #475467;
-            font-size: 14px;
-            font-style: normal;
-            font-weight: 400;
-            line-height: 20px; /* 142.857% */
-            margin-bottom: 4px;
-            &.b8 {
-                margin-bottom: 8px;
-            }
-            &:last-child {
-                margin-bottom: 0;
+        .fee-sub {
+            padding: 4px 0 4px 12px;
+            border-left: 1px solid #E4E3EA;
+            .rtl & {
+                padding: 4px 12px 4px 0;
+                border-left: 0;
+                border-right: 1px solid #E4E3EA;
             }
         }
     }

@@ -91,8 +91,8 @@ function qryMembershipCardData() {
 
 // 手续费
 const fee = ref(0)
-const defaultFeeDiff = ref(0)
 const membershipFeeDiff = ref(0)
+const couponFeeDiff = ref(0)
 const feeData = ref({})
 const isGetFee = ref(false)
 const isGetLevelError = ref(false)
@@ -104,8 +104,8 @@ async function qryWithdrawFee() {
     if (result?.success) {
         feeData.value = result.data || {}
         fee.value = result.data?.withdrawFee || 0
-        defaultFeeDiff.value = accurate_add(defaultWithdrawFee.value, -feeData.value.receivableFee) || 0
-        membershipFeeDiff.value = accurate_add(feeData.value.receivableFee, -feeData.value.withdrawFee) || 0
+        membershipFeeDiff.value = accurate_add(defaultWithdrawFee.value, -feeData.value.receivableFee) || 0
+        couponFeeDiff.value = accurate_add(feeData.value.receivableFee, -feeData.value.withdrawFee) || 0
         isGetFee.value = true
         isGetLevelError.value = false
     } else if (result?.code === 'FA1002') {
@@ -666,37 +666,47 @@ onUnmounted(()=>{
                     @change="e => { form.openingBankAddress = e.trim() }"
                 />
             </el-form-item>
-            <div class="fee-container">
-                <p class="p flex-box">
-                    {{ $t('withdraw.applyFormFeeModuleWithdrawalLabel') }}
+            <div class="fee-container mt32">
+                <p class="flex items-center">
+                    <span class="black-span">{{ $t('withdraw.applyFormFeeModuleWithdrawalLabel') }}</span>
                     <span class="flex-center"></span>
-                    ${{ currencyFormat(form.applyAmt) }}
+                    <span class="black-span fw600">${{ currencyFormat(form.applyAmt) }}</span>
+                    <span class="flex-center-20"></span>
                 </p>
-                <template v-if="isGetFee">
-                    <p class="p flex-box mt8">
-                        {{ $t('withdraw.applyFormFeeModuleFeeLabel') }}
-                        <span class="flex-center"></span>
-                        <span v-if="defaultWithdrawFee === fee"> ${{ currencyFormat(fee) }}</span>
-                        <span v-else class="flex items-center">
-                            <span class="success"> ${{ currencyFormat(fee) }}</span>
-                            <span class="flex-center-6"></span>
-                            <del>${{ currencyFormat(defaultWithdrawFee) }}</del>
-                        </span>
-                    </p>
-                    <div v-if="defaultFeeDiff" class="p flex-box mt8">
-                        <span class="flex-center"></span>
-                        <span>-${{ currencyFormat(defaultFeeDiff) }}</span>
-                    </div>
-                    <div v-if="membershipFeeDiff" class="p flex-box cursor-pointer mt8" @click="showDiscountDetailsDialog">
-                        <span class="flex-center"></span>
-                        <span>-${{ currencyFormat(membershipFeeDiff) }}</span>
-                        <div class="lh0">
-                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M7.5 15L12.5 10L7.5 5" stroke="#667085" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
+                <p class="p flex-box mt8">
+                    <span class="black-span">{{ $t('withdraw.applyFormFeeModuleFeeLabel') }}</span>
+                    <span class="flex-center"></span>
+                    <span :class="[ defaultWithdrawFee === fee ? 'black-span' : 'green-span', 'fw600' ]"> ${{ currencyFormat(fee) }}</span>
+                    <span class="flex-center-20"></span>
+                </p>
+                <div class="flex mt2">
+                    <span class="flex-center-4"></span>
+                    <div v-if="defaultWithdrawFee !== fee" class="fee-sub tertiary-span flex-1">
+                        <div class="flex items-center">
+                            <span>{{ $t('withdraw.applyFormFeeModuleStandardFeeLabel') }}</span>
+                            <span class="flex-center"></span>
+                            <span>${{ currencyFormat(defaultWithdrawFee) }}</span>
+                            <span class="flex-center-20"></span>
+                        </div>
+                        <div v-if="membershipFeeDiff" class="flex items-center mt2">
+                            <span>{{ $t('withdraw.applyFormFeeModuleMembershipFeeLabel') }}</span>
+                            <span class="flex-center"></span>
+                            <span>-${{ currencyFormat(membershipFeeDiff) }}</span>
+                            <span class="flex-center-20"></span>
+                        </div>
+                        <div v-if="couponFeeDiff" class="flex items-center cursor-pointer mt2" @click="showDiscountDetailsDialog">
+                            <span>{{ $t('withdraw.applyFormFeeModuleCouponFeeLabel', { rate: feeData.discountNumber }) }}</span>
+                            <span class="flex-center"></span>
+                            <span>-${{ currencyFormat(couponFeeDiff) }}</span>
+                            <div class="lh0 direction-rotate180">
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M7.5 15L12.5 10L7.5 5" stroke="#667085" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
                         </div>
                     </div>
-                    <div v-if="feeData.receivableFee > 0 && membershipCardData.length && !membershipCardNo" class="flex mt4">
+                </div>
+                <div v-if="fee > 0 && membershipCardData.length && !membershipCardNo" class="flex mt2">
                         <div class="flex-center"></div>
                         <el-button
                           type="primary"
@@ -717,14 +727,19 @@ onUnmounted(()=>{
                             </div>
                             {{ $t('withdraw.applyFormFeeModuleButtonAdd') }}
                         </el-button>
+                        <span class="flex-center-20"></span>
                     </div>
-                </template>
-                <p class="p flex-box mt8">
-                    {{ $t('withdraw.applyFormFeeModuleReceivedLabel') }}
+                <div class="hr mt8"></div>
+                <p class="flex items-center mt8">
+                    <span class="black-span fw600">{{ $t('withdraw.applyFormFeeModuleReceivedLabel') }}</span>
                     <span class="flex-center"></span>
-                    ${{ currencyFormat(actualWithdrawAmount) }}
+                    <span class="black-span f16 fw600">${{ currencyFormat(actualWithdrawAmount) }}</span>
+                    <span class="flex-center-20"></span>
                 </p>
-                <p class="p mt8">{{ $t('withdraw.applyFormFeeModuleMessage') }}</p>
+                <p class="flex items-center black-span mt8">
+                    <span>{{ $t('withdraw.applyFormFeeModuleMessage') }}</span>
+                    <span class="flex-center-20"></span>
+                </p>
             </div>
             <el-form-item class="form-buttons">
                 <el-button v-if="isMobile" key="msubmit" type="primary" class="button-default m-adaptive" :loading="loading" :disabled="isGetLevelError || isGetDefaultLevelError" @click="validateApply">{{ $t('withdraw.applyFormButtonSubmit') }}</el-button>
@@ -756,12 +771,43 @@ onUnmounted(()=>{
 * {
     box-sizing: border-box;
 }
-.grey-span {
-    color: #667085;
-    font-size: 12px;
+.black-span {
+    color: #475467;
+    font-size: 14px;
     font-style: normal;
     font-weight: 400;
-    line-height: 18px;
+    line-height: 20px;
+    &.fw600 {
+        font-weight: 600;
+    }
+    &.f16 {
+        font-size: 16px;
+        line-height: 24px;
+    }
+}
+.green-span {
+    color: #079455;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px;
+    &.fw600 {
+        font-weight: 600;
+    }
+    &.f16 {
+        font-size: 16px;
+        line-height: 24px;
+    }
+}
+.tertiary-span {
+    color: #667085;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px;
+}
+.hr {
+    border-bottom: 1px solid #E4E7EC;
 }
 .page {
     padding: 32px 0;
@@ -957,18 +1003,13 @@ onUnmounted(()=>{
     .fee-container {
         padding: 16px 0 0;
         border-top: 1px solid #E4E7EC;
-        margin-top: 32px;
-        .p {
-            color: #475467;
-            font-size: 14px;
-            font-style: normal;
-            font-weight: 400;
-            line-height: 20px; /* 142.857% */
-            .success {
-                color: #079455;
-            }
-            del {
-                color: #667085;
+        .fee-sub {
+            padding: 4px 0 4px 12px;
+            border-left: 1px solid #E4E3EA;
+            .rtl & {
+                padding: 4px 12px 4px 0;
+                border-left: 0;
+                border-right: 1px solid #E4E3EA;
             }
         }
     }
