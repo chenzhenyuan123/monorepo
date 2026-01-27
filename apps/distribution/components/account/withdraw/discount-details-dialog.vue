@@ -91,7 +91,7 @@
               </div>
             </div>
             <div class="tertiary-span f12">{{$t('DiscountDetailsDialog.couponIdLabel')}} {{ membershipCardItem.cardNo }}</div>
-            <div class="tertiary-span f12">{{ formatDate(membershipCardItem.startDate) }} ~ {{ formatDate(membershipCardItem.endDate) }} (UTC+8)</div>
+            <div class="tertiary-span f12">{{ membershipCardItem.startDate }} ~ {{ membershipCardItem.endDate }} (UTC+8)</div>
           </div>
           <div class="border"></div>
           <div class="half-circle-top"></div>
