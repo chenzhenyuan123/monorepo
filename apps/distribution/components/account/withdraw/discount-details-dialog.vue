@@ -75,7 +75,7 @@
                 <span class="rad-span f12">{{$t('DiscountDetailsDialog.rateLabel')}}</span>
             </div>
             <div class="flex items-center mb4">
-              <div class="tertiary-span2">{{$t('DiscountDetailsDialog.couponLabel')}}</div>
+              <div class="tertiary-span2">{{ membershipCardItem.cardName }}</div>
               <div class="flex-center-4"></div>
               <div v-if="membershipCardItem.useRule" class="lh0 cursor-pointer" @click.stop="showDiscountRuleDialog(membershipCardItem.useRule)">
                 <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
