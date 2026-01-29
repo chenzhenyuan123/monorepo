@@ -161,8 +161,8 @@ const toPage = () => {
         </div>
       </template>
     </div>
-    <div v-if="data.category === 2 && data.closeButtonView" class="close-custom-bg" @click="cancel">
-      <el-icon class="close-custom"><Close /></el-icon>
+    <div v-if="data.category === 2 && data.closeButtonView" class="close-custom-bg">
+      <el-icon class="close-custom" @click="cancel"><Close /></el-icon>
     </div>
     <div v-if="data.category === 1" class="container">
       <div class="title">
