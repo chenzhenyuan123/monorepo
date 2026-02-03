@@ -48,7 +48,7 @@ const form = reactive({
     withdrawFee: 0,
 })
 const membershipFeeDiff = computed(() => {
-    return form.v0WithdrawFee ? 0 : (accurate_add(form.v0WithdrawFee, -form.receivableFee) || 0)
+    return form.v0WithdrawFee ? (accurate_add(form.v0WithdrawFee, -form.receivableFee) || 0) : 0
 })
 const couponFeeDiff = computed(() => {
     return accurate_add(form.receivableFee, -form.withdrawFee) || 0
