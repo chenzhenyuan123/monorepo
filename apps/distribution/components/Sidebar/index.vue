@@ -1,7 +1,7 @@
 <script setup>
 import SidebarItem from './SidebarItem.vue'
 import { reactive, inject } from 'vue'
-import routes from './route.js'
+import {routes, routesDeveloper} from './route.js'
 
 const router = useRouter()
 const isCollapse = inject('isCollapse')
@@ -11,6 +11,11 @@ const isMobile = useIsMobile()
 const selectMenu = () => {
   emit('hiddenSetting')
 }
+// 判断是开发者平台的路由还是分销端的路由，默认分销端路由
+const route = useRoute()
+const routeData = computed(() => {
+  return route?.path.indexOf('/openapi')>-1 ? routesDeveloper : routes
+})
 
 </script>
 
@@ -30,7 +35,7 @@ const selectMenu = () => {
           <img v-if="isCollapse" class="abb-logo" src="~@/assets/imgs/abb-logo.svg" alt="" @click="navigateTo('/home')">
           <img v-else src="~@/assets/imgs/Flylinking-logo.svg" alt="" @click="navigateTo('/home')">
         </div>
-        <template v-for="item in routes" :key="item.path">
+        <template v-for="item in routeData" :key="item.path">
           <sidebar-item :item-data="item" />
         </template>
       </el-menu>
