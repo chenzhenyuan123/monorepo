@@ -3,16 +3,38 @@
  * @Description: 公共底部
 -->
 <script setup name="Footer">
+import { useUserStore } from '@/store/userState.js'
+import { errorMessage, successMessage, checkResponseData } from "@/util/index.js"
+const { openapiApi } = useApi()
+const userStore = useUserStore()
+userStore.getUserInfo()
+
 const isMobile = useIsMobile()
 const date = new Date();
 const year = date.getFullYear();
+const goDeveloper = async()=>{
+  // 如果存在登录态-且接口返回为已注册用户，则跳转/openapi/home，否则跳转/openapi/register
+  const result = await openapiApi.developerQuery()
+  const res = checkResponseData(result)
+  if(res) {
+    navigateTo('/openapi/home')
+  } else {
+    navigateTo('/openapi/register')
+  }
+}
 </script>
 <template>
-  <div class="footer-box" :class="{ m: isMobile }">
-    <div class="margin-top16 left-box">@ {{year}} {{$t('login.footeRightsReserved')}}</div>
-    <div class="right-box">
-      <div class="margin-top16 margin-right16 left-box"><a href="/legal/privacy-policy" target="_blank">{{$t('login.footerPrivacyPolice')}}</a></div>
-      <div class="margin-top16 right-box"><a href="/legal/terms-of-usage" target="_blank">{{$t('login.footeTermOfUse')}}</a></div>
+  <div class="footer-box flex justify-between" :class="{ m: isMobile }">
+    <div class="left-box">@ {{year}} {{$t('login.footeRightsReserved')}}</div>
+    <div class="right-box flex">
+      <div><a href="/legal/privacy-policy" target="_blank">{{$t('login.footerPrivacyPolice')}}</a></div>
+      <div class="flex-center-16"></div>
+      <div><a href="/legal/terms-of-usage" target="_blank">{{$t('login.footeTermOfUse')}}</a></div>
+      <!-- 如果是登录态，显示开发者工具入口 -->
+      <template v-if="userStore.userInfo && userStore.userInfo.loginAccount">
+        <div class="flex-center-16"></div>
+        <div><a @click="goDeveloper">Developer</a></div>
+      </template>
     </div>
   </div>
 </template>
@@ -26,22 +48,18 @@ const year = date.getFullYear();
   a {
     display: block;
     text-decoration: none;
+    cursor: pointer;
     color: #667085;
     font-size: 14px;
     line-height: 20px;
     text-align: center;
   }
   .left-box {
-    float: left;
     color: #667085;
     font-size: 14px;
   }
   .right-box {
-    float: right;
     text-align: right;
-    .margin-right16 {
-      margin-right: 16px;
-    }
   }
   &.m {
     border-top: 0;
@@ -51,14 +69,12 @@ const year = date.getFullYear();
     font-size: 12px;
     line-height: 18px;
     padding-top: 0;
-    .margin-top16 {
-      margin-top: 16px;
-    }
-    .left-box, .right-box {
-      float: none;
-    }
-    .margin-right16 {
-      margin-right: 0;
+    &.flex, .flex {
+      display: block;
+      .right-box > div {
+        margin-top: 16px;
+      }
+      
     }
   }
 }

@@ -1,4 +1,4 @@
-const routes = [
+export const routes = [
   {
     path: '/home',
     name: 'home',
@@ -48,4 +48,13 @@ const routes = [
   }
 ]
 
-export default routes
+export const routesDeveloper = [
+  {
+    path: '/openapi/home',
+    name: 'openapiHome',
+    meta: {
+      title: 'router.Developer',
+      icon: 'icon-home-line'
+    }
+  }
+]
