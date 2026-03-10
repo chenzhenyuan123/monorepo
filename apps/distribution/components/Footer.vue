@@ -15,8 +15,8 @@ const year = date.getFullYear();
 const goDeveloper = async()=>{
   // 如果存在登录态-且接口返回为已注册用户，则跳转/openapi/home，否则跳转/openapi/register
   const result = await openapiApi.developerQuery()
-  const res = checkResponseData(result)
-  if(res) {
+  // const res = checkResponseData(result)
+  if(result.success && result.data) {
     navigateTo('/openapi/home')
   } else {
     navigateTo('/openapi/register')
