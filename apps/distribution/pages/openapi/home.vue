@@ -6,7 +6,6 @@ const isMobile = useIsMobile()
 const appData = ref({
   apps: []
 })
-const appDataObj = ref({}) // 当前要展示的apps
 const isShowreAppDialog = ref(false)
 const registerData = ref({})
 onMounted(()=>{
@@ -30,7 +29,6 @@ const getInfo = async() => {
   const res = checkResponseData(result)
   if(res) {
     appData.value = res || {apps:[]}
-    appDataObj. value = res?.apps[0]
   }
 }
 
@@ -73,51 +71,44 @@ const editDescriptionClick = app => {
 <template>
   <div class="main-box openapi-home-box mb50" :class="{ m: isMobile }">
     <div class="content">
-      <el-card shadow="never">
+      <el-card shadow="never" v-for="item in appData.apps" :key="item.developerId">
         <template #header>
           <div class="card-header">
             <div class="title-box">
-              <span>App details</span>
+              <span>{{item.appName}}</span>
+            </div>
+            <div class="btn-color">
+              <el-button link :icon="EditPen" @click="editDescriptionClick(item)">Edit</el-button>
             </div>
           </div>
         </template>
-        <!-- 如果存在多个apps，得支持点击展示详情 -->
-        <div class="form-section" v-for="item in appData.apps" :key="item.developerId">
-          <div class="form-item">
-            <label>NAME</label>
-            <div class="value-text">{{ item.appName }}</div>
-          </div>
+        <div class="form-section">
           <div class="form-item">
             <label>APP ID</label>
             <div class="value-text">{{ item.id }}</div>
           </div>
           <div class="form-item">
-            <div class="flex justify-between">
             <label>DESCRIPTION</label>
-            <div class="btn-color">
-              <el-button link :icon="EditPen" @click="editDescriptionClick(item)">Edit</el-button>
-            </div>
-          </div>
             <div class="value-text">{{ item.description }}</div>
           </div>
         </div>
-      </el-card>
 
-      <div class="mt40" v-if="appDataObj.clientId">
-        <h3 class="mb12">OAuth 2.0 Client ID and Client Secret</h3>
+        <div class="mt30" v-if="item.clientId">
+          <h3 class="mb12">OAuth 2.0 Client ID and Client Secret</h3>
 
-        <div class="form-item">
-          <label>Client ID</label>
-          <div class="value-text">{{ appDataObj.clientId }}</div>
-        </div>
-        <div class="form-item flex justify-between items-end">
-          <div class=" ">
-            <label>Client Secret</label>
-            <div class="value-text">{{ appDataObj.clientSecretMask }}</div>
+          <div class="form-item">
+            <label>Client ID</label>
+            <div class="value-text">{{ item.clientId }}</div>
           </div>
-          <el-button @click="regenerateClick(appDataObj.id)">Regenerate</el-button>
+          <div class="form-item flex justify-between items-end">
+            <div class=" ">
+              <label>Client Secret</label>
+              <div class="value-text">{{ item.clientSecretMask }}</div>
+            </div>
+            <el-button @click="regenerateClick(item.id)">Regenerate</el-button>
+          </div>
         </div>
-      </div>
+      </el-card>
 
     </div>
 
@@ -171,7 +162,7 @@ const editDescriptionClick = app => {
   background: #f5f5f5;
   margin-bottom: 12px;
   padding: 12px;
-  border-radius: 4px;
+  border-radius: 8px;
   label {
     display: block;
     font-size: 14px;
