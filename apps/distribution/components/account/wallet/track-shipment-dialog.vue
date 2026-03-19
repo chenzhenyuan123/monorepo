@@ -82,11 +82,9 @@ onMounted(() => {
       </div>
 
       <div v-if="shippingInfo.logisticsList.length" class="list">
-        <a
+        <div
           v-for="item in shippingInfo.logisticsList" :key="item.logisticsNo"
           class="item"
-          :href="`https://t.17track.net/en#nums=${item.logisticsNo}${item.logisticsProviderCode ? '&fc='+item.logisticsProviderCode : ''}`"
-          target="_blank"
         >
           <div class="lh0">
             <svg xmlns="http://www.w3.org/2000/svg" width="25" height="24" viewBox="0 0 25 24" fill="none">
@@ -99,6 +97,8 @@ onMounted(() => {
             <p v-if="item.remark" class="p mb12">{{ $t('wallet.trackShipmentDialogShippingNote') }}: {{ item.remark }}</p>
             <el-link
               type="primary"
+              :href="`https://t.17track.net/en#nums=${item.logisticsNo}${item.logisticsProviderCode ? '&fc='+item.logisticsProviderCode : ''}`"
+              target="_blank"
             >
               <div class="flex-box">
                 <span>{{ $t('wallet.trackShipmentDialogLink') }}</span>
@@ -111,7 +111,7 @@ onMounted(() => {
               </div>
             </el-link>
           </div>
-        </a>
+        </div>
       </div>
       <div v-else-if="isGetData" class="empty-container">
         <div class="bg lh0">
