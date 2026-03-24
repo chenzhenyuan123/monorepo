@@ -317,11 +317,15 @@
 }
 
 .full-all {
-  max-width: 100%;
-  max-height: 100%;
+  width: 100%;
+  height: 100%;
 }
 .w-full {
   width: 100%;
+}
+.full-max {
+  max-width: 100%;
+  max-height: 100%;
 }
 
 // 溢出...，限制1行
@@ -367,6 +371,21 @@ $flex-center-width-max: 100;
   }
   .mr#{$i} {
     margin-right: $i * 1px;
+  }
+  .pt#{$i} {
+    padding-top: $i * 1px;
+  }
+  .pb#{$i} {
+    padding-bottom: $i * 1px;
+  }
+  .pl#{$i} {
+    padding-left: $i * 1px;
+  }
+  .pr#{$i} {
+    padding-right: $i * 1px;
+  }
+  .gap#{$i} {
+    gap: $i * 1px;
   }
 }
 

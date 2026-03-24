@@ -28,7 +28,8 @@ const walletInfo = reactive({
 const tabsData = computed(() => {
   return [
     { value: 'transactions', label: t('wallet.transactions') },
-    { value: 'withdraw', label: t('wallet.withdrawalRecords') }
+    { value: 'withdraw', label: t('wallet.withdrawalRecords') },
+    { value: 'exchangeAccount', label: 'Exchange Account' }
   ]
 })
 const tabsDict = computed(() => {
@@ -263,6 +264,10 @@ onMounted(() => {
       <AccountWalletSubDistributorReferral v-else-if="radio1 === 'sub-distributor-referral'"></AccountWalletSubDistributorReferral>
     </template>
     <AccountWalletWithdrawalRecords v-else-if="activeName === 'withdraw'"></AccountWalletWithdrawalRecords>
+    <AccountWalletExchangeAccount
+      v-else-if="activeName === 'exchangeAccount'"
+      :class="[ isMobile ? 'pt20' : 'pt12' ]"
+    ></AccountWalletExchangeAccount>
     <!-- <EmptyData v-else-if="activeName === 'withdraw'"></EmptyData> -->
 
     <AccountWithdrawNotMetDialog
