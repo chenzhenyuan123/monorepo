@@ -4,19 +4,52 @@
 
   const router = useRouter()
   const { t } = useI18n();
+  const { withdrawApi } = useApi()
   const isMobile = useIsMobile()
 
 
-  const formatterAmount = (v, c) => {
-    return (c || 'USD') + ' ' + currencyFormat(v)
+  const isShowSuspendedGialog = ref(false)
+
+
+  // 弹窗，未达到最低提现金额
+  const isShowErrorGialog = ref(false)
+  // 限额，弹窗显示用
+  const limitAmount = ref(0)
+
+
+  const lockStatusData = ref({
+    isLock: undefined,
+    lockTime: undefined,
+  })
+  // 查询提现锁状态
+  const lockStatus = async() => {
+    const result = await withdrawApi.lockStatus()
+    const res = checkResponseData(result)
+    lockStatusData.value = res || {}
   }
-  const jumpToWithdraw = () => {
+
+
+  const jumpToWithdraw = async () => {
+    await lockStatus()
+    if (lockStatusData.value.isLock) {
+      isShowSuspendedGialog.value = true
+      return
+    }
+    // if (!(ableBalanceAmount.value > limitAmount.value)) {
+    //   isShowErrorGialog.value = true
+    //   return
+    // }
     router.push({
       path: '/account/withdraw',
       query: {
         currency: 'EUR'
       }
     })
+  }
+
+
+  const formatterAmount = (v, c) => {
+    return (c || 'USD') + ' ' + currencyFormat(v)
   }
 
 </script>
@@ -140,6 +173,17 @@
         </div>
       </div>
     </div>
+
+    <AccountWithdrawNotMetDialog
+      v-if="isShowErrorGialog"
+      v-model="isShowErrorGialog"
+      :amount="limitAmount"
+    ></AccountWithdrawNotMetDialog>
+    <AccountWithdrawTemporarilySuspendedDialog
+      v-if="isShowSuspendedGialog"
+      v-model="isShowSuspendedGialog"
+      :lockTime="lockStatusData.lockTime"
+    ></AccountWithdrawTemporarilySuspendedDialog>
   </div>
 </template>
 
