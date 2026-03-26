@@ -36,7 +36,12 @@ const { t } = useI18n();
 const { userApi, withdrawApi, countryApi } = useApi()
 const settingStore = useSettingStore()
 const router = useRouter()
+const route = useRouter()
 const isMobile = useIsMobile()
+
+const exchangeAccount = ref(route.query?.currency)
+
+
 const formValidateRef = ref()
 const isShowVerifyGialog = ref(false)
 const limitAmount = ref(50)
@@ -538,10 +543,14 @@ onUnmounted(()=>{
 <template>
   <div :class="{ 'page': true, 'm': isMobile }">
     <div class="content">
-        <div class="title-container">
-            <el-link type="primary" class="back-link" @click="jumpToWallet">
-                <el-icon><Back /></el-icon>
-                {{ $t('withdraw.applyBack') }}
+        <div class="title-container mb32">
+            <el-link type="primary" class="back-link mb24" @click="jumpToWallet">
+                <div class="lh0 mr6">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M15.8333 10.0001H4.16667M4.16667 10.0001L10 15.8334M4.16667 10.0001L10 4.16675" stroke="#5548FF" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <span>{{ $t('withdraw.applyBack') }}</span>
             </el-link>
             <h1>{{ $t('withdraw.applyTitle') }}</h1>
         </div>
@@ -553,6 +562,46 @@ onUnmounted(()=>{
             class="form"
             novalidate
         >
+            <div
+              :class="{ pl32: !isMobile, pr32: !isMobile }"
+            >
+                <div class="hr mb16"></div>
+                <div
+                  :class="{ pl20: isMobile, pr20: isMobile }"
+                >
+                    <el-form-item label="Withdrawal Method" prop="withdrawalMethod" class="form-item" style="margin-bottom: 12px;">
+                        <el-radio-group v-model="form.withdrawalMethod">
+                            <el-radio label="1" border>备选项1</el-radio>
+                            <el-radio label="2" border>备选项2</el-radio>
+                        </el-radio-group>
+                    </el-form-item>
+                    <el-form-item :label="$t('withdraw.applyFormLabelCountryOrRegion')" prop="openingBankCountry" class="form-item location-container">
+                        <el-select
+                          v-model="form.openingBankCountry"
+                          placeholder=""
+                          filterable
+                          class="form-input select-default"
+                          @change="risk_control_check('openingBankCountry')"
+                        >
+                            <template #label="{ label, value }">
+                                <!-- <template #label="{ label }"> -->
+                                <img
+                                  v-if="value"
+                                  :src="flagUrl(value)"
+                                  class="pre-flag location-icon"
+                                >
+                                <span>{{ label }}</span>
+                            </template>
+                            <el-option
+                              v-for="item in locationData.countryData"
+                              :key="item.countryId"
+                              :value="item.countryId"
+                              :label="item.name"
+                            />
+                        </el-select>
+                    </el-form-item>
+                </div>
+            </div>
             <div class="amount-container">
                 <el-form-item :label="$t('withdraw.applyFormLabelWithdrawalAmount')" prop="applyAmt" class="form-item">
                     <el-input
@@ -624,31 +673,6 @@ onUnmounted(()=>{
                     @change="e => { form.bankName = e.trim() }"
                     @blur="risk_control_check('bankName')"
                 />
-            </el-form-item>
-            <el-form-item :label="$t('withdraw.applyFormLabelCountryOrRegion')" prop="openingBankCountry" class="form-item location-container">
-                <el-select
-                    v-model="form.openingBankCountry"
-                    placeholder=""
-                    filterable
-                    class="form-input select-default"
-                    @change="risk_control_check('openingBankCountry')"
-                >
-                <template #label="{ label, value }">
-                <!-- <template #label="{ label }"> -->
-                    <img
-                        v-if="value"
-                        :src="flagUrl(value)"
-                        class="pre-flag location-icon"
-                    >
-                    <span>{{ label }}</span>
-                </template>
-                <el-option
-                    v-for="item in locationData.countryData"
-                    :key="item.countryId"
-                    :value="item.countryId"
-                    :label="item.name"
-                />
-                </el-select>
             </el-form-item>
             <el-form-item :label="$t('withdraw.applyFormLabelCity')" prop="openingBankCity" class="form-item">
                 <el-input
@@ -810,14 +834,14 @@ onUnmounted(()=>{
     border-bottom: 1px solid #E4E7EC;
 }
 .page {
-    padding: 32px 0;
+    padding: 28px 0;
     &.m {
         padding: 16px 0;
         .title-container {
-            margin: 0 16px 32px;
+            margin-left: 16px;
+            margin-right: 16px;
         }
         .form {
-            padding: 0 16px;
             .amount-container {
                 margin: 0 -16px 32px;
             }
@@ -860,17 +884,13 @@ onUnmounted(()=>{
     background-color: #FFF;
 }
 .title-container {
-    margin: 0 32px 32px;
+    margin-left: 32px;
+    margin-right: 32px;
     .back-link {
         font-size: 14px;
         font-style: normal;
         font-weight: 600;
         line-height: 20px;
-        margin: 0 -6px 24px;
-        .el-icon {
-            font-size: 20px;
-            margin: 0 6px;
-        }
     }
     h1 {
         color: #101828;
@@ -881,7 +901,6 @@ onUnmounted(()=>{
     }
 }
 .form {
-    padding: 0 32px;
     .form-item {
         margin-bottom: 16px;
         &:last-child {

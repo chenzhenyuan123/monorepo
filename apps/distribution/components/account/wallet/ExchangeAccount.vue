@@ -12,7 +12,10 @@
   }
   const jumpToWithdraw = () => {
     router.push({
-      path: '/account/withdraw'
+      path: '/account/withdraw',
+      query: {
+        currency: 'EUR'
+      }
     })
   }
 
