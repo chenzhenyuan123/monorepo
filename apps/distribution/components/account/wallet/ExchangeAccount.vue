@@ -63,14 +63,12 @@
       :ellipsisNum="isMobile ? 3 : 10"
     >
       Commissions are settled in USD. If you withdraw in a non-USD currency and the withdrawal fails, the converted funds will be shown in your Exchange Account.
-      <br>
-      <br>
+      <div style="height: 14px;"></div>
       For failures caused by receiving bank rejection, the withdrawal fee is non-refundable. The final refund amount is subject to the actual amount returned by the bank.
-      <br>
-      <br>
+      <div style="height: 14px;"></div>
       Funds in the Exchange Account can only be withdrawn in their original currency.
     </ExpandContent>
-    <div class="card-group flex gap24 mb32">
+    <div class="card-group flex flex-wrap gap24 mb32">
       <div class="card">
         <div class="card-icon-container flex items-center justify-center mb20">
           <div class="lh0">
