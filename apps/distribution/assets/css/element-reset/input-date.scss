@@ -1,0 +1,17 @@
+.input-date-default {
+  &.is-disabled {
+    :deep(.el-input__wrapper) {
+      background-color: #F9FAFB;
+      .el-input__inner {
+        color: #667085;
+      }
+    }
+  }
+  :deep(.el-input__wrapper) {
+    border-radius: 8px;
+    border: 1px solid #D0D5DD;
+    background-color: #FFF;
+    box-shadow: 0px 1px 2px 0px rgba(16, 24, 40, 0.05);
+  }
+
+}

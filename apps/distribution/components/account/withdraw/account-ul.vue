@@ -54,7 +54,7 @@
 </script>
 
 <template>
-    <ul class="account-ul">
+    <ul class="account-ul gap12">
         <AccountWithdrawAccountItem
                 v-for="item in successBankcardData"
                 :key="item.id"

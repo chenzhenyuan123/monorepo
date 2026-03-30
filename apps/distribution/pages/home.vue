@@ -173,14 +173,14 @@ const routerGo = path => {
                 <div class="statistical-content">
                   <div v-for="item in walletInfo.pendingCommissionDetailList" :key="item.currency" class="statistical-tabs">
                     <div class="statistical-tabs-item">
-                      <div class="icon-container">
+                      <div class="circle-country-icon-container">
                         <img :src="flagUrl(currencyToCountryId[item.currency])" alt="">
                       </div>
                       <div class="flex-center-8"></div>
                       <span>{{ formatterAmount(item.nonUSDCommission, item.currency) }}</span>
                     </div>
                     <div class="statistical-tabs-item">
-                      <div class="icon-container">
+                      <div class="circle-country-icon-container">
                         <img :src="flagUrl('us')" alt="">
                       </div>
                       <div class="flex-center-8"></div>

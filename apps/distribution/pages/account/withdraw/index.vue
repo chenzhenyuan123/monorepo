@@ -31,6 +31,7 @@ isAccountName,
   isIBAN,
 hasCountryCodeForIBAN,
 } from "@/util/validate";
+import {arrToDict} from "@flylinking/core/utils/common";
 
 const { t } = useI18n();
 const { userApi, withdrawApi, countryApi } = useApi()
@@ -45,41 +46,145 @@ const exchangeAccount = ref(route.query?.currency || 'USD')
 
 const formValidateRef = ref()
 const isShowVerifyGialog = ref(false)
-const limitAmount = ref(50)
-const ableBalanceAmount = ref(0)
+const isShowAccountTypeDialog = ref(false)
+const isShowSaveAddressDialog = ref(false)
+const isShowRateUpdateDialog = ref(false)
 const loading = ref(false)
 const form = reactive({
-    withdrawalMethod: 'bankAccount',
-    withdrawalCurrency: exchangeAccount.value,
-    convertedCurrency: exchangeAccount.value,
-    applyAmt: undefined,
-    accountName: undefined,
-    accountNumber: '',
-    swiftCode: undefined,
-    bankName: undefined,
+    withdrawType: 'Bank_Account',
     openingBankCountry: undefined,
+    accountCurrency: exchangeAccount.value,
+    applyAmt: undefined,
+    withdrawCurrency: exchangeAccount.value,
+    // 展示账户类型时，默认是储蓄账户；其他情况不需要默认值
+    accountType: 'savingsAccount',
+    accountHolderType: undefined,
+    accountName: undefined,
+    // 固定部分
     openingBankCity: undefined,
     openingBankAddress: undefined,
+    bankState: undefined,
+    zip: undefined,
+    // 储蓄账户部分
+    //
+    bankName: undefined,
+    accountNumber: '',
+    routingNumber: undefined,
+    swiftCode: undefined,
+    // PayPal部分
+    //
+    birthDate: undefined,
+    paypalAccount: undefined,
 })
-const checkResultData = reactive({
-    applyAmt: true,
-    accountName: true,
-    accountNumber: true,
-    swiftCode: true,
-    bankName: true,
-    openingBankCountry: true,
-    openingBankCity: true,
-    openingBankAddress: true,
+watch(() => form.applyAmt, () => {
+    // 提现金额变化，更新手续费、换汇金额等
+    setTimeoutForRateRefresh()
+})
+watch(() => form.withdrawCurrency, () => {
+    // 币种变化，更新手续费、汇率等
+    setTimeoutForRateRefresh()
 })
 
 
 // 是否账户币种为USD
 const isExchangeAccountUSD = ref(exchangeAccount.value === 'USD')
+const isBankAccount = computed(() => {
+    return form.withdrawType === 'Bank_Account'
+})
+watch(isBankAccount, () => {
+    if (!isBankAccount.value && form.withdrawCurrency !== 'USD') {
+        // 如果提现方式选择的是PayPal，到账币种只能是USD，不可修改
+        form.withdrawCurrency = 'USD'
+    } else {
+        // 提现类型变化，更新手续费、汇率等
+        setTimeoutForRateRefresh()
+    }
+})
+// 是否展示账户类型，提现方式=银行账户，到账币种=USD，且账户所在国=美国
+const isShowAccountType = computed(() => {
+    return isBankAccount.value && form.withdrawCurrency === 'USD' && form.openingBankCountry === 'US'
+})
+// 特殊国家，账户所在国是以色列，孟加拉，沙特时，默认选中个人，不能修改
+const isSpecialForAccountHolderType = computed(() => {
+    return form.openingBankCountry === 'IL' || form.openingBankCountry === 'BD' || form.openingBankCountry === 'SA'
+})
+watch(isSpecialForAccountHolderType, () => {
+    if (isSpecialForAccountHolderType.value && form.accountHolderType && form.accountHolderType !== 'individual') form.accountHolderType = 'individual'
+})
 
 
 const hasSuccessBankcardData = ref(false)
 const obtainedData = (bol) => {
     hasSuccessBankcardData.value = bol
+}
+
+
+const ableBalanceAmount = ref(0)
+// 查询可用佣金
+const qryBalanceList = () => {
+    withdrawApi.qryBalanceList().then((result) => {
+        const res = checkResponseData(result) || []
+        res.some(item => {
+            if (item.currency === form.accountCurrency) {
+                ableBalanceAmount.value = item.availableBalance || 0
+                return true
+            }
+        })
+    })
+}
+
+
+const withdrawCurrencyListData = ref([])
+// 查询到账币种列表
+const qryCreditedCurrencyList = () => {
+    return withdrawApi.qryCreditedCurrencyList().then((result) => {
+        const res = checkResponseData(result)
+        withdrawCurrencyListData.value = res || []
+    })
+}
+
+
+const limitAmount = ref(0)
+const isApplyAmtOverLimitAmount = computed(() => {
+    return form.applyAmt > limitAmount.value
+})
+// 查询币种最小可提现金额
+const qryMinWithdrawalAmount = (currency) => {
+    return withdrawApi.qryMinWithdrawalAmount({ currency }).then((result) => {
+        const res = checkResponseData(result) || {}
+        limitAmount.value = res.minWithdrawalAmount || 0
+    })
+}
+
+
+const dayTypeDict = ref({
+    1: '工作日',
+    2: '非工作日',
+    3: '自然日',
+})
+const settleConfigListData = ref([])
+// 查询提现到账时间说明列表
+const qrySettleConfigList = (currency) => {
+    return withdrawApi.qrySettleConfigList({ currency }).then((result) => {
+        const res = checkResponseData(result) || []
+        settleConfigListData.value = res.map(item => {
+            let period = item.period || 0
+            let settleHour = item.settleHour
+            if (settleHour >= 0) {
+                // 加2小时
+                settleHour += 2
+                if (settleHour >= 24) {
+                    // 超过一天
+                    period++
+                    settleHour -= 24
+                }
+            }
+            return Object.assign({}, item, {
+                period: period,
+                settleHour: settleHour
+            })
+        })
+    })
 }
 
 
@@ -93,7 +198,7 @@ function showDiscountDetailsDialog() {
 }
 function changeSelectCoupon(val) {
     membershipCardNo.value = val
-    qryWithdrawFee()
+    setTimeoutForRateRefresh()
 }
 function qryMembershipCardData() {
     withdrawApi.listMembershipCardPage().then(result => {
@@ -102,56 +207,90 @@ function qryMembershipCardData() {
 }
 
 
+// 默认等级手续费
+const defaultWithdrawFee = ref(0)
 // 手续费
 const fee = ref(0)
-const membershipFeeDiff = ref(0)
-const couponFeeDiff = ref(0)
 const feeData = ref({})
 const isGetFee = ref(false)
 const isGetLevelError = ref(false)
-// 查询手续费
-async function qryWithdrawFee() {
-    const result = await withdrawApi.qryWithdrawFee({
-        cardNo: membershipCardNo.value
-    })
-    if (result?.success) {
-        feeData.value = result.data || {}
-        fee.value = result.data?.withdrawFee || 0
-        membershipFeeDiff.value = accurate_add(defaultWithdrawFee.value, -feeData.value.receivableFee) || 0
-        couponFeeDiff.value = accurate_add(feeData.value.receivableFee, -feeData.value.withdrawFee) || 0
-        isGetFee.value = true
-        isGetLevelError.value = false
-    } else if (result?.code === 'FA1002') {
-        isGetLevelError.value = true
-        isShowErrorLevelDialog.value = true
-    } else {
-        errorMessage(result?.message)
-    }
-}
-// 默认等级手续费
-const defaultWithdrawFee = ref(0)
-const defaultWithdrawFeeData = ref({})
-const isGetDefaultWithdrawFee = ref(false)
-const isGetDefaultLevelError = ref(false)
 // 是否显示“获取等级错误”弹窗
 const isShowErrorLevelDialog = ref(false)
-// 查询默认等级手续费
-const qryDefaultWithdrawFee = async () => {
-    const result = await withdrawApi.qryDefaultWithdrawFee()
-    if (result?.success) {
-        defaultWithdrawFeeData.value = result.data || {}
-        defaultWithdrawFee.value = result.data?.withdrawFee || 0
-        isGetDefaultWithdrawFee.value = true
-        isGetDefaultLevelError.value = false
-    } else if (result?.code === 'FA1002') {
-        isGetDefaultLevelError.value = true
-        isShowErrorLevelDialog.value = true
-    } else {
-        errorMessage(result?.message)
-    }
+// 查询手续费
+function qryWithdrawFee() {
+    isGetFee.value = false
+    if (!isApplyAmtOverLimitAmount.value) return
+    withdrawApi.qryWithdrawFee({
+        accountCurrency: form.accountCurrency,
+        applyAmt: form.applyAmt,
+        withdrawCurrency: form.withdrawCurrency,
+        withdrawType: form.withdrawType,
+        cardNo: membershipCardNo.value
+    }).then(result => {
+        console.log('qryWithdrawFee result: ', result)
+        if (result?.success) {
+            feeData.value = result.data || {}
+            defaultWithdrawFee.value = result.data?.v0ReceivableFee || 0
+            fee.value = result.data?.withdrawFee || 0
+            isGetFee.value = true
+            isGetLevelError.value = false
+        } else if (result?.code === 'FA1002') {
+            isGetLevelError.value = true
+            isShowErrorLevelDialog.value = true
+        } else {
+            errorMessage(result?.message)
+        }
+    })
+}
+const rateRefreshData = ref({
+    // 显示延时时间
+    timerShow: false,
+    // 轮循时间
+    times: 30,
+    // 30 秒内获取验证码
+    timerCount: 30,
+    timer: null,
+})
+const setTimeoutForRateRefresh = (times) => {
+    // 取消倒计时
+    clearTimeoutForRateRefresh()
+    qryWithdrawFee()
+    // 重置时间
+    rateRefreshData.value.timerCount = times || rateRefreshData.value.times
+    rateRefreshData.value.timerShow = true
+    rateRefreshData.value.timer = setInterval(() => {
+        if (rateRefreshData.value.timerCount > 1) {
+            rateRefreshData.value.timerCount--
+        } else {
+            // 取消倒计时
+            clearTimeoutForRateRefresh()
+        }
+    }, 1000)
+}
+const clearTimeoutForRateRefresh = () => {
+    clearInterval(rateRefreshData.value.timer)
+    rateRefreshData.value.timerShow = false
 }
 
 
+// 风控校验记录
+const checkResultData = reactive({
+    accountName: true,
+    bankName: true,
+    openingBankCountry: true,
+})
+// 风控校验
+const risk_control_check = (key) => {
+    const obj = {}
+    obj[key] = form[key]
+    withdrawApi.risk_control_check(obj).then(result => {
+        checkResultData[key] = checkResponseData(result)
+        formValidateRef.value?.formRef?.validateField(key)
+    })
+}
+
+
+// 选中记录地址
 const selectBankcardData = (obj) => {
     Object.assign(form, obj, {
         accountNumber: formatCreditCardNumber(obj.accountNumber),
@@ -162,6 +301,8 @@ const selectBankcardData = (obj) => {
     risk_control_check('openingBankCountry')
     triggerCycle()
 }
+
+
 // 校验金额
 const validateAmt = (rule, value, callback) => {
 if (value && !(value >= limitAmount.value)) {
@@ -350,27 +491,33 @@ const rules = () => {
         ],
     }
 }
-const locationData = reactive({
-    countryData: [
-        // {
-        //     "countryId": "CN",
-        //         "name": "China",
-        //         "description": "中国大陆",
-        //         "valid": "1",
-        //         "area": "N",
-        //         "chinaArea": "亚洲",
-        //         "sort": 0E-30,
-        //         "countryCode": "457",
-        //         "threeCountryCode": null,
-        //         "currency": "RMB",
-        //         "callingCode": "86",
-        //         "ecCountryId": "CN"
-        // }
-    ]
-})
-const countryCodeArr = computed(() => {
-    return locationData.countryData.map(item => item.countryId.toLowerCase())
-})
+
+
+const countryData = ref([])
+// const countryDataByLang = computed(() => {
+//     const key = locale.value === 'zh-CN' ? 'zhCn' : 'enUs'
+//     return countryData.value.map(item => {
+//         return { ...item, name: item[key] }
+//     })
+// })
+const countryCodeArr = ref([])
+const countryToName = ref({})
+const currencyToCountryId = ref({})
+// 获取所有国家列表
+const getAllCountry = async() => {
+    const result = await countryApi.getAllCountry()
+    const res = checkResponseData(result)
+    if (res) {
+        // 展示所有国家列表，去除中国大陆
+        countryData.value = res.filter(item => item.countryId !== 'CN')
+        countryToName.value = arrToDict(countryData.value, { value: 'countryId', label: 'name' })
+        currencyToCountryId.value = arrToDict(countryData.value, { value: 'currency', label: 'countryId' })
+        countryCodeArr.value = countryData.value.map(item => item.countryId.toLowerCase())
+    }
+}
+
+
+// 账户图标轮循
 let isCycleForCardIcon = ref(false)
 let indexForCardIcon = ref(0)
 let tForCardIcon = undefined
@@ -384,9 +531,6 @@ const cardIconList = [
     eloIcon,
     ibanIcon,
 ]
-const actualWithdrawAmount = computed(() => {
-    return accurate_add(form.applyAmt, -fee.value) || 0
-})
 const isCardIconMatch = computed(() => {
     const cardNum = normalCreditCardNumber(form.accountNumber)
     if (isBaseCard(cardNum)) {
@@ -466,28 +610,8 @@ const triggerCycle = () => {
         setIntervalForCardIconCycle()
     }
 }
-// 获取所有国家列表
-const getAllCountry = async() => {
-    const result = await countryApi.getAllCountry()
-    const res = checkResponseData(result)
-    if (res) {
-        res.forEach(item => item.name = item.name || item.enUs)
-        locationData.countryData = res
-    }
-}
-// 查询可用佣金
-const qryBalance = async() => {
-  const result = await withdrawApi.qryBalance()
-  ableBalanceAmount.value = checkResponseData(result)
-}
-// 风控校验
-const risk_control_check = async(key) => {
-    const obj = {}
-    obj[key] = form[key]
-    const result = await withdrawApi.risk_control_check(obj)
-    checkResultData[key] = checkResponseData(result)
-    formValidateRef.value?.formRef?.validateField(key)
-}
+
+
 // 提现申请前校验
 const validateApply = () => {
     formValidateRef.value?.formRef?.validate(async (valid) => {
@@ -506,14 +630,18 @@ const validateApply = () => {
 const apply = async (checkCode) => {
     loading.value = true
 
-    const result = await withdrawApi.apply(Object.assign({}, form, {
+    const params = Object.assign({}, form, {
         withdrawFee: fee.value,
         receivableFee: feeData.value.receivableFee,
         cardNo: membershipCardNo.value,
         discountNumber: feeData.value.discountNumber,
         accountNumber: normalCreditCardNumber(form.accountNumber),
         checkCode
-    }))
+    })
+    // 展示账户类型时，默认是储蓄账户；其他情况不需要默认值
+    if (!isShowAccountType.value) delete params.accountType
+
+    const result = await withdrawApi.apply(params)
     const res = checkResponseData(result, 'NO_RETURN_DATA')
     router.push({
         path: '/account/withdraw/result',
@@ -531,20 +659,23 @@ const jumpToWallet = () => {
 
 
 onMounted(async ()=>{
+    await console.log('onMounted')
     nextTick(() => {
         settingStore.setFormPage(true)
     })
     getAllCountry()
-    qryBalance()
+    qryBalanceList()
+    qryCreditedCurrencyList()
+    qryMinWithdrawalAmount(exchangeAccount.value)
+    qrySettleConfigList(exchangeAccount.value)
     setIntervalForCardIconCycle()
-    await qryDefaultWithdrawFee()
-    qryWithdrawFee()
     qryMembershipCardData()
 })
 
 onUnmounted(()=>{
     settingStore.setFormPage(false)
     clearIntervalForCardIconCycle()
+    clearTimeoutForRateRefresh()
 })
 </script>
 
@@ -573,12 +704,12 @@ onUnmounted(()=>{
             <div class="mb32" :class="{ pl32: !isMobile, pr32: !isMobile }">
                 <div class="hr mb16"></div>
                 <div :class="{ pl20: isMobile, pr20: isMobile }">
-                    <el-form-item label="Withdrawal Method" prop="withdrawalMethod" class="form-item" style="margin-bottom: 12px;">
+                    <el-form-item label="Withdrawal Method" prop="withdrawType" class="form-item" style="margin-bottom: 12px;">
                         <el-radio-group
-                          v-model="form.withdrawalMethod"
+                          v-model="form.withdrawType"
                           class="radio-card-group gap8 w-full"
                         >
-                            <el-radio label="bankAccount" border :class="{ 'flex-1': !isMobile,'w-full': isMobile }" >
+                            <el-radio value="Bank_Account" border :class="{ 'flex-1': !isMobile,'w-full': isMobile }" >
                                 <div class="flex items-center gap8">
                                     <div class="lh0">
                                         <svg width="28" height="20" viewBox="0 0 28 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -602,7 +733,7 @@ onUnmounted(()=>{
                                 </div>
                             </el-radio>
                             <!--  从非USD账户中发起提现，默认选中银行账户，PayPal不能选  -->
-                            <el-radio label="payPal" border :class="{ 'flex-1': !isMobile,'w-full': isMobile }" :disabled="!isExchangeAccountUSD">
+                            <el-radio value="PayPal" border :class="{ 'flex-1': !isMobile,'w-full': isMobile }" :disabled="!isExchangeAccountUSD">
                                 <div class="flex items-center gap8">
                                     <div class="lh0">
                                         <svg width="28" height="20" viewBox="0 0 28 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -626,29 +757,36 @@ onUnmounted(()=>{
                             </el-radio>
                         </el-radio-group>
                     </el-form-item>
-                    <el-form-item :label="$t('withdraw.applyFormLabelCountryOrRegion')" prop="openingBankCountry" class="form-item location-container">
+                    <el-form-item label="Account Location" prop="openingBankCountry" class="form-item">
                         <el-select
                           v-model="form.openingBankCountry"
-                          placeholder=""
+                          placeholder="Select Country/Region"
                           filterable
                           class="form-input select-default h44"
                           @change="risk_control_check('openingBankCountry')"
                         >
                             <template #label="{ label, value }">
                                 <!-- <template #label="{ label }"> -->
-                                <img
-                                  v-if="value"
-                                  :src="flagUrl(value)"
-                                  class="pre-flag location-icon"
-                                >
-                                <span>{{ label }}</span>
+                                <div v-if="value" class="flex items-center gap8">
+                                    <div class="circle-country-icon-container size-20">
+                                        <img :src="flagUrl(value)">
+                                    </div>
+                                    <span>{{ label }}</span>
+                                </div>
                             </template>
                             <el-option
-                              v-for="item in locationData.countryData"
+                              v-for="item in countryData"
                               :key="item.countryId"
                               :value="item.countryId"
                               :label="item.name"
-                            />
+                            >
+                                <div class="flex items-center gap8">
+                                    <div class="circle-country-icon-container size-20">
+                                        <img :src="flagUrl(item.countryId)">
+                                    </div>
+                                    <span>{{ item.name }}</span>
+                                </div>
+                            </el-option>
                         </el-select>
                     </el-form-item>
                 </div>
@@ -658,12 +796,28 @@ onUnmounted(()=>{
                     <div class="flex gap10">
                         <el-form-item :label="$t('withdraw.applyFormLabelWithdrawalAmount')" class="form-item nowrap-label w-160">
                             <el-select
-                              v-model="form.withdrawalCurrency"
+                              v-model="form.accountCurrency"
                               placeholder=""
                               filterable
                               class="form-input select-default h44"
                               disabled
                             >
+                                <template #label="{ label, value }">
+                                    <div v-if="currencyToCountryId[value]" class="flex items-center gap8">
+                                        <div class="circle-country-icon-container size-20">
+                                            <img :src="flagUrl(currencyToCountryId[value])">
+                                        </div>
+                                        <span>{{ label }}</span>
+                                    </div>
+                                </template>
+                                <el-option :value="exchangeAccount" :label="exchangeAccount">
+                                    <div class="flex items-center gap8">
+                                        <div class="circle-country-icon-container size-20">
+                                            <img :src="flagUrl(currencyToCountryId[exchangeAccount])">
+                                        </div>
+                                        <span>{{ exchangeAccount }}</span>
+                                    </div>
+                                </el-option>
                             </el-select>
                         </el-form-item>
                         <el-form-item label=" " prop="applyAmt" class="form-item empty-label flex-1">
@@ -691,24 +845,47 @@ onUnmounted(()=>{
                     <div class="flex gap10">
                         <el-form-item label="Converted to" class="form-item nowrap-label w-160">
                             <el-select
-                              v-model="form.convertedCurrency"
+                              v-model="form.withdrawCurrency"
                               placeholder=""
                               filterable
                               class="form-input select-default h44"
-                              :disabled="!isExchangeAccountUSD"
+                              :disabled="!isBankAccount || !isExchangeAccountUSD"
                             >
+                                <template #label="{ label, value }">
+                                    <div v-if="currencyToCountryId[value]" class="flex items-center gap8">
+                                        <div class="circle-country-icon-container size-20">
+                                            <img :src="flagUrl(currencyToCountryId[value])">
+                                        </div>
+                                        <span>{{ label }}</span>
+                                    </div>
+                                </template>
+                                <el-option
+                                  v-for="item in withdrawCurrencyListData"
+                                  :key="item"
+                                  :value="item"
+                                  :label="item"
+                                >
+                                    <div class="flex items-center gap8">
+                                        <div class="circle-country-icon-container size-20">
+                                            <img :src="flagUrl(currencyToCountryId[item])">
+                                        </div>
+                                        <span>{{ item }}</span>
+                                    </div>
+                                </el-option>
                             </el-select>
                         </el-form-item>
-                        <el-form-item label=" " prop="applyAmt" class="form-item empty-label flex-1">
+                        <el-form-item label=" " prop="exchangeAmt" class="form-item empty-label flex-1">
                             <el-input
-                              v-model="form.applyAmt"
+                              :value="feeData.arriveAmt ? currencyFormat(feeData.arriveAmt) : ''"
                               class="form-input input-default"
                               disabled
                             >
                             </el-input>
                         </el-form-item>
                     </div>
-
+                    <p v-if="form.accountCurrency !== form.withdrawCurrency && feeData.exchangeRate && rateRefreshData.timerShow" class="tertiary-span2 mt12">
+                        Exchange rate ({{ rateRefreshData.timerCount }}s) :  {{ form.accountCurrency }} 1 ≈ {{ form.withdrawCurrency }} {{ feeData.exchangeRate }}
+                    </p>
                     <el-popover
                       placement="bottom-start"
                       effect="light"
@@ -720,13 +897,19 @@ onUnmounted(()=>{
                                 <div class="arrival-time-item flex-1 black-span2 f16">申请时间（UTC +8）</div>
                                 <div class="arrival-time-item flex-1 black-span2 f16">预计打款时间（UTC +8）</div>
                             </div>
-                            <div class="flex items-stretch">
-                                <div class="arrival-time-item flex-1 black-span2 f16 fw500">0:00 - 15:00 (自然日)</div>
-                                <div class="arrival-time-item flex-1 black-span2 f16 fw500">当日 19:00</div>
-                            </div>
-                            <div class="flex items-stretch">
-                                <div class="arrival-time-item flex-1 black-span2 f16 fw500">0:00 - 15:00 (自然日)</div>
-                                <div class="arrival-time-item flex-1 black-span2 f16 fw500">当日 19:00</div>
+                            <div v-for="(item, index) in settleConfigListData" :key="index" class="flex items-stretch">
+                                <div class="arrival-time-item flex-1 black-span2 f16 fw500">
+                                    <template v-if="item.withdrawStartHour >= 0 && item.withdrawEndHour >= 0">
+                                        {{ item.withdrawStartHour }}:00 - {{ item.withdrawEndHour }}:00
+                                    </template>
+                                    <template v-if="dayTypeDict[item.dayType]">({{ dayTypeDict[item.dayType] }})</template>
+                                </div>
+                                <div class="arrival-time-item flex-1 black-span2 f16 fw500">
+                                    <tempalte v-if="item.period >= 2">未来第{{ item.period }}个工作日</tempalte>
+                                    <tempalte v-else-if="item.period === 1">下一个工作日</tempalte>
+                                    <tempalte v-else>当日</tempalte>
+                                    <template v-if="item.settleHour >= 0">{{ item.settleHour }}:00</template>
+                                </div>
                             </div>
                             <div class="arrival-time-p tertiary-span3">支持7*24h(包括香港、大陆节假日)提款,按以下规则进行打款款;其中节假日目前只能受理业务,到账为工作日, 上述表格中展示的时间为北京时间。</div>
                         </div>
@@ -736,20 +919,18 @@ onUnmounted(()=>{
                     </el-popover>
                 </div>
             </div>
-
-
-            <div class="mb32" :class="{ pl16: isMobile, pr16: isMobile, pl32: !isMobile, pr32: !isMobile }">
+            <div v-if="isApplyAmtOverLimitAmount && isGetFee" class="mb32" :class="{ pl16: isMobile, pr16: isMobile, pl32: !isMobile, pr32: !isMobile }">
                 <div class="fee-container">
                     <p class="flex items-center">
                         <span class="tertiary-span2">{{ $t('withdraw.applyFormFeeModuleWithdrawalLabel') }}</span>
                         <span class="flex-center"></span>
-                        <span class="tertiary-span2 fw600">${{ currencyFormat(form.applyAmt) }}</span>
+                        <span class="tertiary-span2 fw600">{{ form.withdrawCurrency }} {{ currencyFormat(feeData.exchangeAmt || form.applyAmt) }}</span>
                         <span class="flex-center-20"></span>
                     </p>
                     <p class="p flex-box mt8">
                         <span class="tertiary-span2">{{ $t('withdraw.applyFormFeeModuleFeeLabel') }}</span>
                         <span class="flex-center"></span>
-                        <span :class="[ defaultWithdrawFee === fee ? 'tertiary-span2' : 'green-span', 'fw600' ]"> ${{ currencyFormat(fee) }}</span>
+                        <span :class="[ defaultWithdrawFee === fee ? 'tertiary-span2' : 'green-span', 'fw600' ]">{{ form.withdrawCurrency }} {{ currencyFormat(fee) }}</span>
                         <span class="flex-center-20"></span>
                     </p>
                     <div class="flex mt2">
@@ -758,19 +939,19 @@ onUnmounted(()=>{
                             <div class="flex items-center">
                                 <span>{{ $t('withdraw.applyFormFeeModuleStandardFeeLabel') }}</span>
                                 <span class="flex-center"></span>
-                                <span>${{ currencyFormat(defaultWithdrawFee) }}</span>
+                                <span>{{ form.withdrawCurrency }} {{ currencyFormat(defaultWithdrawFee) }}</span>
                                 <span class="flex-center-20"></span>
                             </div>
-                            <div v-if="membershipFeeDiff" class="flex items-center mt2">
+                            <div v-if="feeData.membershipBenefitDeductionAmt" class="flex items-center mt2">
                                 <span>{{ $t('withdraw.applyFormFeeModuleMembershipFeeLabel') }}</span>
                                 <span class="flex-center"></span>
-                                <span>-${{ currencyFormat(membershipFeeDiff) }}</span>
+                                <span>- {{ form.withdrawCurrency }} {{ currencyFormat(feeData.membershipBenefitDeductionAmt) }}</span>
                                 <span class="flex-center-20"></span>
                             </div>
-                            <div v-if="couponFeeDiff" class="flex items-center cursor-pointer mt2" @click="showDiscountDetailsDialog">
+                            <div v-if="feeData.discountAmt" class="flex items-center cursor-pointer mt2" @click="showDiscountDetailsDialog">
                                 <span>{{ $t('withdraw.applyFormFeeModuleCouponFeeLabel', { rate: feeData.discountNumber }) }}</span>
                                 <span class="flex-center"></span>
-                                <span>-${{ currencyFormat(couponFeeDiff) }}</span>
+                                <span>- {{ form.withdrawCurrency }} {{ currencyFormat(feeData.discountAmt) }}</span>
                                 <div class="lh0 direction-rotate180">
                                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M7.5 15L12.5 10L7.5 5" stroke="#667085" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
@@ -806,7 +987,7 @@ onUnmounted(()=>{
                     <p class="flex items-center mt8">
                         <span class="tertiary-span2 fw600">{{ $t('withdraw.applyFormFeeModuleReceivedLabel') }}</span>
                         <span class="flex-center"></span>
-                        <span class="tertiary-span2 f16 fw600">${{ currencyFormat(actualWithdrawAmount) }}</span>
+                        <span class="tertiary-span2 f16 fw600">{{ form.withdrawCurrency }} {{ currencyFormat(feeData.arriveAmt) }}</span>
                         <span class="flex-center-20"></span>
                     </p>
                     <p class="flex items-center tertiary-span2 mt8">
@@ -815,86 +996,183 @@ onUnmounted(()=>{
                     </p>
                 </div>
             </div>
-
-            <div v-show="hasSuccessBankcardData" class="mb32" :class="{ pl32: !isMobile, pr32: !isMobile }">
-                <div class="account-container">
-                    <div class="account-container-part1">
-                        <el-form-item :label="$t('withdraw.applyFormMessageAccountUlTitle')" class="form-item"></el-form-item>
-                        <p class="account-p">
-                            {{ $t('withdraw.applyFormMessageAccountUlTip') }}
-                        </p>
-                    </div>
-                    <AccountWithdrawAccountUl
-                            @obtainedData="obtainedData"
-                            @select="selectBankcardData"
-                    ></AccountWithdrawAccountUl>
+            <div v-show="hasSuccessBankcardData" class="account-container mb32">
+                <div class="mb20">
+                    <p class="tertiary-span2 f600">{{ $t('withdraw.applyFormMessageAccountUlTitle') }}</p>
+                    <p class="tertiary-span2">{{ $t('withdraw.applyFormMessageAccountUlTip') }}</p>
                 </div>
+                <AccountWithdrawAccountUl
+                  @obtainedData="obtainedData"
+                  @select="selectBankcardData"
+                ></AccountWithdrawAccountUl>
             </div>
-
-            <el-form-item :label="$t('withdraw.applyFormLabelAccountHolderName')" prop="accountName" class="form-item">
-                <el-input
-                    v-model="form.accountName"
-                    :maxlength="35"
-                    class="form-input input-default"
-                    @change="e => { form.accountName = e.trim() }"
-                    @blur="risk_control_check('accountName')"
-                />
-            </el-form-item>
-            <div class="account-number-container">
-                <el-form-item :label="$t('withdraw.applyFormLabelAccountNumber')" prop="accountNumber" class="form-item account-number direction-ltr-input">
+            <div class="info-container mb32" :class="{ pl16: isMobile, pr16: isMobile, pl32: !isMobile, pr32: !isMobile }">
+                <div class="black-span2 f18 fw600 mb24">Account Details</div>
+<!--                <el-form-item v-if="isShowAccountType" prop="accountType" class="form-item">-->
+                <el-form-item prop="accountType" class="form-item">
+                    <template #label>
+                        <div class="flex items-center gap4">
+                            <span>Account type</span>
+                            <div class="lh0 cursor-pointer" @click="isShowAccountTypeDialog = true">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <g clip-path="url(#clip0_5733_444)">
+                                        <path d="M6.05992 6.00016C6.21665 5.55461 6.52602 5.1789 6.93322 4.93958C7.34042 4.70027 7.81918 4.61279 8.2847 4.69264C8.75022 4.77249 9.17246 5.01451 9.47664 5.37585C9.78081 5.73718 9.94729 6.19451 9.94658 6.66683C9.94658 8.00016 7.94658 8.66683 7.94658 8.66683M7.99992 11.3335H8.00659M14.6666 8.00016C14.6666 11.6821 11.6818 14.6668 7.99992 14.6668C4.31802 14.6668 1.33325 11.6821 1.33325 8.00016C1.33325 4.31826 4.31802 1.3335 7.99992 1.3335C11.6818 1.3335 14.6666 4.31826 14.6666 8.00016Z" stroke="#98A2B3" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </g>
+                                    <defs>
+                                        <clipPath id="clip0_5733_444">
+                                            <rect width="16" height="16" fill="white"/>
+                                        </clipPath>
+                                    </defs>
+                                </svg>
+                            </div>
+                        </div>
+                    </template>
+                    <el-radio-group v-model="form.accountType" class="radio-default">
+                        <el-radio value="savingsAccount"> Savings account</el-radio>
+                        <el-radio value="checkingAccount"> Checking account</el-radio>
+                    </el-radio-group>
+                </el-form-item>
+                <el-form-item label="Account holder type" prop="accountHolderType" class="form-item">
+                    <el-radio-group v-model="form.accountHolderType" class="radio-default">
+                        <el-radio value="individual"> Individual</el-radio>
+                        <el-radio value="business" :disabled="isSpecialForAccountHolderType"> Business / Entity / Corporate</el-radio>
+                        <div class="tertiary-span2">Withdrawals to Israel, Bangladesh, and Saudi Arabia are only supported for personal accounts.</div>
+                    </el-radio-group>
+                </el-form-item>
+                <el-form-item :label="isBankAccount ? 'Bank account name' : $t('withdraw.applyFormLabelAccountHolderName')" prop="accountName" class="form-item">
                     <el-input
-                        v-model="form.accountNumber"
-                        class="form-input input-default"
-                        :placeholder="$t('withdraw.applyFormPlaceholderAccountNumber')"
-                        @input="e => { form.accountNumber = formatCreditCardNumber(e);clearIntervalForCardIconCycle()}"
-                        @blur="triggerCycle()"
+                      v-model="form.accountName"
+                      :maxlength="100"
+                      class="form-input input-default"
+                      :placeholder="isBankAccount ? 'Bank account name' : $t('withdraw.applyFormLabelAccountHolderName')"
+                      @change="e => { form.accountName = e.trim() }"
+                      @blur="risk_control_check('accountName')"
+                    />
+                    <div class="tertiary-span2 mt6">请输入长度在100以内的英文字符，且必须包含一个空格</div>
+                </el-form-item>
+                <el-form-item v-if="isBankAccount" :label="$t('withdraw.applyFormLabelBankName')" prop="bankName" class="form-item">
+                    <el-input
+                      v-model="form.bankName"
+                      :maxlength="35+8"
+                      class="form-input input-default"
+                      @change="e => { form.bankName = e.trim() }"
+                      @blur="risk_control_check('bankName')"
+                    />
+                </el-form-item>
+                <el-form-item v-if="isBankAccount" :label="$t('withdraw.applyFormLabelAccountNumber')" prop="accountNumber" class="form-item account-number direction-ltr-input">
+                    <el-input
+                      v-model="form.accountNumber"
+                      class="form-input input-default"
+                      :placeholder="$t('withdraw.applyFormPlaceholderAccountNumber')"
+                      @input="e => { form.accountNumber = formatCreditCardNumber(e);clearIntervalForCardIconCycle()}"
+                      @blur="triggerCycle()"
                     >
                         <template #prefix>
                             <img
-                                :src="cardIcon"
-                                class="card-icon"
+                              :src="cardIcon"
+                              class="card-icon"
                             >
                         </template>
                     </el-input>
                 </el-form-item>
-                <el-form-item :label="$t('withdraw.applyFormLabelSWIFTCodeOrBIC')" prop="swiftCode" class="form-item code">
-                    <el-input
-                        v-model="form.swiftCode"
-                        class="form-input input-default"
-                        @input="e => { form.swiftCode = formatSWIFTCode(e) }"
+                <el-form-item v-if="!isBankAccount" label="Date of Birth" prop="birthDate" class="form-item">
+                    <el-date-picker
+                      v-model="form.birthDate"
+                      class="form-input input-date-default"
+                      type="date"
+                      placeholder="Account Holder's Date of Birth"
                     />
                 </el-form-item>
+                <el-form-item v-if="!isBankAccount" label="Paypal Account (Email)" prop="paypalAccount" class="form-item">
+                    <el-input
+                      v-model="form.paypalAccount"
+                      class="form-input input-default"
+                      placeholder=""
+                      @change="e => { form.birthDate = e.trim() }"
+                    ></el-input>
+                </el-form-item>
+                <div class="black-span2 f18 fw600 mt56 mb24">开户信息</div>
+                <el-form-item v-if="isBankAccount" :label="$t('withdraw.applyFormLabelCountryOrRegion')" class="form-item">
+                    <div class="flex items-center gap8" style="height: 44px;">
+                        <template v-if="form.openingBankCountry">
+                            <div class="circle-country-icon-container size-20">
+                                <img :src="flagUrl(form.openingBankCountry)">
+                            </div>
+                            <span>{{ countryToName[form.openingBankCountry] }}</span>
+                        </template>
+                        <template v-else>-</template>
+                    </div>
+                </el-form-item>
+                <div class="flex gap16 mb16">
+                    <el-form-item label="Bank State / Province" prop="bankState" class="form-item flex-1" style="margin-bottom: 0">
+                        <el-input
+                          v-model="form.bankState"
+                          class="form-input input-default"
+                          placeholder="Bank State / Province"
+                          @change="e => { form.bankState = e.trim() }"
+                        />
+                    </el-form-item>
+                    <el-form-item label="Zip" prop="zip" class="form-item w-180" style="margin-bottom: 0">
+                        <el-input
+                          v-model="form.zip"
+                          :maxlength="12"
+                          class="form-input input-default"
+                          placeholder="Zip"
+                          @change="e => { form.zip = e.trim() }"
+                        />
+                        <div class="tertiary-span2 mt6">Max 11 characters</div>
+                    </el-form-item>
+                </div>
+                <el-form-item :label="$t('withdraw.applyFormLabelCity')" prop="openingBankCity" class="form-item">
+                    <el-input
+                      v-model="form.openingBankCity"
+                      :maxlength="35"
+                      class="form-input input-default"
+                      @change="e => { form.openingBankCity = e.trim() }"
+                    />
+                </el-form-item>
+                <el-form-item :label="$t('withdraw.applyFormLabelAddress')" prop="openingBankAddress" class="form-item">
+                    <el-input
+                      v-model="form.openingBankAddress"
+                      :maxlength="70"
+                      class="form-input input-default"
+                      @change="e => { form.openingBankAddress = e.trim() }"
+                    />
+                </el-form-item>
+                <el-form-item v-if="isBankAccount" label="Routing number" prop="routingNumber" class="form-item">
+                    <el-input
+                      v-model="form.routingNumber"
+                      :maxlength="11"
+                      class="form-input input-default"
+                      placeholder="Routing number"
+                      @change="e => { form.routingNumber = e.trim() }"
+                    />
+                    <div class="tertiary-span2 mt6">Max 11 characters</div>
+                </el-form-item>
+                <el-form-item v-if="isBankAccount" :label="$t('withdraw.applyFormLabelSWIFTCodeOrBIC')" prop="swiftCode" class="form-item">
+                    <el-input
+                      v-model="form.swiftCode"
+                      class="form-input input-default"
+                      :placeholder="$t('withdraw.applyFormLabelSWIFTCodeOrBIC')"
+                      @input="e => { form.swiftCode = formatSWIFTCode(e) }"
+                    />
+                </el-form-item>
+                <el-checkbox v-model="form.saveFlag" class="checkbox-default">
+                    <div class="flex items-center gap4">
+                        <span>Save for next time</span>
+                        <div class="lh0 cursor-pointer" @click.stop="isShowSaveAddressDialog = true">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
+                                <path d="M7.36035 0.00878906C9.14993 0.099534 10.7626 0.862255 11.9502 2.0498C13.2169 3.31657 14 5.06702 14 7L13.9912 7.36035C13.9005 9.14993 13.1378 10.7626 11.9502 11.9502L11.707 12.1816C10.4639 13.3116 8.81225 14 7 14L6.63965 13.9912C4.9693 13.9065 3.45321 13.2362 2.29297 12.1816L2.0498 11.9502C0.862255 10.7626 0.099534 9.14993 0.00878906 7.36035L0 7C0 5.06702 0.783057 3.31657 2.0498 2.0498C3.31657 0.783057 5.06702 0 7 0L7.36035 0.00878906ZM7 1.5C5.48083 1.5 4.1083 2.11438 3.11133 3.11133C2.11438 4.1083 1.5 5.48083 1.5 7C1.5 8.51918 2.11438 9.89172 3.11133 10.8887C4.1083 11.8856 5.48083 12.5 7 12.5C8.51917 12.5 9.89172 11.8856 10.8887 10.8887C11.8856 9.89172 12.5 8.51917 12.5 7C12.5 5.48083 11.8856 4.1083 10.8887 3.11133C9.89172 2.11438 8.51918 1.5 7 1.5ZM7.0752 8.89844C7.5534 8.8986 7.92771 9.25862 7.92773 9.72266C7.92773 10.1867 7.55341 10.5467 7.0752 10.5469C6.59683 10.5469 6.22266 10.1868 6.22266 9.72266C6.22268 9.25852 6.59684 8.89844 7.0752 8.89844ZM7.22656 3.45703C8.54319 3.45708 9.42871 4.20047 9.42871 5.31348C9.42862 6.0001 9.12041 6.5068 8.43848 6.91406C7.82777 7.28338 7.65723 7.51581 7.65723 7.96094V8.27344H6.41211L6.40234 7.96094C6.36919 7.16997 6.59663 6.75781 7.22656 6.37891C7.83749 6.00476 8.00293 5.78646 8.00293 5.35547C8.00274 4.92477 7.65276 4.63102 7.1416 4.63086C6.62061 4.63086 6.27451 4.95806 6.24609 5.46484H4.97656C4.99551 4.21919 5.85776 3.45703 7.22656 3.45703Z" fill="#817F86"/>
+                            </svg>
+                        </div>
+                    </div>
+                </el-checkbox>
             </div>
-            <el-form-item :label="$t('withdraw.applyFormLabelBankName')" prop="bankName" class="form-item">
-                <el-input
-                    v-model="form.bankName"
-                    :maxlength="35+8"
-                    class="form-input input-default"
-                    @change="e => { form.bankName = e.trim() }"
-                    @blur="risk_control_check('bankName')"
-                />
-            </el-form-item>
-            <el-form-item :label="$t('withdraw.applyFormLabelCity')" prop="openingBankCity" class="form-item">
-                <el-input
-                    v-model="form.openingBankCity"
-                    :maxlength="35"
-                    class="form-input input-default"
-                    @change="e => { form.openingBankCity = e.trim() }"
-                />
-            </el-form-item>
-            <el-form-item :label="$t('withdraw.applyFormLabelAddress')" prop="openingBankAddress" class="form-item">
-                <el-input
-                    v-model="form.openingBankAddress"
-                    :maxlength="70"
-                    class="form-input input-default"
-                    @change="e => { form.openingBankAddress = e.trim() }"
-                />
-            </el-form-item>
-            <el-form-item class="form-buttons">
-                <el-button v-if="isMobile" key="msubmit" type="primary" class="button-default m-adaptive" :loading="loading" :disabled="isGetLevelError || isGetDefaultLevelError" @click="validateApply">{{ $t('withdraw.applyFormButtonSubmit') }}</el-button>
-                <el-button class="button-default m-adaptive" @click="jumpToWallet">{{ $t('withdraw.applyFormButtonCancel') }}</el-button>
-                <el-button v-if="!isMobile" key="pcsubmit" type="primary" class="button-default m-adaptive" :loading="loading" :disabled="isGetLevelError || isGetDefaultLevelError" @click="validateApply">{{ $t('withdraw.applyFormButtonSubmit') }}</el-button>
-            </el-form-item>
+
+            <div class="form-buttons" :class="{ pl16: isMobile, pr16: isMobile, pl24: !isMobile, pr24: !isMobile }">
+                <el-button class="button-default m-adaptive" style="margin: 0" @click="jumpToWallet">{{ $t('withdraw.applyFormButtonCancel') }}</el-button>
+                <el-button type="primary" class="button-default m-adaptive" style="margin: 0" :loading="loading" :disabled="isGetLevelError" @click="validateApply">{{ $t('withdraw.applyFormButtonSubmit') }}</el-button>
+            </div>
         </FormValidate>
     </div>
       <AccountWithdrawVerifyTipDialog
@@ -910,6 +1188,14 @@ onUnmounted(()=>{
         :membershipCardData="membershipCardData"
         @change="changeSelectCoupon"
       ></AccountWithdrawDiscountDetailsDialog>
+      <AccountWithdrawAccountTypeDialog v-model="isShowAccountTypeDialog"></AccountWithdrawAccountTypeDialog>
+      <AccountWithdrawSaveAddressDialog v-model="isShowSaveAddressDialog"></AccountWithdrawSaveAddressDialog>
+      <AccountWithdrawRateUpdateDialog
+        v-model="isShowRateUpdateDialog"
+        :rate="feeData.exchangeRate"
+        :currency="form.withdrawCurrency"
+        :amount="feeData.exchangeAmt || form.applyAmt"
+      ></AccountWithdrawRateUpdateDialog>
 </div>
 </template>
 
@@ -917,11 +1203,16 @@ onUnmounted(()=>{
 @import url("@/assets/css/element-reset/button.scss");
 @import url("@/assets/css/element-reset/input.scss");
 @import url("@/assets/css/element-reset/select.scss");
+@import url("@/assets/css/element-reset/radio.scss");
+@import url("@/assets/css/element-reset/input-date.scss");
 * {
     box-sizing: border-box;
 }
 .w-160 {
     width: 160px;
+}
+.w-180 {
+    width: 180px;
 }
 .w-480 {
     width: 480px;
@@ -945,9 +1236,16 @@ onUnmounted(()=>{
     &.fw500 {
         font-weight: 500;
     }
+    &.fw600 {
+        font-weight: 600;
+    }
     &.f16 {
         font-size: 16px;
         line-height: 24px;
+    }
+    &.f18 {
+        font-size: 18px;
+        line-height: 28px;
     }
 }
 .green-span {
@@ -1018,31 +1316,7 @@ onUnmounted(()=>{
                 border-right: 0;
             }
             .account-container {
-                padding: 20px 6px 8px;
                 border-radius: 0;
-                margin: 0 -16px 32px;
-                .account-container-part1 {
-                    padding: 0 14px 20px;
-                }
-            }
-            .account-number-container {
-                display: block;
-                .account-number {
-                    width: 100%;
-                }
-                .code {
-                    width: 100%;
-                    margin-bottom: 16px;
-                }
-            }
-            .form-buttons {
-                margin: 56px 0 16px;
-                .button-default {
-                    margin: 0;
-                    + .button-default {
-                        margin: 12px 0 0;
-                    }
-                }
             }
         }
     }
@@ -1132,66 +1406,33 @@ onUnmounted(()=>{
         }
     }
     .account-container {
-        padding: 20px 14px 8px;
+        padding: 20px 20px 8px;
         border-radius: 8px;
         background-color: #F2F4F7;
-        margin-bottom: 32px;
-        .account-container-part1 {
-            padding: 0 6px 20px;
-        }
-        .form-item {
-            margin-bottom: 0;
-        }
-        .account-p {
-            color: #475467;
-            font-size: 14px;
-            font-style: normal;
-            font-weight: 400;
-            line-height: 20px; /* 142.857% */
-            margin: 0;
-        }
     }
-    .account-number-container {
-        display: flex;
-        justify-content: space-between;
-        .account-number {
-            /*flex: 1;*/
-            width: calc(100% - 176px);
-            :deep(.el-input__wrapper) {
-                .rtl & {
-                    .el-input__prefix-inner > img {
-                        margin: 0 0 0 8px;
-                    }
-                    .el-input__prefix {
-                        padding: 0 10px 0 8px;
-                    }
-                    .el-input__inner {
-                        padding: 10px 0 10px 14px;
-                    }
+    .info-container {
+        padding-top: 20px;
+        padding-bottom: 20px;
+        background-color: #F2F4F7;
+    }
+    .account-number {
+        :deep(.el-input__wrapper) {
+            .rtl & {
+                .el-input__prefix-inner > img {
+                    margin: 0 0 0 8px;
                 }
                 .el-input__prefix {
-                    padding: 0 8px 0 10px;
+                    padding: 0 10px 0 8px;
                 }
                 .el-input__inner {
-                    padding-left: 0;
+                    padding: 10px 0 10px 14px;
                 }
             }
-        }
-        .code {
-            width: 160px;
-            /*margin-left: 16px;*/
-        }
-    }
-    .location-container {
-        :deep(.el-select__selected-item) {
-            display: flex;
-            align-items: center;
-        }
-        .location-icon {
-            margin-right: 8px;
-            .rtl & {
-                margin-left: 8px;
-                margin-right: 0;
+            .el-input__prefix {
+                padding: 0 8px 0 10px;
+            }
+            .el-input__inner {
+                padding-left: 0;
             }
         }
     }
@@ -1209,15 +1450,14 @@ onUnmounted(()=>{
         }
     }
     .form-buttons {
-        margin: 32px -6px 0;
-        :deep(.el-form-item__content) {
-            justify-content: right;
-            .rtl & {
-                justify-content: left;
-            }
+        display: flex;
+        justify-content: right;
+        gap: 12px;
+        .rtl & {
+            justify-content: left;
         }
-        .button-default {
-            margin: 0 6px;
+        .m & {
+            flex-direction: column-reverse;
         }
     }
 }

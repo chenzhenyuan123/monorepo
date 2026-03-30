@@ -1,6 +1,5 @@
 <script setup>
   import { useI18n } from "vue-i18n";
-  import {formatDate} from "@flylinking/core/utils/dateUtil";
 
   const props = defineProps({
     useRule: {
