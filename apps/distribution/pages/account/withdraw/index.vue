@@ -426,6 +426,13 @@ const rules = () => {
             trigger: 'change',
             },
         ],
+        paypalAccount: [
+            {
+            required: true,
+            message: '请输入',
+            trigger: 'change',
+            },
+        ],
         bankName: [
             {
                 validator: (rule, value, callback) => {
@@ -505,10 +512,34 @@ const rules = () => {
                 trigger: 'blur'
             }
         ],
+        bankState: [
+            {
+                validator: (rule, value, callback) => {
+                    if (value || form.withdrawCurrency !== 'USD') {
+                        callback()
+                    } else {
+                        callback(new Error('请输入'))
+                    }
+                },
+                trigger: 'blur'
+            },
+        ],
+        zip: [
+            {
+                validator: (rule, value, callback) => {
+                    if (value || form.withdrawCurrency !== 'USD') {
+                        callback()
+                    } else {
+                        callback(new Error('请输入'))
+                    }
+                },
+                trigger: 'blur'
+            },
+        ],
         routingNumber: [
             {
                 validator: (rule, value, callback) => {
-                    if (value || (isBankAccount.value && form.routingNumber)) {
+                    if (value || (isBankAccount.value && form.swiftCode)) {
                         callback()
                     } else {
                         callback(new Error('请输入'))
@@ -723,6 +754,7 @@ function selectBankcardData(obj) {
 
 // 提现申请前校验
 const validateApply = () => {
+    console.log('form: ', form)
     formValidateRef.value?.formRef?.validate(async (valid) => {
         if (!valid) {
             console.log('error submit!!');
@@ -1231,17 +1263,17 @@ onUnmounted(()=>{
                             </div>
                         </div>
                     </template>
-                    <el-radio-group v-model="form.accountType" class="radio-default">
+                    <el-radio-group v-model="form.accountType" class="radio-default w-full">
                         <el-radio value="saving"> Savings account</el-radio>
                         <el-radio value="checking"> Checking account</el-radio>
                     </el-radio-group>
                 </el-form-item>
                 <el-form-item label="Account holder type" prop="accountHolderType" class="form-item">
-                    <el-radio-group v-model="form.accountHolderType" class="radio-default">
+                    <el-radio-group v-model="form.accountHolderType" class="radio-default w-full">
                         <el-radio value="Individual"> Individual</el-radio>
                         <el-radio value="Business" :disabled="isMustIndividualForAccountHolderType"> Business / Entity / Corporate</el-radio>
                     </el-radio-group>
-                    <div v-if="isSpecialForAccountHolderType" class="tertiary-span2">Withdrawals to Israel, Bangladesh, and Saudi Arabia are only supported for personal accounts.</div>
+                    <div v-if="isSpecialForAccountHolderType" class="tertiary-span2 w-full">Withdrawals to Israel, Bangladesh, and Saudi Arabia are only supported for personal accounts.</div>
                 </el-form-item>
                 <el-form-item :label="isBankAccount ? 'Bank account name' : $t('withdraw.applyFormLabelAccountHolderName')" prop="accountName" class="form-item">
                     <el-input
@@ -1252,7 +1284,7 @@ onUnmounted(()=>{
                       @change="e => { form.accountName = e.trim().replace(/\s+/g, ' ') }"
                       @blur="risk_control_check('accountName')"
                     />
-                    <div class="tertiary-span2 mt6">请输入长度在100以内的英文字符，且必须包含一个空格</div>
+                    <div class="tertiary-span2 w-full mt6">请输入长度在100以内的英文字符，且必须包含一个空格</div>
                 </el-form-item>
                 <el-form-item v-if="isBankAccount" :label="$t('withdraw.applyFormLabelBankName')" prop="bankName" class="form-item">
                     <el-input
@@ -1282,7 +1314,8 @@ onUnmounted(()=>{
                 <el-form-item v-if="!isBankAccount" label="Date of Birth" prop="birthDate" class="form-item">
                     <el-date-picker
                       v-model="form.birthDate"
-                      class="form-input input-date-default"
+                      value-format="YYYY-MM-DD"
+                      class="form-input input-date-default h44 w-full"
                       type="date"
                       placeholder="Account Holder's Date of Birth"
                     />
@@ -1324,7 +1357,7 @@ onUnmounted(()=>{
                           :placeholder="'Zip' + (form.withdrawCurrency === 'USD' ? '' : ' (Optional)')"
                           @change="e => { form.zip = e.trim() }"
                         />
-                        <div class="tertiary-span2 mt6">Max 12 characters</div>
+                        <div class="tertiary-span2 w-full mt6">Max 12 characters</div>
                     </el-form-item>
                 </div>
                 <el-form-item :label="isBankAccount ? $t('withdraw.applyFormLabelCity') : 'City of Account holder'" prop="openingBankCity" class="form-item">
@@ -1353,7 +1386,7 @@ onUnmounted(()=>{
                       placeholder="Routing number"
                       @change="e => { form.routingNumber = e.trim() }"
                     />
-                    <div class="tertiary-span2 mt6">Max 11 characters</div>
+                    <div class="tertiary-span2 w-full mt6">Max 11 characters</div>
                 </el-form-item>
                 <el-form-item v-if="isBankAccount" :label="$t('withdraw.applyFormLabelSWIFTCodeOrBIC')" prop="swiftCode" class="form-item">
                     <el-input
@@ -1371,7 +1404,7 @@ onUnmounted(()=>{
                       placeholder="Bank code"
                       @change="e => { form.bankCode = e.trim() }"
                     />
-                    <div class="tertiary-span2 mt6">Max 11 characters</div>
+                    <div class="tertiary-span2 w-full mt6">Max 11 characters</div>
                 </el-form-item>
                 <el-form-item v-if="isShowBranchBankCode" label="Branch code" prop="branchBankCode" class="form-item">
                     <el-input
@@ -1381,7 +1414,7 @@ onUnmounted(()=>{
                       placeholder="Branch code"
                       @change="e => { form.branchBankCode = e.trim() }"
                     />
-                    <div class="tertiary-span2 mt6">Max 11 characters</div>
+                    <div class="tertiary-span2 w-full mt6">Max 11 characters</div>
                 </el-form-item>
                 <el-checkbox v-model="form.saveFlag" class="checkbox-default">
                     <div class="flex items-center gap4">
@@ -1432,12 +1465,14 @@ onUnmounted(()=>{
 </div>
 </template>
 
+<style lang="scss">
+@import url("@/assets/css/element-reset/input-date.scss");
+</style>
 <style lang="scss" scoped>
 @import url("@/assets/css/element-reset/button.scss");
 @import url("@/assets/css/element-reset/input.scss");
 @import url("@/assets/css/element-reset/select.scss");
 @import url("@/assets/css/element-reset/radio.scss");
-@import url("@/assets/css/element-reset/input-date.scss");
 * {
     box-sizing: border-box;
 }

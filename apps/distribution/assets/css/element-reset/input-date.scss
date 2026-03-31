@@ -1,10 +1,19 @@
 .input-date-default {
+  &.w-full {
+    width: 100%;
+  }
   &.is-disabled {
     :deep(.el-input__wrapper) {
       background-color: #F9FAFB;
       .el-input__inner {
         color: #667085;
       }
+    }
+  }
+  &.h44 {
+    height: 44px;
+    :deep(.el-input__wrapper) {
+      height: 44px;
     }
   }
   :deep(.el-input__wrapper) {
