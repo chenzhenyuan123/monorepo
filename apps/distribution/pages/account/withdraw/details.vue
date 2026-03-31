@@ -603,7 +603,7 @@ onUnmounted(()=>{
                 <el-form-item v-if="!isBankAccount" label="Date of Birth" prop="birthDate" class="form-item">
                     <el-date-picker
                       v-model="form.birthDate"
-                      class="form-input input-date-default"
+                      class="form-input input-date-default h44 w-full"
                       type="date"
                       placeholder="Account Holder's Date of Birth"
                     />
@@ -696,6 +696,9 @@ onUnmounted(()=>{
   </div>
 </template>
 
+<style lang="scss">
+@import url("@/assets/css/element-reset/input-date.scss");
+</style>
 <style lang="scss" scoped>
 @import url("@/assets/css/element-reset/button.scss");
 @import url("@/assets/css/element-reset/input.scss");
