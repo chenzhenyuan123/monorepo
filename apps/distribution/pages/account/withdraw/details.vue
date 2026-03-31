@@ -148,7 +148,10 @@ const jumpToWallet = () => {
 }
 const jumpToCreate = () => {
     router.push({
-        path: '/account/withdraw'
+        path: '/account/withdraw',
+        query: {
+            currency: form.accountCurrency
+        }
     })
 }
 

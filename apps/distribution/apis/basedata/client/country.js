@@ -12,3 +12,8 @@ export const getAllCountry = () => {
 export const getProvinceByCountry = (countryId, key = '') => {
     return useHttp.get(`/flylinking-basedata/client/country/listProvinceByCountryId/${countryId}`, {}, { server: true, key })
 }
+
+// 获取PayPal支持的国家列表
+export const listPaypalCountry = () => {
+    return useHttp.get(`/flylinking-basedata/client/country/listPaypalCountry`, {}, { server: true })
+}

@@ -1,6 +1,16 @@
 <script setup>
     import {checkResponseData} from "@/util";
 
+    const props = defineProps({
+        withdrawType: {
+            type: String,
+            default: ''
+        },
+        openingBankCountry: {
+            type: String,
+            default: ''
+        }
+    })
     const { withdrawApi } = useApi()
     const emit = defineEmits(["obtainedData", "select"])
 
@@ -16,13 +26,19 @@
 
     // 查询提现成功卡列表
     const qryBankcard = async() => {
+        if (!(props.withdrawType && props.openingBankCountry)) {
+            emit('obtainedData', false)
+            return
+        }
         const result = await withdrawApi.success_bankcard_listPage({
+            withdrawType: props.withdrawType,
+            openingBankCountry: props.openingBankCountry,
             pageNo: 1,
             pageSize: 10
         })
         const res = checkResponseData(result)
         successBankcardData.value = res.list || []
-        if (successBankcardData.value.length) emit('obtainedData', true)
+        emit('obtainedData', successBankcardData.value.length > 0)
     }
 
     // 删除提现成功卡记录
@@ -37,15 +53,16 @@
         const result = await withdrawApi.success_bankcard_get(id)
         const res = checkResponseData(result)
         if (res) {
-            emit('select', {
-                accountName: res.accountName,
-                accountNumber: res.accountNumber,
-                bankName: res.bankName,
-                swiftCode: res.swiftCode,
-                openingBankCountry: res.openingBankCountry,
-                openingBankCity: res.openingBankCity,
-                openingBankAddress: res.openingBankAddress,
-            })
+            emit('select', res)
+            // emit('select', {
+            //     accountName: res.accountName,
+            //     accountNumber: res.accountNumber,
+            //     bankName: res.bankName,
+            //     swiftCode: res.swiftCode,
+            //     openingBankCountry: res.openingBankCountry,
+            //     openingBankCity: res.openingBankCity,
+            //     openingBankAddress: res.openingBankAddress,
+            // })
         }
     }
     onMounted(()=>{

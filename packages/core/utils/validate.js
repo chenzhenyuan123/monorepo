@@ -81,6 +81,9 @@ export function isCityName(s) {
 export function isAccountName(s) {
   return /^([a-zA-Z\s])*$/.test(s)
 }
+export function isAccountNameAndSpece(s) {
+  return /^[A-Za-z]+(?: [A-Za-z]+)*$/.test(s)
+}
 export function isLetter(s) {
   return /^([a-zA-Z])*$/.test(s)
 }

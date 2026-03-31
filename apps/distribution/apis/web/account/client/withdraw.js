@@ -46,6 +46,10 @@ export const qryWithdrawFee = (data) => {
 export const apply = (data) => {
     return useHttp.post(`/flylinking-account/client/withdraw/apply`, data, { server: true })
 }
+// 提现确认/取消
+export const confirm = (data) => {
+    return useHttp.post(`/flylinking-account/client/withdraw/confirm`, data, { server: true })
+}
 // 查询提现详情
 export const detail = (id) => {
     return useHttp.get(`/flylinking-account/client/withdraw/detail/${id}`, {}, { server: true })

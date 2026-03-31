@@ -32,6 +32,8 @@ isAccountName,
 hasCountryCodeForIBAN,
 } from "@/util/validate";
 import {arrToDict} from "@flylinking/core/utils/common";
+import {isUseless} from "@flylinking/core/utils/dataUtil";
+import {isAccountNameAndSpece} from "@flylinking/core/utils/validate";
 
 const { t } = useI18n();
 const { userApi, withdrawApi, countryApi } = useApi()
@@ -48,7 +50,7 @@ const formValidateRef = ref()
 const isShowVerifyGialog = ref(false)
 const isShowAccountTypeDialog = ref(false)
 const isShowSaveAddressDialog = ref(false)
-const isShowRateUpdateDialog = ref(false)
+const isShowSomethingErrorDialog = ref(false)
 const loading = ref(false)
 const form = reactive({
     withdrawType: 'Bank_Account',
@@ -56,8 +58,7 @@ const form = reactive({
     accountCurrency: exchangeAccount.value,
     applyAmt: undefined,
     withdrawCurrency: exchangeAccount.value,
-    // 展示账户类型时，默认是储蓄账户；其他情况不需要默认值
-    accountType: 'savingsAccount',
+    accountType: 'saving',
     accountHolderType: undefined,
     accountName: undefined,
     // 固定部分
@@ -71,6 +72,8 @@ const form = reactive({
     accountNumber: '',
     routingNumber: undefined,
     swiftCode: undefined,
+    bankCode: undefined,
+    branchBankCode: undefined,
     // PayPal部分
     //
     birthDate: undefined,
@@ -99,17 +102,37 @@ watch(isBankAccount, () => {
         // 提现类型变化，更新手续费、汇率等
         setTimeoutForRateRefresh()
     }
+    if (form.openingBankCountry) formValidateRef.value?.formRef?.validateField('openingBankCountry')
 })
 // 是否展示账户类型，提现方式=银行账户，到账币种=USD，且账户所在国=美国
 const isShowAccountType = computed(() => {
     return isBankAccount.value && form.withdrawCurrency === 'USD' && form.openingBankCountry === 'US'
 })
-// 特殊国家，账户所在国是以色列，孟加拉，沙特时，默认选中个人，不能修改
+// 是否展示Routing Number，提现方式=银行账户，且账户所在地选择美国，且到账币种=USD时展示
+const isShowRoutingNumber = computed(() => {
+    return isBankAccount.value && form.withdrawCurrency === 'USD' && form.openingBankCountry === 'US'
+})
+// 是否展示银行代码，提现方式=银行账户，且账户所在国是以色列，英国时展示且必填
+const isShowBankCode = computed(() => {
+    return isBankAccount.value && (form.openingBankCountry === 'IL' || form.openingBankCountry === 'UK')
+})
+// 是否展示分行代码，提现方式=银行账户，且账户所在国是孟加拉时，展示且必填
+const isShowBranchBankCode = computed(() => {
+    return isBankAccount.value && form.openingBankCountry === 'BD'
+})
+// 账户持有人类型，账户所在国是以色列，孟加拉，沙特时，默认选中个人，不能修改
 const isSpecialForAccountHolderType = computed(() => {
     return form.openingBankCountry === 'IL' || form.openingBankCountry === 'BD' || form.openingBankCountry === 'SA'
 })
-watch(isSpecialForAccountHolderType, () => {
-    if (isSpecialForAccountHolderType.value && form.accountHolderType && form.accountHolderType !== 'individual') form.accountHolderType = 'individual'
+// 账户持有人类型，当账户类型=paypal时，【个人】被选中且不可修改
+const isMustIndividualForAccountHolderType = computed(() => {
+    return !isBankAccount.value || isSpecialForAccountHolderType.value
+})
+watch(isMustIndividualForAccountHolderType, () => {
+    if (isMustIndividualForAccountHolderType.value && form.accountHolderType !== 'Individual') form.accountHolderType = 'Individual'
+})
+const isDeffCurrency = computed(() => {
+    return form.accountCurrency !== form.withdrawCurrency
 })
 
 
@@ -227,7 +250,6 @@ function qryWithdrawFee() {
         withdrawType: form.withdrawType,
         cardNo: membershipCardNo.value
     }).then(result => {
-        console.log('qryWithdrawFee result: ', result)
         if (result?.success) {
             feeData.value = result.data || {}
             defaultWithdrawFee.value = result.data?.v0ReceivableFee || 0
@@ -281,25 +303,14 @@ const checkResultData = reactive({
 })
 // 风控校验
 const risk_control_check = (key) => {
+    // 空值不需要校验
+    if (isUseless(form[key])) return
     const obj = {}
     obj[key] = form[key]
     withdrawApi.risk_control_check(obj).then(result => {
         checkResultData[key] = checkResponseData(result)
         formValidateRef.value?.formRef?.validateField(key)
     })
-}
-
-
-// 选中记录地址
-const selectBankcardData = (obj) => {
-    Object.assign(form, obj, {
-        accountNumber: formatCreditCardNumber(obj.accountNumber),
-        // swiftCode: formatSWIFTCode(obj.swiftCode),
-    })
-    risk_control_check('accountName')
-    risk_control_check('bankName')
-    risk_control_check('openingBankCountry')
-    triggerCycle()
 }
 
 
@@ -317,7 +328,7 @@ if (value && !(value >= limitAmount.value)) {
 const validateAccountName = (rule, value, callback) => {
   if (value && !checkResultData.accountName) {
     callback(new Error(t('withdraw.applyFormValidateRiskManagement')))
-  } else if (value && !isAccountName(value)) {
+  } else if (value && !isAccountNameAndSpece(value)) {
     callback(new Error(t('withdraw.applyFormValidateEnglish')))
   } else {
     callback()
@@ -345,21 +356,14 @@ if (value && !isSWIFTCode(value, countryCodeArr.value)) {
     callback()
   }
 }
-// 校验银行名称
-const validateBankName = (rule, value, callback) => {
-
-  if (value && hasChinese(value)) {
-    callback(new Error(t('withdraw.applyFormValidateNotChinese')))
-  } else if (value && !checkResultData.bankName) {
-    callback(new Error(t('withdraw.applyFormValidateRiskManagement')))
-  } else {
-    callback()
-  }
-}
 // 校验国家
 const validateCountry = (rule, value, callback) => {
-  if (value && !checkResultData.openingBankCountry) {
-    callback(new Error(t('withdraw.applyFormValidateRiskManagement')))
+  if (value) {
+      if (!checkResultData.openingBankCountry) {
+        callback(new Error(t('withdraw.applyFormValidateRiskManagement')))
+      } else if (isErrorForPaypalCountry.value) {
+          callback(new Error('提现到PayPal账户，暂不支持该国家。'))
+      }
   } else {
     callback()
   }
@@ -393,10 +397,6 @@ function validateCardAndSWIFTCodeAndCounty () {
 
     const openingBankCountry = form.openingBankCountry.toUpperCase();
 
-    console.log('ibanCounty: ', ibanCounty)
-    console.log('swiftCodeCounty: ', swiftCodeCounty)
-    console.log('openingBankCountry: ', openingBankCountry)
-
     return ibanCounty === swiftCodeCounty && ibanCounty === openingBankCountry
 }
 const rules = () => {
@@ -409,6 +409,44 @@ const rules = () => {
             },
             {
                 validator: validateAmt,
+                trigger: 'blur'
+            }
+        ],
+        accountHolderType: [
+            {
+            required: true,
+            message: '请选择',
+            trigger: 'change',
+            },
+        ],
+        birthDate: [
+            {
+            required: true,
+            message: '请选择',
+            trigger: 'change',
+            },
+        ],
+        bankName: [
+            {
+                validator: (rule, value, callback) => {
+                    if (form.withdrawCurrency === 'USD' && !value) {
+                        callback(new Error(t('withdraw.applyFormRequiredBankName')))
+                    } else {
+                        callback()
+                    }
+                },
+                trigger: 'blur'
+            },
+            {
+                validator: (rule, value, callback) => {
+                    if (value && hasChinese(value)) {
+                        callback(new Error(t('withdraw.applyFormValidateNotChinese')))
+                    } else if (value && !checkResultData.bankName) {
+                        callback(new Error(t('withdraw.applyFormValidateRiskManagement')))
+                    } else {
+                        callback()
+                    }
+                },
                 trigger: 'blur'
             }
         ],
@@ -434,33 +472,11 @@ const rules = () => {
                 trigger: 'blur'
             }
         ],
-        swiftCode: [
-            {
-            required: true,
-            message: t('withdraw.applyFormRequiredSWIFTCodeOrBIC'),
-            trigger: 'blur',
-            },
-            {
-                validator: validateSWIFTCode,
-                trigger: 'blur'
-            }
-        ],
-        bankName: [
-            {
-            required: true,
-            message: t('withdraw.applyFormRequiredBankName'),
-            trigger: 'blur',
-            },
-            {
-                validator: validateBankName,
-                trigger: 'blur'
-            }
-        ],
         openingBankCountry: [
             {
-            required: true,
-            message: t('withdraw.applyFormRequiredCountryOrRegion'),
-            trigger: 'blur',
+                required: true,
+                message: t('withdraw.applyFormRequiredCountryOrRegion'),
+                trigger: 'blur',
             },
             {
                 validator: validateCountry,
@@ -469,9 +485,9 @@ const rules = () => {
         ],
         openingBankCity: [
             {
-            required: true,
-            message: t('withdraw.applyFormRequiredCity'),
-            trigger: 'blur',
+                required: true,
+                message: t('withdraw.applyFormRequiredCity'),
+                trigger: 'blur',
             },
             {
                 validator: validateCity,
@@ -480,14 +496,56 @@ const rules = () => {
         ],
         openingBankAddress: [
             {
-            required: true,
-            message: t('withdraw.applyFormRequiredAddress'),
-            trigger: 'blur',
+                required: true,
+                message: t('withdraw.applyFormRequiredAddress'),
+                trigger: 'blur',
             },
             {
                 validator: validateAddress,
                 trigger: 'blur'
             }
+        ],
+        routingNumber: [
+            {
+                validator: (rule, value, callback) => {
+                    if (value || (isBankAccount.value && form.routingNumber)) {
+                        callback()
+                    } else {
+                        callback(new Error('请输入'))
+                    }
+                },
+                trigger: 'blur'
+            },
+        ],
+        swiftCode: [
+            {
+                validator: (rule, value, callback) => {
+                    if (value || (isShowRoutingNumber.value && form.routingNumber)) {
+                        callback()
+                    } else {
+                        callback(new Error(t('withdraw.applyFormRequiredSWIFTCodeOrBIC')))
+                    }
+                },
+                trigger: 'blur'
+            },
+            {
+                validator: validateSWIFTCode,
+                trigger: 'blur'
+            }
+        ],
+        bankCode: [
+            {
+                required: true,
+                message: '请选择',
+                trigger: 'change',
+            },
+        ],
+        branchBankCode: [
+            {
+                required: true,
+                message: '请选择',
+                trigger: 'change',
+            },
         ],
     }
 }
@@ -504,16 +562,32 @@ const countryCodeArr = ref([])
 const countryToName = ref({})
 const currencyToCountryId = ref({})
 // 获取所有国家列表
-const getAllCountry = async() => {
-    const result = await countryApi.getAllCountry()
-    const res = checkResponseData(result)
-    if (res) {
-        // 展示所有国家列表，去除中国大陆
-        countryData.value = res.filter(item => item.countryId !== 'CN')
-        countryToName.value = arrToDict(countryData.value, { value: 'countryId', label: 'name' })
-        currencyToCountryId.value = arrToDict(countryData.value, { value: 'currency', label: 'countryId' })
-        countryCodeArr.value = countryData.value.map(item => item.countryId.toLowerCase())
-    }
+function getAllCountry() {
+    countryApi.getAllCountry().then(result => {
+        const res = checkResponseData(result)
+        if (res) {
+            // 展示所有国家列表，去除中国大陆
+            countryData.value = res.filter(item => item.countryId !== 'CN')
+            countryToName.value = arrToDict(countryData.value, { value: 'countryId', label: 'name' })
+            currencyToCountryId.value = arrToDict(countryData.value, { value: 'currency', label: 'countryId' })
+            countryCodeArr.value = countryData.value.map(item => item.countryId.toLowerCase())
+        }
+    })
+}
+const paypalCountryData = ref([])
+const paypalCountryDict = ref({})
+const isErrorForPaypalCountry = computed(() => {
+    return !isBankAccount.value && paypalCountryDict.value[form.openingBankCountry]
+})
+// 获取PayPal支持的国家列表
+function listPaypalCountry() {
+    countryApi.listPaypalCountry().then(result => {
+        const res = checkResponseData(result)
+        if (res) {
+            paypalCountryData.value = res
+            currencyToCountryId.value = arrToDict(paypalCountryDict.value, { value: 'countryId', label: null })
+        }
+    })
 }
 
 
@@ -612,6 +686,41 @@ const triggerCycle = () => {
 }
 
 
+// 选中记录地址
+function selectBankcardData(obj) {
+    Object.assign(form, {
+        accountType: obj.accountType,
+        accountHolderType: obj.accountHolderType,
+        accountName: obj.accountName,
+        bankState: obj.bankState,
+        zip: obj.zip,
+        // openingBankCountry: obj.openingBankCountry,
+        openingBankCity: obj.openingBankCity,
+        openingBankAddress: obj.openingBankAddress,
+    })
+    if (isBankAccount.value) {
+        Object.assign(form, {
+            bankName: obj.bankName,
+            accountNumber: formatCreditCardNumber(obj.accountNumber),
+            routingNumber: obj.routingNumber,
+            swiftCode: obj.swiftCode,
+            bankCode: obj.bankCode,
+            branchBankCode: obj.branchBankCode,
+        })
+        risk_control_check('bankName')
+        triggerCycle()
+    } else {
+        Object.assign(form, {
+            birthDate: obj.birthDate,
+            paypalAccount: obj.accountNumber,
+        })
+        clearIntervalForCardIconCycle()
+    }
+    risk_control_check('accountName')
+    risk_control_check('openingBankCountry')
+}
+
+
 // 提现申请前校验
 const validateApply = () => {
     formValidateRef.value?.formRef?.validate(async (valid) => {
@@ -627,31 +736,119 @@ const validateApply = () => {
     })
 }
 // 提现申请
-const apply = async (checkCode) => {
+const apply = (checkCode) => {
     loading.value = true
 
-    const params = Object.assign({}, form, {
+    const params = {
+        withdrawType: form.withdrawType,
+        openingBankCountry: form.openingBankCountry,
+        accountCurrency: form.accountCurrency,
+        applyAmt: form.applyAmt,
+        withdrawCurrency: form.withdrawCurrency,
+        arriveAmt: feeData.value.arriveAmt,
+        //
+        accountHolderType: form.accountHolderType,
+        accountName: form.accountName,
+        bankState: form.bankState,
+        zip: form.zip,
+        openingBankCity: form.openingBankCity,
+        openingBankAddress: form.openingBankAddress,
+        //
+        exchangeAmt: feeData.value.exchangeAmt,
+        exchangeRate: feeData.value.exchangeRate,
         withdrawFee: fee.value,
         receivableFee: feeData.value.receivableFee,
         cardNo: membershipCardNo.value,
         discountNumber: feeData.value.discountNumber,
-        accountNumber: normalCreditCardNumber(form.accountNumber),
         checkCode
-    })
-    // 展示账户类型时，默认是储蓄账户；其他情况不需要默认值
-    if (!isShowAccountType.value) delete params.accountType
+    }
+    if (isBankAccount.value) {
+        Object.assign(params, {
+            bankName: form.bankName,
+            accountNumber: normalCreditCardNumber(form.accountNumber),
+            routingNumber: form.routingNumber,
+            swiftCode: form.swiftCode,
+        })
+    } else {
+        Object.assign(params, {
+            birthDate: form.birthDate,
+            accountNumber: form.paypalAccount,
+        })
+    }
+    if (isShowAccountType.value) params.accountType = form.accountType
+    if (isShowBankCode.value) params.bankCode = form.bankCode
+    if (isShowBranchBankCode.value) params.branchBankCode = form.branchBankCode
+    params.saveFlag = params.saveFlag ? 'Y' : 'N'
 
-    const result = await withdrawApi.apply(params)
-    const res = checkResponseData(result, 'NO_RETURN_DATA')
-    router.push({
-        path: '/account/withdraw/result',
-        query: {
-            success: res ? 1 : 0
-        }
+    withdrawApi.apply(params).then(result => {
+        withdrawSubmitResult(result)
+    }).finally(() => {
+        loading.value = false
     })
-    loading.value = false
+
 }
-const jumpToWallet = () => {
+function withdrawSubmitResult(result = {}) {
+    // const res = checkResponseData(result, 'NO_RETURN_DATA')
+    withdrawResultData.value = result.data || {}
+    if (result.success) {
+        if (result.data?.changedExchangeRate) {
+            // 汇率变化
+            isShowRateUpdateDialog.value = true
+        } else {
+            // 成功
+            router.push({
+                path: '/account/withdraw/result',
+                query: {
+                    success: 1,
+                    id: withdrawResultData.value.id,
+                    currency: form.withdrawCurrency,
+                    estPaymentAmt: withdrawResultData.value.estPaymentAmt,
+                    estPaymentDate: withdrawResultData.value.estPaymentDate,
+                    applyWithdrawTime: withdrawResultData.value.applyWithdrawTime,
+                }
+            })
+        }
+    } else if (result.code === '核销提现券失败') {
+        // 核销提现券失败
+        isShowSomethingErrorDialog.value = true
+    } else {
+        // 失败
+        router.push({
+            path: '/account/withdraw/result',
+            query: {
+                success: 0,
+                id: withdrawResultData.value.id,
+                estPaymentAmt: withdrawResultData.value.estPaymentAmt,
+                estPaymentDate: withdrawResultData.value.estPaymentDate,
+                applyWithdrawTime: withdrawResultData.value.applyWithdrawTime,
+            }
+        })
+    }
+}
+const isShowRateUpdateDialog = ref(false)
+const withdrawResultData = ref({})
+const isWithdrawConfirm = ref(false)
+// 提现确认/取消
+function withdrawConfirm(isConfirm) {
+    isWithdrawConfirm.value = isConfirm
+    loading.value = true
+    const params = {
+        id: withdrawResultData.value.id,
+        checkToken: withdrawResultData.value.checkToken,
+        isConfirm
+    }
+    withdrawApi.confirm(params).then(result => {
+        if (isWithdrawConfirm.value) {
+            withdrawSubmitResult(result)
+        } else {
+            if (checkResponseData(result, 'NO_RETURN_DATA')) jumpToWallet()
+        }
+    }).finally(() => {
+        loading.value = false
+    })
+
+}
+function jumpToWallet() {
     router.push({
         path: '/account/wallet'
     })
@@ -664,6 +861,7 @@ onMounted(async ()=>{
         settingStore.setFormPage(true)
     })
     getAllCountry()
+    listPaypalCountry()
     qryBalanceList()
     qryCreditedCurrencyList()
     qryMinWithdrawalAmount(exchangeAccount.value)
@@ -883,7 +1081,7 @@ onUnmounted(()=>{
                             </el-input>
                         </el-form-item>
                     </div>
-                    <p v-if="form.accountCurrency !== form.withdrawCurrency && feeData.exchangeRate && rateRefreshData.timerShow" class="tertiary-span2 mt12">
+                    <p v-if="isDeffCurrency && feeData.exchangeRate && rateRefreshData.timerShow" class="tertiary-span2 mt12">
                         Exchange rate ({{ rateRefreshData.timerCount }}s) :  {{ form.accountCurrency }} 1 ≈ {{ form.withdrawCurrency }} {{ feeData.exchangeRate }}
                     </p>
                     <el-popover
@@ -905,9 +1103,9 @@ onUnmounted(()=>{
                                     <template v-if="dayTypeDict[item.dayType]">({{ dayTypeDict[item.dayType] }})</template>
                                 </div>
                                 <div class="arrival-time-item flex-1 black-span2 f16 fw500">
-                                    <tempalte v-if="item.period >= 2">未来第{{ item.period }}个工作日</tempalte>
-                                    <tempalte v-else-if="item.period === 1">下一个工作日</tempalte>
-                                    <tempalte v-else>当日</tempalte>
+                                    <template v-if="item.period >= 2">未来第{{ item.period }}个工作日</template>
+                                    <template v-else-if="item.period === 1">下一个工作日</template>
+                                    <template v-else>当日</template>
                                     <template v-if="item.settleHour >= 0">{{ item.settleHour }}:00</template>
                                 </div>
                             </div>
@@ -924,7 +1122,10 @@ onUnmounted(()=>{
                     <p class="flex items-center">
                         <span class="tertiary-span2">{{ $t('withdraw.applyFormFeeModuleWithdrawalLabel') }}</span>
                         <span class="flex-center"></span>
-                        <span class="tertiary-span2 fw600">{{ form.withdrawCurrency }} {{ currencyFormat(feeData.exchangeAmt || form.applyAmt) }}</span>
+                        <span class="tertiary-span2 fw600">
+                            {{ form.accountCurrency }} {{ currencyFormat(form.applyAmt) }}
+                            <template v-if="isDeffCurrency"> ≈ {{ form.withdrawCurrency }} {{ currencyFormat(feeData.exchangeAmt) }}</template>
+                        </span>
                         <span class="flex-center-20"></span>
                     </p>
                     <p class="p flex-box mt8">
@@ -1002,14 +1203,16 @@ onUnmounted(()=>{
                     <p class="tertiary-span2">{{ $t('withdraw.applyFormMessageAccountUlTip') }}</p>
                 </div>
                 <AccountWithdrawAccountUl
+                  :key="form.withdrawType + '-' + form.openingBankCountry"
+                  :withdrawType="form.withdrawType"
+                  :openingBankCountry="form.openingBankCountry"
                   @obtainedData="obtainedData"
                   @select="selectBankcardData"
                 ></AccountWithdrawAccountUl>
             </div>
             <div class="info-container mb32" :class="{ pl16: isMobile, pr16: isMobile, pl32: !isMobile, pr32: !isMobile }">
                 <div class="black-span2 f18 fw600 mb24">Account Details</div>
-<!--                <el-form-item v-if="isShowAccountType" prop="accountType" class="form-item">-->
-                <el-form-item prop="accountType" class="form-item">
+                <el-form-item v-if="isShowAccountType" prop="accountType" class="form-item">
                     <template #label>
                         <div class="flex items-center gap4">
                             <span>Account type</span>
@@ -1028,16 +1231,16 @@ onUnmounted(()=>{
                         </div>
                     </template>
                     <el-radio-group v-model="form.accountType" class="radio-default">
-                        <el-radio value="savingsAccount"> Savings account</el-radio>
-                        <el-radio value="checkingAccount"> Checking account</el-radio>
+                        <el-radio value="saving"> Savings account</el-radio>
+                        <el-radio value="checking"> Checking account</el-radio>
                     </el-radio-group>
                 </el-form-item>
                 <el-form-item label="Account holder type" prop="accountHolderType" class="form-item">
                     <el-radio-group v-model="form.accountHolderType" class="radio-default">
-                        <el-radio value="individual"> Individual</el-radio>
-                        <el-radio value="business" :disabled="isSpecialForAccountHolderType"> Business / Entity / Corporate</el-radio>
-                        <div class="tertiary-span2">Withdrawals to Israel, Bangladesh, and Saudi Arabia are only supported for personal accounts.</div>
+                        <el-radio value="Individual"> Individual</el-radio>
+                        <el-radio value="Business" :disabled="isMustIndividualForAccountHolderType"> Business / Entity / Corporate</el-radio>
                     </el-radio-group>
+                    <div v-if="isSpecialForAccountHolderType" class="tertiary-span2">Withdrawals to Israel, Bangladesh, and Saudi Arabia are only supported for personal accounts.</div>
                 </el-form-item>
                 <el-form-item :label="isBankAccount ? 'Bank account name' : $t('withdraw.applyFormLabelAccountHolderName')" prop="accountName" class="form-item">
                     <el-input
@@ -1045,7 +1248,7 @@ onUnmounted(()=>{
                       :maxlength="100"
                       class="form-input input-default"
                       :placeholder="isBankAccount ? 'Bank account name' : $t('withdraw.applyFormLabelAccountHolderName')"
-                      @change="e => { form.accountName = e.trim() }"
+                      @change="e => { form.accountName = e.trim().replace(/\s+/g, ' ') }"
                       @blur="risk_control_check('accountName')"
                     />
                     <div class="tertiary-span2 mt6">请输入长度在100以内的英文字符，且必须包含一个空格</div>
@@ -1088,7 +1291,7 @@ onUnmounted(()=>{
                       v-model="form.paypalAccount"
                       class="form-input input-default"
                       placeholder=""
-                      @change="e => { form.birthDate = e.trim() }"
+                      @change="e => { form.paypalAccount = e.trim() }"
                     ></el-input>
                 </el-form-item>
                 <div class="black-span2 f18 fw600 mt56 mb24">开户信息</div>
@@ -1104,42 +1307,44 @@ onUnmounted(()=>{
                     </div>
                 </el-form-item>
                 <div class="flex gap16 mb16">
-                    <el-form-item label="Bank State / Province" prop="bankState" class="form-item flex-1" style="margin-bottom: 0">
+                    <el-form-item :label="(isBankAccount ? 'Bank State / Province' : 'State / Province') + (form.withdrawCurrency === 'USD' ? '' : ' (Optional)')" prop="bankState" class="form-item flex-1" style="margin-bottom: 0">
                         <el-input
                           v-model="form.bankState"
                           class="form-input input-default"
-                          placeholder="Bank State / Province"
+                          :placeholder="(isBankAccount ? 'Bank State / Province' : 'State / Province') + (form.withdrawCurrency === 'USD' ? '' : ' (Optional)')"
                           @change="e => { form.bankState = e.trim() }"
                         />
                     </el-form-item>
-                    <el-form-item label="Zip" prop="zip" class="form-item w-180" style="margin-bottom: 0">
+                    <el-form-item :label="'Zip' + (form.withdrawCurrency === 'USD' ? '' : ' (Optional)')" prop="zip" class="form-item w-180" style="margin-bottom: 0">
                         <el-input
                           v-model="form.zip"
                           :maxlength="12"
                           class="form-input input-default"
-                          placeholder="Zip"
+                          :placeholder="'Zip' + (form.withdrawCurrency === 'USD' ? '' : ' (Optional)')"
                           @change="e => { form.zip = e.trim() }"
                         />
-                        <div class="tertiary-span2 mt6">Max 11 characters</div>
+                        <div class="tertiary-span2 mt6">Max 12 characters</div>
                     </el-form-item>
                 </div>
-                <el-form-item :label="$t('withdraw.applyFormLabelCity')" prop="openingBankCity" class="form-item">
+                <el-form-item :label="isBankAccount ? $t('withdraw.applyFormLabelCity') : 'City of Account holder'" prop="openingBankCity" class="form-item">
                     <el-input
                       v-model="form.openingBankCity"
                       :maxlength="35"
                       class="form-input input-default"
+                      :placeholder="isBankAccount ? $t('withdraw.applyFormLabelCity') : 'City of Account holder'"
                       @change="e => { form.openingBankCity = e.trim() }"
                     />
                 </el-form-item>
-                <el-form-item :label="$t('withdraw.applyFormLabelAddress')" prop="openingBankAddress" class="form-item">
+                <el-form-item :label="isBankAccount ? $t('withdraw.applyFormLabelAddress') : 'Address of Account holder'" prop="openingBankAddress" class="form-item">
                     <el-input
                       v-model="form.openingBankAddress"
                       :maxlength="70"
                       class="form-input input-default"
+                      :placeholder="isBankAccount ? $t('withdraw.applyFormLabelAddress') : 'Address of Account holder'"
                       @change="e => { form.openingBankAddress = e.trim() }"
                     />
                 </el-form-item>
-                <el-form-item v-if="isBankAccount" label="Routing number" prop="routingNumber" class="form-item">
+                <el-form-item v-if="isShowRoutingNumber" label="Routing number" prop="routingNumber" class="form-item">
                     <el-input
                       v-model="form.routingNumber"
                       :maxlength="11"
@@ -1156,6 +1361,26 @@ onUnmounted(()=>{
                       :placeholder="$t('withdraw.applyFormLabelSWIFTCodeOrBIC')"
                       @input="e => { form.swiftCode = formatSWIFTCode(e) }"
                     />
+                </el-form-item>
+                <el-form-item v-if="isShowBankCode" label="Bank code" prop="bankCode" class="form-item">
+                    <el-input
+                      v-model="form.bankCode"
+                      :maxlength="11"
+                      class="form-input input-default"
+                      placeholder="Bank code"
+                      @change="e => { form.bankCode = e.trim() }"
+                    />
+                    <div class="tertiary-span2 mt6">Max 11 characters</div>
+                </el-form-item>
+                <el-form-item v-if="isShowBranchBankCode" label="Branch code" prop="branchBankCode" class="form-item">
+                    <el-input
+                      v-model="form.branchBankCode"
+                      :maxlength="11"
+                      class="form-input input-default"
+                      placeholder="Branch code"
+                      @change="e => { form.branchBankCode = e.trim() }"
+                    />
+                    <div class="tertiary-span2 mt6">Max 11 characters</div>
                 </el-form-item>
                 <el-checkbox v-model="form.saveFlag" class="checkbox-default">
                     <div class="flex items-center gap4">
@@ -1192,10 +1417,17 @@ onUnmounted(()=>{
       <AccountWithdrawSaveAddressDialog v-model="isShowSaveAddressDialog"></AccountWithdrawSaveAddressDialog>
       <AccountWithdrawRateUpdateDialog
         v-model="isShowRateUpdateDialog"
-        :rate="feeData.exchangeRate"
+        :originalExchangeRate="withdrawResultData.originalExchangeRate"
+        :rate="withdrawResultData.changedExchangeRate"
         :currency="form.withdrawCurrency"
-        :amount="feeData.exchangeAmt || form.applyAmt"
+        :amount="withdrawResultData.changedEstEntryAmt"
+        @submit="withdrawConfirm(true)"
+        @cancel="withdrawConfirm(false)"
       ></AccountWithdrawRateUpdateDialog>
+      <AccountWithdrawSomethingErrorDialog
+        v-model="isShowSomethingErrorDialog"
+        @submit="jumpToWallet"
+      ></AccountWithdrawSomethingErrorDialog>
 </div>
 </template>
 
