@@ -1,21 +1,21 @@
 .radio-default {
-    .is-checked {
-        :deep(.el-radio__inner) {
-            border-color: #5548FF;
-            background-color: #5548FF;
-        }
+    &.el-radio-group {
+        gap: 32px;
+    }
+    &.el-radio, .el-radio {
+        gap: 12px;
+        margin: 0;
     }
     :deep(.el-radio__inner) {
         width: 20px;
         height: 20px;
-        border-color: #D0D5DD;
         &:after {
             width: 6px;
             height: 6px;
         }
     }
     :deep(.el-radio__label) {
-        padding-left: 12px;
+        padding-left: 0;
         color: #101828;
         font-size: 14px;
         font-weight: 500;
@@ -64,5 +64,22 @@
             line-height: 24px;
             outline: none;
         }
+    }
+}
+
+.checkbox-default {
+    &.el-checkbox-group {
+        gap: 32px;
+    }
+    &.el-checkbox, .el-checkbox {
+        gap: 12px;
+        margin: 0;
+    }
+    :deep(.el-checkbox__label) {
+        padding-left: 0;
+        color: #101828;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 20px; /* 142.857% */
     }
 }

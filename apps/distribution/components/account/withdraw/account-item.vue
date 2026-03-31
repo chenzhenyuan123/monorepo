@@ -144,9 +144,6 @@
         box-sizing: border-box;
     }
     li {
-        /*flex: 1;*/
-        padding: 0 6px;
-        /*max-width: 100%;*/
         .account-li-item {
             display: flex;
             height: 92px;
