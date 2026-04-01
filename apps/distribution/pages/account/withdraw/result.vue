@@ -47,16 +47,16 @@ onUnmounted(()=>{
         :class="[isMobile ? 'f24' : 'f30']"
       >{{ $t('withdraw.resultSuccessTitle') }}</div>
       <div class="tertiary-span f16">{{ $t('withdraw.resultSuccessP') }}</div>
-      <div v-if="withdrawNo" class="tertiary-span f16 mt16">提现记录编号：{{ withdrawNo }}</div>
+      <div v-if="withdrawNo" class="tertiary-span f16 mt16">{{ $t('withdrawResult.labelWithdrawNo') }} {{ withdrawNo }}</div>
       <template v-if="currency && estPaymentAmt">
-        <div class="tertiary-span mt48">Est. Amount to Receive</div>
+        <div class="tertiary-span mt48">{{ $t('withdrawResult.labelAmountToReceive') }}</div>
         <div class="black-span2 f24 fw500 mt4 pb8">{{ currency }} {{ currencyFormat(estPaymentAmt) }}</div>
       </template>
       <el-button type="" class="button button-default dialog-adaptive mt32" @click="jumpToWallet">{{ $t('withdraw.resultButtonBack') }}</el-button>
       <template v-if="applyWithdrawTime">
         <div class="flex items-center gap12 mt44 mb24">
           <div class="hr flex-1"></div>
-          <div class="tertiary-span2 f12">Current Status</div>
+          <div class="tertiary-span2 f12">{{ $t('withdrawResult.CurrentStatus') }}</div>
           <div class="hr flex-1"></div>
         </div>
         <div class="w200 full-max margin-auto">
@@ -66,7 +66,7 @@ onUnmounted(()=>{
                 <path d="M8 3C11.866 3 15 6.13401 15 10C15 13.866 11.866 17 8 17C4.13401 17 1 13.866 1 10C1 6.13401 4.13401 3 8 3ZM7.36621 10.9453L5.24512 8.82422L4.18457 9.88477L7.36621 13.0664L12.3154 8.11621L11.2549 7.05566L7.36621 10.9453Z" fill="#A5A4AA"/>
               </svg>
             </div>
-            <div class="black-span2 fw500">Initiate Withdrawal</div>
+            <div class="black-span2 fw500">{{ $t('withdrawResult.InitiateWithdrawal') }}</div>
           </div>
           <div class="flex gap8 mb4">
             <div class="lh0">
@@ -83,7 +83,7 @@ onUnmounted(()=>{
                 <path d="M8 3C11.8661 3 15 6.1339 15 10C15 13.8661 11.8661 17 8 17C4.1339 17 1 13.8661 1 10C1 6.1339 4.1339 3 8 3ZM6.5 7V12H11V10.5H8V7H6.5Z" fill="#3369FF"/>
               </svg>
             </div>
-            <div class="primary-span fw500">打款</div>
+            <div class="primary-span fw500">{{ $t('withdrawResult.transferFunds') }}</div>
           </div>
         </div>
       </template>

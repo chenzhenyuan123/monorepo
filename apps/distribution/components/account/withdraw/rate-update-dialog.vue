@@ -40,16 +40,16 @@
     <el-dialog
       v-bind="$attrs"
       width="526px"
-      title="Explanation"
+      :title="$t('rateUpdateDialog.title')"
       :show-close="true"
       :close-on-click-modal="false"
       :destroy-on-close="true"
       :class="{ 'm': isMobile }"
     >
 
-      <div class="tertiary-span f16 mb12">The exchange rate has updated. Please confirm the new estimated amount.</div>
+      <div class="tertiary-span f16 mb12">{{ $t('rateUpdateDialog.message') }}</div>
       <div class="tertiary-box txt-center">
-        <div class="tertiary-span mb2">Rate</div>
+        <div class="tertiary-span mb2">{{ $t('rateUpdateDialog.label1') }}</div>
         <div class="flex items-center justify-center gap8 mb24">
           <template v-if="rate > originalExchangeRate">
             <div class="green-span">{{ rate }}</div>
@@ -66,18 +66,30 @@
               </svg>
             </div>
           </template>
-          <template>
-            {{ rate }}
+          <template v-else>
+            <div class="red-span">{{ rate }}</div>
+            <div class="lh0">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g clip-path="url(#clip0_5822_5357)">
+                  <path fill-rule="evenodd" clip-rule="evenodd" d="M8.24012 1.25C8.65417 1.25019 8.99012 1.5859 8.99012 2V12.2373L13.4804 7.9209C13.7789 7.63402 14.2539 7.6429 14.5409 7.94141C14.8279 8.23997 14.8179 8.71488 14.5194 9.00195L8.75965 14.541C8.46932 14.8199 8.00987 14.8201 7.71961 14.541L1.48035 8.54102C1.18189 8.25403 1.17212 7.77907 1.45887 7.48047C1.74586 7.18206 2.22084 7.17225 2.51942 7.45898L7.49012 12.2383V2C7.49012 1.58579 7.8259 1.25 8.24012 1.25Z" fill="#D92D20"/>
+                </g>
+                <defs>
+                  <clipPath id="clip0_5822_5357">
+                    <rect width="16" height="16" fill="white"/>
+                  </clipPath>
+                </defs>
+              </svg>
+            </div>
           </template>
         </div>
-        <div class="tertiary-span mb2">Rate</div>
+        <div class="tertiary-span mb2">{{ $t('rateUpdateDialog.label2') }}</div>
         <div class="tertiary-span f20 fw600">{{ currency }} {{ currencyFormat(amount) }}</div>
       </div>
 
       <template #footer>
         <div class="form-buttons">
-          <el-button type="text" class="button-default m-adaptive" style="margin: 0" @click="cancel">Close</el-button>
-          <el-button type="primary" round class="button-default m-adaptive" style="margin: 0" @click="submit">Confirm and Submit</el-button>
+          <el-button type="text" class="button-default m-adaptive" style="margin: 0" @click="cancel">{{ $t('rateUpdateDialog.buttonClose') }}</el-button>
+          <el-button type="primary" round class="button-default m-adaptive" style="margin: 0" @click="submit">{{ $t('rateUpdateDialog.buttonSubmit') }}</el-button>
         </div>
       </template>
     </el-dialog>
@@ -119,6 +131,20 @@
   }
   .green-span {
     color: #079455;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px;
+    &.fw500 {
+      font-weight: 500;
+    }
+    &.f16 {
+      font-size: 16px;
+      line-height: 24px;
+    }
+  }
+  .red-span {
+    color: #D92D20;
     font-size: 14px;
     font-style: normal;
     font-weight: 400;

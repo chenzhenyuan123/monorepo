@@ -237,7 +237,7 @@ onMounted(async ()=>{
     })
     getAllCountry()
     await detail()
-    qrySettleConfigList(form.accountCurrency)
+    qrySettleConfigList(form.withdrawCurrency)
 })
 
 onUnmounted(()=>{
@@ -283,7 +283,7 @@ onUnmounted(()=>{
             <div class="mb32" :class="{ pl32: !isMobile, pr32: !isMobile }">
                 <div class="hr mb16"></div>
                 <div :class="{ pl20: isMobile, pr20: isMobile }">
-                    <el-form-item label="Withdrawal Method" prop="withdrawType" class="form-item" style="margin-bottom: 12px;">
+                    <el-form-item :label="$t('withdraw.applyFormLabelWithdrawMethod')" prop="withdrawType" class="form-item" style="margin-bottom: 12px;">
                         <el-radio-group
                           v-model="form.withdrawType"
                           class="radio-card-group gap8 w-full"
@@ -308,7 +308,7 @@ onUnmounted(()=>{
                                             </defs>
                                         </svg>
                                     </div>
-                                    <span class="black-span fw500">Bank account</span>
+                                    <span class="black-span fw500">{{$t('withdraw.bankAccount')}}</span>
                                 </div>
                             </el-radio>
                             <!--  从非USD账户中发起提现，默认选中银行账户，PayPal不能选  -->
@@ -331,23 +331,22 @@ onUnmounted(()=>{
                                             </defs>
                                         </svg>
                                     </div>
-                                    <span class="black-span fw500">PayPal</span>
+                                    <span class="black-span fw500">{{$t('withdraw.payPal')}}</span>
                                 </div>
                             </el-radio>
                         </el-radio-group>
                     </el-form-item>
-                    <el-form-item label="Account Location" prop="openingBankCountry" class="form-item">
+                    <el-form-item :label="$t('withdraw.applyFormLabelAccountLocation')" prop="openingBankCountry" class="form-item">
                         <el-select
                           v-model="form.openingBankCountry"
-                          placeholder="Select Country/Region"
+                          :placeholder="$t('withdraw.applyFormPlaceholderAccountLocation')"
                           filterable
                           class="form-input select-default h44"
                         >
                             <template #label="{ label, value }">
-                                <!-- <template #label="{ label }"> -->
-                                <div v-if="value" class="flex items-center gap8">
+                                <div class="flex items-center gap8">
                                     <div class="circle-country-icon-container size-20">
-                                        <img :src="flagUrl(value)">
+                                        <img v-if="value" :src="flagUrl(value)">
                                     </div>
                                     <span>{{ label }}</span>
                                 </div>
@@ -356,13 +355,13 @@ onUnmounted(()=>{
                               v-for="item in countryData"
                               :key="item.countryId"
                               :value="item.countryId"
-                              :label="item.name"
+                              :label="item.enUs"
                             >
                                 <div class="flex items-center gap8">
                                     <div class="circle-country-icon-container size-20">
                                         <img :src="flagUrl(item.countryId)">
                                     </div>
-                                    <span>{{ item.name }}</span>
+                                    <span>{{ item.enUs }}</span>
                                 </div>
                             </el-option>
                         </el-select>
@@ -381,9 +380,9 @@ onUnmounted(()=>{
                               disabled
                             >
                                 <template #label="{ label, value }">
-                                    <div v-if="currencyToCountryId[value]" class="flex items-center gap8">
+                                    <div class="flex items-center gap8">
                                         <div class="circle-country-icon-container size-20">
-                                            <img :src="flagUrl(currencyToCountryId[value])">
+                                            <img v-if="currencyToCountryId[value]" :src="flagUrl(currencyToCountryId[value])">
                                         </div>
                                         <span>{{ label }}</span>
                                     </div>
@@ -414,7 +413,7 @@ onUnmounted(()=>{
                 </div>
                 <div class="amount-container">
                     <div class="flex gap10">
-                        <el-form-item label="Converted to" class="form-item nowrap-label w-160">
+                        <el-form-item :label="$t('withdraw.applyFormLabelConvertedTo')" class="form-item nowrap-label w-160">
                             <el-select
                               v-model="form.withdrawCurrency"
                               placeholder=""
@@ -422,9 +421,9 @@ onUnmounted(()=>{
                               class="form-input select-default h44"
                             >
                                 <template #label="{ label, value }">
-                                    <div v-if="currencyToCountryId[value]" class="flex items-center gap8">
+                                    <div class="flex items-center gap8">
                                         <div class="circle-country-icon-container size-20">
-                                            <img :src="flagUrl(currencyToCountryId[value])">
+                                            <img v-if="currencyToCountryId[value]" :src="flagUrl(currencyToCountryId[value])">
                                         </div>
                                         <span>{{ label }}</span>
                                     </div>
@@ -443,7 +442,7 @@ onUnmounted(()=>{
                                 </el-option>
                             </el-select>
                         </el-form-item>
-                        <el-form-item label=" " prop="exchangeAmt" class="form-item empty-label flex-1">
+                        <el-form-item label=" " class="form-item empty-label flex-1">
                             <el-input
                               :value="form.arriveAmt ? currencyFormat(form.arriveAmt) : ''"
                               class="form-input input-default"
@@ -453,18 +452,19 @@ onUnmounted(()=>{
                         </el-form-item>
                     </div>
                     <p v-if="isDeffCurrency && form.exchangeRate" class="tertiary-span2 mt12">
-                        Exchange rate:  {{ form.accountCurrency }} 1 ≈ {{ form.withdrawCurrency }} {{ form.exchangeRate }}
+                        {{$t('withdraw.applyFormMessageExchangeRate')}}:  {{ form.accountCurrency }} 1 ≈ {{ form.withdrawCurrency }} {{ form.exchangeRate }}
                     </p>
                     <el-popover
                       placement="bottom-start"
                       effect="light"
+                      trigger="click"
                       :width="480"
                       popper-class="popover-dialog"
                     >
                         <div class="arrival-time-container">
                             <div class="flex items-stretch">
-                                <div class="arrival-time-item flex-1 black-span2 f16">申请时间（UTC +8）</div>
-                                <div class="arrival-time-item flex-1 black-span2 f16">预计打款时间（UTC +8）</div>
+                                <div class="arrival-time-item flex-1 black-span2 f16">{{$t('arrivalTime.applicationTime')}}（UTC +8）</div>
+                                <div class="arrival-time-item flex-1 black-span2 f16">{{$t('arrivalTime.estimatedPaymentTime')}}（UTC +8）</div>
                             </div>
                             <div v-for="(item, index) in settleConfigListData" :key="index" class="flex items-stretch">
                                 <div class="arrival-time-item flex-1 black-span2 f16 fw500">
@@ -474,16 +474,16 @@ onUnmounted(()=>{
                                     <template v-if="dayTypeDict[item.dayType]">({{ dayTypeDict[item.dayType] }})</template>
                                 </div>
                                 <div class="arrival-time-item flex-1 black-span2 f16 fw500">
-                                    <template v-if="item.period >= 2">未来第{{ item.period }}个工作日</template>
-                                    <template v-else-if="item.period === 1">下一个工作日</template>
-                                    <template v-else>当日</template>
+                                    <template v-if="item.period >= 2">{{$t('arrivalTime.nextDays', { num: item.period })}}</template>
+                                    <template v-else-if="item.period === 1">{{$t('arrivalTime.nextWorkingDay')}}</template>
+                                    <template v-else>{{$t('arrivalTime.today')}}</template>
                                     <template v-if="item.settleHour >= 0">{{ item.settleHour }}:00</template>
                                 </div>
                             </div>
-                            <div class="arrival-time-p tertiary-span3">支持7*24h(包括香港、大陆节假日)提款,按以下规则进行打款款;其中节假日目前只能受理业务,到账为工作日, 上述表格中展示的时间为北京时间。</div>
+                            <div class="arrival-time-p tertiary-span3">{{$t('arrivalTime.message')}}</div>
                         </div>
                         <template #reference>
-                            <el-link type="primary" underline="never" class="underline-dotted mt12">Explanation of Arrival Time</el-link>
+                            <el-link type="primary" underline="never" class="underline-dotted mt12">{{$t('arrivalTime.explanation')}}</el-link>
                         </template>
                     </el-popover>
                 </div>
@@ -514,19 +514,42 @@ onUnmounted(()=>{
                                 <span>{{ form.withdrawCurrency }} {{ currencyFormat(form.v0WithdrawFee) }}</span>
                                 <span class="flex-center-20"></span>
                             </div>
-                            <div v-if="form.membershipBenefitDeductionAmt" class="flex items-center mt2">
+                            <div v-if="membershipFeeDiff && form.v0WithdrawFee" class="flex items-center mt2">
                                 <span>{{ $t('withdraw.applyFormFeeModuleMembershipFeeLabel') }}</span>
                                 <span class="flex-center"></span>
-                                <span>- {{ form.withdrawCurrency }} {{ currencyFormat(form.membershipBenefitDeductionAmt) }}</span>
+                                <span>- {{ form.withdrawCurrency }} {{ currencyFormat(membershipFeeDiff) }}</span>
                                 <span class="flex-center-20"></span>
                             </div>
-                            <div v-if="form.discountAmt" class="flex items-center mt2">
+                            <div v-if="couponFeeDiff" class="flex items-center mt2">
                                 <span>{{ $t('withdraw.applyFormFeeModuleCouponFeeLabel', { rate: form.discountNumber }) }}</span>
                                 <span class="flex-center"></span>
-                                <span>- {{ form.withdrawCurrency }} {{ currencyFormat(form.discountAmt) }}</span>
+                                <span>- {{ form.withdrawCurrency }} {{ currencyFormat(couponFeeDiff) }}</span>
                                 <span class="flex-center-20"></span>
                             </div>
                         </div>
+                    </div>
+                    <div v-if="fee > 0 && membershipCardData.length && !membershipCardNo" class="flex mt2">
+                        <div class="flex-center"></div>
+                        <el-button
+                          type="primary"
+                          class="button-default h32 f14"
+                          @click="showDiscountDetailsDialog"
+                        >
+                            <div class="lh0 mr4">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <g clip-path="url(#clip0_5206_681)">
+                                        <path d="M8 2.25C8.41421 2.25 8.75 2.58579 8.75 3V7.25H13C13.4142 7.25 13.75 7.58579 13.75 8C13.75 8.41421 13.4142 8.75 13 8.75H8.75V13C8.75 13.4142 8.41421 13.75 8 13.75C7.58579 13.75 7.25 13.4142 7.25 13V8.75H3C2.58579 8.75 2.25 8.41421 2.25 8C2.25 7.58579 2.58579 7.25 3 7.25H7.25V3C7.25 2.58579 7.58579 2.25 8 2.25Z" fill="currentColor"/>
+                                    </g>
+                                    <defs>
+                                        <clipPath id="clip0_5206_681">
+                                            <rect width="16" height="16" fill="white"/>
+                                        </clipPath>
+                                    </defs>
+                                </svg>
+                            </div>
+                            {{ $t('withdraw.applyFormFeeModuleButtonAdd') }}
+                        </el-button>
+                        <span class="flex-center-20"></span>
                     </div>
                     <div class="hr mt8"></div>
                     <p class="flex items-center mt8">
@@ -541,12 +564,25 @@ onUnmounted(()=>{
                     </p>
                 </div>
             </div>
+            <div v-show="hasSuccessBankcardData" class="account-container mb32">
+                <div class="mb20">
+                    <p class="tertiary-span2 f600">{{ $t('withdraw.applyFormMessageAccountUlTitle') }}</p>
+                    <p class="tertiary-span2">{{ $t('withdraw.applyFormMessageAccountUlTip') }}</p>
+                </div>
+                <AccountWithdrawAccountUl
+                  :key="form.withdrawType + '-' + form.openingBankCountry"
+                  :withdrawType="form.withdrawType"
+                  :openingBankCountry="form.openingBankCountry"
+                  @obtainedData="obtainedData"
+                  @select="selectBankcardData"
+                ></AccountWithdrawAccountUl>
+            </div>
             <div class="info-container mb32" :class="{ pl16: isMobile, pr16: isMobile, pl32: !isMobile, pr32: !isMobile }">
-                <div class="black-span2 f18 fw600 mb24">Account Details</div>
+                <div class="black-span2 f18 fw600 mb24">{{$t('withdraw.accountDetails')}}</div>
                 <el-form-item v-if="isShowAccountType" prop="accountType" class="form-item">
                     <template #label>
                         <div class="flex items-center gap4">
-                            <span>Account type</span>
+                            <span>{{$t('withdraw.applyFormLabelAccountType')}}</span>
                             <div class="lh0 cursor-pointer" @click="isShowAccountTypeDialog = true">
                                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <g clip-path="url(#clip0_5733_444)">
@@ -561,23 +597,23 @@ onUnmounted(()=>{
                             </div>
                         </div>
                     </template>
-                    <el-radio-group v-model="form.accountType" class="radio-default">
-                        <el-radio value="saving"> Savings account</el-radio>
-                        <el-radio value="checking"> Checking account</el-radio>
+                    <el-radio-group v-model="form.accountType" class="radio-default w-full">
+                        <el-radio value="saving">{{$t('withdraw.savingsAccount')}}</el-radio>
+                        <el-radio value="checking">{{$t('withdraw.checkingAccount')}}</el-radio>
                     </el-radio-group>
                 </el-form-item>
-                <el-form-item label="Account holder type" prop="accountHolderType" class="form-item">
-                    <el-radio-group v-model="form.accountHolderType" class="radio-default">
-                        <el-radio value="Individual"> Individual</el-radio>
-                        <el-radio value="Business"> Business / Entity / Corporate</el-radio>
+                <el-form-item :label="$t('withdraw.applyFormLabelAccountHolderType')" prop="accountHolderType" class="form-item">
+                    <el-radio-group v-model="form.accountHolderType" class="radio-default w-full">
+                        <el-radio value="Individual">{{$t('withdraw.individual')}}</el-radio>
+                        <el-radio value="Business">{{$t('withdraw.business')}}</el-radio>
                     </el-radio-group>
-                    <div v-if="isSpecialForAccountHolderType" class="tertiary-span2">Withdrawals to Israel, Bangladesh, and Saudi Arabia are only supported for personal accounts.</div>
+                    <div v-if="isSpecialForAccountHolderType" class="tertiary-span2 w-full">{{$t('withdraw.applyFormMessageAccountHolderType')}}</div>
                 </el-form-item>
-                <el-form-item :label="isBankAccount ? 'Bank account name' : $t('withdraw.applyFormLabelAccountHolderName')" prop="accountName" class="form-item">
+                <el-form-item :label="isBankAccount ? $t('withdraw.applyFormLabelBankAccountName') : $t('withdraw.applyFormLabelAccountHolderName')" prop="accountName" class="form-item">
                     <el-input
                       v-model="form.accountName"
                       class="form-input input-default"
-                      :placeholder="isBankAccount ? 'Bank account name' : $t('withdraw.applyFormLabelAccountHolderName')"
+                      :placeholder="isBankAccount ? $t('withdraw.applyFormLabelBankAccountName') : $t('withdraw.applyFormLabelAccountHolderName')"
                     />
                 </el-form-item>
                 <el-form-item v-if="isBankAccount" :label="$t('withdraw.applyFormLabelBankName')" prop="bankName" class="form-item">
@@ -600,22 +636,23 @@ onUnmounted(()=>{
                         </template>
                     </el-input>
                 </el-form-item>
-                <el-form-item v-if="!isBankAccount" label="Date of Birth" prop="birthDate" class="form-item">
+                <el-form-item v-if="!isBankAccount" :label="$t('withdraw.applyFormLabelDateOfBirth')" prop="birthDate" class="form-item">
                     <el-date-picker
                       v-model="form.birthDate"
+                      value-format="YYYY-MM-DD"
                       class="form-input input-date-default h44 w-full"
                       type="date"
-                      placeholder="Account Holder's Date of Birth"
+                      :placeholder="$t('withdraw.applyFormPlaceholderDateOfBirth')"
                     />
                 </el-form-item>
-                <el-form-item v-if="!isBankAccount" label="Paypal Account (Email)" prop="paypalAccount" class="form-item">
+                <el-form-item v-if="!isBankAccount" :label="$t('withdraw.applyFormLabelPaypalAccount')" prop="paypalAccount" class="form-item">
                     <el-input
                       v-model="form.paypalAccount"
                       class="form-input input-default"
                       placeholder=""
                     ></el-input>
                 </el-form-item>
-                <div class="black-span2 f18 fw600 mt56 mb24">开户信息</div>
+                <div class="black-span2 f18 fw600 mt56 mb24">{{$t('withdraw.accountOpeningInformation')}}</div>
                 <el-form-item v-if="isBankAccount" :label="$t('withdraw.applyFormLabelCountryOrRegion')" class="form-item">
                     <div class="flex items-center gap8" style="height: 44px;">
                         <template v-if="form.openingBankCountry">
@@ -628,43 +665,41 @@ onUnmounted(()=>{
                     </div>
                 </el-form-item>
                 <div class="flex gap16 mb16">
-                    <el-form-item :label="(isBankAccount ? 'Bank State / Province' : 'State / Province') + (form.withdrawCurrency === 'USD' ? '' : ' (Optional)')" prop="bankState" class="form-item flex-1" style="margin-bottom: 0">
+                    <el-form-item :label="(isBankAccount ? $t('withdraw.applyFormLabelBankState') : $t('withdraw.applyFormLabelState')) + (form.withdrawCurrency === 'USD' ? '' : (' ('+$t('withdraw.optional')+')'))" prop="bankState" class="form-item flex-1" style="margin-bottom: 0">
                         <el-input
                           v-model="form.bankState"
                           class="form-input input-default"
-                          :placeholder="(isBankAccount ? 'Bank State / Province' : 'State / Province') + (form.withdrawCurrency === 'USD' ? '' : ' (Optional)')"
+                          :placeholder="(isBankAccount ? $t('withdraw.applyFormLabelBankState') : $t('withdraw.applyFormLabelState')) + (form.withdrawCurrency === 'USD' ? '' : (' ('+$t('withdraw.optional')+')'))"
                         />
                     </el-form-item>
-                    <el-form-item :label="'Zip' + (form.withdrawCurrency === 'USD' ? '' : ' (Optional)')" prop="zip" class="form-item w-180" style="margin-bottom: 0">
+                    <el-form-item :label="$t('withdraw.applyFormLabelZip') + (form.withdrawCurrency === 'USD' ? '' : (' ('+$t('withdraw.optional')+')'))" prop="zip" class="form-item w-180" style="margin-bottom: 0">
                         <el-input
                           v-model="form.zip"
                           class="form-input input-default"
-                          :placeholder="'Zip' + (form.withdrawCurrency === 'USD' ? '' : ' (Optional)')"
+                          :placeholder="$t('withdraw.applyFormLabelZip') + (form.withdrawCurrency === 'USD' ? '' : (' ('+$t('withdraw.optional')+')'))"
                         />
-                        <div class="tertiary-span2 mt6">Max 12 characters</div>
                     </el-form-item>
                 </div>
-                <el-form-item :label="isBankAccount ? $t('withdraw.applyFormLabelCity') : 'City of Account holder'" prop="openingBankCity" class="form-item">
+                <el-form-item :label="isBankAccount ? $t('withdraw.applyFormLabelCity') : $t('withdraw.applyFormLabelCityOfAccountHolder')" prop="openingBankCity" class="form-item">
                     <el-input
                       v-model="form.openingBankCity"
                       class="form-input input-default"
-                      :placeholder="isBankAccount ? $t('withdraw.applyFormLabelCity') : 'City of Account holder'"
+                      :placeholder="isBankAccount ? $t('withdraw.applyFormLabelCity') : $t('withdraw.applyFormLabelCityOfAccountHolder')"
                     />
                 </el-form-item>
-                <el-form-item :label="isBankAccount ? $t('withdraw.applyFormLabelAddress') : 'Address of Account holder'" prop="openingBankAddress" class="form-item">
+                <el-form-item :label="isBankAccount ? $t('withdraw.applyFormLabelAddress') : $t('withdraw.applyFormLabelAddressOfAccountHolder')" prop="openingBankAddress" class="form-item">
                     <el-input
                       v-model="form.openingBankAddress"
                       class="form-input input-default"
-                      :placeholder="isBankAccount ? $t('withdraw.applyFormLabelAddress') : 'Address of Account holder'"
+                      :placeholder="isBankAccount ? $t('withdraw.applyFormLabelAddress') : $t('withdraw.applyFormLabelAddressOfAccountHolder')"
                     />
                 </el-form-item>
-                <el-form-item v-if="isShowRoutingNumber" label="Routing number" prop="routingNumber" class="form-item">
+                <el-form-item v-if="isShowRoutingNumber" :label="$t('withdraw.applyFormLabelRoutingNumber')" prop="routingNumber" class="form-item">
                     <el-input
                       v-model="form.routingNumber"
                       class="form-input input-default"
-                      placeholder="Routing number"
+                      :placeholder="$t('withdraw.applyFormLabelRoutingNumber')"
                     />
-                    <div class="tertiary-span2 mt6">Max 11 characters</div>
                 </el-form-item>
                 <el-form-item v-if="isBankAccount" :label="$t('withdraw.applyFormLabelSWIFTCodeOrBIC')" prop="swiftCode" class="form-item">
                     <el-input
@@ -673,21 +708,19 @@ onUnmounted(()=>{
                       :placeholder="$t('withdraw.applyFormLabelSWIFTCodeOrBIC')"
                     />
                 </el-form-item>
-                <el-form-item v-if="isShowBankCode" label="Bank code" prop="bankCode" class="form-item">
+                <el-form-item v-if="isShowBankCode" :label="$t('withdraw.applyFormLabelBankCode')" prop="bankCode" class="form-item">
                     <el-input
                       v-model="form.bankCode"
                       class="form-input input-default"
-                      placeholder="Bank code"
+                      :placeholder="$t('withdraw.applyFormLabelBankCode')"
                     />
-                    <div class="tertiary-span2 mt6">Max 11 characters</div>
                 </el-form-item>
-                <el-form-item v-if="isShowBranchBankCode" label="Branch code" prop="branchBankCode" class="form-item">
+                <el-form-item v-if="isShowBranchBankCode" :label="$t('withdraw.applyFormLabelBranchCode')" prop="branchBankCode" class="form-item">
                     <el-input
                       v-model="form.branchBankCode"
                       class="form-input input-default"
-                      placeholder="Branch code"
+                      :placeholder="$t('withdraw.applyFormLabelBranchCode')"
                     />
-                    <div class="tertiary-span2 mt6">Max 11 characters</div>
                 </el-form-item>
             </div>
         </FormValidate>

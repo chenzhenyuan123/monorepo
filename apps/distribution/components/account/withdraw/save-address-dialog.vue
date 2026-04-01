@@ -18,7 +18,7 @@
     <el-dialog
       v-bind="$attrs"
       width="526px"
-      title="Explanation"
+      :title="$t('rateUpdateDialog.title')"
       :show-close="true"
       :close-on-click-modal="false"
       :destroy-on-close="true"
@@ -26,17 +26,16 @@
     >
 
       <div class="tertiary-span f16">
-        I agree to securely store my payout details for future withdrawals.
+        {{ $t('rateUpdateDialog.p1') }}
         <div style="height: 8px;"></div>
-        By selecting this option, you consent to the collection and storage of your payout details (including bank account or PayPal account information) for the purpose of facilitating future withdrawals.
+        {{ $t('rateUpdateDialog.p2') }}
         <div style="height: 8px;"></div>
-        You understand that such information may be transferred to and stored on servers located outside your country of residence. You may withdraw your consent and delete your stored payout details at any time.
+        {{ $t('rateUpdateDialog.p3') }}
       </div>
 
       <template #footer>
         <div class="dialog-footer">
-<!--          <el-button type="" round class="button-default dialog-adaptive" @click="cancel">{{ $t('DiscountRuleDialog.buttonClose') }}</el-button>-->
-          <el-button type="primary" round class="button-default dialog-adaptive" @click="cancel">Close</el-button>
+          <el-button type="primary" round class="button-default dialog-adaptive" @click="cancel">{{ $t('rateUpdateDialog.buttonClose') }}</el-button>
         </div>
       </template>
     </el-dialog>

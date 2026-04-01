@@ -32,17 +32,17 @@ const submit = () => {
                 <img src="@/assets/imgs/alert-circle.svg" alt="">
             </span>
         <h1>
-          Something went wrong
+          {{ $t('somethingErrorDialog.title') }}
         </h1>
       </template>
 
       <p class="dialog-p txt-center">
-        We're sorry, but there was an issue processing your withdrawal request. please try again
+        {{ $t('somethingErrorDialog.message') }}
       </p>
 
       <template #footer>
         <div class="dialog-footer">
-          <el-button type="primary" class="button-default dialog-adaptive" @click="submit">Back to wallet</el-button>
+          <el-button type="primary" class="button-default dialog-adaptive" @click="submit">{{ $t('somethingErrorDialog.buttonClose') }}</el-button>
         </div>
       </template>
     </el-dialog>

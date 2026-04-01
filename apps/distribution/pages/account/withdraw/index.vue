@@ -1097,7 +1097,7 @@ onUnmounted(()=>{
                         </el-form-item>
                     </div>
                     <p v-if="isDeffCurrency && feeData.exchangeRate && rateRefreshData.timerShow" class="tertiary-span2 mt12">
-                        $t('withdraw.applyFormMessageExchangeRate') ({{ rateRefreshData.timerCount }}s) :  {{ form.accountCurrency }} 1 ≈ {{ form.withdrawCurrency }} {{ feeData.exchangeRate }}
+                        {{$t('withdraw.applyFormMessageExchangeRate')}} ({{ rateRefreshData.timerCount }}s) :  {{ form.accountCurrency }} 1 ≈ {{ form.withdrawCurrency }} {{ feeData.exchangeRate }}
                     </p>
                     <el-popover
                       placement="bottom-start"
@@ -1294,16 +1294,16 @@ onUnmounted(()=>{
                         </template>
                     </el-input>
                 </el-form-item>
-                <el-form-item v-if="!isBankAccount" label="Date of Birth" prop="birthDate" class="form-item">
+                <el-form-item v-if="!isBankAccount" :label="$t('withdraw.applyFormLabelDateOfBirth')" prop="birthDate" class="form-item">
                     <el-date-picker
                       v-model="form.birthDate"
                       value-format="YYYY-MM-DD"
                       class="form-input input-date-default h44 w-full"
                       type="date"
-                      placeholder="Account Holder's Date of Birth"
+                      :placeholder="$t('withdraw.applyFormPlaceholderDateOfBirth')"
                     />
                 </el-form-item>
-                <el-form-item v-if="!isBankAccount" label="Paypal Account (Email)" prop="paypalAccount" class="form-item">
+                <el-form-item v-if="!isBankAccount" :label="$t('withdraw.applyFormLabelPaypalAccount')" prop="paypalAccount" class="form-item">
                     <el-input
                       v-model="form.paypalAccount"
                       class="form-input input-default"
@@ -1311,7 +1311,7 @@ onUnmounted(()=>{
                       @change="e => { form.paypalAccount = e.trim() }"
                     ></el-input>
                 </el-form-item>
-                <div class="black-span2 f18 fw600 mt56 mb24">开户信息</div>
+                <div class="black-span2 f18 fw600 mt56 mb24">{{$t('withdraw.accountOpeningInformation')}}</div>
                 <el-form-item v-if="isBankAccount" :label="$t('withdraw.applyFormLabelCountryOrRegion')" class="form-item">
                     <div class="flex items-center gap8" style="height: 44px;">
                         <template v-if="form.openingBankCountry">
@@ -1324,52 +1324,52 @@ onUnmounted(()=>{
                     </div>
                 </el-form-item>
                 <div class="flex gap16 mb16">
-                    <el-form-item :label="(isBankAccount ? 'Bank State / Province' : 'State / Province') + (form.withdrawCurrency === 'USD' ? '' : ' (Optional)')" prop="bankState" class="form-item flex-1" style="margin-bottom: 0">
+                    <el-form-item :label="(isBankAccount ? $t('withdraw.applyFormLabelBankState') : $t('withdraw.applyFormLabelState')) + (form.withdrawCurrency === 'USD' ? '' : (' ('+$t('withdraw.optional')+')'))" prop="bankState" class="form-item flex-1" style="margin-bottom: 0">
                         <el-input
                           v-model="form.bankState"
                           class="form-input input-default"
-                          :placeholder="(isBankAccount ? 'Bank State / Province' : 'State / Province') + (form.withdrawCurrency === 'USD' ? '' : ' (Optional)')"
+                          :placeholder="(isBankAccount ? $t('withdraw.applyFormLabelBankState') : $t('withdraw.applyFormLabelState')) + (form.withdrawCurrency === 'USD' ? '' : (' ('+$t('withdraw.optional')+')'))"
                           @change="e => { form.bankState = e.trim() }"
                         />
                     </el-form-item>
-                    <el-form-item :label="'Zip' + (form.withdrawCurrency === 'USD' ? '' : ' (Optional)')" prop="zip" class="form-item w-180" style="margin-bottom: 0">
+                    <el-form-item :label="$t('withdraw.applyFormLabelZip') + (form.withdrawCurrency === 'USD' ? '' : (' ('+$t('withdraw.optional')+')'))" prop="zip" class="form-item w-180" style="margin-bottom: 0">
                         <el-input
                           v-model="form.zip"
                           :maxlength="12"
                           class="form-input input-default"
-                          :placeholder="'Zip' + (form.withdrawCurrency === 'USD' ? '' : ' (Optional)')"
+                          :placeholder="$t('withdraw.applyFormLabelZip') + (form.withdrawCurrency === 'USD' ? '' : (' ('+$t('withdraw.optional')+')'))"
                           @change="e => { form.zip = e.trim() }"
                         />
-                        <div class="tertiary-span2 w-full mt6">Max 12 characters</div>
+                        <div class="tertiary-span2 w-full mt6">{{$t('withdraw.maxMessage', { num: 12 })}}</div>
                     </el-form-item>
                 </div>
-                <el-form-item :label="isBankAccount ? $t('withdraw.applyFormLabelCity') : 'City of Account holder'" prop="openingBankCity" class="form-item">
+                <el-form-item :label="isBankAccount ? $t('withdraw.applyFormLabelCity') : $t('withdraw.applyFormLabelCityOfAccountHolder')" prop="openingBankCity" class="form-item">
                     <el-input
                       v-model="form.openingBankCity"
                       :maxlength="35"
                       class="form-input input-default"
-                      :placeholder="isBankAccount ? $t('withdraw.applyFormLabelCity') : 'City of Account holder'"
+                      :placeholder="isBankAccount ? $t('withdraw.applyFormLabelCity') : $t('withdraw.applyFormLabelCityOfAccountHolder')"
                       @change="e => { form.openingBankCity = e.trim() }"
                     />
                 </el-form-item>
-                <el-form-item :label="isBankAccount ? $t('withdraw.applyFormLabelAddress') : 'Address of Account holder'" prop="openingBankAddress" class="form-item">
+                <el-form-item :label="isBankAccount ? $t('withdraw.applyFormLabelAddress') : $t('withdraw.applyFormLabelAddressOfAccountHolder')" prop="openingBankAddress" class="form-item">
                     <el-input
                       v-model="form.openingBankAddress"
                       :maxlength="70"
                       class="form-input input-default"
-                      :placeholder="isBankAccount ? $t('withdraw.applyFormLabelAddress') : 'Address of Account holder'"
+                      :placeholder="isBankAccount ? $t('withdraw.applyFormLabelAddress') : $t('withdraw.applyFormLabelAddressOfAccountHolder')"
                       @change="e => { form.openingBankAddress = e.trim() }"
                     />
                 </el-form-item>
-                <el-form-item v-if="isShowRoutingNumber" label="Routing number" prop="routingNumber" class="form-item">
+                <el-form-item v-if="isShowRoutingNumber" :label="$t('withdraw.applyFormLabelRoutingNumber')" prop="routingNumber" class="form-item">
                     <el-input
                       v-model="form.routingNumber"
                       :maxlength="11"
                       class="form-input input-default"
-                      placeholder="Routing number"
+                      :placeholder="$t('withdraw.applyFormLabelRoutingNumber')"
                       @change="e => { form.routingNumber = e.trim() }"
                     />
-                    <div class="tertiary-span2 w-full mt6">Max 11 characters</div>
+                    <div class="tertiary-span2 w-full mt6">{{$t('withdraw.maxMessage', { num: 11 })}}</div>
                 </el-form-item>
                 <el-form-item v-if="isBankAccount" :label="$t('withdraw.applyFormLabelSWIFTCodeOrBIC')" prop="swiftCode" class="form-item">
                     <el-input
@@ -1379,29 +1379,29 @@ onUnmounted(()=>{
                       @input="e => { form.swiftCode = formatSWIFTCode(e) }"
                     />
                 </el-form-item>
-                <el-form-item v-if="isShowBankCode" label="Bank code" prop="bankCode" class="form-item">
+                <el-form-item v-if="isShowBankCode" :label="$t('withdraw.applyFormLabelBankCode')" prop="bankCode" class="form-item">
                     <el-input
                       v-model="form.bankCode"
                       :maxlength="11"
                       class="form-input input-default"
-                      placeholder="Bank code"
+                      :placeholder="$t('withdraw.applyFormLabelBankCode')"
                       @change="e => { form.bankCode = e.trim() }"
                     />
-                    <div class="tertiary-span2 w-full mt6">Max 11 characters</div>
+                    <div class="tertiary-span2 w-full mt6">{{$t('withdraw.maxMessage', { num: 11 })}}</div>
                 </el-form-item>
-                <el-form-item v-if="isShowBranchBankCode" label="Branch code" prop="branchBankCode" class="form-item">
+                <el-form-item v-if="isShowBranchBankCode" :label="$t('withdraw.applyFormLabelBranchCode')" prop="branchBankCode" class="form-item">
                     <el-input
                       v-model="form.branchBankCode"
                       :maxlength="11"
                       class="form-input input-default"
-                      placeholder="Branch code"
+                      :placeholder="$t('withdraw.applyFormLabelBranchCode')"
                       @change="e => { form.branchBankCode = e.trim() }"
                     />
-                    <div class="tertiary-span2 w-full mt6">Max 11 characters</div>
+                    <div class="tertiary-span2 w-full mt6">{{$t('withdraw.maxMessage', { num: 11 })}}</div>
                 </el-form-item>
                 <el-checkbox v-model="form.saveFlag" class="checkbox-default">
                     <div class="flex items-center gap4">
-                        <span>Save for next time</span>
+                        <span>{{ $t('withdraw.applyFormSaveForNextTime') }}</span>
                         <div class="lh0 cursor-pointer" @click.stop="isShowSaveAddressDialog = true">
                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
                                 <path d="M7.36035 0.00878906C9.14993 0.099534 10.7626 0.862255 11.9502 2.0498C13.2169 3.31657 14 5.06702 14 7L13.9912 7.36035C13.9005 9.14993 13.1378 10.7626 11.9502 11.9502L11.707 12.1816C10.4639 13.3116 8.81225 14 7 14L6.63965 13.9912C4.9693 13.9065 3.45321 13.2362 2.29297 12.1816L2.0498 11.9502C0.862255 10.7626 0.099534 9.14993 0.00878906 7.36035L0 7C0 5.06702 0.783057 3.31657 2.0498 2.0498C3.31657 0.783057 5.06702 0 7 0L7.36035 0.00878906ZM7 1.5C5.48083 1.5 4.1083 2.11438 3.11133 3.11133C2.11438 4.1083 1.5 5.48083 1.5 7C1.5 8.51918 2.11438 9.89172 3.11133 10.8887C4.1083 11.8856 5.48083 12.5 7 12.5C8.51917 12.5 9.89172 11.8856 10.8887 10.8887C11.8856 9.89172 12.5 8.51917 12.5 7C12.5 5.48083 11.8856 4.1083 10.8887 3.11133C9.89172 2.11438 8.51918 1.5 7 1.5ZM7.0752 8.89844C7.5534 8.8986 7.92771 9.25862 7.92773 9.72266C7.92773 10.1867 7.55341 10.5467 7.0752 10.5469C6.59683 10.5469 6.22266 10.1868 6.22266 9.72266C6.22268 9.25852 6.59684 8.89844 7.0752 8.89844ZM7.22656 3.45703C8.54319 3.45708 9.42871 4.20047 9.42871 5.31348C9.42862 6.0001 9.12041 6.5068 8.43848 6.91406C7.82777 7.28338 7.65723 7.51581 7.65723 7.96094V8.27344H6.41211L6.40234 7.96094C6.36919 7.16997 6.59663 6.75781 7.22656 6.37891C7.83749 6.00476 8.00293 5.78646 8.00293 5.35547C8.00274 4.92477 7.65276 4.63102 7.1416 4.63086C6.62061 4.63086 6.27451 4.95806 6.24609 5.46484H4.97656C4.99551 4.21919 5.85776 3.45703 7.22656 3.45703Z" fill="#817F86"/>
