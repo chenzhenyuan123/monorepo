@@ -797,7 +797,7 @@ const apply = (checkCode) => {
     if (isShowAccountType.value) params.accountType = form.accountType
     if (isShowBankCode.value) params.bankCode = form.bankCode
     if (isShowBranchBankCode.value) params.branchBankCode = form.branchBankCode
-    params.saveFlag = params.saveFlag ? 'Y' : 'N'
+    params.saveFlag = form.saveFlag ? 'Y' : 'N'
 
     withdrawApi.apply(params).then(result => {
         withdrawSubmitResult(result)
