@@ -314,16 +314,14 @@ const risk_control_check = (key) => {
 
 
 const countryData = ref([])
-const countryDataByLang = computed(() => {
-    const key = locale.value === 'zh-CN' ? 'zhCn' : 'enUs'
-    return countryData.value.map(item => {
-        return { ...item, name: item[key] }
-    })
-})
+// const countryDataByLang = computed(() => {
+//     const key = locale.value === 'zh-CN' ? 'zhCn' : 'enUs'
+//     return countryData.value.map(item => {
+//         return { ...item, name: item[key] }
+//     })
+// })
 const countryCodeArr = ref([])
-const countryToName = computed(() => {
-    return arrToDict(countryDataByLang.value, { value: 'countryId', label: 'name' })
-})
+const countryToName = ref({})
 const currencyToCountryId = ref({})
 // 获取所有国家列表
 function getAllCountry() {
@@ -332,6 +330,7 @@ function getAllCountry() {
         if (res) {
             // 展示所有国家列表，去除中国大陆
             countryData.value = res.filter(item => item.countryId !== 'CN')
+            countryToName.value = arrToDict(countryData.value, { value: 'countryId', label: 'enUs' })
             currencyToCountryId.value = arrToDict(countryData.value, { value: 'currency', label: 'countryId' })
             countryCodeArr.value = countryData.value.map(item => item.countryId.toLowerCase())
         }
@@ -993,17 +992,17 @@ onUnmounted(()=>{
                                 </div>
                             </template>
                             <el-option
-                              v-for="item in countryDataByLang"
+                              v-for="item in countryData"
                               v-show="isBankAccount || paypalCountryDict[item.countryId]"
                               :key="item.countryId"
                               :value="item.countryId"
-                              :label="item.name"
+                              :label="item.enUs"
                             >
                                 <div class="flex items-center gap8">
                                     <div class="circle-country-icon-container size-20">
                                         <img :src="flagUrl(item.countryId)">
                                     </div>
-                                    <span>{{ item.name }}</span>
+                                    <span>{{ item.enUs }}</span>
                                 </div>
                             </el-option>
                         </el-select>
