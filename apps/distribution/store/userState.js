@@ -40,7 +40,12 @@ export const useUserStore = defineStore('user', {
       const info = getInfo()
       // 首次进入，尝试从localStorage获取用户信息
       this.userInfo = info;
-      this.token = info?.token;
+      // 如果获取到的信息与当前不同，则更新
+      if (info?.token && info.token !== this.token) {
+        this.setToken(info)
+      } else if (info?.token) {
+        this.token = info.token
+      }
     }
   }
 })
@@ -58,16 +63,21 @@ function getInfo() {
   } catch (e) {
     info = {}
   }
-  const token = Cookies.get('Flylinking-Access-Token')
-  if(!info?.token && token) {
+  // 从Cookie获取token（优先使用Cookie中的token，因为它是一级域名共享的）
+  const token = Cookies.get('Flylinking-Access-Token')  
+  // 如果Cookie中有token，使用Cookie中的token
+  if (token && token !== info?.token) {
+    // token不一致，需要更新localStorage中的信息
     info.token = token
-    // 如果只存在token，则从token中获取用户信息
-    const  parseJwtToken = parseJwt(token)
-    if(parseJwtToken && parseJwtToken?.sub) {
+    const parseJwtToken = parseJwt(token)
+    if (parseJwtToken && parseJwtToken?.sub) {
       info.loginAccount = parseJwtToken.sub
       info.userName = parseJwtToken?.userName
-      localStorage.setItem("userInfo", JSON.stringify(info))
     }
+    localStorage.setItem("userInfo", JSON.stringify(info))
+  } else {
+    // token一致，确保info.token存在
+    info.token = token
   }
 
   return info;
