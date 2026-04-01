@@ -52,11 +52,12 @@ export const useUserStore = defineStore('user', {
  */
 function getInfo() {
   let info = {};
-  // try {
-  //   info = localStorage.getItem("userInfo");
-  // } catch (e) {
-  // }
-  // info = info ? JSON.parse(info) : {};
+  try {
+    const userInfoStr = localStorage.getItem("userInfo")
+    info = userInfoStr ? JSON.parse(userInfoStr) : {}
+  } catch (e) {
+    info = {}
+  }
   const token = Cookies.get('Flylinking-Access-Token')
   if(!info?.token && token) {
     info.token = token
