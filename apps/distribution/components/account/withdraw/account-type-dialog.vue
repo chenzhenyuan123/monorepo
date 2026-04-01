@@ -24,7 +24,7 @@
     <el-dialog
       v-bind="$attrs"
       width="526px"
-      title="Tips for how to select Account type："
+      :title="$t('accountTypeDialog.title')"
       :show-close="true"
       :close-on-click-modal="false"
       :destroy-on-close="true"
@@ -35,21 +35,20 @@
         <div class="flex-center-10"></div>
         <div class="li-circle"></div>
         <div class="flex-center-10"></div>
-        <span>Savings account</span>
+        <span>{{ $t('accountTypeDialog.label1') }}</span>
       </div>
-      <div class="tertiary-span f16 mb20">For accumulating funds, earns interest, with limits on frequent transactions.</div>
+      <div class="tertiary-span f16 mb20">{{ $t('accountTypeDialog.message1') }}</div>
       <div class="flex items-center tertiary-span f16 fw700 mb8">
         <div class="flex-center-10"></div>
         <div class="li-circle"></div>
         <div class="flex-center-10"></div>
-        <span>Checking account</span>
+        <span>{{ $t('accountTypeDialog.label2') }}</span>
       </div>
-      <div class="tertiary-span f16">For daily transactions, withdrawals, transfers, and checks; high liquidity, low interest.</div>
+      <div class="tertiary-span f16">{{ $t('accountTypeDialog.message2') }}</div>
 
       <template #footer>
         <div class="dialog-footer">
-<!--          <el-button type="" round class="button-default dialog-adaptive" @click="cancel">{{ $t('DiscountRuleDialog.buttonClose') }}</el-button>-->
-          <el-button type="primary" round class="button-default dialog-adaptive" @click="cancel">Close</el-button>
+          <el-button type="primary" round class="button-default dialog-adaptive" @click="cancel">{{ $t('accountTypeDialog.buttonClose') }}</el-button>
         </div>
       </template>
     </el-dialog>
