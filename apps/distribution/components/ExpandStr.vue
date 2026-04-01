@@ -56,7 +56,7 @@
       @click="isExpand = !isExpand"
     >
       <template v-if="isExpand">
-        <span>{{$t('pay.btnCollapse')}}</span>
+        <span>{{$t('ExpandStr.btnCollapse')}}</span>
         <div class="flex-center-4"></div>
         <div class="lh0">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -74,7 +74,7 @@
       <template v-else>
       <span>...</span>
       <div class="flex-center-12"></div>
-        <span>{{$t('pay.btnExpand')}}</span>
+        <span>{{$t('ExpandStr.btnExpand')}}</span>
         <div class="flex-center-4"></div>
         <div class="lh0">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">

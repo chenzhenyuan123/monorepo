@@ -96,17 +96,17 @@
 
 <template>
   <div>
-    <div class="black-span fw600 mb4">Important Notes:</div>
+    <div class="black-span fw600 mb4">{{$t('exchangeAccount.title')}}</div>
     <ExpandContent
       class="black-span"
       :class="[ isMobile ? 'mb36' : 'mb52' ]"
       :ellipsisNum="isMobile ? 3 : 10"
     >
-      Commissions are settled in USD. If you withdraw in a non-USD currency and the withdrawal fails, the converted funds will be shown in your Exchange Account.
+      {{$t('exchangeAccount.p1')}}
       <div style="height: 14px;"></div>
-      For failures caused by receiving bank rejection, the withdrawal fee is non-refundable. The final refund amount is subject to the actual amount returned by the bank.
+      {{$t('exchangeAccount.p2')}}
       <div style="height: 14px;"></div>
-      Funds in the Exchange Account can only be withdrawn in their original currency.
+      {{$t('exchangeAccount.p3')}}
     </ExpandContent>
     <div class="card-group flex flex-wrap gap24 mb32">
       <div v-for="item in balanceListData" :key="item.currency" class="card">
@@ -136,7 +136,7 @@
             </template>
           </el-popover>
         </div>
-        <div class="card-p">Available</div>
+        <div class="card-p">{{$t('exchangeAccount.availableLabel')}}</div>
         <div class="card-amount-container">
           <span class="card-amount">{{ formatterAmount(item.availableBalance, item.currency) }}</span>
           <div class="card-amount-center"></div>

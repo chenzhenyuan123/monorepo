@@ -29,7 +29,7 @@ const tabsData = computed(() => {
   return [
     { value: 'transactions', label: t('wallet.transactions') },
     { value: 'withdraw', label: t('wallet.withdrawalRecords') },
-    { value: 'exchangeAccount', label: 'Exchange Account' }
+    { value: 'exchangeAccount', label: t('wallet.exchangeAccount') }
   ]
 })
 const tabsDict = computed(() => {
