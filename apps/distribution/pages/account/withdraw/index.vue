@@ -35,7 +35,7 @@ import {arrToDict} from "@flylinking/core/utils/common";
 import {isUseless} from "@flylinking/core/utils/dataUtil";
 import {isAccountNameAndSpece} from "@flylinking/core/utils/validate";
 
-const { t } = useI18n();
+const { t, locale } = useI18n();
 const { userApi, withdrawApi, countryApi } = useApi()
 const settingStore = useSettingStore()
 const router = useRouter()
@@ -81,11 +81,11 @@ const form = reactive({
 })
 watch(() => form.applyAmt, () => {
     // 提现金额变化，更新手续费、换汇金额等
-    setTimeoutForRateRefresh()
+    setInterForRateRefresh()
 })
 watch(() => form.withdrawCurrency, () => {
     // 币种变化，更新手续费、汇率等
-    setTimeoutForRateRefresh()
+    setInterForRateRefresh()
 })
 
 
@@ -100,7 +100,7 @@ watch(isBankAccount, () => {
         form.withdrawCurrency = 'USD'
     } else {
         // 提现类型变化，更新手续费、汇率等
-        setTimeoutForRateRefresh()
+        setInterForRateRefresh()
     }
     if (form.openingBankCountry) formValidateRef.value?.formRef?.validateField('openingBankCountry')
 })
@@ -221,7 +221,7 @@ function showDiscountDetailsDialog() {
 }
 function changeSelectCoupon(val) {
     membershipCardNo.value = val
-    setTimeoutForRateRefresh()
+    setInterForRateRefresh()
 }
 function qryMembershipCardData() {
     withdrawApi.listMembershipCardPage().then(result => {
@@ -273,9 +273,9 @@ const rateRefreshData = ref({
     timerCount: 30,
     timer: null,
 })
-const setTimeoutForRateRefresh = (times) => {
+const setInterForRateRefresh = (times) => {
     // 取消倒计时
-    clearTimeoutForRateRefresh()
+    clearInterForRateRefresh()
     qryWithdrawFee()
     // 重置时间
     rateRefreshData.value.timerCount = times || rateRefreshData.value.times
@@ -284,12 +284,11 @@ const setTimeoutForRateRefresh = (times) => {
         if (rateRefreshData.value.timerCount > 1) {
             rateRefreshData.value.timerCount--
         } else {
-            // 取消倒计时
-            clearTimeoutForRateRefresh()
+            setInterForRateRefresh()
         }
     }, 1000)
 }
-const clearTimeoutForRateRefresh = () => {
+const clearInterForRateRefresh = () => {
     clearInterval(rateRefreshData.value.timer)
     rateRefreshData.value.timerShow = false
 }
@@ -314,274 +313,6 @@ const risk_control_check = (key) => {
 }
 
 
-// 校验金额
-const validateAmt = (rule, value, callback) => {
-if (value && !(value >= limitAmount.value)) {
-    callback(new Error(t('withdraw.applyFormValidateAmountMin') + ' USD ' + currencyFormat(limitAmount.value)))
-  } else if (value && value > ableBalanceAmount.value) {
-    callback(new Error(t('withdraw.applyFormValidateAmountMax') + ' USD ' + currencyFormat(ableBalanceAmount.value)))
-  } else {
-    callback()
-  }
-}
-// 校验名称
-const validateAccountName = (rule, value, callback) => {
-  if (value && !checkResultData.accountName) {
-    callback(new Error(t('withdraw.applyFormValidateRiskManagement')))
-  } else if (value && !isAccountNameAndSpece(value)) {
-    callback(new Error(t('withdraw.applyFormValidateEnglish')))
-  } else {
-    callback()
-  }
-}
-// 校验卡号
-const validateNumber = (rule, value, callback) => {
-if (value && !isCardIconMatch.value) {
-    if (hasCountryCodeForIBAN(value)) {
-        callback(new Error(t('withdraw.applyFormValidateIBANError')))
-    } else {
-        callback(new Error(t('withdraw.applyFormValidateFormatError')))
-    }
-  } else {
-    callback()
-  }
-}
-// 校验SWIFTCode
-const validateSWIFTCode = (rule, value, callback) => {
-if (value && !isSWIFTCode(value, countryCodeArr.value)) {
-    callback(new Error(t('withdraw.applyFormValidateSWIFTCodeOrBICError')))
-  } else if (value && isGetFee.value && !(fee.value >= 0)) {
-    callback(new Error(t('withdraw.applyFormValidateSWIFTCodeOrBICError')))
-  } else {
-    callback()
-  }
-}
-// 校验国家
-const validateCountry = (rule, value, callback) => {
-  if (value) {
-      if (!checkResultData.openingBankCountry) {
-        callback(new Error(t('withdraw.applyFormValidateRiskManagement')))
-      } else if (isErrorForPaypalCountry.value) {
-          callback(new Error('提现到PayPal账户，暂不支持该国家。'))
-      }
-  } else {
-    callback()
-  }
-}
-// 校验城市
-const validateCity = (rule, value, callback) => {
-  if (value && !isCityName(value)) {
-    callback(new Error(t('withdraw.applyFormValidateFormatError')))
-  } else {
-    callback()
-  }
-}
-// 校验地址
-const validateAddress = (rule, value, callback) => {
-  if (value && hasChinese(value)) {
-    callback(new Error(t('withdraw.applyFormValidateNotChinese')))
-  } else {
-    callback()
-  }
-}
-// 是否显示“获取等级错误”弹窗
-const isShowErrorAreaDialog = ref(false)
-function validateCardAndSWIFTCodeAndCounty () {
-    if (!isIBANCard()) return true
-
-    const iban = form.accountNumber.replace(/\s+/g, '').toUpperCase();
-    const ibanCounty = iban.slice(0,2)
-
-    const swiftCode = form.swiftCode.toUpperCase();
-    const swiftCodeCounty = swiftCode.slice(4,6)
-
-    const openingBankCountry = form.openingBankCountry.toUpperCase();
-
-    return ibanCounty === swiftCodeCounty && ibanCounty === openingBankCountry
-}
-const rules = () => {
-    return {
-        applyAmt: [
-            {
-            required: true,
-            message: t('withdraw.applyFormRequiredWithdrawalAmount'),
-            trigger: 'blur',
-            },
-            {
-                validator: validateAmt,
-                trigger: 'blur'
-            }
-        ],
-        accountHolderType: [
-            {
-            required: true,
-            message: '请选择',
-            trigger: 'change',
-            },
-        ],
-        birthDate: [
-            {
-            required: true,
-            message: '请选择',
-            trigger: 'change',
-            },
-        ],
-        paypalAccount: [
-            {
-            required: true,
-            message: '请输入',
-            trigger: 'change',
-            },
-        ],
-        bankName: [
-            {
-                validator: (rule, value, callback) => {
-                    if (form.withdrawCurrency === 'USD' && !value) {
-                        callback(new Error(t('withdraw.applyFormRequiredBankName')))
-                    } else {
-                        callback()
-                    }
-                },
-                trigger: 'blur'
-            },
-            {
-                validator: (rule, value, callback) => {
-                    if (value && hasChinese(value)) {
-                        callback(new Error(t('withdraw.applyFormValidateNotChinese')))
-                    } else if (value && !checkResultData.bankName) {
-                        callback(new Error(t('withdraw.applyFormValidateRiskManagement')))
-                    } else {
-                        callback()
-                    }
-                },
-                trigger: 'blur'
-            }
-        ],
-        accountName: [
-            {
-            required: true,
-            message: t('withdraw.applyFormRequiredAccountHolderName'),
-            trigger: 'blur',
-            },
-            {
-                validator: validateAccountName,
-                trigger: 'blur'
-            }
-        ],
-        accountNumber: [
-            {
-            required: true,
-            message: t('withdraw.applyFormRequiredAccountNumber'),
-            trigger: 'blur',
-            },
-            {
-                validator: validateNumber,
-                trigger: 'blur'
-            }
-        ],
-        openingBankCountry: [
-            {
-                required: true,
-                message: t('withdraw.applyFormRequiredCountryOrRegion'),
-                trigger: 'blur',
-            },
-            {
-                validator: validateCountry,
-                trigger: 'blur'
-            }
-        ],
-        openingBankCity: [
-            {
-                required: true,
-                message: t('withdraw.applyFormRequiredCity'),
-                trigger: 'blur',
-            },
-            {
-                validator: validateCity,
-                trigger: 'blur'
-            }
-        ],
-        openingBankAddress: [
-            {
-                required: true,
-                message: t('withdraw.applyFormRequiredAddress'),
-                trigger: 'blur',
-            },
-            {
-                validator: validateAddress,
-                trigger: 'blur'
-            }
-        ],
-        bankState: [
-            {
-                validator: (rule, value, callback) => {
-                    if (value || form.withdrawCurrency !== 'USD') {
-                        callback()
-                    } else {
-                        callback(new Error('请输入'))
-                    }
-                },
-                trigger: 'blur'
-            },
-        ],
-        zip: [
-            {
-                validator: (rule, value, callback) => {
-                    if (value || form.withdrawCurrency !== 'USD') {
-                        callback()
-                    } else {
-                        callback(new Error('请输入'))
-                    }
-                },
-                trigger: 'blur'
-            },
-        ],
-        routingNumber: [
-            {
-                validator: (rule, value, callback) => {
-                    if (value || (isBankAccount.value && form.swiftCode)) {
-                        callback()
-                    } else {
-                        callback(new Error('请输入'))
-                    }
-                },
-                trigger: 'blur'
-            },
-        ],
-        swiftCode: [
-            {
-                validator: (rule, value, callback) => {
-                    if (value || (isShowRoutingNumber.value && form.routingNumber)) {
-                        callback()
-                    } else {
-                        callback(new Error(t('withdraw.applyFormRequiredSWIFTCodeOrBIC')))
-                    }
-                },
-                trigger: 'blur'
-            },
-            {
-                validator: validateSWIFTCode,
-                trigger: 'blur'
-            }
-        ],
-        bankCode: [
-            {
-                required: true,
-                message: '请选择',
-                trigger: 'change',
-            },
-        ],
-        branchBankCode: [
-            {
-                required: true,
-                message: '请选择',
-                trigger: 'change',
-            },
-        ],
-    }
-}
-
-
 const countryData = ref([])
 // const countryDataByLang = computed(() => {
 //     const key = locale.value === 'zh-CN' ? 'zhCn' : 'enUs'
@@ -599,7 +330,7 @@ function getAllCountry() {
         if (res) {
             // 展示所有国家列表，去除中国大陆
             countryData.value = res.filter(item => item.countryId !== 'CN')
-            countryToName.value = arrToDict(countryData.value, { value: 'countryId', label: 'name' })
+            countryToName.value = arrToDict(countryData.value, { value: 'countryId', label: 'enUs' })
             currencyToCountryId.value = arrToDict(countryData.value, { value: 'currency', label: 'countryId' })
             countryCodeArr.value = countryData.value.map(item => item.countryId.toLowerCase())
         }
@@ -607,9 +338,6 @@ function getAllCountry() {
 }
 const paypalCountryData = ref([])
 const paypalCountryDict = ref({})
-const isErrorForPaypalCountry = computed(() => {
-    return !isBankAccount.value && paypalCountryDict.value[form.openingBankCountry]
-})
 // 获取PayPal支持的国家列表
 function listPaypalCountry() {
     countryApi.listPaypalCountry().then(result => {
@@ -752,10 +480,269 @@ function selectBankcardData(obj) {
 }
 
 
+const rules = () => {
+    return {
+        applyAmt: [
+            {
+                required: true,
+                message: t('withdraw.applyFormRequiredWithdrawalAmount'),
+                trigger: 'blur',
+            },
+            {
+                validator: (rule, value, callback) => {
+                    if (value && !(value >= limitAmount.value)) {
+                        callback(new Error(t('withdraw.applyFormValidateAmountMin') + ' USD ' + currencyFormat(limitAmount.value)))
+                    } else if (value && value > ableBalanceAmount.value) {
+                        callback(new Error(t('withdraw.applyFormValidateAmountMax') + ' USD ' + currencyFormat(ableBalanceAmount.value)))
+                    } else {
+                        callback()
+                    }
+                },
+                trigger: 'blur'
+            }
+        ],
+        accountHolderType: [
+            {
+                required: true,
+                message: '请选择',
+                trigger: 'change',
+            },
+        ],
+        birthDate: [
+            {
+                required: true,
+                message: '请选择',
+                trigger: 'change',
+            },
+        ],
+        paypalAccount: [
+            {
+                required: true,
+                message: '请输入',
+                trigger: 'blur',
+            },
+        ],
+        bankName: [
+            {
+                validator: (rule, value, callback) => {
+                    if (form.withdrawCurrency === 'USD' && !value) {
+                        callback(new Error(t('withdraw.applyFormRequiredBankName')))
+                    } else {
+                        callback()
+                    }
+                },
+                trigger: 'blur'
+            },
+            {
+                validator: (rule, value, callback) => {
+                    if (value && hasChinese(value)) {
+                        callback(new Error(t('withdraw.applyFormValidateNotChinese')))
+                    } else if (value && !checkResultData.bankName) {
+                        callback(new Error(t('withdraw.applyFormValidateRiskManagement')))
+                    } else {
+                        callback()
+                    }
+                },
+                trigger: 'blur'
+            }
+        ],
+        accountName: [
+            {
+                required: true,
+                message: t('withdraw.applyFormRequiredAccountHolderName'),
+                trigger: 'blur',
+            },
+            {
+                validator: (rule, value, callback) => {
+                    if (value && !checkResultData.accountName) {
+                        callback(new Error(t('withdraw.applyFormValidateRiskManagement')))
+                    } else if (value && !isAccountNameAndSpece(value)) {
+                        callback(new Error(t('withdraw.applyFormValidateEnglish')))
+                    } else {
+                        callback()
+                    }
+                },
+                trigger: 'blur'
+            }
+        ],
+        accountNumber: [
+            {
+                required: true,
+                message: t('withdraw.applyFormRequiredAccountNumber'),
+                trigger: 'blur',
+            },
+            {
+                validator: (rule, value, callback) => {
+                    if (value && !isCardIconMatch.value) {
+                        if (hasCountryCodeForIBAN(value)) {
+                            callback(new Error(t('withdraw.applyFormValidateIBANError')))
+                        } else {
+                            callback(new Error(t('withdraw.applyFormValidateFormatError')))
+                        }
+                    } else {
+                        callback()
+                    }
+                },
+                trigger: 'blur'
+            }
+        ],
+        openingBankCountry: [
+            {
+                required: true,
+                message: t('withdraw.applyFormRequiredCountryOrRegion'),
+                trigger: 'change',
+            },
+            {
+                validator: (rule, value, callback) => {
+                    if (value) {
+                        if (!checkResultData.openingBankCountry) {
+                            callback(new Error(t('withdraw.applyFormValidateRiskManagement')))
+                        } else if (!isBankAccount.value && !paypalCountryDict.value[form.openingBankCountry]) {
+                            callback(new Error('提现到PayPal账户，暂不支持该国家。'))
+                        } else {
+                            callback()
+                        }
+                    } else {
+                        callback()
+                    }
+                },
+                trigger: 'change'
+            }
+        ],
+        openingBankCity: [
+            {
+                required: true,
+                message: t('withdraw.applyFormRequiredCity'),
+                trigger: 'blur',
+            },
+            {
+                validator: (rule, value, callback) => {
+                    if (value && !isCityName(value)) {
+                        callback(new Error(t('withdraw.applyFormValidateFormatError')))
+                    } else {
+                        callback()
+                    }
+                },
+                trigger: 'blur'
+            }
+        ],
+        openingBankAddress: [
+            {
+                required: true,
+                message: t('withdraw.applyFormRequiredAddress'),
+                trigger: 'blur',
+            },
+            {
+                validator: (rule, value, callback) => {
+                    if (value && hasChinese(value)) {
+                        callback(new Error(t('withdraw.applyFormValidateNotChinese')))
+                    } else {
+                        callback()
+                    }
+                },
+                trigger: 'blur'
+            }
+        ],
+        bankState: [
+            {
+                validator: (rule, value, callback) => {
+                    if (value || form.withdrawCurrency !== 'USD') {
+                        callback()
+                    } else {
+                        callback(new Error('请输入'))
+                    }
+                },
+                trigger: 'blur'
+            },
+        ],
+        zip: [
+            {
+                validator: (rule, value, callback) => {
+                    if (value || form.withdrawCurrency !== 'USD') {
+                        callback()
+                    } else {
+                        callback(new Error('请输入'))
+                    }
+                },
+                trigger: 'blur'
+            },
+        ],
+        routingNumber: [
+            {
+                validator: (rule, value, callback) => {
+                    console.log('validator routingNumber')
+                    if (value || (isBankAccount.value && form.swiftCode)) {
+                        callback()
+                    } else {
+                        callback(new Error('请输入'))
+                    }
+                },
+                trigger: 'blur'
+            },
+        ],
+        swiftCode: [
+            {
+                validator: (rule, value, callback) => {
+                    if (value || (isShowRoutingNumber.value && form.routingNumber)) {
+                        callback()
+                    } else {
+                        callback(new Error(t('withdraw.applyFormRequiredSWIFTCodeOrBIC')))
+                    }
+                },
+                trigger: 'blur'
+            },
+            {
+                validator: (rule, value, callback) => {
+                    if (value && !isSWIFTCode(value, countryCodeArr.value)) {
+                        callback(new Error(t('withdraw.applyFormValidateSWIFTCodeOrBICError')))
+                    } else if (value && isGetFee.value && !(fee.value >= 0)) {
+                        callback(new Error(t('withdraw.applyFormValidateSWIFTCodeOrBICError')))
+                    } else {
+                        callback()
+                    }
+                },
+                trigger: 'blur'
+            }
+        ],
+        bankCode: [
+            {
+                required: true,
+                message: '输入',
+                trigger: 'blur',
+            },
+        ],
+        branchBankCode: [
+            {
+                required: true,
+                message: '输入',
+                trigger: 'blur',
+            },
+        ],
+    }
+}
+
+
+// 是否显示“获取等级错误”弹窗
+const isShowErrorAreaDialog = ref(false)
+function validateCardAndSWIFTCodeAndCounty () {
+    if (!isIBANCard()) return true
+
+    const iban = form.accountNumber.replace(/\s+/g, '').toUpperCase();
+    const ibanCounty = iban.slice(0,2)
+
+    const swiftCode = form.swiftCode.toUpperCase();
+    const swiftCodeCounty = swiftCode.slice(4,6)
+
+    const openingBankCountry = form.openingBankCountry.toUpperCase();
+
+    return ibanCounty === swiftCodeCounty && ibanCounty === openingBankCountry
+}
+
+
 // 提现申请前校验
 const validateApply = () => {
-    console.log('form: ', form)
-    formValidateRef.value?.formRef?.validate(async (valid) => {
+    console.log('validateApply')
+    formValidateRef.value?.formRef?.validate((valid) => {
         if (!valid) {
             console.log('error submit!!');
             return false;
@@ -905,7 +892,7 @@ onMounted(async ()=>{
 onUnmounted(()=>{
     settingStore.setFormPage(false)
     clearIntervalForCardIconCycle()
-    clearTimeoutForRateRefresh()
+    clearInterForRateRefresh()
 })
 </script>
 
@@ -997,25 +984,25 @@ onUnmounted(()=>{
                           @change="risk_control_check('openingBankCountry')"
                         >
                             <template #label="{ label, value }">
-                                <!-- <template #label="{ label }"> -->
-                                <div v-if="value" class="flex items-center gap8">
+                                <div class="flex items-center gap8">
                                     <div class="circle-country-icon-container size-20">
-                                        <img :src="flagUrl(value)">
+                                        <img v-if="value" :src="flagUrl(value)">
                                     </div>
                                     <span>{{ label }}</span>
                                 </div>
                             </template>
                             <el-option
                               v-for="item in countryData"
+                              v-show="isBankAccount || paypalCountryDict[item.countryId]"
                               :key="item.countryId"
                               :value="item.countryId"
-                              :label="item.name"
+                              :label="item.enUs"
                             >
                                 <div class="flex items-center gap8">
                                     <div class="circle-country-icon-container size-20">
                                         <img :src="flagUrl(item.countryId)">
                                     </div>
-                                    <span>{{ item.name }}</span>
+                                    <span>{{ item.enUs }}</span>
                                 </div>
                             </el-option>
                         </el-select>
@@ -1034,9 +1021,9 @@ onUnmounted(()=>{
                               disabled
                             >
                                 <template #label="{ label, value }">
-                                    <div v-if="currencyToCountryId[value]" class="flex items-center gap8">
+                                    <div class="flex items-center gap8">
                                         <div class="circle-country-icon-container size-20">
-                                            <img :src="flagUrl(currencyToCountryId[value])">
+                                            <img v-if="value" :src="flagUrl(currencyToCountryId[value])">
                                         </div>
                                         <span>{{ label }}</span>
                                     </div>
@@ -1083,9 +1070,9 @@ onUnmounted(()=>{
                               :disabled="!isBankAccount || !isExchangeAccountUSD"
                             >
                                 <template #label="{ label, value }">
-                                    <div v-if="currencyToCountryId[value]" class="flex items-center gap8">
+                                    <div class="flex items-center gap8">
                                         <div class="circle-country-icon-container size-20">
-                                            <img :src="flagUrl(currencyToCountryId[value])">
+                                            <img v-if="value" :src="flagUrl(currencyToCountryId[value])">
                                         </div>
                                         <span>{{ label }}</span>
                                     </div>
@@ -1105,7 +1092,7 @@ onUnmounted(()=>{
                                 </el-option>
                             </el-select>
                         </el-form-item>
-                        <el-form-item label=" " prop="exchangeAmt" class="form-item empty-label flex-1">
+                        <el-form-item label=" " class="form-item empty-label flex-1">
                             <el-input
                               :value="feeData.arriveAmt ? currencyFormat(feeData.arriveAmt) : ''"
                               class="form-input input-default"
@@ -1120,6 +1107,7 @@ onUnmounted(()=>{
                     <el-popover
                       placement="bottom-start"
                       effect="light"
+                      trigger="click"
                       :width="480"
                       popper-class="popover-dialog"
                     >
