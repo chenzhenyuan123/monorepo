@@ -167,7 +167,7 @@ onMounted(async ()=>{
                   @change="query"
                 />
             </el-form-item>
-            <el-form-item label="到账币种" style="width: 200px;">
+            <el-form-item :label="$t('wallet.withdrawalRecordsFormLabelWithdrawCurrency')" style="width: 200px;">
                 <el-select
                   v-model="formData.withdrawCurrency"
                   clearable
@@ -211,13 +211,13 @@ onMounted(async ()=>{
                     <span class="direction-ltr direction-inline-block">{{ formatDate(row.applyTime) }}</span>
                 </template>
             </el-table-column>
-            <el-table-column prop="applyAmt" label="提现金额" min-width="300" align="right">
+            <el-table-column prop="applyAmt" :label="$t('wallet.withdrawalRecordsTableLabelWithdrawalAmount')" min-width="300" align="right">
                 <template #default="{ row }">
                     {{ formatterAmount(row.applyAmt, row.accountCurrency) }}
                 </template>
             </el-table-column>
             <el-table-column prop="withdrawMethod" :label="$t('wallet.withdrawalRecordsTableLabelMethod')" min-width="160" />
-            <el-table-column prop="applyAmt" label="预估到账金额" min-width="300" align="right">
+            <el-table-column prop="applyAmt" :label="$t('wallet.withdrawalRecordsTableLabelEstimatedAmountReceived')" min-width="300" align="right">
               <template #default="{ row }">
                 {{ formatterAmount(row.arriveAmt, row.withdrawCurrency) }}
               </template>

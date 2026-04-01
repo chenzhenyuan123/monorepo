@@ -97,6 +97,18 @@ export function hasEnglish(s = '') {
   return /[a-zA-Z]+/.test(s)
 }
 
+export const hasArabic = (s = '') => {
+  // 正则表达式匹配阿拉伯语字符
+  const regex = /[\u0600-\u06FF\u0750-\u077F]+/gu;
+
+  return s.match(regex) !== null
+}
+
+/** 判断是否是有效的邮编 */
+export const isValidZipcode = (s = '') => {
+  return /^[a-zA-Z0-9 -]{2,16}$/g.test(s)
+}
+
 /** 判断是否是有效的短地址 */
 export const isValidShortAddress = (s = '') => {
   return /^[A-Za-z]{4}[0-9]{4}$/g.test(s)

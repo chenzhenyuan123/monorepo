@@ -55,7 +55,7 @@
       @click="isExpand = !isExpand"
     >
       <template v-if="!isExpand">
-        <span>more</span>
+        <span>{{$t('ExpandContent.more')}}</span>
       </template>
     </el-link>
   </div>

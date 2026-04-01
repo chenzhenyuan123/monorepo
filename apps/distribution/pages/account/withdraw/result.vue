@@ -13,10 +13,9 @@ const route = useRoute()
 const isMobile = useIsMobile()
 
 const isSuccess = ref(route.query.success === '1')
-const id = ref(route.query.id)
+const withdrawNo = ref(route.query.withdrawNo)
 const currency = ref(route.query.currency)
 const estPaymentAmt = ref(route.query.estPaymentAmt)
-const estPaymentDate = ref(route.query.estPaymentDate)
 const applyWithdrawTime = ref(route.query.applyWithdrawTime)
 
 
@@ -48,13 +47,13 @@ onUnmounted(()=>{
         :class="[isMobile ? 'f24' : 'f30']"
       >{{ $t('withdraw.resultSuccessTitle') }}</div>
       <div class="tertiary-span f16">{{ $t('withdraw.resultSuccessP') }}</div>
-      <div v-if="id" class="tertiary-span f16 mt16">提现记录编号：{{ id }}</div>
+      <div v-if="withdrawNo" class="tertiary-span f16 mt16">提现记录编号：{{ withdrawNo }}</div>
       <template v-if="currency && estPaymentAmt">
         <div class="tertiary-span mt48">Est. Amount to Receive</div>
         <div class="black-span2 f24 fw500 mt4 pb8">{{ currency }} {{ currencyFormat(estPaymentAmt) }}</div>
       </template>
       <el-button type="" class="button button-default dialog-adaptive mt32" @click="jumpToWallet">{{ $t('withdraw.resultButtonBack') }}</el-button>
-      <template v-if="estPaymentDate">
+      <template v-if="applyWithdrawTime">
         <div class="flex items-center gap12 mt44 mb24">
           <div class="hr flex-1"></div>
           <div class="tertiary-span2 f12">Current Status</div>
@@ -76,7 +75,7 @@ onUnmounted(()=>{
                 <path d="M8 32.5L8 40.5L12 36.5" stroke="#E4E3EA" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
             </div>
-            <div class="tertiary-span3 f12">{{ formatDate(estPaymentDate) }}</div>
+            <div class="tertiary-span3 f12">{{ formatDate(applyWithdrawTime) }}</div>
           </div>
           <div class="flex gap8 mb4">
             <div class="lh0">
@@ -85,10 +84,6 @@ onUnmounted(()=>{
               </svg>
             </div>
             <div class="primary-span fw500">打款</div>
-          </div>
-          <div v-if="applyWithdrawTime" class="flex gap8 mb4">
-            <div class="flex-center-16"></div>
-            <div class="tertiary-span4 f12">Expected payment time: {{ formatDate(applyWithdrawTime) }}</div>
           </div>
         </div>
       </template>
