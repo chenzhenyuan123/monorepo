@@ -90,6 +90,22 @@ useHead({
       type: 'text/javascript',
       body: true
     },
+    {
+      innerHTML: `
+          function _howxm(){_howxmQueue.push(arguments)}
+          window._howxmQueue=window._howxmQueue||[];
+          _howxm('setAppID','f2afcc13-1350-4ff1-8509-7694359ba245');
+          (function(){var scriptId='howxm_script';
+          if(!document.getElementById(scriptId)){
+          var e=document.createElement('script'),
+          t=document.getElementsByTagName('script')[0];
+          e.setAttribute('id',scriptId);
+          e.type='text/javascript';e.async=!0;
+          e.src='https://static.howxm.com/sdk.js';
+          t.parentNode.insertBefore(e,t)}})();`,
+      type: 'text/javascript',
+      body: true
+    },
   ],
   __dangerouslyDisableSanitizers: ['script']
 })

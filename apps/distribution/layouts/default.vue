@@ -2,6 +2,9 @@
 import { Close } from '@element-plus/icons-vue';
 import { useSettingStore } from '@/store/settingState.js'
 const settingStore = useSettingStore()
+import { useUserStore } from '@/store/userState.js'
+const userStore = useUserStore()
+userStore.getUserInfo()
 
 const showSetting = ref(false)
 const isCollapse = ref(false)
@@ -18,6 +21,14 @@ router.afterEach((to, from) => {
     // console.log('to: ', to)
     mWrapRef.value?.scrollTo?.(0, 0)
     pcWrapRef.value?.scrollTo?.(0, 0)
+  }
+})
+
+onMounted(()=>{
+  if(userStore.userInfo.token && userStore.userInfo.userNumber) {
+    window._howxm && window._howxm('identify', {
+      uid: userStore.userInfo.userNumber, // 用户唯一ID, 默认字段, 必填，string 类型
+    })
   }
 })
 
