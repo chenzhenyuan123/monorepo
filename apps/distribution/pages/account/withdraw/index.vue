@@ -168,7 +168,7 @@ const qryCreditedCurrencyList = () => {
 
 const limitAmount = ref(0)
 const isApplyAmtOverLimitAmount = computed(() => {
-    return form.applyAmt > limitAmount.value
+    return form.applyAmt >= limitAmount.value
 })
 // 查询币种最小可提现金额
 const qryMinWithdrawalAmount = (currency) => {
