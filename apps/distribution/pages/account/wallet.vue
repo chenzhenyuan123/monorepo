@@ -88,7 +88,7 @@ const jumpToWithdraw = () => {
       isShowSuspendedGialog.value = true
       return
     }
-    if (!(ableBalanceAmount.value > limitAmount.value)) {
+    if (!(ableBalanceAmount.value >= limitAmount.value)) {
       // popoverVisible.value = !popoverVisible.value
       isShowErrorGialog.value = true
       return
