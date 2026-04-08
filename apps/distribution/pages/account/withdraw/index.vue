@@ -490,9 +490,9 @@ const rules = () => {
             {
                 validator: (rule, value, callback) => {
                     if (value && !(value >= limitAmount.value)) {
-                        callback(new Error(t('withdraw.applyFormValidateAmountMin') + ' USD ' + currencyFormat(limitAmount.value)))
+                        callback(new Error(t('withdraw.applyFormValidateAmountMin') + ' ' + form.withdrawCurrency + ' ' + currencyFormat(limitAmount.value)))
                     } else if (value && value > ableBalanceAmount.value) {
-                        callback(new Error(t('withdraw.applyFormValidateAmountMax') + ' USD ' + currencyFormat(ableBalanceAmount.value)))
+                        callback(new Error(t('withdraw.applyFormValidateAmountMax') + ' ' + form.withdrawCurrency + ' ' + currencyFormat(ableBalanceAmount.value)))
                     } else {
                         callback()
                     }
@@ -1043,10 +1043,10 @@ onUnmounted(()=>{
                         </el-form-item>
                     </div>
                     <p class="tertiary-span2 mt8">
-                        {{ $t('withdraw.applyFormMessageWithdrawalAmount1') }} ${{ currencyFormat(ableBalanceAmount) }}
+                        {{ $t('withdraw.applyFormMessageWithdrawalAmount1') }} {{ form.accountCurrency }} {{ currencyFormat(ableBalanceAmount) }}
                     </p>
                     <p class="tertiary-span2 mt12">
-                        {{ $t('withdraw.applyFormMessageWithdrawalAmount2') }} ${{ currencyFormat(limitAmount) }}.
+                        {{ $t('withdraw.applyFormMessageWithdrawalAmount2') }} {{ form.accountCurrency }} {{ currencyFormat(limitAmount) }}.
                     </p>
                 </div>
                 <div class="lh0 txt-center mt20 mb20">
