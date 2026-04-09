@@ -148,6 +148,7 @@
     <AccountWithdrawNotMetDialog
       v-if="isShowErrorGialog"
       v-model="isShowErrorGialog"
+      :currency="minWithdrawalAmountData.currency"
       :amount="minWithdrawalAmountData.minWithdrawalAmount"
     ></AccountWithdrawNotMetDialog>
     <AccountWithdrawTemporarilySuspendedDialog
