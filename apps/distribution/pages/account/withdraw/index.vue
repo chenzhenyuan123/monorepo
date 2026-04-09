@@ -32,6 +32,7 @@ hasCountryCodeForIBAN,
 import {arrToDict} from "@flylinking/core/utils/common";
 import {isUseless} from "@flylinking/core/utils/dataUtil";
 import {isAccountNameAndSpece, isValidZipcode} from "@flylinking/core/utils/validate";
+import { debounce } from 'throttle-debounce'
 
 const { t, locale } = useI18n();
 const { userApi, withdrawApi, countryApi } = useApi()
@@ -79,11 +80,11 @@ const form = reactive({
 })
 watch(() => form.applyAmt, () => {
     // 提现金额变化，更新手续费、换汇金额等
-    setInterForRateRefresh()
+    setIntervalForRateRefreshLater()
 })
 watch(() => form.withdrawCurrency, () => {
     // 币种变化，更新手续费、汇率等
-    setInterForRateRefresh()
+    setIntervalForRateRefresh()
     qrySettleConfigList(form.withdrawCurrency)
 })
 
@@ -99,7 +100,7 @@ watch(isBankAccount, () => {
         form.withdrawCurrency = 'USD'
     } else {
         // 提现类型变化，更新手续费、汇率等
-        setInterForRateRefresh()
+        setIntervalForRateRefresh()
     }
     if (form.openingBankCountry) formValidateRef.value?.formRef?.validateField('openingBankCountry')
 })
@@ -168,7 +169,7 @@ const qryCreditedCurrencyList = () => {
 
 const limitAmount = ref(0)
 const isApplyAmtOverLimitAmount = computed(() => {
-    return form.applyAmt >= limitAmount.value
+    return !isUseless(form.applyAmt) && form.applyAmt >= limitAmount.value
 })
 // 查询币种最小可提现金额
 const qryMinWithdrawalAmount = (currency) => {
@@ -222,7 +223,7 @@ function showDiscountDetailsDialog() {
 }
 function changeSelectCoupon(val) {
     membershipCardNo.value = val
-    setInterForRateRefresh()
+    setIntervalForRateRefresh()
 }
 function qryMembershipCardData() {
     withdrawApi.listMembershipCardPage().then(result => {
@@ -278,25 +279,28 @@ const rateRefreshData = ref({
     timerCount: 30,
     timer: null,
 })
-const setInterForRateRefresh = (times) => {
+function setIntervalForRateRefresh(times = rateRefreshData.value.times) {
     // 取消倒计时
-    clearInterForRateRefresh()
+    clearIntervalForRateRefresh()
     qryWithdrawFee()
     // 重置时间
-    rateRefreshData.value.timerCount = times || rateRefreshData.value.times
+    rateRefreshData.value.timerCount = times
     rateRefreshData.value.timerShow = true
     rateRefreshData.value.timer = setInterval(() => {
         if (rateRefreshData.value.timerCount > 1) {
             rateRefreshData.value.timerCount--
         } else {
-            setInterForRateRefresh()
+            setIntervalForRateRefresh()
         }
     }, 1000)
 }
-const clearInterForRateRefresh = () => {
+function clearIntervalForRateRefresh() {
     clearInterval(rateRefreshData.value.timer)
     rateRefreshData.value.timerShow = false
 }
+
+const setIntervalForRateRefreshLater = debounce(300, setIntervalForRateRefresh)
+
 
 
 // 风控校验记录
@@ -893,7 +897,7 @@ onMounted(async ()=>{
 onUnmounted(()=>{
     settingStore.setFormPage(false)
     clearIntervalForCardIconCycle()
-    clearInterForRateRefresh()
+    clearIntervalForRateRefresh()
 })
 </script>
 
