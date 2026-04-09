@@ -103,6 +103,12 @@ watch(isBankAccount, () => {
         setIntervalForRateRefresh()
     }
     if (form.openingBankCountry) formValidateRef.value?.formRef?.validateField('openingBankCountry')
+    //
+    if (isBankAccount.value) {
+        formValidateRef.value?.formRef?.validateField('withdrawType')
+    } else {
+        risk_control_check('bankName')
+    }
 })
 // 是否展示账户类型，提现方式=银行账户，到账币种=USD，且账户所在国=美国
 const isShowAccountType = computed(() => {
@@ -311,13 +317,21 @@ const checkResultData = reactive({
 })
 // 风控校验
 const risk_control_check = (key) => {
-    // 空值不需要校验
-    if (isUseless(form[key])) return
     const obj = {}
-    obj[key] = form[key]
+    if (!isBankAccount.value && key === 'bankName') {
+        obj.bankName = 'PayPal'
+    } else {
+        obj[key] = form[key]
+    }
+    // 空值不需要校验
+    if (isUseless(obj[key])) return
     withdrawApi.risk_control_check(obj).then(result => {
         checkResultData[key] = checkResponseData(result)
-        formValidateRef.value?.formRef?.validateField(key)
+        if (!isBankAccount.value && key === 'bankName') {
+            formValidateRef.value?.formRef?.validateField('withdrawType')
+        } else {
+            formValidateRef.value?.formRef?.validateField(key)
+        }
     })
 }
 
@@ -491,6 +505,18 @@ function selectBankcardData(obj) {
 
 const rules = () => {
     return {
+        withdrawType: [
+            {
+                validator: (rule, value, callback) => {
+                    if (value && !isBankAccount.value && !checkResultData.bankName) {
+                        callback(new Error(t('withdraw.applyFormValidateRiskManagement')))
+                    } else {
+                        callback()
+                    }
+                },
+                trigger: 'change'
+            }
+        ],
         applyAmt: [
             {
                 required: true,
