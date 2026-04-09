@@ -33,6 +33,7 @@ import {arrToDict} from "@flylinking/core/utils/common";
 import {isUseless} from "@flylinking/core/utils/dataUtil";
 import {isAccountNameAndSpece, isValidZipcode} from "@flylinking/core/utils/validate";
 import { debounce } from 'throttle-debounce'
+import { useUserStore } from '@/store/userState.js'
 
 const { t, locale } = useI18n();
 const { userApi, withdrawApi, countryApi } = useApi()
@@ -40,6 +41,7 @@ const settingStore = useSettingStore()
 const router = useRouter()
 const route = useRoute()
 const isMobile = useIsMobile()
+const userStore = useUserStore()
 
 // 传入币种
 const exchangeAccount = ref(route.query?.currency || 'USD')
@@ -918,6 +920,8 @@ onMounted(async ()=>{
     qrySettleConfigList(form.withdrawCurrency)
     setIntervalForCardIconCycle()
     qryMembershipCardData()
+    userStore.getUserInfo()
+    form.paypalAccount = userStore.userInfo.loginAccount
 })
 
 onUnmounted(()=>{

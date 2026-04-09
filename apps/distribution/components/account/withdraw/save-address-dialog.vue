@@ -18,7 +18,7 @@
     <el-dialog
       v-bind="$attrs"
       width="526px"
-      :title="$t('rateUpdateDialog.title')"
+      :title="$t('saveAddressDialog.title')"
       :show-close="true"
       :close-on-click-modal="false"
       :destroy-on-close="true"
@@ -26,16 +26,16 @@
     >
 
       <div class="tertiary-span f16">
-        {{ $t('rateUpdateDialog.p1') }}
+        {{ $t('saveAddressDialog.p1') }}
         <div style="height: 8px;"></div>
-        {{ $t('rateUpdateDialog.p2') }}
+        {{ $t('saveAddressDialog.p2') }}
         <div style="height: 8px;"></div>
-        {{ $t('rateUpdateDialog.p3') }}
+        {{ $t('saveAddressDialog.p3') }}
       </div>
 
       <template #footer>
         <div class="dialog-footer">
-          <el-button type="primary" round class="button-default dialog-adaptive" @click="cancel">{{ $t('rateUpdateDialog.buttonClose') }}</el-button>
+          <el-button type="primary" round class="button-default dialog-adaptive" @click="cancel">{{ $t('saveAddressDialog.buttonClose') }}</el-button>
         </div>
       </template>
     </el-dialog>
