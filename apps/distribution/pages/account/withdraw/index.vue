@@ -179,10 +179,12 @@ const qryMinWithdrawalAmount = (currency) => {
 }
 
 
-const dayTypeDict = ref({
-    1: t('arrivalTime.weekday'),
-    2: t('arrivalTime.nonWorkingDay'),
-    3: t('arrivalTime.calendarDay'),
+const dayTypeDict = computed(() => {
+    return {
+        1: t('arrivalTime.weekday'),
+        2: t('arrivalTime.nonWorkingDay'),
+        3: t('arrivalTime.calendarDay'),
+    }
 })
 const settleConfigListData = ref([])
 // 查询提现到账时间说明列表
@@ -241,7 +243,10 @@ const isShowErrorLevelDialog = ref(false)
 // 查询手续费
 function qryWithdrawFee() {
     isGetFee.value = false
-    if (!isApplyAmtOverLimitAmount.value) return
+    if (!isApplyAmtOverLimitAmount.value) {
+        feeData.value = {}
+        return
+    }
     withdrawApi.qryWithdrawFee({
         accountCurrency: form.accountCurrency,
         applyAmt: form.applyAmt,
@@ -259,6 +264,7 @@ function qryWithdrawFee() {
             isGetLevelError.value = true
             isShowErrorLevelDialog.value = true
         } else {
+            isGetLevelError.value = true
             errorMessage(result?.message)
         }
     })
@@ -1413,7 +1419,7 @@ onUnmounted(()=>{
 
             <div class="form-buttons" :class="{ pl16: isMobile, pr16: isMobile, pl24: !isMobile, pr24: !isMobile }">
                 <el-button class="button-default m-adaptive" style="margin: 0" @click="jumpToWallet">{{ $t('withdraw.applyFormButtonCancel') }}</el-button>
-                <el-button type="primary" class="button-default m-adaptive" style="margin: 0" :loading="loading" :disabled="isGetLevelError" @click="validateApply">{{ $t('withdraw.applyFormButtonSubmit') }}</el-button>
+                <el-button type="primary" class="button-default m-adaptive" style="margin: 0" :loading="loading" :disabled="!(isGetFee && !isGetLevelError)" @click="validateApply">{{ $t('withdraw.applyFormButtonSubmit') }}</el-button>
             </div>
         </FormValidate>
     </div>
