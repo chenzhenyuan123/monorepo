@@ -594,7 +594,8 @@ const rules = () => {
                     if (value && !checkResultData.accountName) {
                         callback(new Error(t('withdraw.applyFormValidateRiskManagement')))
                     } else if (value && !isAccountNameAndSpece(value)) {
-                        callback(new Error(t('withdraw.applyFormValidateEnglish')))
+                        // callback(new Error(t('withdraw.applyFormValidateEnglish')))
+                        callback(new Error(' '))
                     } else {
                         callback()
                     }
