@@ -7,6 +7,10 @@ const { t } = useI18n();
 const router = useRouter()
 const isMobile = useIsMobile()
 const props = defineProps({
+    currency: {
+        type: String,
+        default: 'USD'
+    },
     amount: {
         type: Number,
         default: 50
@@ -50,7 +54,7 @@ const cancel = () => {
         </template>
 
         <p class="dialog-p">
-            {{ $t('withdraw.notMetDialogP1Before') }} {{ currencyFormat(amount) }} USD {{ $t('withdraw.notMetDialogP1After') }}
+            {{ $t('withdraw.notMetDialogP1Before') }} {{ currencyFormat(amount) }} {{ currency }} {{ $t('withdraw.notMetDialogP1After') }}
         </p>
         <br>
         <br>
