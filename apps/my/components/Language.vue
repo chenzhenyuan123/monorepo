@@ -15,7 +15,7 @@ const { t, locale } = useI18n();
 const langVisible = ref(false);
 const langs = {
   'en-US': "English",
-  // 'es-ES': 'español',
+  'es-ES': 'español',
   'fr-FR': 'Français',
   'zh-CN': '中文',
   'de-DE': 'Deutsch',
