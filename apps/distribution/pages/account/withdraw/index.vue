@@ -310,9 +310,7 @@ function clearIntervalForGetFee() {
     clearInterval(rateRefreshData.value.timer)
     rateRefreshData.value.timerShow = false
 }
-
 const setIntervalForGetFeeLater = debounce(300, setIntervalForGetFee)
-
 
 
 // 风控校验记录
@@ -376,6 +374,29 @@ function listPaypalCountry() {
             paypalCountryDict.value = arrToDict(paypalCountryData.value, { value: 'countryId', label: null })
         }
     })
+}
+const provinceData = ref([])
+const provinceToZipCode = ref({})
+const provinceToName = ref({})
+const nameToProvince = ref({})
+function getBaseProvinceByCountry(countryId) {
+    return countryApi.getProvinceByCountry(countryId).then(result => {
+        const res = checkResponseData(result)
+        if (res) {
+            provinceData.value = res
+            provinceToZipCode.value = arrToDict(provinceData.value, { value: 'provinceId', label: 'zipCode' })
+            provinceToName.value = arrToDict(provinceData.value, { value: 'provinceId', label: 'enUs' })
+            nameToProvince.value = arrToDict(provinceData.value, { value: 'enUs', label: 'provinceId' })
+        }
+    })
+}
+function countryChange() {
+    getBaseProvinceByCountry(form.openingBankCountry)
+    form.bankState = undefined
+}
+function provinceChange() {
+    const zip = provinceToZipCode.value[form.bankState]
+    if (!form.zip && zip) form.zip = zip
 }
 
 
@@ -480,7 +501,7 @@ function selectBankcardData(obj) {
         accountType: obj.accountType,
         accountHolderType: obj.accountHolderType,
         accountName: obj.accountName,
-        bankState: obj.bankState,
+        bankState: nameToProvince.value[obj.bankState],
         zip: obj.zip,
         // openingBankCountry: obj.openingBankCountry,
         openingBankCity: obj.openingBankCity,
@@ -693,10 +714,10 @@ const rules = () => {
                     if (value || form.withdrawCurrency !== 'USD') {
                         callback()
                     } else {
-                        callback(new Error(t('withdraw.pleaseEnter')))
+                        callback(new Error(t('withdraw.pleaseSelect')))
                     }
                 },
-                trigger: 'blur'
+                trigger: 'change'
             },
         ],
         zip: [
@@ -716,7 +737,6 @@ const rules = () => {
         routingNumber: [
             {
                 validator: (rule, value, callback) => {
-                    console.log('validator routingNumber')
                     if (value || (isBankAccount.value && form.swiftCode)) {
                         callback()
                     } else {
@@ -813,7 +833,6 @@ const apply = (checkCode) => {
         //
         accountHolderType: form.accountHolderType,
         accountName: form.accountName,
-        bankState: form.bankState,
         zip: form.zip,
         openingBankCity: form.openingBankCity,
         openingBankAddress: form.openingBankAddress,
@@ -842,6 +861,7 @@ const apply = (checkCode) => {
     if (isShowAccountType.value) params.accountType = form.accountType
     if (isShowBankCode.value) params.bankCode = form.bankCode
     if (isShowBranchBankCode.value) params.branchBankCode = form.branchBankCode
+    if (form.bankState) params.bankState = provinceToName.value[form.bankState]
     params.saveFlag = form.saveFlag ? 'Y' : 'N'
 
     withdrawApi.apply(params).then(result => {
@@ -1023,7 +1043,7 @@ onUnmounted(()=>{
                           :placeholder="$t('withdraw.applyFormPlaceholderAccountLocation')"
                           filterable
                           class="form-input select-default h44"
-                          @change="risk_control_check('openingBankCountry')"
+                          @change="risk_control_check('openingBankCountry');countryChange()"
                         >
                             <template #label="{ label, value }">
                                 <div class="flex items-center gap8">
@@ -1372,12 +1392,20 @@ onUnmounted(()=>{
                 </el-form-item>
                 <div class="flex gap16 mb16">
                     <el-form-item :label="(isBankAccount ? $t('withdraw.applyFormLabelBankState') : $t('withdraw.applyFormLabelState')) + (form.withdrawCurrency === 'USD' ? '' : (' ('+$t('withdraw.optional')+')'))" prop="bankState" class="form-item flex-1" style="margin-bottom: 0">
-                        <el-input
+                        <el-select
                           v-model="form.bankState"
-                          class="form-input input-default"
                           :placeholder="(isBankAccount ? $t('withdraw.applyFormLabelBankState') : $t('withdraw.applyFormLabelState')) + (form.withdrawCurrency === 'USD' ? '' : (' ('+$t('withdraw.optional')+')'))"
-                          @change="e => { form.bankState = e.trim() }"
-                        />
+                          filterable
+                          class="form-input select-default h44"
+                          @change="provinceChange()"
+                        >
+                            <el-option
+                              v-for="item in provinceData"
+                              :key="item.provinceId"
+                              :value="item.provinceId"
+                              :label="item.enUs"
+                            />
+                        </el-select>
                     </el-form-item>
                     <el-form-item :label="$t('withdraw.applyFormLabelZip') + (form.withdrawCurrency === 'USD' ? '' : (' ('+$t('withdraw.optional')+')'))" prop="zip" class="form-item w-180" style="margin-bottom: 0">
                         <el-input
