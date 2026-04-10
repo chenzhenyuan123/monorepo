@@ -276,6 +276,8 @@ function qryWithdrawFee() {
             isGetLevelError.value = true
             errorMessage(result?.message)
         }
+    }).finally(() => {
+        formValidateRef.value?.formRef?.validateField('applyAmt')
     })
 }
 const rateRefreshData = ref({
@@ -533,6 +535,8 @@ const rules = () => {
                         callback(new Error(t('withdraw.applyFormValidateAmountMin') + ' ' + form.withdrawCurrency + ' ' + currencyFormat(limitAmount.value)))
                     } else if (value && value > ableBalanceAmount.value) {
                         callback(new Error(t('withdraw.applyFormValidateAmountMax') + ' ' + form.withdrawCurrency + ' ' + currencyFormat(ableBalanceAmount.value)))
+                    } else if (feeData.value.arriveAmt <= 0) {
+                        callback(new Error(t('withdraw.applyFormValidateArriveAmountMin', { min: 0 })))
                     } else {
                         callback()
                     }

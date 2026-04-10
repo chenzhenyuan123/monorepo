@@ -229,12 +229,23 @@ onMounted(async ()=>{
             </el-table-column>
             <el-table-column prop="status" tag :label="$t('wallet.withdrawalRecordsTableLabelState')" min-width="200">
             <template #default="{ row }">
-                <el-tag v-if="row.status" :type="statusToType[row.status]" class="tag-default">
+              <el-popover
+                v-if="row.status"
+                placement="top"
+                effect="dark"
+                :width="309"
+                :content="row.failReason"
+                :disabled="!row.failReason"
+              >
+                <template #reference>
+                  <el-tag :type="statusToType[row.status]" class="tag-default">
                     <el-icon v-if="statusToType[row.status] === 'success'" class="tag-icon"><Check /></el-icon>
                     <span v-else-if="statusToType[row.status] === 'primary'" class="tag-icon"><span class="circle"></span></span>
                     <el-icon v-else-if="statusToType[row.status] === 'danger'" class="tag-icon"><Close /></el-icon>
                     <span class="tag-span">{{ statusDict[row.status] }}</span>
-                </el-tag>
+                  </el-tag>
+                </template>
+              </el-popover>
             </template>
             </el-table-column>
             <el-table-column action class-name="operation-col" :label="$t('wallet.withdrawalRecordsTableLabelActions')" min-width="100" fixed="right">
