@@ -82,11 +82,11 @@ const form = reactive({
 })
 watch(() => form.applyAmt, () => {
     // 提现金额变化，更新手续费、换汇金额等
-    setIntervalForRateRefreshLater()
+    setIntervalForGetFeeLater()
 })
 watch(() => form.withdrawCurrency, () => {
     // 币种变化，更新手续费、汇率等
-    setIntervalForRateRefresh()
+    setIntervalForGetFee()
     qrySettleConfigList(form.withdrawCurrency)
 })
 
@@ -102,7 +102,7 @@ watch(isBankAccount, () => {
         form.withdrawCurrency = 'USD'
     } else {
         // 提现类型变化，更新手续费、汇率等
-        setIntervalForRateRefresh()
+        setIntervalForGetFee()
     }
     if (form.openingBankCountry) formValidateRef.value?.formRef?.validateField('openingBankCountry')
     //
@@ -176,8 +176,8 @@ const qryCreditedCurrencyList = () => {
 
 
 const limitAmount = ref(0)
-const isApplyAmtOverLimitAmount = computed(() => {
-    return !isUseless(form.applyAmt) && form.applyAmt >= limitAmount.value
+const isApplyAmtAble = computed(() => {
+    return !isUseless(form.applyAmt) && form.applyAmt >= limitAmount.value && form.applyAmt <= ableBalanceAmount.value
 })
 // 查询币种最小可提现金额
 const qryMinWithdrawalAmount = (currency) => {
@@ -231,7 +231,7 @@ function showDiscountDetailsDialog() {
 }
 function changeSelectCoupon(val) {
     membershipCardNo.value = val
-    setIntervalForRateRefresh()
+    setIntervalForGetFee()
 }
 function qryMembershipCardData() {
     withdrawApi.listMembershipCardPage().then(result => {
@@ -252,7 +252,7 @@ const isShowErrorLevelDialog = ref(false)
 // 查询手续费
 function qryWithdrawFee() {
     isGetFee.value = false
-    if (!isApplyAmtOverLimitAmount.value) {
+    if (!isApplyAmtAble.value) {
         feeData.value = {}
         return
     }
@@ -287,10 +287,12 @@ const rateRefreshData = ref({
     timerCount: 30,
     timer: null,
 })
-function setIntervalForRateRefresh(times = rateRefreshData.value.times) {
+function setIntervalForGetFee(times = rateRefreshData.value.times) {
     // 取消倒计时
-    clearIntervalForRateRefresh()
+    clearIntervalForGetFee()
     qryWithdrawFee()
+    // 同币种不用轮循
+    if (!isDeffCurrency.value) return
     // 重置时间
     rateRefreshData.value.timerCount = times
     rateRefreshData.value.timerShow = true
@@ -298,16 +300,16 @@ function setIntervalForRateRefresh(times = rateRefreshData.value.times) {
         if (rateRefreshData.value.timerCount > 1) {
             rateRefreshData.value.timerCount--
         } else {
-            setIntervalForRateRefresh()
+            setIntervalForGetFee()
         }
     }, 1000)
 }
-function clearIntervalForRateRefresh() {
+function clearIntervalForGetFee() {
     clearInterval(rateRefreshData.value.timer)
     rateRefreshData.value.timerShow = false
 }
 
-const setIntervalForRateRefreshLater = debounce(300, setIntervalForRateRefresh)
+const setIntervalForGetFeeLater = debounce(300, setIntervalForGetFee)
 
 
 
@@ -928,7 +930,7 @@ onMounted(async ()=>{
 onUnmounted(()=>{
     settingStore.setFormPage(false)
     clearIntervalForCardIconCycle()
-    clearIntervalForRateRefresh()
+    clearIntervalForGetFee()
 })
 </script>
 
@@ -1174,7 +1176,7 @@ onUnmounted(()=>{
                     </el-popover>
                 </div>
             </div>
-            <div v-if="isApplyAmtOverLimitAmount && isGetFee" class="mb32" :class="{ pl16: isMobile, pr16: isMobile, pl32: !isMobile, pr32: !isMobile }">
+            <div v-if="isApplyAmtAble && isGetFee" class="mb32" :class="{ pl16: isMobile, pr16: isMobile, pl32: !isMobile, pr32: !isMobile }">
                 <div class="fee-container">
                     <p class="flex items-center">
                         <span class="tertiary-span2">{{ $t('withdraw.applyFormFeeModuleWithdrawalLabel') }}</span>
