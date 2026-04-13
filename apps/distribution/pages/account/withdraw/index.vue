@@ -30,7 +30,7 @@ import {
 hasCountryCodeForIBAN,
 } from "@/util/validate";
 import {arrToDict} from "@flylinking/core/utils/common";
-import {isUseless} from "@flylinking/core/utils/dataUtil";
+import {isUseless, removeSpace} from "@flylinking/core/utils/dataUtil";
 import {isAccountNameAndSpece, isValidZipcode} from "@flylinking/core/utils/validate";
 import { debounce } from 'throttle-debounce'
 import { useUserStore } from '@/store/userState.js'
@@ -622,7 +622,7 @@ const rules = () => {
                         callback(new Error(t('withdraw.applyFormValidateRiskManagement')))
                     } else if (value && !isAccountNameAndSpece(value)) {
                         // callback(new Error(t('withdraw.applyFormValidateEnglish')))
-                        callback(new Error(' '))
+                        callback(new Error(''))
                     } else {
                         callback()
                     }
@@ -745,6 +745,16 @@ const rules = () => {
                 },
                 trigger: 'blur'
             },
+            {
+                validator: (rule, value, callback) => {
+                    if (value && value?.length !== 9) {
+                        callback(new Error(''))
+                    } else {
+                        callback()
+                    }
+                },
+                trigger: 'blur'
+            }
         ],
         swiftCode: [
             {
@@ -1439,12 +1449,12 @@ onUnmounted(()=>{
                 <el-form-item v-if="isShowRoutingNumber" :label="$t('withdraw.applyFormLabelRoutingNumber')" prop="routingNumber" class="form-item">
                     <el-input
                       v-model="form.routingNumber"
-                      :maxlength="11"
+                      :maxlength="9"
                       class="form-input input-default"
                       :placeholder="$t('withdraw.applyFormLabelRoutingNumber')"
-                      @change="e => { form.routingNumber = e.trim() }"
+                      @change="e => { form.routingNumber = removeSpace(e) }"
                     />
-                    <div class="tertiary-span2 w-full mt6">{{$t('withdraw.maxMessage', { num: 11 })}}</div>
+                    <div class="tertiary-span2 w-full mt6">{{$t('withdraw.onlyCharactersMessage', { num: 9 })}}</div>
                 </el-form-item>
                 <el-form-item v-if="isBankAccount" :label="$t('withdraw.applyFormLabelSWIFTCodeOrBIC')" prop="swiftCode" class="form-item">
                     <el-input

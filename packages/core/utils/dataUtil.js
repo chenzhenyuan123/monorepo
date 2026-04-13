@@ -51,6 +51,13 @@ export function formatSWIFTCode(str) {
     return str
 }
 
+export function removeSpace(str) {
+    // 去除空格
+    str = str.replace(/\s/g, '')
+
+    return str
+}
+
 /**
  * 价格输入框保持纯数字
  */
