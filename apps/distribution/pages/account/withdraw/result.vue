@@ -16,7 +16,7 @@ const isSuccess = ref(route.query.success === '1')
 const withdrawNo = ref(route.query.withdrawNo)
 const currency = ref(route.query.currency)
 const estPaymentAmt = ref(route.query.estPaymentAmt)
-const applyWithdrawTime = ref(route.query.applyWithdrawTime)
+const applyWithdrawTime = ref(Number(route.query.applyWithdrawTime))
 
 
 const jumpToWallet = () => {
