@@ -831,6 +831,7 @@ const validateApply = () => {
 }
 // 提现申请
 const apply = (checkCode) => {
+    clearIntervalForGetFee()
     loading.value = true
 
     const params = {
