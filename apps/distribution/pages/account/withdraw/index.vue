@@ -860,7 +860,6 @@ const apply = (checkCode) => {
         Object.assign(params, {
             bankName: form.bankName,
             accountNumber: normalCreditCardNumber(form.accountNumber),
-            routingNumber: form.routingNumber,
             swiftCode: form.swiftCode,
         })
     } else {
@@ -873,6 +872,7 @@ const apply = (checkCode) => {
     if (isShowBankCode.value) params.bankCode = form.bankCode
     if (isShowBranchBankCode.value) params.branchBankCode = form.branchBankCode
     if (form.bankState) params.bankState = provinceToName.value[form.bankState]
+    if (isShowRoutingNumber.value) params.routingNumber = form.routingNumber
     params.saveFlag = form.saveFlag ? 'Y' : 'N'
 
     withdrawApi.apply(params).then(result => {
