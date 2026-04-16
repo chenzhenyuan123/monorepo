@@ -1402,7 +1402,12 @@ onUnmounted(()=>{
                     </div>
                 </el-form-item>
                 <div class="flex gap16 mb16">
-                    <el-form-item :label="(isBankAccount ? $t('withdraw.applyFormLabelBankState') : $t('withdraw.applyFormLabelState')) + (form.withdrawCurrency === 'USD' ? '' : (' ('+$t('withdraw.optional')+')'))" prop="bankState" class="form-item flex-1" style="margin-bottom: 0">
+                    <el-form-item
+                      :label="(isBankAccount ? $t('withdraw.applyFormLabelBankState') : $t('withdraw.applyFormLabelState')) + (form.withdrawCurrency === 'USD' ? '' : (' ('+$t('withdraw.optional')+')'))"
+                      prop="bankState"
+                      class="form-item flex-1 ellipsis-label"
+                      style="margin-bottom: 0;overflow: hidden"
+                    >
                         <el-select
                           v-model="form.bankState"
                           :placeholder="(isBankAccount ? $t('withdraw.applyFormLabelBankState') : $t('withdraw.applyFormLabelState')) + (form.withdrawCurrency === 'USD' ? '' : (' ('+$t('withdraw.optional')+')'))"
@@ -1418,7 +1423,12 @@ onUnmounted(()=>{
                             />
                         </el-select>
                     </el-form-item>
-                    <el-form-item :label="$t('withdraw.applyFormLabelZip') + (form.withdrawCurrency === 'USD' ? '' : (' ('+$t('withdraw.optional')+')'))" prop="zip" class="form-item w-180" style="margin-bottom: 0">
+                    <el-form-item
+                      :label="$t('withdraw.applyFormLabelZip') + (form.withdrawCurrency === 'USD' ? '' : (' ('+$t('withdraw.optional')+')'))"
+                      prop="zip"
+                      class="form-item w-180 ellipsis-label"
+                      style="margin-bottom: 0"
+                    >
                         <el-input
                           v-model="form.zip"
                           :maxlength="12"
@@ -1547,12 +1557,15 @@ onUnmounted(()=>{
 }
 .w-160 {
     width: 160px;
+    min-width: 160px;
 }
 .w-180 {
     width: 180px;
+    min-width: 180px;
 }
 .w-480 {
     width: 480px;
+    min-width: 480px;
 }
 .black-span {
     color: #171717;
@@ -1708,6 +1721,14 @@ onUnmounted(()=>{
         &.nowrap-label {
             :deep(.el-form-item__label) {
                 white-space: nowrap;
+            }
+        }
+        &.ellipsis-label {
+            :deep(.el-form-item__label) {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                max-width: 100%;
             }
         }
         &.empty-label {
