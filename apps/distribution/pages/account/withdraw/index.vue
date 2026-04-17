@@ -1211,7 +1211,7 @@ onUnmounted(()=>{
                     </el-popover>
                 </div>
             </div>
-            <div v-if="isApplyAmtAble && isGetFee" class="mb32" :class="{ pl16: isMobile, pr16: isMobile, pl32: !isMobile, pr32: !isMobile }">
+            <div v-if="isApplyAmtAble" class="mb32" :class="{ pl16: isMobile, pr16: isMobile, pl32: !isMobile, pr32: !isMobile }">
                 <div class="fee-container">
                     <p class="flex items-center">
                         <span class="tertiary-span2">{{ $t('withdraw.applyFormFeeModuleWithdrawalLabel') }}</span>
