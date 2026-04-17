@@ -647,7 +647,7 @@ onUnmounted(()=>{
                 </el-form-item>
                 <el-form-item v-if="!isBankAccount" :label="$t('withdraw.applyFormLabelPaypalAccount')" prop="paypalAccount" class="form-item">
                     <el-input
-                      v-model="form.paypalAccount"
+                      v-model="form.accountNumber"
                       class="form-input input-default"
                       placeholder=""
                     ></el-input>
