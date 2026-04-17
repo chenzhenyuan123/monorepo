@@ -496,12 +496,12 @@ const triggerCycle = () => {
 
 
 // 选中记录地址
-function selectBankcardData(obj) {
+async function selectBankcardData(obj) {
     Object.assign(form, {
         accountType: obj.accountType,
         accountHolderType: obj.accountHolderType,
         accountName: obj.accountName,
-        bankState: nameToProvince.value[obj.bankState],
+        // bankState: nameToProvince.value[obj.bankState],
         zip: obj.zip,
         openingBankCountry: obj.openingBankCountry,
         openingBankCity: obj.openingBankCity,
@@ -527,6 +527,10 @@ function selectBankcardData(obj) {
     }
     risk_control_check('accountName')
     risk_control_check('openingBankCountry')
+    if (obj.openingBankCountry) {
+        await getBaseProvinceByCountry(form.openingBankCountry)
+        form.bankState = nameToProvince.value[obj.bankState]
+    }
 }
 
 
