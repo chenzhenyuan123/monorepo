@@ -9,6 +9,10 @@
         openingBankCountry: {
             type: String,
             default: ''
+        },
+        withdrawCurrency: {
+            type: String,
+            default: ''
         }
     })
     const { withdrawApi } = useApi()
@@ -29,6 +33,7 @@
         withdrawApi.success_bankcard_listPage({
             withdrawType: props.withdrawType,
             openingBankCountry: props.openingBankCountry,
+            currency: props.withdrawCurrency,
             pageNo: 1,
             pageSize: 10
         }).then(result => {
