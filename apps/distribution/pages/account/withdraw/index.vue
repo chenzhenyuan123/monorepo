@@ -1297,9 +1297,10 @@ onUnmounted(()=>{
                     <p class="tertiary-span2">{{ $t('withdraw.applyFormMessageAccountUlTip') }}</p>
                 </div>
                 <AccountWithdrawAccountUl
-                  :key="form.withdrawType + '-' + form.openingBankCountry"
+                  :key="form.withdrawType + '-' + form.openingBankCountry + '-' + form.withdrawCurrency"
                   :withdrawType="form.withdrawType"
                   :openingBankCountry="form.openingBankCountry"
+                  :withdrawCurrency="form.withdrawCurrency"
                   @obtainedData="obtainedData"
                   @select="selectBankcardData"
                 ></AccountWithdrawAccountUl>
