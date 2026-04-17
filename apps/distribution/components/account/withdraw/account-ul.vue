@@ -25,20 +25,19 @@
     ])
 
     // 查询提现成功卡列表
-    const qryBankcard = async() => {
-        if (!(props.withdrawType && props.openingBankCountry)) {
-            emit('obtainedData', false)
-            return
-        }
-        const result = await withdrawApi.success_bankcard_listPage({
+    function qryBankcard() {
+        withdrawApi.success_bankcard_listPage({
             withdrawType: props.withdrawType,
             openingBankCountry: props.openingBankCountry,
             pageNo: 1,
             pageSize: 10
+        }).then(result => {
+            const res = checkResponseData(result)
+            successBankcardData.value = res.list || []
+            emit('obtainedData', successBankcardData.value.length > 0)
+        }).catch(() => {
+            emit('obtainedData', false)
         })
-        const res = checkResponseData(result)
-        successBankcardData.value = res.list || []
-        emit('obtainedData', successBankcardData.value.length > 0)
     }
 
     // 删除提现成功卡记录
