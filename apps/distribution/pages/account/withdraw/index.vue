@@ -503,7 +503,7 @@ function selectBankcardData(obj) {
         accountName: obj.accountName,
         bankState: nameToProvince.value[obj.bankState],
         zip: obj.zip,
-        // openingBankCountry: obj.openingBankCountry,
+        openingBankCountry: obj.openingBankCountry,
         openingBankCity: obj.openingBankCity,
         openingBankAddress: obj.openingBankAddress,
     })
