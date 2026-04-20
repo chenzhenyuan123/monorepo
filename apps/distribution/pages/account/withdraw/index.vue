@@ -730,7 +730,7 @@ const rules = () => {
                     if (value || form.withdrawCurrency !== 'USD') {
                         callback()
                     } else if (!isValidZipcode(value)){
-                        callback(new Error(t("profile.zipcodeLimit")))
+                        callback(new Error(''))
                     } else {
                         callback(new Error(t('withdraw.pleaseEnter')))
                     }
