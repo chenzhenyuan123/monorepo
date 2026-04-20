@@ -14,10 +14,10 @@ const isMobile = useIsMobile()
 // const popoverVisible = ref(false)
 const isShowErrorGialog = ref(false)
 const isShowSuspendedGialog = ref(false)
-const limitAmount = ref(50)
 const ableBalanceAmount = ref(0)
 const activeName = ref('')
 const radio1 = ref('referral')
+const balanceCurrency = ref('USD')
 const walletInfo = reactive({
   pendingCommission: undefined,
   availableCommission: undefined,
@@ -28,7 +28,8 @@ const walletInfo = reactive({
 const tabsData = computed(() => {
   return [
     { value: 'transactions', label: t('wallet.transactions') },
-    { value: 'withdraw', label: t('wallet.withdrawalRecords') }
+    { value: 'withdraw', label: t('wallet.withdrawalRecords') },
+    { value: 'exchangeAccount', label: t('wallet.exchangeAccount') }
   ]
 })
 const tabsDict = computed(() => {
@@ -81,20 +82,38 @@ const formatterAmount = (v, c) => {
 const handleClick = () => {
 // console.log(activeName.value)
 }
-const jumpToWithdraw = () => {
-  lockStatus().then(() => {
-    if (lockStatusData.value.isLock) {
-      isShowSuspendedGialog.value = true
-      return
+
+
+const minWithdrawalAmountData = ref({
+  currency: undefined,
+  minWithdrawalAmount: undefined,
+})
+// 查询币种最小可提现金额
+const qryMinWithdrawalAmount = (currency) => {
+  return withdrawApi.qryMinWithdrawalAmount({ currency }).then((result) => {
+    const res = checkResponseData(result)
+    minWithdrawalAmountData.value = res || {}
+  })
+}
+
+
+const jumpToWithdraw = async () => {
+  await lockStatus()
+  if (lockStatusData.value.isLock) {
+    isShowSuspendedGialog.value = true
+    return
+  }
+  await qryMinWithdrawalAmount(balanceCurrency.value)
+  if (!(ableBalanceAmount.value >= minWithdrawalAmountData.value.minWithdrawalAmount)) {
+    // popoverVisible.value = !popoverVisible.value
+    isShowErrorGialog.value = true
+    return
+  }
+  router.push({
+    path: '/account/withdraw',
+    query: {
+      currency: balanceCurrency.value
     }
-    if (!(ableBalanceAmount.value > limitAmount.value)) {
-      // popoverVisible.value = !popoverVisible.value
-      isShowErrorGialog.value = true
-      return
-    }
-    router.push({
-      path: '/account/withdraw'
-    })
   })
 }
 
@@ -263,12 +282,17 @@ onMounted(() => {
       <AccountWalletSubDistributorReferral v-else-if="radio1 === 'sub-distributor-referral'"></AccountWalletSubDistributorReferral>
     </template>
     <AccountWalletWithdrawalRecords v-else-if="activeName === 'withdraw'"></AccountWalletWithdrawalRecords>
+    <AccountWalletExchangeAccount
+      v-else-if="activeName === 'exchangeAccount'"
+      :class="[ isMobile ? 'pt20' : 'pt12' ]"
+    ></AccountWalletExchangeAccount>
     <!-- <EmptyData v-else-if="activeName === 'withdraw'"></EmptyData> -->
 
     <AccountWithdrawNotMetDialog
         v-if="isShowErrorGialog"
         v-model="isShowErrorGialog"
-        :amount="limitAmount"
+        :currency="minWithdrawalAmountData.currency"
+        :amount="minWithdrawalAmountData.minWithdrawalAmount"
     ></AccountWithdrawNotMetDialog>
     <AccountWithdrawTemporarilySuspendedDialog
         v-if="isShowSuspendedGialog"

@@ -50,6 +50,17 @@ const statusToType = computed(() => {
   return arrToDict(statusData.value, { label: 'type' })
 })
 
+
+const withdrawCurrencyListData = ref([])
+// 查询到账币种列表
+const qryCreditedCurrencyList = () => {
+  return withdrawApi.qryCreditedCurrencyList().then((result) => {
+    const res = checkResponseData(result)
+    withdrawCurrencyListData.value = res || []
+  })
+}
+
+
 const hasTableData = ref(false)
 const reload = () => table.value.reload()
 const query = () => table.value.query()
@@ -87,6 +98,11 @@ const jumpToDetail = (r) => {
         }
     })
 }
+
+onMounted(async ()=>{
+  await console.log('onMounted')
+  qryCreditedCurrencyList()
+})
 </script>
 
 <template>
@@ -151,6 +167,16 @@ const jumpToDetail = (r) => {
                   @change="query"
                 />
             </el-form-item>
+            <el-form-item :label="$t('wallet.withdrawalRecordsFormLabelWithdrawCurrency')" style="width: 200px;">
+                <el-select
+                  v-model="formData.withdrawCurrency"
+                  clearable
+                  placeholder="All"
+                  @change="query"
+                >
+                    <el-option v-for="item in withdrawCurrencyListData" :key="item" :label="item" :value="item" />
+                </el-select>
+            </el-form-item>
             <el-form-item :label="$t('wallet.withdrawalRecordsFormLabelStatus')" style="width: 200px;">
                 <el-select
                   v-model="formData.status"
@@ -185,12 +211,17 @@ const jumpToDetail = (r) => {
                     <span class="direction-ltr direction-inline-block">{{ formatDate(row.applyTime) }}</span>
                 </template>
             </el-table-column>
-            <el-table-column prop="applyAmt" :label="$t('wallet.withdrawalRecordsTableLabelAmount')" min-width="300" align="right">
+            <el-table-column prop="applyAmt" :label="$t('wallet.withdrawalRecordsTableLabelWithdrawalAmount')" min-width="300" align="right">
                 <template #default="{ row }">
-                    {{ formatterAmount(row.applyAmt, row.withdrawCurrency) }}
+                    {{ formatterAmount(row.applyAmt, row.accountCurrency) }}
                 </template>
             </el-table-column>
             <el-table-column prop="withdrawMethod" :label="$t('wallet.withdrawalRecordsTableLabelMethod')" min-width="160" />
+            <el-table-column prop="applyAmt" :label="$t('wallet.withdrawalRecordsTableLabelEstimatedAmountReceived')" min-width="300" align="right">
+              <template #default="{ row }">
+                {{ formatterAmount(row.arriveAmt, row.withdrawCurrency) }}
+              </template>
+            </el-table-column>
             <el-table-column prop="withdrawFee" :label="$t('wallet.withdrawalRecordsTableLabelWithdrawalFee')" min-width="300" align="right">
                 <template #default="{ row }">
                     {{ formatterAmount(row.withdrawFee, row.withdrawCurrency) }}
@@ -198,12 +229,23 @@ const jumpToDetail = (r) => {
             </el-table-column>
             <el-table-column prop="status" tag :label="$t('wallet.withdrawalRecordsTableLabelState')" min-width="200">
             <template #default="{ row }">
-                <el-tag v-if="row.status" :type="statusToType[row.status]" class="tag-default">
+              <el-popover
+                v-if="row.status"
+                placement="top"
+                effect="dark"
+                :width="309"
+                :content="row.failReason"
+                :disabled="!row.failReason"
+              >
+                <template #reference>
+                  <el-tag :type="statusToType[row.status]" class="tag-default">
                     <el-icon v-if="statusToType[row.status] === 'success'" class="tag-icon"><Check /></el-icon>
                     <span v-else-if="statusToType[row.status] === 'primary'" class="tag-icon"><span class="circle"></span></span>
                     <el-icon v-else-if="statusToType[row.status] === 'danger'" class="tag-icon"><Close /></el-icon>
                     <span class="tag-span">{{ statusDict[row.status] }}</span>
-                </el-tag>
+                  </el-tag>
+                </template>
+              </el-popover>
             </template>
             </el-table-column>
             <el-table-column action class-name="operation-col" :label="$t('wallet.withdrawalRecordsTableLabelActions')" min-width="100" fixed="right">
