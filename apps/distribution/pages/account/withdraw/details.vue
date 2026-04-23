@@ -112,7 +112,7 @@ const statusData = computed(() => {
     { value: 'WITHDRAW_ACCEPT_FAIL', label: t('wallet.dataWithdrawStatusFailed'), type: 'danger' },
     { value: 'WITHDRAW_ACCEPT_SUCCESS', label: t('wallet.dataWithdrawStatusProccessing'), type: 'primary' },
     { value: 'ISSUING', label: t('wallet.dataWithdrawStatusProccessing'), type: 'primary' },
-    { value: 'ISSUE_ACCEPT_FAIL', label: t('wallet.dataWithdrawStatusProccessing'), type: 'primary' },
+    { value: 'ISSUE_ACCEPT_FAIL', label: t('wallet.dataWithdrawStatusFailed'), type: 'danger' },
     { value: 'ISSUE_ACCEPT_SUCCESS', label: t('wallet.dataWithdrawStatusProccessing'), type: 'primary' },
     { value: 'ISSUE_SUCCESS', label: t('wallet.dataWithdrawStatusSuccess'), type: 'success' },
     { value: 'ISSUE_FAIL', label: t('wallet.dataWithdrawStatusFailed'), type: 'danger' },
