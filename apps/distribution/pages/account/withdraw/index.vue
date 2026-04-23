@@ -875,7 +875,10 @@ const apply = (checkCode) => {
     if (isShowAccountType.value) params.accountType = form.accountType
     if (isShowBankCode.value) params.bankCode = form.bankCode
     if (isShowBranchBankCode.value) params.branchBankCode = form.branchBankCode
-    if (form.bankState) params.bankState = provinceToName.value[form.bankState]
+    if (form.bankState) {
+        params.bankStateId = form.bankState
+        params.bankState = provinceToName.value[form.bankState]
+    }
     if (isShowRoutingNumber.value) params.routingNumber = form.routingNumber
     params.saveFlag = form.saveFlag ? 'Y' : 'N'
 
