@@ -2,6 +2,16 @@
   color: #5548FF;
   --el-link-text-color: #5548FF;
 }
+.line-clamp2.el-button > span {
+  max-width: 100%;
+  word-break: break-word;
+  white-space: normal;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2; /* 限制为两行 */
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .el-button.el-button--primary, .el-button.el-button--primary:focus {
   background-color: #5548FF;
   border-color: #5548FF;

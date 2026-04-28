@@ -80,9 +80,9 @@ const submit = type => {
         </el-form>
       </div>
       <template #footer>
-        <span class="dialog-footer">
-          <el-button :icon="showCopyText ? Check : ''" @click="submit('text')">{{$t('products.productsCopyLinkText')}}</el-button>
-          <el-button :icon="showCopyLink ? Check : ''" type="primary" @click="submit('link')">{{$t('products.productsCopyLink')}}</el-button>
+        <span class="dialog-footer flex justify-end gap12 flex-wrap">
+          <el-button :icon="showCopyText ? Check : ''" class="line-clamp2" @click="submit('text')">{{$t('products.productsCopyLinkText')}}</el-button>
+          <el-button :icon="showCopyLink ? Check : ''" class="line-clamp2" type="primary" @click="submit('link')">{{$t('products.productsCopyLink')}}</el-button>
         </span>
       </template>
     </el-dialog>
