@@ -313,6 +313,35 @@
   }
 }
 
+// 圆形国别图标
+.circle-country-icon-container {
+  position: relative;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  overflow: hidden;
+  //margin-right: 8px;
+  &.size-20 {
+    width: 20px;
+    height: 20px;
+  }
+  img {
+    //width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+}
+
+.li-circle {
+  width: 6px;
+  height: 6px;
+  border-radius: 4px;
+  background-color: currentColor;
+}
+
 * {
   word-break: break-word;
 }
@@ -327,11 +356,15 @@
 }
 
 .full-all {
-  max-width: 100%;
-  max-height: 100%;
+  width: 100%;
+  height: 100%;
 }
 .w-full {
   width: 100%;
+}
+.full-max {
+  max-width: 100%;
+  max-height: 100%;
 }
 
 // 溢出...，限制1行
@@ -377,6 +410,18 @@ $flex-center-width-max: 100;
   }
   .mr#{$i} {
     margin-right: $i * 1px;
+  }
+  .pt#{$i} {
+    padding-top: $i * 1px;
+  }
+  .pb#{$i} {
+    padding-bottom: $i * 1px;
+  }
+  .pl#{$i} {
+    padding-left: $i * 1px;
+  }
+  .pr#{$i} {
+    padding-right: $i * 1px;
   }
   .gap#{$i} {
     gap: $i * 1px;

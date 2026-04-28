@@ -1,6 +1,20 @@
 <script setup>
     import {checkResponseData} from "@/util";
 
+    const props = defineProps({
+        withdrawType: {
+            type: String,
+            default: ''
+        },
+        openingBankCountry: {
+            type: String,
+            default: ''
+        },
+        withdrawCurrency: {
+            type: String,
+            default: ''
+        }
+    })
     const { withdrawApi } = useApi()
     const emit = defineEmits(["obtainedData", "select"])
 
@@ -15,14 +29,20 @@
     ])
 
     // 查询提现成功卡列表
-    const qryBankcard = async() => {
-        const result = await withdrawApi.success_bankcard_listPage({
+    function qryBankcard() {
+        withdrawApi.success_bankcard_listPage({
+            withdrawType: props.withdrawType,
+            openingBankCountry: props.openingBankCountry,
+            currency: props.withdrawCurrency,
             pageNo: 1,
             pageSize: 10
+        }).then(result => {
+            const res = checkResponseData(result)
+            successBankcardData.value = res.list || []
+            emit('obtainedData', successBankcardData.value.length > 0)
+        }).catch(() => {
+            emit('obtainedData', false)
         })
-        const res = checkResponseData(result)
-        successBankcardData.value = res.list || []
-        if (successBankcardData.value.length) emit('obtainedData', true)
     }
 
     // 删除提现成功卡记录
@@ -37,15 +57,16 @@
         const result = await withdrawApi.success_bankcard_get(id)
         const res = checkResponseData(result)
         if (res) {
-            emit('select', {
-                accountName: res.accountName,
-                accountNumber: res.accountNumber,
-                bankName: res.bankName,
-                swiftCode: res.swiftCode,
-                openingBankCountry: res.openingBankCountry,
-                openingBankCity: res.openingBankCity,
-                openingBankAddress: res.openingBankAddress,
-            })
+            emit('select', res)
+            // emit('select', {
+            //     accountName: res.accountName,
+            //     accountNumber: res.accountNumber,
+            //     bankName: res.bankName,
+            //     swiftCode: res.swiftCode,
+            //     openingBankCountry: res.openingBankCountry,
+            //     openingBankCity: res.openingBankCity,
+            //     openingBankAddress: res.openingBankAddress,
+            // })
         }
     }
     onMounted(()=>{
@@ -54,7 +75,7 @@
 </script>
 
 <template>
-    <ul class="account-ul">
+    <ul class="account-ul gap12">
         <AccountWithdrawAccountItem
                 v-for="item in successBankcardData"
                 :key="item.id"
