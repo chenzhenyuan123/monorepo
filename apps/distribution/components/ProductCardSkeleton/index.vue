@@ -218,7 +218,7 @@ const generateLinkClick = (item) => {
                   </div>
                 </div>
                 <div class="get-affiliate-link">
-                  <el-button id="Product-get-affiliate-link" class="button" @click="generateLinkClick(item)">{{$t('home.homeGetAffiliateLink')}}</el-button>
+                  <el-button id="Product-get-affiliate-link" class="button line-clamp2" @click="generateLinkClick(item)">{{$t('home.homeGetAffiliateLink')}}</el-button>
                 </div>
                 <div v-if="item.storeName" class="store-name-box">
                   <div class="store-name-icon">
