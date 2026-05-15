@@ -251,7 +251,7 @@ const showPopover = async(row) => {
                   </el-tag>
               </template>
             </el-table-column>
-          <el-table-column prop="purchaseTime" :label="$t('wallet.referralTableLabelEstimatedCommissionPostingDate')" min-width="200">
+          <el-table-column prop="estimatedSettlementDate" :label="$t('wallet.referralTableLabelEstimatedCommissionPostingDate')" min-width="200">
             <template #header="scope">
               <el-popover
                 placement="top"
@@ -270,10 +270,10 @@ const showPopover = async(row) => {
               </el-popover>
             </template>
             <template #default="{ row }">
-              <span class="direction-ltr direction-inline-block">{{ formatDate(row.purchaseTime, 4) }}</span>
+              <span class="direction-ltr direction-inline-block">{{ row.estimatedSettlementDate }}</span>
             </template>
           </el-table-column>
-          <el-table-column prop="purchaseTime" :label="$t('wallet.referralTableLabelActualCommissionPostingDate')" min-width="200">
+          <el-table-column prop="settlementDate" :label="$t('wallet.referralTableLabelActualCommissionPostingDate')" min-width="200">
             <template #header="scope">
               <el-popover
                 placement="top"
@@ -288,7 +288,7 @@ const showPopover = async(row) => {
               </el-popover>
             </template>
             <template #default="{ row }">
-              <span class="direction-ltr direction-inline-block">{{ formatDate(row.purchaseTime, 4) }}</span>
+              <span class="direction-ltr direction-inline-block">{{ row.settlementDate }}</span>
             </template>
           </el-table-column>
         </pro-table>
