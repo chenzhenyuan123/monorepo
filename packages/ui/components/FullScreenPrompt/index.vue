@@ -162,7 +162,7 @@ const getImage = (url) => {
     if(props.isMobile) { // 移动端高度自适应
       width.value = '100%'
       // 获取容器实际宽度（100%对应的像素值）
-      const containerWidth = fullDialogRef.value?.$el?.parentElement?.clientWidth || window.innerWidth - 16
+      const containerWidth = fullDialogRef.value?.$el?.parentElement?.clientWidth || window.innerWidth - 24
       // 根据图片宽高比计算实际显示高度
       const displayHeight = containerWidth * (tImamge.height / tImamge.width)
       // 限制最大高度
@@ -212,7 +212,7 @@ const toPage = () => {
     :class="{ 'm': isMobile }"
     :align-center="true"
   >
-    <div class="container" :class="{ 'container-img': data.category === 2 }" :style="{ width: data.category === 2 ? width : 'calc(100% - 32px)' }">
+    <div class="container" :class="{ 'container-img': data.category === 2 }" :style="{ width: data.category === 2 ? width : 'calc(100% - 48px)' }">
       <div v-if="data.category === 2" :style="{ width }">
         <el-carousel
           v-if="data.popChirldPictureCos && data.popChirldPictureCos.length > 0"
@@ -249,19 +249,19 @@ const toPage = () => {
           {{ data.title }}
         </div>
         <div class="content" v-html="data.content" />
-        <i v-if="data.closeButtonView === 1" class="el-icon el-icon-close close-custom" @click="cancel" />
+        <el-icon v-if="data.closeButtonView === 1" class="close-custom" @click="cancel"><Close /></el-icon>
       </div>
       <!-- 按钮 -->
       <div v-if="showBtns" class="btns">
-        <el-button v-if="data.category === 2 && popChirldPicturesIndex > 0" round type="text" @click="prev">{{ $t('fullScreenPrompt.PreStep') }}</el-button>
-        <el-button v-if="data.category === 1 && data.closeButtonView === 1" round type="text" @click="cancel">{{ $t('fullScreenPrompt.cancel') }}</el-button>
+        <el-button v-if="data.category === 2 && popChirldPicturesIndex > 0" type="text" @click="prev">{{ $t('fullScreenPrompt.PreStep') }}</el-button>
+        <el-button v-if="data.category === 1 && data.closeButtonView === 1" type="text" @click="cancel">{{ $t('fullScreenPrompt.cancel') }}</el-button>
         <div v-if="data.comfirmButtonView === 1 || showNext" class="btn-bg" @click="save">
-          <div v-if="!data.buttonPicture" :style="{ background: data.buttonColour ? '#' + data.buttonColour : '#517fff' }" class="text-btn">
+          <el-button v-if="!data.buttonPicture" :style="{ background: data.buttonColour ? '#' + data.buttonColour : '#5548ff' }" type="primary" class="text-btn">
             {{ !showNext ? data.confirmButton : $t('fullScreenPrompt.nextStep') }}
-          </div>
+          </el-button>
           <div v-else class="btn" :style="{ height: btnHeight }">
             <img v-if="data.buttonPicture" class="btn-img" :style="{ width: btnWidth }" :src="previewImg(data.buttonPicture)" alt="">
-            <div class="btn-img-text">{{ !showNext ? data.confirmButton : $t('fullScreenPrompt.nextStep') }}</div>
+            <el-button type="primary" class="btn-img-text">{{ !showNext ? data.confirmButton : $t('fullScreenPrompt.nextStep') }}</el-button>
           </div>
         </div>
       </div>
@@ -291,7 +291,7 @@ const toPage = () => {
   position: relative;
   border-radius: 24px;
   box-shadow: 0 4px 20px 0 #00000026;
-  padding: 0 16px;
+  padding: 0 24px;
   background: #fff;
   overflow: hidden;
   .title {
@@ -299,10 +299,10 @@ const toPage = () => {
     font-size: 20px;
     color: #222;
     line-height: 30px;
-    padding: 16px 0
+    padding: 20px 0
   }
   .image-text {
-    margin: 16px 16px 0 16px;
+    margin: 16px 24px 0 24px;
     .image-title {
       color: #171717;
       font-size: 16px;
@@ -317,21 +317,18 @@ const toPage = () => {
     }
   }
   .content {
-    padding: 24px 0 48px;
+    margin: 0 0 24px;
     font-size: 14px;
-    color: #686a6c;
     line-height: 24px;
     min-height: 24px;
-    max-height: 300px;
-    overflow: auto;
-    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0.9) 80%, transparent 100%);
-    mask-image: linear-gradient(to bottom, rgba(0,0,0,0.9) 80%, transparent 100%);
+    max-height: 400px;
+    overflow-y: auto;
   }
   .btns {
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    margin: 16px 0 24px;
+    margin: 24px 0 24px;
     .btn-bg {
       cursor: pointer;
       display: flex;
@@ -340,15 +337,17 @@ const toPage = () => {
       .text-btn {
         padding: 10px 16px;
         flex: 1;
-        margin: 0 16px;
+        margin-left: 16px;
         max-width: 352px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        border-radius: 32px;
-        background: #517fff;
-        color: #fff;
-        font-weight: 600;
+        min-width: 44px;
+        height: 40px;
+        background: #5548ff;
+        // display: flex;
+        // justify-content: center;
+        // align-items: center;
+        // border-radius: 8px;
+        // color: #fff;
+        // font-weight: 600;
       }
       .btn {
         // cursor: pointer;
@@ -360,6 +359,7 @@ const toPage = () => {
         align-items: center;
         color: #fff;
         font-weight: 600;
+        min-width: 44px;
         .btn-img {
           position: relative;
           border-radius: 0;
@@ -373,6 +373,19 @@ const toPage = () => {
           align-items: center;
         }
       }
+    }
+    .el-button--text {
+      background: #fff;
+      padding: 10px 16px;
+      border: 1px solid #d0d5dd;
+      border-radius: 8px;
+      box-shadow: inset 0 0 0 1px #1018282e, inset 0 -2px #1018280d, 0 1px 2px #1018280d;
+      color: #344054;
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 24px;
+      height: 40px;
+      min-width: 44px;
     }
   }
   .cursor {
@@ -403,6 +416,9 @@ const toPage = () => {
 }
 .container-img {
   padding: 0;
+  .btns {
+    margin: 24px;
+  }
 }
 // 新增：走马灯容器样式
 .screen-carousel-container {
