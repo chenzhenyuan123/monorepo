@@ -9,49 +9,39 @@ const { clientApi } = useApi()
 const props = defineProps({
 })
 const attrs = useAttrs()
-const form = reactive({
+const form = ref({
     storeId: undefined
 })
 const isCopySuccess = ref(false)
+
+
 const inviteData = reactive({
     // 分销员佣金比例
     distributorCommissionRateStr: '',
-    bindingStoreList: [
-        // {
-        //     // 店铺id
-        //     storeId: undefined,
-        //     // 店铺名称
-        //     storeName: undefined,
-        //     // 用户编号 分销员
-        //     userNo: undefined,
-        //     // 分享链接
-        //     signupUrl: undefined,
-        // }
-    ]
-
+    bindingStoreList: []
 })
 const bindingStoreToObj = computed(() => {
     return arrToDict(inviteData.bindingStoreList, { value: 'storeId', label: null })
 })
 const inviteItemData = computed(() => {
-     return bindingStoreToObj.value[form.storeId] || {}
+     return bindingStoreToObj.value[form.value.storeId] || {}
 })
-
 // 邀请店铺下拉列表
-const getInviteData = async() => {
-    const result = await clientApi.bind_listStoresToInvite()
-    const res = checkResponseData(result)
-    if (res) {
-        res.bindingStoreList = res.bindingStoreList || []
-        res.bindingStoreList.forEach(item => {
-            item.label = item.storeName ? `${item.storeName}（${item.storeId}）` : item.storeId
-        });
-        Object.assign(inviteData, res)
-        // if (inviteData.bindingStoreList.length) {
-        //     form.storeId = inviteData.bindingStoreList[0].storeId
-        // }
-    }
+function getInviteData() {
+    clientApi.bind_listStoresToInvite().then(result => {
+        const res = checkResponseData(result)
+        if (res) {
+            const bindingStoreList = res.bindingStoreList || []
+            bindingStoreList.forEach(item => {
+                item.label = item.storeName ? `${item.storeName}（${item.storeId}）` : item.storeId
+            });
+            inviteData.bindingStoreList = bindingStoreList
+        }
+    })
 }
+getInviteData()
+
+
 const cancel = () => {
     const fn = attrs['onUpdate:modelValue']
     fn && fn(false)
@@ -71,8 +61,6 @@ const submit = () => {
         }, 500)
     }
 }
-
-getInviteData()
 
 </script>
 
@@ -103,17 +91,40 @@ getInviteData()
             <el-form-item :label="$t('invitation.inviteDialogLabelStore')" class="dialog-form-item">
                 <el-select
                     v-model="form.storeId"
+                    multiple
+                    collapse-tags
+                    :multiple-limit="10"
                     placeholder=""
-                    class="select-default"
+                    class="select-default multiple h44"
+                    popper-class="select-checkbox-popper-1779263932970"
                 >
+                    <div class="tertiary-span pl10 pr10 mb8">Note: you can select up to 10 affiliate programs at a time</div>
                     <el-option
                         v-for="item in inviteData.bindingStoreList"
                         :key="item.storeId"
                         :value="item.storeId"
                         :label="item.label"
-                    />
+                    >
+                        <div class="flex items-center gap8">
+                            <div class="base-icon lh0">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M4 0.5H12C13.933 0.5 15.5 2.067 15.5 4V12C15.5 13.933 13.933 15.5 12 15.5H4C2.067 15.5 0.5 13.933 0.5 12V4C0.5 2.067 2.067 0.5 4 0.5Z" stroke="#D0D5DD"/>
+                                </svg>
+                            </div>
+                            <div class="select-icon lh0">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M0 4C0 1.79086 1.79086 0 4 0H12C14.2091 0 16 1.79086 16 4V12C16 14.2091 14.2091 16 12 16H4C1.79086 16 0 14.2091 0 12V4Z" fill="#5548FF"/>
+                                    <path d="M12 5L6.5 10.5L4 8" stroke="white" stroke-width="1.6666" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                            <div><span class="black-span2">{{ item.storeName }}</span><span class="tertiary-span">（{{ item.storeId }}）</span></div>
+                        </div>
+                    </el-option>
                 </el-select>
-                <div class="dialog-form-item-p">{{$t('invitation.inviteDialogDescribeStoreBefore')}} <span class="dialog-form-item-span-primary direction-ltr direction-inline-block">10</span> {{$t('invitation.inviteDialogDescribeStoreafter')}}</div>
+                <div class="tertiary-span f12 mt8">{{$t('invitation.inviteDialogDescribeStoreBefore')}} <span class="primary-span f12 fw600 direction-ltr direction-inline-block">10</span> {{$t('invitation.inviteDialogDescribeStoreafter')}}</div>
+            </el-form-item>
+            <el-form-item label="Choose your reward type" class="dialog-form-item">
+
             </el-form-item>
             <el-form-item :label="$t('invitation.inviteDialogLabelLink')" class="dialog-form-item">
                 <el-input
@@ -121,7 +132,7 @@ getInviteData()
                     class="dialog-form-input input-default"
                     readonly
                 />
-                <div class="dialog-form-item-p">{{$t('invitation.inviteDialogDescribeLink')}}</div>
+                <div class="tertiary-span f12 mt8">{{$t('invitation.inviteDialogDescribeLink')}}</div>
             </el-form-item>
         </el-form>
         <template #footer>
@@ -145,10 +156,59 @@ getInviteData()
   </div>
 </template>
 
+<style lang="scss">
+@import url("@/assets/css/element-reset/popper.scss");
+</style>
 <style lang="scss" scoped>
 @import url("@/assets/css/element-reset/button.scss");
 @import url("@/assets/css/element-reset/input.scss");
 @import url("@/assets/css/element-reset/select.scss");
+.black-span {
+    color: #344054;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px;
+    &.f12 {
+        font-size: 12px;
+        line-height: 18px;
+    }
+    &.fw500 {
+        font-weight: 500;
+    }
+}
+.black-span2 {
+    color: #182230;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px;
+}
+.tertiary-span {
+    color: #667085;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px;
+    &.f12 {
+        font-size: 12px;
+        line-height: 18px;
+    }
+}
+.primary-span {
+    color: #5548FF;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px;
+    &.f12 {
+        font-size: 12px;
+        line-height: 18px;
+    }
+    &.fw600 {
+        font-weight: 600;
+    }
+}
 .dialog-container :deep(.el-dialog) {
     max-width: calc(100% - 16px);
     padding: 0;
@@ -228,17 +288,6 @@ getInviteData()
                 .el-input__inner {
                     color: #5548FF;
                 }
-            }
-        }
-        .dialog-form-item-p {
-            color: #475467;
-            font-size: 14px;
-            font-weight: 400;
-            line-height: 20px; /* 142.857% */
-            margin-top: 8px;
-            .dialog-form-item-span-primary {
-                color: #5548FF;
-                font-weight: 700;
             }
         }
     }
