@@ -158,7 +158,7 @@ const onSubmit = () => {
 const onResult = (res) => {
   if(res?.loginCO?.token) {
     userStore.setToken(res.loginCO)
-    if(route.query?.store) {
+    if(route.query?.store || route.query?.share) {
       routerGo('/join')
     } else {
       routerGo('/home')
