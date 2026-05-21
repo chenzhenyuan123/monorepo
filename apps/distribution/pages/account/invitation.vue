@@ -14,14 +14,14 @@ const isShowInviteGialog = ref(false)
 
 
 const formData = ref({})
-const rewardTypeData = computed(() => {
+const sharePatternData = computed(() => {
   return [
-    { value: 1, label: t('invitation.RewardTypeDataHierarchical') },
-    { value: 2, label: t('invitation.RewardTypeDataPeer') },
+    { value: 'parent', label: t('invitation.RewardTypeDataHierarchical') },
+    { value: 'peer', label: t('invitation.RewardTypeDataPeer') },
   ]
 })
-const rewardTypeToLabel = computed(() => {
-  return arrToDict(rewardTypeData.value)
+const sharePatternToLabel = computed(() => {
+  return arrToDict(sharePatternData.value)
 })
 const table = ref()
 const hasTableData = ref(false)
@@ -73,7 +73,7 @@ const request = async({ pageNo, pageSize }) => {
       <el-form v-if="!isMobile && hasTableData" ref="formRef" :model="formData" :inline="true" label-position="top" novalidate>
         <el-form-item :label="$t('invitation.formLabelID')" style="width: 220px;">
           <el-input
-            v-model="formData.programsId"
+            v-model="formData.storeId"
             clearable
             :placeholder="$t('invitation.formLabelID')"
             :suffix-icon="Search"
@@ -83,35 +83,35 @@ const request = async({ pageNo, pageSize }) => {
         </el-form-item>
         <el-form-item :label="$t('invitation.formLabelType')" style="width: 220px;">
           <el-select
-            v-model="formData.rewardType"
+            v-model="formData.sharePattern"
             clearable
             :placeholder="$t('invitation.formLabelType')"
             @change="query"
           >
-            <el-option v-for="item in rewardTypeData" :key="item.value" :label="item.label" :value="item.value" />
+            <el-option v-for="item in sharePatternData" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
-        <div class="flex-1"></div>
-        <el-form-item label=" " class="button-container">
-          <el-button @click="query">{{$t('invitation.formButtonFilter')}}</el-button>
-          <el-button link @click="reset">{{$t('invitation.formButtonReset')}}</el-button>
-        </el-form-item>
+<!--        <div class="flex-1"></div>-->
+<!--        <el-form-item label=" " class="button-container">-->
+<!--          <el-button @click="query">{{$t('invitation.formButtonFilter')}}</el-button>-->
+<!--          <el-button link @click="reset">{{$t('invitation.formButtonReset')}}</el-button>-->
+<!--        </el-form-item>-->
       </el-form>
       <pro-table
         ref="table"
         :request="request"
         :is-show-empty="true"
       >
-        <el-table-column prop="programs" :label="$t('invitation.tableLabelPrograms')" min-width="320">
+        <el-table-column prop="storeName" :label="$t('invitation.tableLabelStoreName')" min-width="320">
           <template #default="{ row }">
-            {{ row.programs }}（{{row.programsId}}）
+            {{ row.storeName }}（{{row.storeId}}）
           </template>
         </el-table-column>
         <el-table-column prop="email" :label="$t('invitation.tableLabelEmail')" min-width="320"/>
         <el-table-column prop="userName" :label="$t('invitation.tableLabelName')" min-width="320"/>
-        <el-table-column prop="rewardType" :label="$t('invitation.tableLabelType')" min-width="200">
+        <el-table-column prop="sharePattern" :label="$t('invitation.tableLabelType')" min-width="200">
           <template #default="{ row }">
-            {{ rewardTypeToLabel[row.rewardType] || row.rewardTypeDesc }}
+            {{ sharePatternToLabel[row.sharePattern] }}
           </template>
         </el-table-column>
         <el-table-column prop="createTime" :label="$t('invitation.tableLabelDate')" min-width="200">

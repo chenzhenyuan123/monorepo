@@ -6,3 +6,7 @@ export const getStoreDistributionSettings = (data) => {
 export const joinStore = (data) => {
   return useHttp.post('/distribution/client/bind/create', data, { server: true })
 }
+// 创建邀请链接
+export const creatInvitationLink = (data) => {
+  return useHttp.post('/distribution/client/bind/creatInvitationLink', data, { server: true })
+}

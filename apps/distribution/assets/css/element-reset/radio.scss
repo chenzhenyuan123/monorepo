@@ -67,6 +67,23 @@
     }
 }
 
+.radio-20-1779342400880 {
+    &.el-radio, .el-radio {
+        gap: 12px;
+        :deep(.el-radio__inner) {
+            width: 20px;
+            height: 20px;
+            &::after {
+                width: 8px;
+                height: 8px;
+            }
+        }
+        :deep(.el-radio__label) {
+            padding: 0;
+        }
+    }
+}
+
 .checkbox-default {
     &.el-checkbox-group {
         gap: 32px;
