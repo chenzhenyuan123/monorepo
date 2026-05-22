@@ -391,6 +391,18 @@
   align-items: center;
 }
 
+.flex-li {
+  &::before {
+    content: "\2022";
+    display: block;
+    min-width: 16px;
+    padding: 0 0.5em;
+    text-align: center;
+    font-size: 18px;
+    box-sizing: border-box;
+  }
+}
+
 .flex-center {
   flex: 1;
 }

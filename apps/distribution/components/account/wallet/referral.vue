@@ -261,8 +261,16 @@ const showPopover = async(row) => {
               >
                 <div>
                   <div>{{ $t('wallet.referralTableLabelTipEstimatedDateP1') }}</div>
-                  <div><span class="red-span">-</span> {{ $t('wallet.referralTableLabelTipEstimatedDateP2Part1') }}<span class="red-span">{{ $t('wallet.referralTableLabelTipEstimatedDateP2Part2') }}</span>{{ $t('wallet.referralTableLabelTipEstimatedDateP2Part3') }}</div>
-                  <div><span class="red-span">-</span> {{ $t('wallet.referralTableLabelTipEstimatedDateP3Part1') }}<span class="red-span">{{ $t('wallet.referralTableLabelTipEstimatedDateP3Part2') }}</span>{{ $t('wallet.referralTableLabelTipEstimatedDateP3Part3') }}</div>
+                  <div class="flex flex-li warning-span fw600">
+                    <div>
+                      <span class="white-span">{{ $t('wallet.referralTableLabelTipEstimatedDateP2Part1') }}</span>{{ $t('wallet.referralTableLabelTipEstimatedDateP2Part2') }}<span class="white-span">{{ $t('wallet.referralTableLabelTipEstimatedDateP2Part3') }}</span>
+                    </div>
+                  </div>
+                  <div class="flex flex-li warning-span fw600">
+                    <div>
+                      <span class="white-span">{{ $t('wallet.referralTableLabelTipEstimatedDateP3Part1') }}</span>{{ $t('wallet.referralTableLabelTipEstimatedDateP3Part2') }}<span class="white-span">{{ $t('wallet.referralTableLabelTipEstimatedDateP3Part3') }}</span>
+                    </div>
+                  </div>
                 </div>
                 <template #reference>
                   <div>{{ scope.column.label }}</div>
@@ -310,8 +318,25 @@ const showPopover = async(row) => {
 .table-container {
     margin-bottom: 32px;
 }
-.red-span {
-  color: #D92D20;
+.warning-span {
+  color: #F98C1F;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px;
+  &.fw500 {
+    font-weight: 500;
+  }
+  &.fw600 {
+    font-weight: 600;
+  }
+  &.f16 {
+    font-size: 16px;
+    line-height: 24px;
+  }
+}
+.white-span {
+  color: #ffffff;
   font-size: 14px;
   font-style: normal;
   font-weight: 400;
