@@ -54,6 +54,7 @@
         }
         .el-input__wrapper {
           height: 44px;
+          box-sizing: border-box;
         }
         .el-select__wrapper {
           height: 44px;
