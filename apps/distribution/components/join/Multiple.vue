@@ -54,8 +54,6 @@ const startCountdown = (val) => {
 };
 // 是否成功加入
 const isGetResult = ref(false)
-// 部分成功加入
-const isPartially = ref(false)
 const joinResultData = ref({
   total: 4,
   successCount: 2,
@@ -120,7 +118,8 @@ const routerGo = (path) => {
         </template>
         <template v-else>
           <template v-if="isGetResult">
-            <template v-if="isPartially">
+            <!--  部分成功加入  -->
+            <template v-if="joinResultData.total !== joinResultData.successCount">
               <h3 class="title">{{$t('joinMultiple.joinPartiallySuccessfulTitle', { email: storeInfo.referrerEmail, total: joinResultData.total, successCount: joinResultData.successCount, failCount: joinResultData.failCount })}}</h3>
               <p class="email-verify-text1">{{$t('joinMultiple.joinPartiallySuccessMessage')}}</p>
             </template>
