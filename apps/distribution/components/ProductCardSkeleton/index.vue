@@ -186,7 +186,6 @@ const generateLinkClick = (item) => {
                             popper-class="popover-1753155721553"
                             :placement="isRTL ? 'bottom-end' : 'bottom-start'"
                             :show-arrow="false"
-                            trigger="click"
                     >
                       <div class="li flex items-center justify-between mb8">
                         <div class="black-span fw500">{{$t('productCard.rateTipLabel1')}}</div>
