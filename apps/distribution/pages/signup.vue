@@ -62,6 +62,9 @@ const onSubmit = formEl => {
       if(route.query?.code) {
         signupForm.value.invitationCode = route.query.code
       }
+      if(route.query?.share) {
+        signupForm.value.shareCode = route.query.share
+      }
       showError.value = false
       loading.value = true
       const result = await contactInfoApi.userRegister({

@@ -39,10 +39,12 @@
       box-shadow: none;
     }
     :deep(.el-form) {
-      padding: 20px 20px 8px;
+      padding: 20px;
+      gap: 12px;
       .el-form-item {
-        margin: 0 12px 12px 0;
+        margin: 0;
         .el-form-item__label {
+          min-height: 20px;
           color: #344054;
           font-size: 14px;
           font-style: normal;
@@ -58,6 +60,15 @@
         }
         .el-range-editor.el-input__wrapper {
           height: 44px;
+        }
+        &.button-container {
+          .el-form-item__content {
+            gap: 12px;
+            .el-button {
+              height: 44px;
+              margin: 0;
+            }
+          }
         }
       }
     }

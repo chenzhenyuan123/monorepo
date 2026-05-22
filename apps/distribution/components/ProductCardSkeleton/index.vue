@@ -187,27 +187,23 @@ const generateLinkClick = (item) => {
                             :placement="isRTL ? 'bottom-end' : 'bottom-start'"
                             :show-arrow="false"
                     >
-                      <div class="li flex-box">
-                        <div class="label">{{$t('productCard.rateTipLabel1')}}</div>
-                        <div class="flex-center"></div>
-                        <div class="value bold">{{ currencyFormat(item.commissionRate * 100) }}%</div>
+                      <div class="li flex items-center justify-between mb8">
+                        <div class="black-span fw500">{{$t('productCard.rateTipLabel1')}}</div>
+                        <div class="black-span fw500">{{ currencyFormat(item.commissionRate * 100) }}%</div>
                       </div>
                       <template v-if="item.goodsCommissionRate && item.distributorCommissionRate">
-                        <div class="li flex-box mt12">
-                          <div class="label">{{$t('productCard.rateTipLabel2')}}</div>
-                          <div class="flex-center"></div>
-                          <div class="value">{{ currencyFormat(item.goodsCommissionRate * 100) }}%</div>
+                        <div class="li sub flex items-center justify-between">
+                          <div class="tertiary-span f12">{{$t('productCard.rateTipLabel2')}}</div>
+                          <div class="tertiary-span f12">{{ currencyFormat(item.goodsCommissionRate * 100) }}%</div>
                         </div>
-                        <div class="li flex-box mt12">
-                          <div class="label">{{$t('productCard.rateTipLabel3')}}</div>
-                          <div class="flex-center"></div>
-                          <div class="value">{{ currencyFormat(item.distributorCommissionRate * 100) }}%</div>
+                        <div class="li sub flex items-center justify-between">
+                          <div class="tertiary-span f12">{{$t('productCard.rateTipLabel3')}}</div>
+                          <div class="tertiary-span f12">{{ currencyFormat(item.distributorCommissionRate * 100) }}%</div>
                         </div>
                       </template>
-                      <div v-if="item.shareCommissionRate" class="li flex-box mt12">
-                        <div class="label">{{$t('productCard.rateTipLabel4')}}</div>
-                        <div class="flex-center"></div>
-                        <div class="value">{{ currencyFormat(item.shareCommissionRate * 100) }}%</div>
+                      <div v-if="item.shareCommissionRate" class="li sub flex items-center justify-between">
+                        <div class="tertiary-span f12">{{$t('productCard.rateTipLabel4')}}</div>
+                        <div class="tertiary-span f12">{{ currencyFormat(item.shareCommissionRate * 100) }}%</div>
                       </div>
                       <template #reference>
                         <b class="underline-dotted pointer direction-ltr direction-inline-block">{{currencyFormat(item.commissionRate * 100)}}% </b>
@@ -258,7 +254,7 @@ const generateLinkClick = (item) => {
 <style lang="scss">
   .popover-1753155721553.el-popover.el-popper {
     box-sizing: border-box;
-    padding: 14px 16px;
+    padding: 12px;
     border-radius: 8px;
     border: 1px solid #E4E7EC;
     background: #FFF;
@@ -269,20 +265,41 @@ const generateLinkClick = (item) => {
     font-weight: 400;
     line-height: 20px;
     .li {
-      .label {
+      &.sub {
+        padding: 4px 0 4px 8px;
+        border-left: 1px solid #E4E7EC;
+        .rtl &{
+          padding: 4px 8px 4px 0;
+          border-left: 0;
+          border-right: 1px solid #E4E7EC;
+        }
+      }
+      .black-span {
         color: #344054;
         font-size: 14px;
         font-style: normal;
-        font-weight: 600;
+        font-weight: 400;
         line-height: 20px;
+        &.fw500 {
+          font-weight: 500;
+        }
       }
-      .value {
+      .mw200 {
         max-width: 200px;
+      }
+      .tertiary-span {
         color: #667085;
-        font-size: 12px;
+        font-size: 14px;
         font-style: normal;
         font-weight: 400;
-        line-height: 18px;
+        line-height: 20px;
+        &.f12 {
+          font-size: 12px;
+          line-height: 18px;
+        }
+        &.fw500 {
+          font-weight: 500;
+        }
         &.bold {
           font-weight: 600;
         }

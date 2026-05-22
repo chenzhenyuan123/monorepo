@@ -396,7 +396,7 @@
 }
 // 固定宽度
 $flex-center-width-max: 100;
-@for $i from 1 through $flex-center-width-max {
+@for $i from 0 through $flex-center-width-max {
   .flex-center-#{$i} {
     width: $i * 1px;
     min-width: $i * 1px;

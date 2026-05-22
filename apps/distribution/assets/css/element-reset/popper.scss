@@ -18,3 +18,36 @@
     }
   }
 }
+
+.select-checkbox-popper-1779263932970 {
+  .el-select-dropdown__list {
+    padding: 8px 6px;
+    .el-select-dropdown__item {
+      height: auto;
+      padding: 9px 10px;
+      border-radius: 6px;
+      line-height: 20px;
+      &.is-selected {
+        background: #F9FAFB;
+        &.after {
+          content: none;
+        }
+        .base-icon {
+          display: none;
+        }
+        .select-icon {
+          display: block;
+        }
+      }
+      + .el-select-dropdown__item {
+        margin-top: 8px;
+      }
+      .base-icon {
+        display: block;
+      }
+      .select-icon {
+        display: none;
+      }
+    }
+  }
+}

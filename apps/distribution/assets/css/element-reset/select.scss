@@ -25,6 +25,29 @@
             }
         }
     }
+    &.multiple {
+        :deep(.el-select__wrapper) {
+            // 多选
+            .el-select__selection.is-near {
+                .el-tag.el-tag--info {
+                    padding: 3px 8px;
+                    border-radius: 6px;
+                    border: 1px solid #D0D5DD;
+                    background: #FFF;
+                    .el-select__tags-text {
+                        color: #344054;
+                        font-size: 12px;
+                        font-style: normal;
+                        font-weight: 500;
+                        line-height: 18px;
+                    }
+                    .el-icon {
+                        color: #98A2B3;
+                    }
+                }
+            }
+        }
+    }
     &.h44 {
         :deep(.el-select__wrapper) {
             height: 44px;
