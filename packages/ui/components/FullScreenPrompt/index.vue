@@ -34,8 +34,30 @@ const height = ref('0') // 弹窗高度
 const msgs = ref([]) // 消息列表
 const fullDialogRef = ref()
 
-const contentBr = computed(() => {
-  return data.value?.content?.replace(/\n/g, "<br>")
+// 走马灯相关状态
+const carouselRef = ref(null) // Carousel组件引用
+const popChirldPicturesIndex = ref(0) // 当前图片索引
+
+// 是否展示下一步按钮
+const showNext = computed(() => {
+  return data.value?.category === 2 && 
+         data.value?.popChirldPictureCos?.length > 1 && 
+         popChirldPicturesIndex.value < (data.value?.popChirldPictureCos?.length - 1)
+})
+// 是否展示操作类按钮
+const showBtns = computed(() => {
+  if (data.value?.category === 1) { // 文字类
+    return data.value?.comfirmButtonView === 1
+  } else { // 图文类
+    return data.value?.comfirmButtonView === 1 || 
+           data.value?.popChirldPictureCos?.length > 1
+  }
+})
+
+const varCss = computed(() => {
+  return {
+    '--carousel-delay': '5s'
+  }
 })
 
 onMounted(() => {
@@ -58,11 +80,46 @@ const setData = () => {
   }
   visible.value = true
   data.value = msgs.value[0]
-  data.value && data.value?.category === 2 && getImage(data.value?.content)
-  data.value && data.value?.category === 2 && getBtnImage(data.value?.buttonPicture)
+  // 根据不同类型加载图片
+  if (data.value?.category === 2) {
+    if (data.value?.popChirldPictureCos?.length > 0) {
+      // 有走马灯数据，加载第一张图片
+      getImage(data.value.popChirldPictureCos[0]?.pictureUrl)
+    } else if (data.value?.content) {
+      // 兼容旧的单图模式
+      getImage(data.value?.content)
+    }
+    
+    if (data.value?.buttonPicture) {
+      getBtnImage(data.value?.buttonPicture)
+    }
+  }
 }
-// 保存-确认
+
+// Carousel切换方法
+const carouselChange = (index) => {
+  popChirldPicturesIndex.value = index
+}
+// 上一步
+const prev = () => {
+  if (carouselRef.value) {
+    carouselRef.value.prev()
+  }
+}
+// 下一步
+const next = () => {
+  if (carouselRef.value) {
+    carouselRef.value.next()
+  }
+}
+
+// 保存-确认, 下一步
 const save = () => {
+  if (showNext.value) {
+    next()
+    return
+  }
+  
   if (data.value?.confirmButtonAction === 1) {
     toPage()
   }
@@ -79,14 +136,16 @@ const cancel = async() => {
   }
 }
 // 图片点击
-const imgClick = () => {
-  if (data.value.comfirmButtonView === 0) { // 如果设置了可url-则跳转页面
+const imgClick = (index) => {
+  if (data.value?.comfirmButtonView === 0) { // 如果设置了可url-则跳转页面
     toPage()
     cancel()
   }
 }
 // 获取图片地址
 const getImage = (url) => {
+  if (!url) return
+  
   const tImamge = new Image()
   tImamge.src = previewImg(url)
   tImamge.onload = () => {
@@ -102,7 +161,13 @@ const getImage = (url) => {
     height.value = h + 'px'
     if(props.isMobile) { // 移动端高度自适应
       width.value = '100%'
-      height.value = 'auto'
+      // 获取容器实际宽度（100%对应的像素值）
+      const containerWidth = fullDialogRef.value?.$el?.parentElement?.clientWidth || window.innerWidth - 24
+      // 根据图片宽高比计算实际显示高度
+      const displayHeight = containerWidth * (tImamge.height / tImamge.width)
+      // 限制最大高度
+      const finalHeight = displayHeight > maxH ? maxH : displayHeight
+      height.value = finalHeight + 'px'
     }
   }
 }
@@ -115,10 +180,10 @@ const getBtnImage = (url) => {
     const rate = 2
     btnWidth.value = tImamge.width / rate + 'px'
     btnHeight.value = tImamge.height / rate + 'px'
-    if(props.isMobile) { // 移动端高度自适应
-      btnWidth.value = 'calc(100% - 24px)'
-      btnHeight.value = 'auto'
-    }
+    // if(props.isMobile) { // 移动端高度自适应
+    //   btnWidth.value = 'calc(100% - 24px)'
+    //   btnHeight.value = 'auto'
+    // }
   }
 }
 
@@ -137,7 +202,7 @@ const toPage = () => {
   <el-dialog
     v-if="data"
     v-model="visible"
-    :width="isMobile ? 'calc(100% - 16px)' : data.category === 2 ? width : '509px'"
+    :width="isMobile ? 'calc(100% - 16px)' : data.category === 2 ? width : '800px'"
     title=""
     :close-on-click-modal="false"
     :show-close="false"
@@ -147,34 +212,59 @@ const toPage = () => {
     :class="{ 'm': isMobile }"
     :align-center="true"
   >
-    <div v-if="data.category === 2" :style="{ width, height }" class="container container-img">
-      <template v-if="data.content">
-        <img :src="previewImg(data.content)" :class="{ cursor: data.comfirmButtonView === 0 }" alt="fullimg" lazy @click="imgClick">
-        <div v-if="data.comfirmButtonView === 1" class="btn-bg" :style="{ bottom: data.buttonDistance + 'px' }" @click="save">
-          <div v-if="!data.buttonPicture" :style="{ background: data.buttonColour ? ('#' + data.buttonColour) : '#3369FF' }" class="text-btn">
-            {{ data.confirmButton }}
+    <div class="container" :class="{ 'container-img': data.category === 2 }" :style="{ width: data.category === 2 ? width : 'calc(100% - 48px)' }">
+      <div v-if="data.category === 2" :style="{ width }">
+        <el-carousel
+          v-if="data.popChirldPictureCos && data.popChirldPictureCos.length > 0"
+          ref="carouselRef"
+          height="100%"
+          class="screen-carousel-container"
+          :class="{ 'hidden-arrow': data.popChirldPictureCos && data.popChirldPictureCos.length === 1 }"
+          :style="[varCss, { height: height }]"
+          trigger="click"
+          :autoplay="false"
+          @change="carouselChange"
+        >
+          <el-carousel-item
+            v-for="(item, index) in data.popChirldPictureCos"
+            :key="''+index"
+          >
+            <img :src="previewImg(item.pictureUrl)" alt="fullimg" lazy :style="{ height: height }" @click="imgClick(index)">
+          </el-carousel-item>
+        </el-carousel>
+        <div v-if="data.popChirldPictureCos && data.popChirldPictureCos.length > 0 && data.popChirldPictureCos[popChirldPicturesIndex] && (data.popChirldPictureCos[popChirldPicturesIndex].pictureTitle || data.popChirldPictureCos[popChirldPicturesIndex].pictureContent)" class="image-text">
+          <div v-if="data.popChirldPictureCos[popChirldPicturesIndex].pictureTitle" class="image-title">
+            {{ data.popChirldPictureCos[popChirldPicturesIndex].pictureTitle }}
           </div>
-          <div v-else class="btn" :style="{ height: btnHeight }">
-            <img v-if="data.buttonPicture" class="btn-img" :style="{ width: btnWidth }" :src="previewImg(data.buttonPicture)" lazy alt="fullimg">
-            <div class="btn-img-text">{{ data.confirmButton }}</div>
+          <div v-if="data.popChirldPictureCos[popChirldPicturesIndex].pictureContent" class="image-content">
+            {{ data.popChirldPictureCos[popChirldPicturesIndex].pictureContent }}
           </div>
         </div>
-      </template>
-    </div>
-    <div v-if="data.category === 2 && data.closeButtonView" class="close-custom-bg">
-      <el-icon class="close-custom" @click="cancel"><Close /></el-icon>
-    </div>
-    <div v-if="data.category === 1" class="container">
-      <div class="title">
-        {{ data.title }}
+        <div v-if="data.closeButtonView === 1" class="close-custom-bg" @click="cancel">
+          <img src="https://kamelnet-prod-oss-public.oss-cn-beijing.aliyuncs.com/ttwallet/1726038462676_modal-close.svg" alt="">
+        </div>
       </div>
-      <div class="content" v-html="contentBr" />
-      <div class="btns">
-        <el-button v-if="data.cancelButtonView === 1" @click="cancel">{{ data.cancelButton }}</el-button>
-        <div class="flex-center-12" style="height: 12px;"></div>
-        <el-button type="primary" @click="save">{{ data.confirmButton }}</el-button>
+      <div v-else>
+        <div class="title">
+          {{ data.title }}
+        </div>
+        <div class="content" v-html="data.content" />
+        <el-icon v-if="data.closeButtonView === 1" class="close-custom" @click="cancel"><Close /></el-icon>
       </div>
-      <el-icon v-if="data.closeButtonView" class="close-custom" @click="cancel"><Close /></el-icon>
+      <!-- 按钮 -->
+      <div v-if="showBtns" class="btns">
+        <el-button v-if="data.category === 2 && popChirldPicturesIndex > 0" type="text" @click="prev">{{ $t('fullScreenPrompt.PreStep') }}</el-button>
+        <el-button v-if="data.category === 1 && data.closeButtonView === 1" type="text" @click="cancel">{{ $t('fullScreenPrompt.cancel') }}</el-button>
+        <div v-if="data.comfirmButtonView === 1 || showNext" class="btn-bg" @click="save">
+          <el-button v-if="!data.buttonPicture" :style="{ background: data.buttonColour ? '#' + data.buttonColour : '#5548ff' }" type="primary" class="text-btn">
+            {{ !showNext ? data.confirmButton : $t('fullScreenPrompt.nextStep') }}
+          </el-button>
+          <div v-else class="btn" :style="{ height: btnHeight }">
+            <img v-if="data.buttonPicture" class="btn-img" :style="{ width: btnWidth }" :src="previewImg(data.buttonPicture)" alt="">
+            <el-button type="primary" class="btn-img-text">{{ !showNext ? data.confirmButton : $t('fullScreenPrompt.nextStep') }}</el-button>
+          </div>
+        </div>
+      </div>
     </div>
   </el-dialog>
 </template>
@@ -194,49 +284,109 @@ const toPage = () => {
 }
 </style>
 <style lang="scss" scoped>
+.custom-class {
+  backdrop-filter: blur(8px);
+}
 .container {
   position: relative;
-  border-radius: 4px;
+  border-radius: 24px;
   box-shadow: 0 4px 20px 0 #00000026;
-  padding: 0 16px;
+  padding: 0 24px;
   background: #fff;
+  overflow: hidden;
   .title {
     font-weight: 600;
     font-size: 20px;
     color: #222;
     line-height: 30px;
-    padding: 16px 0
+    padding: 20px 0
+  }
+  .image-text {
+    margin: 16px 24px 0 24px;
+    .image-title {
+      color: #171717;
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 24px;
+    }
+    .image-content {
+      margin: 8px 0 24px;
+      color: #171717;
+      font-size: 14px;
+      line-height: 20px;
+    }
   }
   .content {
-    padding: 24px 0 48px;
+    margin: 0 0 24px;
     font-size: 14px;
-    color: #686a6c;
     line-height: 24px;
     min-height: 24px;
-    max-height: 300px;
-    overflow: auto;
-    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0.9) 80%, transparent 100%);
-    mask-image: linear-gradient(to bottom, rgba(0,0,0,0.9) 80%, transparent 100%);
+    max-height: 400px;
+    overflow-y: auto;
   }
   .btns {
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    flex-wrap: wrap;
-    padding-bottom: 24px;
-    .el-button {
-      height: 38px;
-      max-width: 100%;
-      white-space: normal;
+    margin: 24px 0 24px;
+    .btn-bg {
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      .text-btn {
+        padding: 10px 16px;
+        flex: 1;
+        margin-left: 16px;
+        max-width: 352px;
+        min-width: 44px;
+        height: 40px;
+        background: #5548ff;
+        // display: flex;
+        // justify-content: center;
+        // align-items: center;
+        // border-radius: 8px;
+        // color: #fff;
+        // font-weight: 600;
+      }
+      .btn {
+        // cursor: pointer;
+        position: relative;
+        flex: 1;
+        padding: 10px 16px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #fff;
+        font-weight: 600;
+        min-width: 44px;
+        .btn-img {
+          position: relative;
+          border-radius: 0;
+        }
+        .btn-img-text {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+      }
     }
-  }
-  img {
-    position: relative;
-    border-radius: 12px;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
+    .el-button--text {
+      background: #fff;
+      padding: 10px 16px;
+      border: 1px solid #d0d5dd;
+      border-radius: 8px;
+      box-shadow: inset 0 0 0 1px #1018282e, inset 0 -2px #1018280d, 0 1px 2px #1018280d;
+      color: #344054;
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 24px;
+      height: 40px;
+      min-width: 44px;
+    }
   }
   .cursor {
     cursor: pointer;
@@ -252,76 +402,82 @@ const toPage = () => {
 }
 .close-custom-bg {
   position: absolute;
-  left: 0;
-  bottom: -70px;
-  width: 100%;
-  height: 48px;
+  right: 16px;
+  top: 16px;
+  z-index: 9999;
   display: flex;
   justify-content: center;
   align-items: center;
-  .close-custom {
+  img {
+    width: 32px;
+    height: 32px;
     cursor: pointer;
-    width: 24px;
-    height: 24px;
-    background: rgba(0, 0, 0, 0.4);
-    padding: 12px;
-    text-align: center;
-    font-size: 24px;
-    color: #fff;
-    border-radius: 50%;
-    &:hover {
-      background: rgba(0, 0, 0, 0.3);
-    }
   }
 }
 .container-img {
   padding: 0;
-  background: transparent;
-  .btn-bg {
-    cursor: pointer;
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    .text-btn { 
-      flex: 1;
-      margin: 0 24px;
-      max-width: 352px;
-      height: 48px;
+  .btns {
+    margin: 24px;
+  }
+}
+// 新增：走马灯容器样式
+.screen-carousel-container {
+  position: relative;
+  width: 100%;
+  height: 116px;
+  // border-radius: 12px;
+  // margin-bottom: 16px;
+  ::v-deep {
+    .el-carousel__item {
+      width: 100%;
+      height: 100%;
+      img {
+        width: 100%;
+        height: auto;
+        max-height: 100%;
+        cursor: pointer;
+        object-fit: cover;
+      }
+      background-size: cover;
+      background-repeat: no-repeat;
+    }
+    .el-carousel__arrow.el-carousel__arrow--left,
+    .el-carousel__arrow.el-carousel__arrow--right {
+      display: none;
+    }
+
+    .el-carousel__indicators.el-carousel__indicators--horizontal {
       display: flex;
-      justify-content: center;
+      justify-content: flex-end;
       align-items: center;
-      border-radius: 10px;
-      background: #5548FF;
-      color: #fff;
-      font-weight: 600;
-      &:hover {
-        background: #887fff;
+      position: absolute;
+      width: 100%;
+      padding-right: 6px;
+      height: 20px;
+      bottom: 0px;
+    }
+    .el-carousel__indicator.el-carousel__indicator--horizontal {
+      width: 23px;
+      height: 4px;
+      background: #FFFFFF66;
+      border-radius: 8px;
+      margin: 0 4px;
+      padding: 0;
+      &.is-active {
+        background: #ffffff;
+      }
+      .el-carousel__button {
+        width: 0;
+        height: 0;
       }
     }
-    .btn { 
-      // cursor: pointer;
-      flex: 1;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: #fff;
-      font-weight: 600;
-      .btn-img {
-        position: relative;
-        border-radius: 0;
-      }
-      .btn-img-text {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
+  }
+}
+
+.hidden-arrow {
+  ::v-deep {
+    .el-carousel__indicators.el-carousel__indicators--horizontal {
+      display: none;
     }
   }
 }
