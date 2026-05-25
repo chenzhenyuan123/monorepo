@@ -512,7 +512,7 @@ export const formatInTable = (enumeration, key, prop, propLabel) => {
           }
           return
         }
-        errorMessage(t(`service.${res?.code}`) || res?.desc || res?.message)
+        errorMessage(res?.code ? t(`service.${res.code}`) : res?.desc || res?.message || t(`service.exception`))
         // 000401没有权限
         if(res?.code === '000401') {
           toLogout()

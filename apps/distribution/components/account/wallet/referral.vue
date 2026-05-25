@@ -251,6 +251,54 @@ const showPopover = async(row) => {
                   </el-tag>
               </template>
             </el-table-column>
+          <el-table-column prop="estimatedSettlementDate" :label="$t('wallet.referralTableLabelEstimatedCommissionPostingDate')" min-width="200">
+            <template #header="scope">
+              <el-popover
+                placement="top"
+                effect="dark"
+                :width="300"
+                popper-class="popper-1778494207979"
+              >
+                <div>
+                  <div>{{ $t('wallet.referralTableLabelTipEstimatedDateP1') }}</div>
+                  <div class="flex flex-li warning-span fw600">
+                    <div>
+                      <span class="white-span">{{ $t('wallet.referralTableLabelTipEstimatedDateP2Part1') }}</span>{{ $t('wallet.referralTableLabelTipEstimatedDateP2Part2') }}<span class="white-span">{{ $t('wallet.referralTableLabelTipEstimatedDateP2Part3') }}</span>
+                    </div>
+                  </div>
+                  <div class="flex flex-li warning-span fw600">
+                    <div>
+                      <span class="white-span">{{ $t('wallet.referralTableLabelTipEstimatedDateP3Part1') }}</span>{{ $t('wallet.referralTableLabelTipEstimatedDateP3Part2') }}<span class="white-span">{{ $t('wallet.referralTableLabelTipEstimatedDateP3Part3') }}</span>
+                    </div>
+                  </div>
+                </div>
+                <template #reference>
+                  <div>{{ scope.column.label }}</div>
+                </template>
+              </el-popover>
+            </template>
+            <template #default="{ row }">
+              <span class="direction-ltr direction-inline-block">{{ row.estimatedSettlementDate }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="settlementDate" :label="$t('wallet.referralTableLabelActualCommissionPostingDate')" min-width="200">
+            <template #header="scope">
+              <el-popover
+                placement="top"
+                effect="dark"
+                :width="300"
+                popper-class="popper-1778494207979"
+              >
+                <div>{{ $t('wallet.referralTableLabelTipActualDateP') }}</div>
+                <template #reference>
+                  <div>{{ scope.column.label }}</div>
+                </template>
+              </el-popover>
+            </template>
+            <template #default="{ row }">
+              <span class="direction-ltr direction-inline-block">{{ row.settlementDate }}</span>
+            </template>
+          </el-table-column>
         </pro-table>
 
         <AccountWalletTrackShipmentDialog
@@ -261,10 +309,45 @@ const showPopover = async(row) => {
     </TableForm>
 </template>
 
+<style lang="scss">
+  @use "@/assets/css/element-reset/popover.scss" as *;
+</style>
+
 <style lang="scss" scoped>
 @import url("@/assets/css/element-reset/tag.scss");
 .table-container {
     margin-bottom: 32px;
+}
+.warning-span {
+  color: #F98C1F;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px;
+  &.fw500 {
+    font-weight: 500;
+  }
+  &.fw600 {
+    font-weight: 600;
+  }
+  &.f16 {
+    font-size: 16px;
+    line-height: 24px;
+  }
+}
+.white-span {
+  color: #ffffff;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px;
+  &.fw500 {
+    font-weight: 500;
+  }
+  &.f16 {
+    font-size: 16px;
+    line-height: 24px;
+  }
 }
 .circle {
     display: inline-block;
