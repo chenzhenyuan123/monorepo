@@ -263,12 +263,12 @@ const showPopover = async(row) => {
                   <div>{{ $t('wallet.referralTableLabelTipEstimatedDateP1') }}</div>
                   <div class="flex flex-li warning-span fw600">
                     <div>
-                      <span class="white-span">{{ $t('wallet.referralTableLabelTipEstimatedDateP2Part1') }}</span>{{ $t('wallet.referralTableLabelTipEstimatedDateP2Part2') }}<span class="white-span">{{ $t('wallet.referralTableLabelTipEstimatedDateP2Part3') }}</span>
+                      <span class="white-span">{{ $t('wallet.referralTableLabelTipEstimatedDateP2Part1') }}</span> {{ $t('wallet.referralTableLabelTipEstimatedDateP2Part2') }} <span class="white-span">{{ $t('wallet.referralTableLabelTipEstimatedDateP2Part3') }}</span>
                     </div>
                   </div>
                   <div class="flex flex-li warning-span fw600">
                     <div>
-                      <span class="white-span">{{ $t('wallet.referralTableLabelTipEstimatedDateP3Part1') }}</span>{{ $t('wallet.referralTableLabelTipEstimatedDateP3Part2') }}<span class="white-span">{{ $t('wallet.referralTableLabelTipEstimatedDateP3Part3') }}</span>
+                      <span class="white-span">{{ $t('wallet.referralTableLabelTipEstimatedDateP3Part1') }}</span> {{ $t('wallet.referralTableLabelTipEstimatedDateP3Part2') }} <span class="white-span">{{ $t('wallet.referralTableLabelTipEstimatedDateP3Part3') }}</span>
                     </div>
                   </div>
                 </div>
