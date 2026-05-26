@@ -184,7 +184,7 @@ const routerGo = (path) => {
               </template>
               <template v-if="storeInfo.pattern === 'parent'"></template>
             </ul>
-            <el-button type="primary" id="join-btn-Join" class="email-verify-btn" :loading="loading" :disabled="!storeInfo.storeId" @click="onSubmit()">{{$t('joinMultiple.joinSaveButton')}}</el-button>
+            <el-button type="primary" id="join-btn-Join" class="email-verify-btn" :loading="loading" :disabled="!storeNames" @click="onSubmit()">{{$t('joinMultiple.joinSaveButton')}}</el-button>
           </template>
         </template>
       </div>
