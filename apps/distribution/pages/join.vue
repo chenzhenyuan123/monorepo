@@ -3,7 +3,7 @@ const route = useRoute();
 definePageMeta({
   layout: 'noside'
 })
-const isSingle = ref(route.query?.store && route.query?.code)
+const isSingle = ref(route.query?.store)
 // const isMultiple = ref(route.query?.share)
 </script>
 <template>
