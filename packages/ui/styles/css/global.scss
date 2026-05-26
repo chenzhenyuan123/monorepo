@@ -359,12 +359,21 @@
   width: 100%;
   height: 100%;
 }
-.w-full {
-  width: 100%;
-}
 .full-max {
   max-width: 100%;
   max-height: 100%;
+}
+.w-full {
+  width: 100%;
+}
+.h-full {
+  height: 100%;
+}
+.w-auto {
+  width: auto;
+}
+.h-auto {
+  height: auto;
 }
 
 // 溢出...，限制1行
@@ -532,6 +541,9 @@ $flex-center-width-max: 100;
 // 避免内容过多超出情况
 .white-nowrap {
   white-space: nowrap;
+}
+.white-normal {
+  white-space: normal;
 }
 .overflow-hidden {
   overflow: hidden;

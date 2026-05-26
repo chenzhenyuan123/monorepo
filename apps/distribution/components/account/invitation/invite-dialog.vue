@@ -119,7 +119,7 @@ function cancel() {
                                     <path d="M12 5L6.5 10.5L4 8" stroke="white" stroke-width="1.6666" stroke-linecap="round" stroke-linejoin="round"/>
                                 </svg>
                             </div>
-                            <div class="whitespace-normal"><span class="black-span2">{{ item.storeName }}</span><span class="tertiary-span">（{{ item.storeId }}）</span></div>
+                            <div class="white-normal"><span class="black-span2">{{ item.storeName }}</span><span class="tertiary-span">（{{ item.storeId }}）</span></div>
                         </div>
                     </el-option>
                 </el-select>
@@ -128,13 +128,13 @@ function cancel() {
             <el-form-item :label="$t('invitation.inviteDialogLabelType')" class="dialog-form-item" required>
                 <el-radio-group v-model="formData.pattern" class="radio-20-1779342400880" @change="clearInvitationLink">
                     <el-radio label="parent" class="w-full h-auto mb12" style="margin-right: 0">
-                        <div class="whitespace-normal">
+                        <div class="white-normal">
                             <div class="black-span fw500">{{$t('invitation.RewardTypeDataHierarchical')}}</div>
                             <div class="tertiary-span f12">{{$t('invitation.inviteDialogTypeDescHierarchical')}}</div>
                         </div>
                     </el-radio>
                     <el-radio label="peer" class="h-auto">
-                        <div class="whitespace-normal">
+                        <div class="white-normal">
                             <div class="black-span fw500">{{$t('invitation.RewardTypeDataPeer')}}</div>
                             <div class="tertiary-span f12">{{$t('invitation.inviteDialogTypeDescPeer')}}</div>
                         </div>
@@ -193,7 +193,6 @@ function cancel() {
 @use "@/assets/css/element-reset/input.scss" as *;
 @use "@/assets/css/element-reset/select.scss" as *;
 @use "@/assets/css/element-reset/radio.scss" as *;
-@use "@flylinking/ui/styles/css/radix.scss" as *;
 .black-span {
     color: #344054;
     font-size: 14px;
