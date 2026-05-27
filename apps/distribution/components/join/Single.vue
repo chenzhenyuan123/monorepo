@@ -51,6 +51,11 @@ const startCountdown = (val) => {
 };
 // 是否成功加入
 const issuccess = ref(false)
+const joinResultData = ref({
+  total: 0,
+  successCount: 0,
+  failCount: 0,
+})
 const onSubmit = async() => {
   if(!storeData.value.storeId) { // 不存在店铺ID，不允许提交
     errorMessage(t('join.joinNoStore'))
@@ -62,8 +67,9 @@ const onSubmit = async() => {
   }
   loading.value = true
   const result = await joinApi.joinStore(storeData.value)
-  const res = checkResponseData(result, 'NO_RETURN_DATA')
-  if(res) {
+  const res = checkResponseData(result) || {}
+  joinResultData.value = { ...res }
+  if(joinResultData.value.successCount > 0) {
     issuccess.value = true
     startCountdown(5)
   } else {
