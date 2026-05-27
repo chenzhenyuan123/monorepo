@@ -135,7 +135,7 @@ getInviteData()
                         {{$t('invitation.inviteDialogButtonCopied')}}
                     </template>
                     <template v-else>
-                        {{$t('invitation.inviteDialogButtonCopyAndShare')}}
+                        {{$t('invitation.inviteDialogButtonCreatAndCopy')}}
                     </template>
                 </el-button>
                 <el-button v-if="isMobile" id="invitation-btn-m-dialog-cancel" class="dialog-footer-button button-default dialog-adaptive" @click="cancel">{{$t('invitation.inviteDialogButtonCancel')}}</el-button>

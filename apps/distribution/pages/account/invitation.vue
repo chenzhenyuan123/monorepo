@@ -56,7 +56,7 @@ const request = async({ pageNo, pageSize }) => {
                  min-width="320" />
                 <el-table-column prop="userName" :label="$t('invitation.tableLabelName')"
                  min-width="320" />
-                <el-table-column prop="createTime" :label="$t('invitation.tableLabelSignUpTime')"
+                <el-table-column prop="createTime" :label="$t('invitation.tableLabelDate')"
                  min-width="200">
                     <template #default="{ row }">
                         <span class="direction-ltr direction-inline-block">{{ formatDate(row.createTime) }}</span>
