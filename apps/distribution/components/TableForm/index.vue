@@ -41,6 +41,7 @@
     :deep(.el-form) {
       padding: 20px;
       gap: 12px;
+      border-bottom: 1px solid #E4E7EC;
       .el-form-item {
         margin: 0;
         .el-form-item__label {

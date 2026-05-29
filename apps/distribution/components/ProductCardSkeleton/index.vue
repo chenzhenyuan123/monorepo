@@ -189,21 +189,21 @@ const generateLinkClick = (item) => {
                     >
                       <div class="li flex items-center justify-between mb8">
                         <div class="black-span fw500">{{$t('productCard.rateTipLabel1')}}</div>
-                        <div class="black-span fw500">{{ currencyFormat(item.commissionRate * 100) }}%</div>
+                        <div class="black-span fw500 white-nowrap">{{ currencyFormat(item.commissionRate * 100) }}%</div>
                       </div>
                       <template v-if="item.goodsCommissionRate && item.distributorCommissionRate">
                         <div class="li sub flex items-center justify-between">
                           <div class="tertiary-span f12">{{$t('productCard.rateTipLabel2')}}</div>
-                          <div class="tertiary-span f12">{{ currencyFormat(item.goodsCommissionRate * 100) }}%</div>
+                          <div class="tertiary-span f12 white-nowrap">{{ currencyFormat(item.goodsCommissionRate * 100) }}%</div>
                         </div>
                         <div class="li sub flex items-center justify-between">
                           <div class="tertiary-span f12">{{$t('productCard.rateTipLabel3')}}</div>
-                          <div class="tertiary-span f12">{{ currencyFormat(item.distributorCommissionRate * 100) }}%</div>
+                          <div class="tertiary-span f12 white-nowrap">{{ currencyFormat(item.distributorCommissionRate * 100) }}%</div>
                         </div>
                       </template>
                       <div v-if="item.shareCommissionRate" class="li sub flex items-center justify-between">
                         <div class="tertiary-span f12">{{$t('productCard.rateTipLabel4')}}</div>
-                        <div class="tertiary-span f12">{{ currencyFormat(item.shareCommissionRate * 100) }}%</div>
+                        <div class="tertiary-span f12 white-nowrap">{{ currencyFormat(item.shareCommissionRate * 100) }}%</div>
                       </div>
                       <template #reference>
                         <b class="underline-dotted pointer direction-ltr direction-inline-block">{{currencyFormat(item.commissionRate * 100)}}% </b>
