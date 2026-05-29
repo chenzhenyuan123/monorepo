@@ -20,7 +20,11 @@
 }
 
 .select-checkbox-popper-1779263932970 {
-  max-width: calc(100vw - 16px);
+  //max-width: calc(100vw - 64px);
+  border-radius: 8px;
+  .el-popper__arrow {
+    display: none;
+  }
   .el-select-dropdown__list {
     padding: 8px 6px;
     .el-select-dropdown__item {
@@ -30,9 +34,6 @@
       line-height: 20px;
       &.is-selected {
         background: #F9FAFB;
-        &.after {
-          content: none;
-        }
         .base-icon {
           display: none;
         }

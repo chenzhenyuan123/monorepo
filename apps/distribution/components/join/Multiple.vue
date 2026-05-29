@@ -196,7 +196,10 @@ const routerGo = (path) => {
   display: flex;
 }
 .join-box {
-  max-width: 526px;
+  box-sizing: border-box;
+  width: 526px;
+  max-width: calc(100% - 20px);
+  min-width: auto;
   margin: 32px auto 132px;
   padding: 16px 24px;
   border-radius: 10px;
