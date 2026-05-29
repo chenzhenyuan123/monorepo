@@ -13,7 +13,7 @@ const attrs = useAttrs()
 const formData = ref({
     storeIdList: []
 })
-const storeMax = ref(10)
+const storeMax = ref(2)
 
 
 const bindingStoreList = ref([])
@@ -118,21 +118,27 @@ function cancel() {
                     popper-class="select-checkbox-popper-1779263932970"
                     @change="clearInvitationLink"
                 >
-                    <div class="tertiary-span pl10 pr10 mb8">{{$t('invitation.inviteDialogStoreMax', { num: storeMax })}}</div>
+                    <div v-if="formData.storeIdList.length >= storeMax" class="tertiary-span f12 pl10 pr10 mb8">{{$t('invitation.inviteDialogStoreMax', { num: storeMax })}}</div>
                     <el-option v-for="item in bindingStoreList" :key="item.storeId" :value="item.storeId">
                         <div class="flex items-center gap8">
-                            <div class="base-icon lh0">
+                            <div class="disabled-module lh0">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M4 0.5H12C13.933 0.5 15.5 2.067 15.5 4V12C15.5 13.933 13.933 15.5 12 15.5H4C2.067 15.5 0.5 13.933 0.5 12V4C0.5 2.067 2.067 0.5 4 0.5Z" fill="#F9FAFB"/>
+                                    <path d="M4 0.5H12C13.933 0.5 15.5 2.067 15.5 4V12C15.5 13.933 13.933 15.5 12 15.5H4C2.067 15.5 0.5 13.933 0.5 12V4C0.5 2.067 2.067 0.5 4 0.5Z" stroke="#D0D5DD"/>
+                                </svg>
+                            </div>
+                            <div class="base-module lh0">
                                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M4 0.5H12C13.933 0.5 15.5 2.067 15.5 4V12C15.5 13.933 13.933 15.5 12 15.5H4C2.067 15.5 0.5 13.933 0.5 12V4C0.5 2.067 2.067 0.5 4 0.5Z" stroke="#D0D5DD"/>
                                 </svg>
                             </div>
-                            <div class="select-icon lh0">
+                            <div class="select-module lh0">
                                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M0 4C0 1.79086 1.79086 0 4 0H12C14.2091 0 16 1.79086 16 4V12C16 14.2091 14.2091 16 12 16H4C1.79086 16 0 14.2091 0 12V4Z" fill="#5548FF"/>
                                     <path d="M12 5L6.5 10.5L4 8" stroke="white" stroke-width="1.6666" stroke-linecap="round" stroke-linejoin="round"/>
                                 </svg>
                             </div>
-                            <div class="white-normal"><span class="black-span2">{{ item.storeName }}</span><span class="tertiary-span">（{{ item.storeId }}）</span></div>
+                            <div class="white-normal"><span class="disabled-module tertiary-span fw500">{{ item.storeName }}</span><span class="active-module black-span2 fw500">{{ item.storeName }}</span><span class="tertiary-span">（{{ item.storeId }}）</span></div>
                         </div>
                     </el-option>
                 </el-select>
@@ -176,7 +182,7 @@ function cancel() {
                 <el-button
                   type="primary"
                   id="invitation-btn-dialog-copy"
-                  class="dialog-footer-button button-default dialog-adaptive"
+                  class="dialog-footer-button button-default dialog-adaptive overflow-hidden"
                   :loading="loadingForCreat"
                   :disabled="!(formData.storeIdList && formData.storeIdList.length && formData.pattern)"
                   @click="submit"
@@ -184,12 +190,14 @@ function cancel() {
                     <template v-if="isCopySuccess" #icon>
                         <Check />
                     </template>
-                    <template v-if="isCopySuccess">
-                        {{$t('invitation.inviteDialogButtonCopied')}}
-                    </template>
-                    <template v-else>
-                        {{$t('invitation.inviteDialogButtonCreatAndCopy')}}
-                    </template>
+                    <div class="ellipsis">
+                        <template v-if="isCopySuccess">
+                            {{$t('invitation.inviteDialogButtonCopied')}}
+                        </template>
+                        <template v-else>
+                            {{$t('invitation.inviteDialogButtonCreatAndCopy')}}
+                        </template>
+                    </div>
                 </el-button>
                 <el-button id="invitation-btn-dialog-cancel" class="dialog-footer-button button-default dialog-adaptive" @click="cancel">{{$t('invitation.inviteDialogButtonCancel')}}</el-button>
             </div>
@@ -226,6 +234,9 @@ function cancel() {
     font-style: normal;
     font-weight: 400;
     line-height: 20px;
+    &.fw500 {
+        font-weight: 500;
+    }
 }
 .tertiary-span {
     color: #667085;
@@ -350,6 +361,10 @@ function cancel() {
         .dialog-footer-button {
             flex: 1;
             margin: 0;
+            gap: 4px;
+            span {
+                overflow: hidden;
+            }
         }
     }
 }

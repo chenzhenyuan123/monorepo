@@ -29,25 +29,45 @@
       padding: 9px 10px;
       border-radius: 6px;
       line-height: 20px;
+      &.is-disabled {
+        .disabled-module {
+          display: inline-block;
+        }
+        .active-module {
+          display: none;
+        }
+        .base-module {
+          display: none;
+        }
+        .select-module {
+          display: none;
+        }
+      }
       &.is-selected {
         background: #F9FAFB;
         &:after {
           content: none;
         }
-        .base-icon {
+        .base-module {
           display: none;
         }
-        .select-icon {
-          display: block;
+        .select-module {
+          display: inline-block;
         }
       }
       + .el-select-dropdown__item {
         margin-top: 8px;
       }
-      .base-icon {
-        display: block;
+      .disabled-module {
+        display: none;
       }
-      .select-icon {
+      .active-module {
+        display: inline-block;
+      }
+      .base-module {
+        display: inline-block;
+      }
+      .select-module {
         display: none;
       }
     }
