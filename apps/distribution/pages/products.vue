@@ -152,6 +152,14 @@ const storeSearchChange = e => {
             <p class="no-data-text">{{$t('home.homeNoavailable')}}</p>
             <p class="no-data-search-text">{{$t('home.homeYourSearch')}} “{{search}}” {{$t('home.homeNotMatch')}}</p>
           </div>
+          <!-- 暂无数据时展示 -->
+          <div v-if="goodsList.length<=0 && !loading && !search && isJoin" class="no-data-box">
+            <div class="grid-box" />
+            <div class="no-data-icon">
+              <el-icon class="no-data-icon-Search"><img :src="NoData" /></el-icon>
+            </div>
+            <p class="no-data-text">{{$t('home.homeNoData')}}</p>
+          </div>
           <!-- 有数据时展示 只给十条，不用分页 -->
           <div v-if="isJoin" class="content-Products">
             <ProductCardSkeleton
@@ -166,14 +174,6 @@ const storeSearchChange = e => {
               @page-change="pageChange"
               @size-change="sizeChange"
             />
-          </div>
-          <!-- 暂无数据时展示 -->
-          <div v-if="goodsList.length<=0 && !loading && !search && isJoin" class="no-data-box">
-            <div class="grid-box" />
-            <div class="no-data-icon">
-              <el-icon class="no-data-icon-Search"><img :src="NoData" /></el-icon>
-            </div>
-            <p class="no-data-text">{{$t('home.homeNoData')}}</p>
           </div>
         </div>
       </div>
