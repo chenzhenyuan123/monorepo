@@ -13,7 +13,7 @@ const attrs = useAttrs()
 const formData = ref({
     storeIdList: []
 })
-const storeMax = ref(2)
+const storeMax = ref(10)
 
 
 const bindingStoreList = ref([])
