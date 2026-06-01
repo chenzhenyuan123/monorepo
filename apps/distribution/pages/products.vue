@@ -35,7 +35,6 @@ const isJoinDistribution = async() => {
   if(res) {
     isJoin.value = true
     showIsJoin.value = false
-    getGoodsList()
   } else {
     isJoin.value = false
     showIsJoin.value = true

@@ -28,6 +28,10 @@ const getInviteData = async() => {
     const res = checkResponseData(result)
     if (res) {
       storeData.value = res?.bindingStoreList || []
+      if(res?.bindingStoreList) {
+        storeId.value = res?.bindingStoreList[0]?.storeId
+        emit('change', storeId.value)
+      }
     }
 }
 
@@ -63,7 +67,6 @@ const selectRef = ref(null)
       :popper-class="isMobile ? 'home-btn-Store-box-select m' : 'home-btn-Store-box-select'"
       id="home-btn-Store-Search"
       placement="bottom-end"
-      clearable
       @change="checkStore"
       @visible-change="toggleDropdown"
     >
