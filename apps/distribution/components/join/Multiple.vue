@@ -136,7 +136,7 @@ const routerGo = (path) => {
                   <span>{{$t('joinMultiple.joinDescriptionByPeer2')}}</span>
                 </li>
                 <li>
-                  <span>{{$t('joinMultiple.joinDescriptionByPeer3', {rate: (storeInfo.maxDistributorDefaultCommissionRate ? currencyFormat(storeInfo.maxDistributorDefaultCommissionRate * 100) : 0)})}}</span>
+                  <span>{{$t('joinMultiple.joinDescriptionByPeer3')}}</span>
                 </li>
                 <li>
                   <span>{{$t('joinMultiple.joinDescriptionByPeer4')}}</span>
@@ -159,7 +159,7 @@ const routerGo = (path) => {
                   <span>{{$t('joinMultiple.joinDescriptionByParent2')}}</span>
                 </li>
                 <li>
-                  <span>{{$t('joinMultiple.joinDescriptionByParent3', {rate: (storeInfo.maxDistributorDefaultCommissionRate ? currencyFormat(storeInfo.maxDistributorDefaultCommissionRate * 100) : 0)})}}</span>
+                  <span>{{$t('joinMultiple.joinDescriptionByParent3')}}</span>
                 </li>
                 <li>
                   <span>{{$t('joinMultiple.joinDescriptionByParent4')}}</span>
