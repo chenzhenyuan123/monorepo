@@ -19,6 +19,12 @@
   box-shadow: 0px 1px 2px 0px rgba(16, 24, 40, 0.05);
   padding: 10px 16px;
 }
+.el-button--primary.is-link, .el-button--primary.is-link:focus, .el-button--primary.is-text, .el-button--primary.is-text:focus {
+  box-shadow: none;
+  background-color: transparent;
+  border-color: transparent;
+  padding: 2px;
+}
 .el-button.is-disabled, .el-button.is-disabled:hover {
   background-color: #F2F4F7 !important;
   border-color: #EAECF0 !important;
@@ -401,7 +407,6 @@
   &::before {
     content: "\2022";
     display: block;
-    min-width: 16px;
     padding: 0 0.5em;
     text-align: center;
     font-size: 18px;

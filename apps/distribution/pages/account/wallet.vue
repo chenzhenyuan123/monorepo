@@ -11,7 +11,7 @@ const { t } = useI18n();
 const { walletApi, withdrawApi, userApi, homeApi, countryApi } = useApi()
 const userStore = useUserStore()
 const isMobile = useIsMobile()
-// const popoverVisible = ref(false)
+const showCommissionPostingDate = ref(false)
 const isShowErrorGialog = ref(false)
 const isShowSuspendedGialog = ref(false)
 const ableBalanceAmount = ref(0)
@@ -165,9 +165,13 @@ onMounted(() => {
         </div>
         <div class="card-p">{{$t('wallet.balance')}}</div>
         <div class="card-amount-container">
-          <span class="card-amount">{{ formatterAmount(walletInfo.availableCommission) }}</span>
+          <div class="flex card-amount-box">
+            <b class="card-amount-curreny">≈ USD</b>
+            <div class="flex-center-6"></div>
+            <span class="card-amount">{{ currencyFormat(ableBalanceAmount) }}</span>
+          </div>
           <div class="card-amount-center"></div>
-            <el-button class="button-default" @click="jumpToWithdraw">{{$t('wallet.walletWIthdrawButton')}}</el-button>
+          <el-button class="button-default" @click="jumpToWithdraw">{{$t('wallet.walletWIthdrawButton')}}</el-button>
         </div>
       </div>
       <div class="card">
@@ -197,51 +201,27 @@ onMounted(() => {
         </div>
         <div class="card-p">{{$t('wallet.pendingCommission')}}</div>
         <div class="card-amount-container">
-          <el-popover
-            placement="bottom-start"
-            effect="light"
-            :width="480"
-            popper-class="popover-dialog"
-            :disabled="!walletInfo.nonUSDollar"
+          <AmountDetailsPopover
+            :disabled="walletInfo.nonUSDollar"
+            :pending-commission="walletInfo.pendingCommission"
+            :pending-commission-detail-list="walletInfo.pendingCommissionDetailList"
+            :currency-to-country-id="currencyToCountryId"
+            SettledUSDamount="home.PendingUSDCommission"
+            SettledNonUSDamount="home.PendingNonUSDCommission"
           >
-            <div class="statistical-box" :class="{ m: isMobile }">
-              <div class="statistical-tabs-container">
-                <div class="statistical-tabs header">
-                  <div class="statistical-tabs-item">{{$t('wallet.pendingCommissionDetailLabelNonUSD')}}</div>
-                  <div class="statistical-tabs-item">{{$t('wallet.pendingCommissionDetailLabelUSD')}}</div>
-                </div>
-                <div class="statistical-content">
-                  <div v-for="item in walletInfo.pendingCommissionDetailList" :key="item.currency" class="statistical-tabs">
-                    <div class="statistical-tabs-item">
-                      <div class="icon-container">
-                        <img :src="flagUrl(currencyToCountryId[item.currency])" alt="">
-                      </div>
-                      <div class="flex-center-8"></div>
-                      <span>{{ formatterAmount(item.nonUSDCommission, item.currency) }}</span>
-                    </div>
-                    <div class="statistical-tabs-item">
-                      <div class="icon-container">
-                        <img :src="flagUrl('us')" alt="">
-                      </div>
-                      <div class="flex-center-8"></div>
-                      <span>{{ formatterAmount(item.estimatedUSDAmount, 'USD') }}</span>
-                    </div>
-                  </div>
-                </div>
+            <template #default="{}">
+              <div class="flex card-amount-box">
+                <b class="card-amount-curreny">≈ USD</b>
+                <div class="flex-center-6"></div>
+                <span v-if="walletInfo.nonUSDollar" class="card-amount tip-trigger-style">
+                  {{ currencyFormat(walletInfo.pendingCommission) }}
+                </span>
+                <span v-else class="card-amount">
+                  {{ currencyFormat(walletInfo.pendingCommission) }}
+                </span>
               </div>
-              <div class="statistical-p">
-                {{$t('wallet.pendingCommissionDetailLabelDesc')}}
-              </div>
-            </div>
-            <template #reference>
-              <span v-if="walletInfo.nonUSDollar" class="card-amount tip-trigger-style">
-                ≈ {{ formatterAmount(walletInfo.pendingCommission) }}
-              </span>
-              <span v-else class="card-amount">
-                {{ formatterAmount(walletInfo.pendingCommission) }}
-              </span>
             </template>
-          </el-popover>
+          </AmountDetailsPopover>
           <div class="card-amount-center"></div>
           <!-- <div class="state-label">
             <el-icon class="state-label-icon"><Top /></el-icon>
@@ -269,6 +249,15 @@ onMounted(() => {
     </el-tabs>
 
     <template v-if="activeName === 'transactions'">
+      <div class="mb24">
+        <message type="info" class="message mt32">
+            <div class="flex">
+              <span class="text">{{ t('wallet.referralCommissionPostingDateTips') }}</span>
+              <div class="flex-center-6"></div>
+              <el-button type="primary" link @click="showCommissionPostingDate=true">{{ t('wallet.referralCommissionPostingDateView') }}</el-button>
+            </div>
+        </message>
+      </div>
       <el-radio-group v-model="radio1" class="radio-group radio-group-default">
         <el-radio-button
           v-for="item in radio1Data"
@@ -299,6 +288,12 @@ onMounted(() => {
         v-model="isShowSuspendedGialog"
         :lockTime="lockStatusData.lockTime"
     ></AccountWithdrawTemporarilySuspendedDialog>
+
+    <!-- 关于佣金预计入账日期-tips展示 -->
+    <AccountWalletCommissionPostingDateTipsDialog
+        v-if="showCommissionPostingDate"
+        v-model="showCommissionPostingDate"
+      ></AccountWalletCommissionPostingDateTipsDialog>
     
     <!-- 全屏弹窗 -->
     <FullScreenPrompt system="102" :homeApi="homeApi" :checkResponseData="checkResponseData" :isMobile="isMobile" />
@@ -380,7 +375,7 @@ onMounted(() => {
     }
     .card-amount {
       color: #101828;
-      font-size: 36px;
+      font-size: 30px;
       font-weight: 600;
       line-height: 44px; /* 122.222% */
       letter-spacing: -0.72px;
@@ -388,12 +383,10 @@ onMounted(() => {
       &.tip-trigger-style {
         text-decoration-line: underline;
         text-decoration-style: dotted;
-        text-decoration-skip-ink: auto;
-        text-decoration-color: #667085;
-        text-decoration-thickness: auto;
-        text-underline-offset: auto;
-        //text-underline-position: from-font;
-        text-underline-position: under;
+        text-decoration-skip-ink: none;
+        text-decoration-thickness: 6%;
+        text-underline-offset: 12%;
+        text-underline-position: from-font;
         &:hover {
           text-decoration-style: solid;
           text-decoration-skip-ink: none;
@@ -405,6 +398,17 @@ onMounted(() => {
       align-items: center;
       .card-amount-center {
         flex: 1;
+      }
+    }
+    .card-amount-box {
+      align-items: baseline;
+      .card-amount-curreny {
+        color: var(--colors-text-text-primary-900, #101828);
+        font-family: var(--Font-family-font-family-display, Inter);
+        font-size: var(--Font-size-text-md, 16px);
+        font-style: normal;
+        font-weight: 600;
+        line-height: var(--Line-height-display-sm, 38px); /* 237.5% */
       }
     }
   }

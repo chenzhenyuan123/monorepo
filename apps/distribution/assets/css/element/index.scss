@@ -172,7 +172,7 @@ $--button-padding-vertical: (
     }
   }
   .el-dialog__headerbtn {
-    right: auto;
+    right: auto !important;
     left: 0;
   }
 }

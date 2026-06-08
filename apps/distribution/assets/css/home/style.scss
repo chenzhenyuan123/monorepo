@@ -45,12 +45,10 @@
       &.tip-trigger-style {
         text-decoration-line: underline;
         text-decoration-style: dotted;
-        text-decoration-skip-ink: auto;
-        text-decoration-color: #667085;
-        text-decoration-thickness: auto;
-        text-underline-offset: auto;
-        //text-underline-position: from-font;
-        text-underline-position: under;
+        text-decoration-skip-ink: none;
+        text-decoration-thickness: 6%;
+        text-underline-offset: 12%;
+        text-underline-position: from-font;
         &:hover {
           text-decoration-style: solid;
           text-decoration-skip-ink: none;
@@ -63,7 +61,16 @@
       right: 20px;
       top: 20px;
     }
-    .card-prompt {
+    .card-amount-box {
+      align-items: baseline;
+      .card-amount-curreny {
+        color: var(--colors-text-text-primary-900, #101828);
+        font-family: var(--Font-family-font-family-display, Inter);
+        font-size: var(--Font-size-text-md, 16px);
+        font-style: normal;
+        font-weight: 600;
+        line-height: var(--Line-height-display-sm, 38px); /* 237.5% */
+      }
     }
   }
 }
