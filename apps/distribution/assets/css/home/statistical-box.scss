@@ -69,3 +69,45 @@
     line-height: 20px;
   }
 }
+
+
+// 新版币种滑过样式
+.amount-details-popover-box {
+  padding: 12px 14px;
+  max-height: 320px;
+  overflow-y: auto;
+  .amount-details-text {
+    color: var(--colors-text-text-tertiary-600, #475467);
+    font-family: var(--Font-family-font-family-body, Inter);
+    font-size: var(--Font-size-text-md, 16px);
+    font-style: normal;
+    font-weight: 400;
+    line-height: var(--Line-height-text-md, 24px); /* 150% */
+  }
+  .amount-currency {
+    color: var(--colors-text-text-primary-900, #101828);
+    font-family: var(--Font-family-font-family-body, Inter);
+    font-size: var(--Font-size-text-md, 16px);
+    font-style: normal;
+    font-weight: 500;
+    line-height: var(--Line-height-text-md, 24px); /* 150% */
+  }
+  .amount-USD {
+    color: var(--Colors-Text-text-disabled, #667085);
+    /* Text sm/Regular */
+    font-family: var(--Font-family-font-family-body, Inter);
+    font-size: var(--Font-size-text-sm, 14px);
+    font-style: normal;
+    font-weight: 400;
+    line-height: var(--Line-height-text-sm, 20px); /* 142.857% */
+  }
+  .statistical-p {
+    color: var(--Colors-Text-text-disabled, #667085);
+    /* Text sm/Regular */
+    font-family: var(--Font-family-font-family-body, "PingFang SC");
+    font-size: var(--Font-size-text-sm, 14px);
+    font-style: normal;
+    font-weight: 400;
+    line-height: var(--Line-height-text-sm, 20px); /* 142.857% */
+  }
+}

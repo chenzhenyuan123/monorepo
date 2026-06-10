@@ -18,18 +18,12 @@ const isJoin = ref(false)
 const showIsJoin = ref(false)
 const goodsList = ref([])
 const walletInfo = reactive({
-  totalCommission: undefined,
-  pendingCommission: undefined,
-  availableCommission: undefined,
-  toBeSettledCommission: undefined,
-  settledCommission: undefined,
-  //
-  nonUSDollar: false,
-  pendingCommissionDetailList: [],
-})
-
-const totalCommission = computed(() => {
-  return accurate_add(walletInfo.totalCommission, accurate_add(walletInfo.toBeSettledCommission, walletInfo.settledCommission))
+  pendingCommission: undefined, // 待定佣金
+  totalBalanceAmtUsd: undefined, // 可用佣金
+  totalSettlementAmtUsd: undefined,  // 待结算佣金
+  totalSettledAmtUsd: undefined,  // 已结算佣金
+  nonUSDollar: false, //是否包含非美元金额
+  pendingCommissionDetailList: [], //待确定佣金明细
 })
 
 onMounted(async () => {
@@ -82,12 +76,15 @@ const qrySettlementAmount = async() => {
   const result = await withdrawApi.qrySettlementAmount()
   const res = checkResponseData(result) || {}
   if (res) {
-    Object.assign(walletInfo, {
-      toBeSettledCommission: res.settlementAmt,
-      settledCommission: res.settledAmt,
-    })
+    Object.assign(walletInfo, res)
   }
 }
+
+// 动态计算佣金的总额
+const totalCommission = computed(() => {
+  return accurate_add(walletInfo.pendingCommission, accurate_add(walletInfo.totalBalanceAmtUsd, accurate_add(walletInfo.totalSettledAmtUsd, walletInfo.totalSettlementAmtUsd))) || 0
+})
+
 const currencyToCountryId = ref({})
 // 获取所有国家列表
 const getAllCountry = async() => {
@@ -129,10 +126,11 @@ const routerGo = path => {
       <ul class="home-commossion-box" :gutter="24">
         <li>
           <p class="text">{{$t('home.totalCommission')}}</p>
-          <h3 class="num">
-            <template v-if="walletInfo.nonUSDollar">≈</template>
-            {{ formatterAmount(totalCommission) }}
-          </h3>
+          <div class="flex card-amount-box num">
+            <b v-if="walletInfo.nonUSDollar" class="card-amount-curreny">≈ USD</b>
+            <div class="flex-center-6"></div>
+            <span class="card-amount">{{ currencyFormat(totalCommission) }}</span>
+          </div>
           <div class="card-prompt-container">
             <el-popover
               placement="top"
@@ -157,51 +155,23 @@ const routerGo = path => {
         </li>
         <li>
           <p class="text">{{$t('home.pendingCommission')}}</p>
-          <el-popover
-            placement="bottom-start"
-            effect="light"
-            :width="480"
-            popper-class="popover-dialog"
-            :disabled="!walletInfo.nonUSDollar"
+          <AmountDetailsPopover
+            :pending-commission="walletInfo.pendingCommission"
+            :pending-commission-detail-list="walletInfo.pendingCommissionDetailList"
+            :currency-to-country-id="currencyToCountryId"
+            i18nLabelDesc="home.pendingCommissionDetailLabelDesc"
+            statusType="Pending"
           >
-            <div class="statistical-box" :class="{ m: isMobile }">
-              <div class="statistical-tabs-container">
-                <div class="statistical-tabs header">
-                  <div class="statistical-tabs-item">{{$t('home.pendingCommissionDetailLabelNonUSD')}}</div>
-                  <div class="statistical-tabs-item">{{$t('home.pendingCommissionDetailLabelUSD')}}</div>
-                </div>
-                <div class="statistical-content">
-                  <div v-for="item in walletInfo.pendingCommissionDetailList" :key="item.currency" class="statistical-tabs">
-                    <div class="statistical-tabs-item">
-                      <div class="circle-country-icon-container">
-                        <img :src="flagUrl(currencyToCountryId[item.currency])" alt="">
-                      </div>
-                      <div class="flex-center-8"></div>
-                      <span>{{ formatterAmount(item.nonUSDCommission, item.currency) }}</span>
-                    </div>
-                    <div class="statistical-tabs-item">
-                      <div class="circle-country-icon-container">
-                        <img :src="flagUrl('us')" alt="">
-                      </div>
-                      <div class="flex-center-8"></div>
-                      <span>{{ formatterAmount(item.estimatedUSDAmount, 'USD') }}</span>
-                    </div>
-                  </div>
-                </div>
+            <template #default="{}">
+              <div class="flex card-amount-box num">
+                <b class="card-amount-curreny">≈ USD</b>
+                <div class="flex-center-6"></div>
+                <span class="card-amount num" :class="{'tip-trigger-style': walletInfo.pendingCommission}">
+                  {{ currencyFormat(walletInfo.pendingCommission) }}
+                </span>
               </div>
-              <div class="statistical-p">
-                {{$t('home.pendingCommissionDetailLabelDesc')}}
-              </div>
-            </div>
-            <template #reference>
-              <h3 v-if="walletInfo.nonUSDollar" class="num tip-trigger-style">
-                ≈ {{ formatterAmount(walletInfo.pendingCommission) }}
-              </h3>
-              <h3 v-else class="num">
-                {{ formatterAmount(walletInfo.pendingCommission) }}
-              </h3>
             </template>
-          </el-popover>
+          </AmountDetailsPopover>
           <div class="card-prompt-container">
             <el-popover
               placement="top"
@@ -225,18 +195,63 @@ const routerGo = path => {
           </div>
         </li>
         <li>
-          <p class="text">{{$t('home.availableCommission')}}</p>
-          <h3 class="num">{{ formatterAmount(walletInfo.availableCommission) }}</h3>
+          <p class="text">{{$t('home.availableCommission')}}</p>          
+          <AmountDetailsPopover
+            :disabled="walletInfo.totalBalanceAmtUsd"
+            :pending-commission="walletInfo.totalBalanceAmtUsd"
+            :pending-commission-detail-list="walletInfo.balanceCurrencyList"
+            :currency-to-country-id="currencyToCountryId"
+            i18nLabelDesc="home.pendingCommissionDetailLabelDescNew"
+            statusType="Available"
+          >
+            <template #default="{}">
+              <div class="flex card-amount-box num">
+                <b class="card-amount-curreny">≈ USD</b>
+                <div class="flex-center-6"></div>
+                <span class="card-amount num" :class="{'tip-trigger-style': walletInfo.totalBalanceAmtUsd}">{{ currencyFormat(walletInfo.totalBalanceAmtUsd) }}</span>
+              </div>
+            </template>
+          </AmountDetailsPopover>
         </li>
         <!-- 结算中佣金 -->
         <li>
           <p class="text">{{$t('home.toBeSettledCommission')}}</p>
-          <h3 class="num">{{ formatterAmount(walletInfo.toBeSettledCommission) }}</h3>
+          <AmountDetailsPopover
+            :disabled="walletInfo.totalSettlementAmtUsd"
+            :pending-commission="walletInfo.totalSettlementAmtUsd"
+            :pending-commission-detail-list="walletInfo.settlementCurrencyList"
+            :currency-to-country-id="currencyToCountryId"
+            i18nLabelDesc="home.pendingCommissionDetailLabelDescNew"
+            statusType="Unsettled"
+          >
+            <template #default="{}">
+              <div class="flex card-amount-box num">
+                <b class="card-amount-curreny">≈ USD</b>
+                <div class="flex-center-6"></div>
+                <span class="card-amount num" :class="{'tip-trigger-style': walletInfo.totalSettlementAmtUsd}">{{ currencyFormat(walletInfo.totalSettlementAmtUsd) }}</span>
+              </div>
+            </template>
+          </AmountDetailsPopover>
         </li>
         <!-- 已结算佣金 -->
         <li>
-          <p class="text">{{$t('home.settledCommission')}}</p>
-          <h3 class="num">{{ formatterAmount(walletInfo.settledCommission) }}</h3>
+          <p class="text">{{$t('home.settledCommission')}}</p> 
+          <AmountDetailsPopover
+            :disabled="walletInfo.totalSettledAmtUsd"
+            :pending-commission="walletInfo.totalSettledAmtUsd"
+            :pending-commission-detail-list="walletInfo.settledCurrencyList"
+            :currency-to-country-id="currencyToCountryId"
+            i18nLabelDesc="home.pendingCommissionDetailLabelDescNew"
+            statusType="Settled"
+          >
+            <template #default="{}">
+              <div class="flex card-amount-box num">
+                <b class="card-amount-curreny">≈ USD</b>
+                <div class="flex-center-6"></div>
+                <span class="card-amount num" :class="{'tip-trigger-style': walletInfo.totalSettledAmtUsd}">{{ currencyFormat(walletInfo.totalSettledAmtUsd) }}</span>
+              </div>
+            </template>
+          </AmountDetailsPopover>
         </li>
       </ul>
 

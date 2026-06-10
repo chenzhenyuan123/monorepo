@@ -249,6 +249,14 @@
           font-size: 20px;
           font-family: var(--font-family-Number, "IBM Plex Sans Condensed");
         }
+        .payWith {
+          color: var(--Text-icon-color-text-icon-tertiary, #817F86);
+          font-family: var(--Font-family-font-family-body, Inter);
+          font-size: var(--Font-size-text-xs, 12px);
+          font-weight: 400;
+          line-height: var(--Line-height-text-xs, 18px);
+          margin-top: 4px;
+        }
         .font-size24 {
           font-size: 24px;
         }
