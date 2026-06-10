@@ -569,6 +569,13 @@ const rules = () => {
                 trigger: 'blur'
             }
         ],
+        accountType: [
+            {
+                required: true,
+                message: t('withdraw.pleaseSelect'),
+                trigger: 'change',
+            },
+        ],
         accountHolderType: [
             {
                 required: true,
