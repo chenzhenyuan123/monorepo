@@ -307,7 +307,7 @@ const sendAgain = async() => {
         </div>
       </div>
     </div>
-    <div v-if="gback" class="buoy-1780907156008 flex items-center gap2 cursor-pointer" @click="backToShop">
+    <div v-if="isMobile && gback" class="buoy-1780907156008 flex items-center gap2 cursor-pointer" @click="backToShop">
       <div class="mirror-x-icon lh0">
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
           <g clip-path="url(#clip0_1789_28792)">
