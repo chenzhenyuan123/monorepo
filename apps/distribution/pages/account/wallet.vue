@@ -202,21 +202,17 @@ onMounted(() => {
         <div class="card-p">{{$t('wallet.pendingCommission')}}</div>
         <div class="card-amount-container">
           <AmountDetailsPopover
-            :disabled="walletInfo.nonUSDollar"
             :pending-commission="walletInfo.pendingCommission"
             :pending-commission-detail-list="walletInfo.pendingCommissionDetailList"
             :currency-to-country-id="currencyToCountryId"
-            SettledUSDamount="home.PendingUSDCommission"
-            SettledNonUSDamount="home.PendingNonUSDCommission"
+            i18nLabelDesc="home.pendingCommissionDetailLabelDesc"
+            statusType="Pending"
           >
             <template #default="{}">
               <div class="flex card-amount-box">
                 <b class="card-amount-curreny">≈ USD</b>
                 <div class="flex-center-6"></div>
-                <span v-if="walletInfo.nonUSDollar" class="card-amount tip-trigger-style">
-                  {{ currencyFormat(walletInfo.pendingCommission) }}
-                </span>
-                <span v-else class="card-amount">
+                <span class="card-amount" :class="{'tip-trigger-style': walletInfo.pendingCommission}">
                   {{ currencyFormat(walletInfo.pendingCommission) }}
                 </span>
               </div>

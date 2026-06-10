@@ -10,6 +10,8 @@ import { formatDate } from "@flylinking/core/utils/dateUtil"
 import {previewFlylinkStoreUrl} from "@flylinking/core/utils/urlUtil"
 import {sendLog} from "@flylinking/core/utils/logUtil";
 import {accurate_toFixed} from "@flylinking/core/utils/dataUtil";
+import { useI18n } from "vue-i18n";
+const { t } = useI18n();
 const { buyerOrderApi } = useApi();
   
 const route = useRoute();
@@ -108,30 +110,22 @@ const sendLogClick = () => {
       <!-- 待付款：发起支付Pay Now buyerOrderStatus0
            待发货：联系卖家Contact Seller buyerOrderStatus1
            已发货：查看物流Track Shipment，确认收货Mark as Received buyerOrderStatus2 
-           再次购买：已完成3 和 已取消4 buyerOrderStatus-->
-      <div class="order-detail-title-fotter">
+           再次购买：已完成3、已取消4 buyerOrderStatus、有退款refundStatus1 -->
+      <div class="order-detail-title-fotter flex flex-wrap gap12">
         <a v-if="orderInfo.orderDetailCO.buyerOrderStatus===0 && orderInfo.orderDetailCO.payNowUrl" :href="orderInfo.orderDetailCO.payNowUrl" target="_blank">
           <el-button type="primary" id="Pay-Now-btn">{{$t('orders.ordersPayNow')}}</el-button>
         </a>
-        <div v-if="orderInfo.orderDetailCO.buyerOrderStatus===0 && orderInfo.orderDetailCO.payNowUrl" class="flex-center-12"></div>
-
         <div v-if="orderInfo.orderDetailCO.buyerOrderStatus===1" class="position">
           <el-button type="primary" id="Contact-seller-btn" @click="showContactInfo2=true">{{$t('orders.ordersContactSeller')}}</el-button>
           <!-- 联系方式弹窗 -->
           <ContactInfo v-if="showContactInfo2" :contactInfo="orderInfo.orderDetailCO" left="0" @hide="showContactInfo2=false" />
         </div>
-        <div v-if="orderInfo.orderDetailCO.buyerOrderStatus===1" class="flex-center-12"></div>
-
         <a v-if="orderInfo.orderDetailCO.buyerOrderStatus===2 && orderInfo.tradeOrderLogisticsList.length>0" :href="`https://t.17track.net/en#nums=${orderInfo.tradeOrderLogisticsList[0].logisticsCode}${orderInfo.tradeOrderLogisticsList[0].logisticsProviderCode ? '&fc='+orderInfo.tradeOrderLogisticsList[0].logisticsProviderCode : ''}`" target="_blank">
           <el-button type="primary" id="Track-Shipment-btn">{{$t('orders.ordersTrackShipment')}}</el-button>
         </a>
-        <div v-if="orderInfo.orderDetailCO.buyerOrderStatus===2 && orderInfo.orderDetailCO.logisticsCode" class="flex-center-12"></div>
-        
-        <a v-if="([3,4].includes(orderInfo.orderDetailCO.buyerOrderStatus)) && orderInfo.orderDetailCO.orderLinkurl" :href="orderInfo.orderDetailCO.orderLinkurl" target="_blank" @click="sendLogClick()">
+        <a v-if="([3,4].includes(orderInfo.orderDetailCO.buyerOrderStatus) || orderInfo.orderDetailCO.refundStatus===1) && orderInfo.orderDetailCO.orderLinkurl" :href="orderInfo.orderDetailCO.orderLinkurl" target="_blank" @click="sendLogClick()">
           <el-button type="primary" id="Buy-Again-btn">{{$t('orders.ordersBuyAgain')}}</el-button>
         </a>
-        <div v-if="([3,4].includes(orderInfo.orderDetailCO.buyerOrderStatus)) && orderInfo.orderDetailCO.orderLinkurl" class="flex-center-12"></div>
-
         <el-tooltip
           v-if="orderInfo.orderDetailCO.buyerOrderStatus===2"
           :disabled="isReceivedAble"
@@ -145,6 +139,8 @@ const sendLogClick = () => {
       </div>
     </div>
     <div class="order-detail-content">
+      <!-- 退款 -->
+      <OrderRefundList v-if="isMobile && orderInfo.orderDetailCO.refundList" :refundList="orderInfo.orderDetailCO.refundList" />
       <div class="right">
         <!-- <div v-if="orderInfo.orderDetailCO.buyerOrderStatus>=0" class="order-text">
           <b>{{$t('wallet.withdrawalRecordsFormLabelStatus')}}:</b>
@@ -196,6 +192,8 @@ const sendLogClick = () => {
         </div>
       </div>
       <div class="left ">
+        <!-- 退款 -->
+        <OrderRefundList v-if="!isMobile && orderInfo.orderDetailCO.refundList" :refundList="orderInfo.orderDetailCO.refundList" />
         <div class="order-detail-content-top">
           <div class="header" @click="jumpToShop()">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
@@ -326,6 +324,7 @@ const sendLogClick = () => {
               </div>
               <div class="goods-details-text2 font-size24">
                 {{orderInfo.orderDetailCO.paymentCurrency}}  {{currencyFormat(orderInfo.orderDetailCO.paymentAmount)}}
+                <p v-if="orderInfo.orderDetailCO.paymentMethod" class="payWith">{{$t('orders.PayWith')}} {{ orderInfo.orderDetailCO.paymentMethod }}</p>
               </div>
             </div>
           </div>

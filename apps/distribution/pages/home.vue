@@ -156,21 +156,17 @@ const routerGo = path => {
         <li>
           <p class="text">{{$t('home.pendingCommission')}}</p>
           <AmountDetailsPopover
-            :disabled="walletInfo.nonUSDollar"
             :pending-commission="walletInfo.pendingCommission"
             :pending-commission-detail-list="walletInfo.pendingCommissionDetailList"
             :currency-to-country-id="currencyToCountryId"
-            SettledUSDamount="home.PendingUSDCommission"
-            SettledNonUSDamount="home.PendingNonUSDCommission"
+            i18nLabelDesc="home.pendingCommissionDetailLabelDesc"
+            statusType="Pending"
           >
             <template #default="{}">
               <div class="flex card-amount-box num">
                 <b class="card-amount-curreny">≈ USD</b>
                 <div class="flex-center-6"></div>
-                <span v-if="walletInfo.nonUSDollar && walletInfo.pendingCommission" class="card-amount num tip-trigger-style">
-                  {{ currencyFormat(walletInfo.pendingCommission) }}
-                </span>
-                <span v-else-if="walletInfo.pendingCommission" class="card-amount">
+                <span class="card-amount num" :class="{'tip-trigger-style': walletInfo.pendingCommission}">
                   {{ currencyFormat(walletInfo.pendingCommission) }}
                 </span>
               </div>
@@ -205,14 +201,14 @@ const routerGo = path => {
             :pending-commission="walletInfo.totalBalanceAmtUsd"
             :pending-commission-detail-list="walletInfo.balanceCurrencyList"
             :currency-to-country-id="currencyToCountryId"
-            SettledUSDamount="home.AvailableUSDCommission"
-            SettledNonUSDamount="home.AvailableNonUSDCommission"
+            i18nLabelDesc="home.pendingCommissionDetailLabelDescNew"
+            statusType="Available"
           >
             <template #default="{}">
               <div class="flex card-amount-box num">
                 <b class="card-amount-curreny">≈ USD</b>
                 <div class="flex-center-6"></div>
-                <span class="card-amount num tip-trigger-style">{{ currencyFormat(walletInfo.totalBalanceAmtUsd) }}</span>
+                <span class="card-amount num" :class="{'tip-trigger-style': walletInfo.totalBalanceAmtUsd}">{{ currencyFormat(walletInfo.totalBalanceAmtUsd) }}</span>
               </div>
             </template>
           </AmountDetailsPopover>
@@ -225,14 +221,14 @@ const routerGo = path => {
             :pending-commission="walletInfo.totalSettlementAmtUsd"
             :pending-commission-detail-list="walletInfo.settlementCurrencyList"
             :currency-to-country-id="currencyToCountryId"
-            SettledUSDamount="home.UnsettledUSDAmount"
-            SettledNonUSDamount="home.UnsettledNonUSDAmounts "
+            i18nLabelDesc="home.pendingCommissionDetailLabelDescNew"
+            statusType="Unsettled"
           >
             <template #default="{}">
               <div class="flex card-amount-box num">
                 <b class="card-amount-curreny">≈ USD</b>
                 <div class="flex-center-6"></div>
-                <span class="card-amount num tip-trigger-style">{{ currencyFormat(walletInfo.totalSettlementAmtUsd) }}</span>
+                <span class="card-amount num" :class="{'tip-trigger-style': walletInfo.totalSettlementAmtUsd}">{{ currencyFormat(walletInfo.totalSettlementAmtUsd) }}</span>
               </div>
             </template>
           </AmountDetailsPopover>
@@ -245,14 +241,14 @@ const routerGo = path => {
             :pending-commission="walletInfo.totalSettledAmtUsd"
             :pending-commission-detail-list="walletInfo.settledCurrencyList"
             :currency-to-country-id="currencyToCountryId"
-            SettledUSDamount="home.SettledUSDAmount"
-            SettledNonUSDamount="home.SettledNonUSDAmounts"
+            i18nLabelDesc="home.pendingCommissionDetailLabelDescNew"
+            statusType="Settled"
           >
             <template #default="{}">
               <div class="flex card-amount-box num">
                 <b class="card-amount-curreny">≈ USD</b>
                 <div class="flex-center-6"></div>
-                <span class="card-amount num tip-trigger-style">{{ currencyFormat(walletInfo.totalSettledAmtUsd) }}</span>
+                <span class="card-amount num" :class="{'tip-trigger-style': walletInfo.totalSettledAmtUsd}">{{ currencyFormat(walletInfo.totalSettledAmtUsd) }}</span>
               </div>
             </template>
           </AmountDetailsPopover>

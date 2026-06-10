@@ -563,3 +563,8 @@ $flex-center-width-max: 100;
 .txt-right {
   text-align: right;
 }
+
+// 主轴方向
+.flex-direction {
+  flex-direction: column-reverse; // 顺序颠倒
+}

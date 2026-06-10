@@ -18,11 +18,11 @@ const props = defineProps({
     type: Object,
     default: () => ({})
   },
-  SettledUSDamount: { // 国际化文案1
+  i18nLabelDesc: { // 国际化文案1-描述
     type: String,
-    default: 'home.pendingCommissionDetailLabelUSD'
+    default: 'home.pendingCommissionDetailLabelDesc'
   },
-  SettledNonUSDamount: { // 国际化文案2
+  statusType: { // 国际化文案2-状态
     type: String,
     default: 'home.pendingCommissionDetailLabelNonUSD'
   }
@@ -49,19 +49,20 @@ const isFirstNonUSD = (index) => {
     <div class="amount-details-popover-box" :class="{ m: isMobile }">
       <div v-for="(item, index) in pendingCommissionDetailList" :key="item.currency">
         <div v-if="item.currency==='USD'" class="flex justify-between mb12">
-          <div class="amount-details-text">{{$t(SettledUSDamount)}}</div>
-          <div class="txt-right amount-currency">{{ formatterAmount(item.amount, item.currency) }}</div>
+          <div class="amount-details-text">{{ $t('home.PendingUSDCommission', {type: $t(`home.SettledStatus${statusType}`)}) }}</div>
+          <div class="txt-right amount-currency">{{ formatterAmount(item.amount || item.commissionAmount, item.currency) }}</div>
         </div>
         <div v-else class="flex justify-between">
-          <div class="amount-details-text"><span v-if="isFirstNonUSD(index)">{{$t(SettledNonUSDamount)}}</span></div>
+          <div class="amount-details-text"><span v-if="isFirstNonUSD(index)">{{ $t('home.PendingNonUSDCommission', {type: $t(`home.SettledStatus${statusType}`)}) }}</span></div>
           <div class="mb12">
-            <div class="txt-right amount-currency">{{ formatterAmount(item.amount || item.nonUSDCommission, item.currency) }}</div>
+            <div class="txt-right amount-currency">{{ formatterAmount(item.amount || item.commissionAmount, item.currency) }}</div>
             <div class="txt-right amount-USD">(≈ {{ formatterAmount(item.amountUsd || item.estimatedUSDAmount, 'USD') }})</div>
           </div>
         </div>
       </div>
       <div class="statistical-p">
-        {{ t('home.pendingCommissionDetailLabelDescNew') }}
+        <span v-if="statusType==='Pending'">{{ $t(i18nLabelDesc) }}</span>
+        <span v-else>{{ $t(i18nLabelDesc, {type: $t(`home.SettledStatus${statusType}`)}) }}</span>
       </div>
     </div>
     <template #reference>
