@@ -166,7 +166,7 @@ onMounted(() => {
         <div class="card-p">{{$t('wallet.balance')}}</div>
         <div class="card-amount-container">
           <div class="flex card-amount-box">
-            <b class="card-amount-curreny">≈ USD</b>
+            <b class="card-amount-curreny">USD</b>
             <div class="flex-center-6"></div>
             <span class="card-amount">{{ currencyFormat(ableBalanceAmount) }}</span>
           </div>

@@ -158,7 +158,7 @@ const arnContent = computed(() => {
       </template>
 
       <!-- 内容区域 -->
-      <div class="arn-dialog-content">
+      <div class="arn-dialog-content direction-ltr">
         <h1 class="content-title">{{ arnContent.title }}</h1>
         
         <div 
@@ -227,6 +227,7 @@ const arnContent = computed(() => {
 .arn-dialog-content {
   margin: 0 auto;
   max-width: 720px;
+  text-align: left;
   .content-title {
     color: var(--colors-text-text-primary-900, #101828);
     font-family: var(--font-family-EN, "SF Pro Text");
