@@ -83,7 +83,7 @@
                 <div class="flex-center-4" @click.stop="jumpToShop"></div>
                 <span class="span link ellipsis" @click.stop="jumpToShop">{{ orderData.sellerBusinessName }}</span>
                 <div class="flex-center-4" @click.stop="jumpToShop"></div>
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none" class="icon-chevron-right icon mt6" @click.stop="jumpToShop">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none" class="icon-chevron-right icon mt6 mirror-x-icon" @click.stop="jumpToShop">
                     <path d="M6.75 13.5L11.25 9L6.75 4.5" stroke="#475467" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
             </div>
@@ -114,7 +114,7 @@
             <el-button
                     id="sku-more-btn"
                     @click.stop="jumpToDetail"
-            >{{$t('orders.orderItemButtonMore')}}<el-icon class="tag-icon"><ArrowRight /></el-icon></el-button>
+            >{{$t('orders.orderItemButtonMore')}}<el-icon class="tag-icon mirror-x-icon"><ArrowRight /></el-icon></el-button>
         </div>
         <div class="goods-details-bottom direction-text-align-right">
             <div v-if="orderData.shippingFeeAmount >= 0" class="goods-details-text">
