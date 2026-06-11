@@ -70,7 +70,7 @@
 <template>
     <div class="order-list-box" @click="jumpToDetail">
         <div class="header justify-between">
-            <div class="flex">
+            <div class="flex max-width60">
                 <template v-if="!isMobile">
                     <span class="span big">{{ formatDate(orderData.createTime, 4) }}</span>
                     <div class="flex-center-8"></div>
@@ -258,6 +258,9 @@
         .header {
             padding: 20px 24px 0;
             display: flex;
+            .max-width60 {
+                max-width: calc(60% - 16px);
+            }
             .link{
                 border: 1px solid transparent;
                 &:hover {
@@ -283,6 +286,7 @@
             }
             svg, i {
                 color: #475467;
+                flex-shrink: 0;
             }
         }
         .goods-content {
