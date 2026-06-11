@@ -129,6 +129,15 @@ $--button-padding-vertical: (
       text-align: right;
     }
   }
+  .direction-icon {
+    transform: rotate(180deg);
+  }
+  .mirror-y-icon {
+    transform: scaleY(-1);
+  }
+  .mirror-x-icon {
+    transform: scaleX(-1);
+  }
 }
 .ltr {
   direction: ltr;

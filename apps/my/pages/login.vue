@@ -15,6 +15,13 @@ definePageMeta({
   layout: 'noside'
 })
 
+
+const gback = ref(route.query.gback)
+const backToShop = () => {
+  location.href = window.decodeURIComponent(gback.value)
+}
+
+
 const loginForm = ref({})
 const loginFormRef = ref()
 
@@ -300,6 +307,21 @@ const sendAgain = async() => {
         </div>
       </div>
     </div>
+    <div v-if="isMobile && gback" class="buoy-1780907156008 flex items-center gap2 cursor-pointer" @click="backToShop">
+      <div class="mirror-x-icon lh0">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g clip-path="url(#clip0_1789_28792)">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M10.5303 3.46967C10.2374 3.17678 9.76268 3.17678 9.46978 3.46967L5.46978 7.46967C5.17695 7.76257 5.17691 8.23734 5.46978 8.53022L9.46978 12.5302C9.76266 12.8231 10.2374 12.8231 10.5303 12.5302C10.8232 12.2373 10.8232 11.7626 10.5303 11.4697L7.0606 7.99994L10.5303 4.53022C10.8232 4.23732 10.8232 3.76256 10.5303 3.46967Z" fill="white"/>
+          </g>
+          <defs>
+            <clipPath id="clip0_1789_28792">
+              <rect width="16" height="16" fill="white" transform="matrix(-1 0 0 1 16 0)"/>
+            </clipPath>
+          </defs>
+        </svg>
+      </div>
+      <span>{{t('buoy.ContinueShopping')}}</span>
+    </div>
   </div>
 </template>
 <style lang="scss" scoped>
@@ -362,5 +384,26 @@ const sendAgain = async() => {
 .loginValidateCodeErrorTip {
   line-height: 20px;
   margin-top: 10px;
+}
+.buoy-1780907156008 {
+  position: fixed;
+  left: 0;
+  bottom: 151px;
+  z-index: 11;
+  padding: 4px 12px 4px 4px;
+  border-radius: 0 9999px 9999px 0;
+  background: #5548FF;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03), 0 2px 6px 0 rgba(0, 0, 0, 0.08);
+  color: #FFF;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 18px;
+  .rtl & {
+    left: auto;
+    right: 0;
+    padding: 4px 4px 4px 12px;
+    border-radius: 9999px 0 0 9999px;
+  }
 }
 </style>
