@@ -320,7 +320,7 @@ const sendAgain = async() => {
           </defs>
         </svg>
       </div>
-      <span>Continue shopping</span>
+      <span>{{t('buoy.ContinueShopping')}}</span>
     </div>
   </div>
 </template>
