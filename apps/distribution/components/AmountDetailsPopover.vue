@@ -82,9 +82,5 @@ const isFirstNonUSD = (index) => {
   text-decoration-thickness: auto;
   text-underline-offset: auto;
   text-underline-position: under;
-  &:hover {
-    text-decoration-style: solid;
-    text-decoration-skip-ink: none;
-  }
 }
 </style>

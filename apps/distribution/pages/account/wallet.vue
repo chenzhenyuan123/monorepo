@@ -383,10 +383,6 @@ onMounted(() => {
         text-decoration-thickness: 6%;
         text-underline-offset: 12%;
         text-underline-position: from-font;
-        &:hover {
-          text-decoration-style: solid;
-          text-decoration-skip-ink: none;
-        }
       }
     }
     .card-amount-container {

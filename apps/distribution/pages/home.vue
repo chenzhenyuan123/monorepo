@@ -127,7 +127,7 @@ const routerGo = path => {
         <li>
           <p class="text">{{$t('home.totalCommission')}}</p>
           <div class="flex card-amount-box num">
-            <b v-if="walletInfo.nonUSDollar" class="card-amount-curreny">≈ USD</b>
+            <b v-if="totalCommission" class="card-amount-curreny">≈ USD</b>
             <div class="flex-center-6"></div>
             <span class="card-amount">{{ currencyFormat(totalCommission) }}</span>
           </div>

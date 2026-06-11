@@ -137,7 +137,7 @@ function copyStr(str) {
       width: 1px;
       height: 14px;
       background: var(--colors-text-text-tertiary-600, #475467);
-      margin: 0px 8px;
+      margin: 0px 12px;
     }
     .copy-btn {
       cursor: pointer;
