@@ -32,7 +32,7 @@ const cancel = () => {
       </template>
 
       <div>
-        <div class="mb20 white-span fw600">{{ $t('wallet.referralTableLabelEstimatedCommissionPostingDate') }}</div>
+        <div class="mb20 white-span fw600">1. {{ $t('wallet.referralTableLabelEstimatedCommissionPostingDate') }}</div>
         <div class="mb20 white-span">{{ $t('wallet.referralTableLabelTipEstimatedDateP1') }}</div>
         <div class="flex flex-li">
           <div>
@@ -48,7 +48,7 @@ const cancel = () => {
             <span class="white-span">{{ $t('wallet.referralTableLabelTipEstimatedDateP3Part3') }}</span>
           </div>
         </div>
-        <div class="mb20 mt24 white-span fw600">{{ $t('wallet.referralTableLabelActualCommissionPostingDate') }}</div>
+        <div class="mb20 mt24 white-span fw600">2. {{ $t('wallet.referralTableLabelActualCommissionPostingDate') }}</div>
         <div class="white-span">{{ $t('wallet.referralTableLabelTipActualDateP') }}</div>
       </div>
     </el-dialog>
