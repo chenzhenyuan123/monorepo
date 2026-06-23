@@ -296,12 +296,8 @@ const routerGo = path => {
             <ProductCardSkeleton :loading="loading" :lists="goodsList" :showPagination="false" :search="search" />
           </div>
           <!-- 暂无数据时展示 -->
-          <div v-if="goodsList.length<=0 && !loading && !search && isJoin" class="no-data-box">
-            <div class="grid-box" />
-            <div class="no-data-icon">
-              <el-icon class="no-data-icon-Search"><img :src="NoData" /></el-icon>
-            </div>
-            <p class="no-data-text">{{$t('home.homeNoData')}}</p>
+          <div v-if="goodsList.length<=0 && !loading && !search && isJoin" class="mt32">            
+            <EmptyData noDataTitle="home.homeNoData" />
           </div>
         </div>
       </div>

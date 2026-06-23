@@ -1,5 +1,20 @@
 <script setup>
 import NoData from '@/components/svg/NoData.svg'
+import { Search } from '@element-plus/icons-vue';
+const props = defineProps({
+    noDataTitle: { // 暂无数据的文案
+        type: String,
+        default: 'home.homeNoData'
+    },
+    noDataText: { // 暂无数据的文案
+        type: String,
+        default: ''
+    },
+    iconType: { // 图标-默认为NoData，可传Search
+        type: String,
+        default: 'NoData'
+    }
+})
 
 </script>
 
@@ -9,9 +24,13 @@ import NoData from '@/components/svg/NoData.svg'
     <div class="grid-box" />
     <div class="no-data-box-content">
         <div class="no-data-icon">
-            <el-icon class="no-data-icon-Search"><img :src="NoData" /></el-icon>
+            <el-icon class="no-data-icon-Search">
+                <Search v-if="iconType==='Search'" />
+                <img v-else :src="NoData" />
+            </el-icon>
         </div>
-        <p class="no-data-text">{{$t('home.homeNoData')}}</p>
+        <p class="no-data-text">{{$t(noDataTitle)}}</p>
+        <p v-if="noDataText" class="no-data-search-text">{{$t(noDataText)}}</p>
     </div>
 </div>
 </template>

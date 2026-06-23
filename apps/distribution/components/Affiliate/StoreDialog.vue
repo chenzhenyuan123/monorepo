@@ -97,12 +97,8 @@ const jumpToGoods = (url) => {
                         Store products(Join Distribution View More)
                     </h3>
                     <!-- 暂无数据时展示 -->
-                    <div v-if="!loading && goodsList.length<=0" class="no-data-box">
-                        <div class="grid-box" />
-                        <div class="no-data-icon">
-                        <el-icon class="no-data-icon-Search"><img :src="NoData" /></el-icon>
-                        </div>
-                        <p class="no-data-text">No Data</p>
+                    <div v-if="!loading && goodsList.length<=0">
+                        <EmptyData noDataTitle="No Data" />
                     </div>
                     <div
                             v-else
