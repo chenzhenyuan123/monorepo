@@ -2,6 +2,8 @@
 import SidebarItem from './SidebarItem.vue'
 import { reactive, inject } from 'vue'
 import {routes, routesDeveloper} from './route.js'
+import { checkResponseData } from "@/util/index.js"
+const { myCouponsApi } = useApi()
 
 const router = useRouter()
 const isCollapse = inject('isCollapse')
@@ -13,8 +15,60 @@ const selectMenu = () => {
 }
 // 判断是开发者平台的路由还是分销端的路由，默认分销端路由
 const route = useRoute()
-const routeData = computed(() => {
-  return route?.path.indexOf('/openapi')>-1 ? routesDeveloper : routes
+
+const routesData = ref([])
+// 设置未读状态的函数
+const setUnreadStatus = (type) => {
+  routesData.value = routesData.value.map(route => {
+    if (!route.children) return route
+
+    return {
+      ...route,
+      children: route.children.map(child => {
+        if (child.name !== 'My-Coupons') return child
+
+        return {
+          ...child,
+          meta: {
+            ...child.meta,
+            ...(type === 'hot' ? { hot: true } : {}),
+            ...(type === 'unread' ? { unread: true } : {})
+          }
+        }
+      })
+    }
+  })
+}
+
+
+
+const getCouponGetSwitchStatus = async () => {
+  const result = await myCouponsApi.couponGetSwitchStatus()
+  const res = checkResponseData(result)
+  if(res && res==='OPEN') {
+    setUnreadStatus('hot')
+  }
+}
+const getCouponCountUnusedCard = async () => {
+  const result = await myCouponsApi.couponCountUnusedCard()
+  const res = checkResponseData(result)
+  if(res && parseInt(res?.unusedCardCount)>0) {
+    setUnreadStatus('unread')
+  }
+}
+
+onMounted(()=>{
+  // 判断是开发者平台的路由还是分销端的路由，默认分销端路由
+  if (route?.path.indexOf('/openapi')>-1) {
+    routesData.value = Object.assign([], routesDeveloper)
+  } else {
+    routesData.value = Object.assign([], routes)
+    // 获取Hot状态
+    getCouponGetSwitchStatus()
+    // 获取未读状态
+    getCouponCountUnusedCard()
+  }
+
 })
 
 </script>
@@ -35,7 +89,7 @@ const routeData = computed(() => {
           <img v-if="isCollapse" class="abb-logo" src="~@/assets/imgs/abb-logo.svg" alt="" @click="navigateTo('/home')">
           <img v-else src="~@/assets/imgs/Flylinking-logo.svg" alt="" @click="navigateTo('/home')">
         </div>
-        <template v-for="item in routeData" :key="item.path">
+        <template v-for="item in routesData" :key="item.path">
           <sidebar-item :item-data="item" />
         </template>
       </el-menu>
