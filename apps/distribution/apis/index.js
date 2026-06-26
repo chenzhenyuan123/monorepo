@@ -10,6 +10,7 @@ import * as googleMapApi from './web/googleMap'
 import * as countryApi from './basedata/client/country'
 import * as affiliateApi from './client/affiliate'
 import * as tradeOrderApi from './trade/tradeOrder'
+import * as myCouponsApi from './web/account/myCoupons'
 export default {
   contactInfoApi,
   homeApi,
@@ -22,5 +23,6 @@ export default {
   googleMapApi,
   countryApi,
   affiliateApi,
-  tradeOrderApi
+  tradeOrderApi,
+  myCouponsApi
 }

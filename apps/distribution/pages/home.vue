@@ -197,7 +197,7 @@ const routerGo = path => {
         <li>
           <p class="text">{{$t('home.availableCommission')}}</p>          
           <AmountDetailsPopover
-            :disabled="walletInfo.totalBalanceAmtUsd"
+            :disabled="walletInfo.totalBalanceAmtUsd ? true : false"
             :pending-commission="walletInfo.totalBalanceAmtUsd"
             :pending-commission-detail-list="walletInfo.balanceCurrencyList"
             :currency-to-country-id="currencyToCountryId"
@@ -217,7 +217,7 @@ const routerGo = path => {
         <li>
           <p class="text">{{$t('home.toBeSettledCommission')}}</p>
           <AmountDetailsPopover
-            :disabled="walletInfo.totalSettlementAmtUsd"
+            :disabled="walletInfo.totalSettlementAmtUsd ? true : false"
             :pending-commission="walletInfo.totalSettlementAmtUsd"
             :pending-commission-detail-list="walletInfo.settlementCurrencyList"
             :currency-to-country-id="currencyToCountryId"
@@ -237,7 +237,7 @@ const routerGo = path => {
         <li>
           <p class="text">{{$t('home.settledCommission')}}</p> 
           <AmountDetailsPopover
-            :disabled="walletInfo.totalSettledAmtUsd"
+            :disabled="walletInfo.totalSettledAmtUsd ? true : false"
             :pending-commission="walletInfo.totalSettledAmtUsd"
             :pending-commission-detail-list="walletInfo.settledCurrencyList"
             :currency-to-country-id="currencyToCountryId"

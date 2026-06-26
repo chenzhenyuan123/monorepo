@@ -38,6 +38,13 @@ const routes = [
         }
       },
       {
+        path: '/account/myCoupons',
+        name: 'My-Coupons',
+        meta: {
+          title: 'router.MyCoupons'
+        }
+      },
+      {
         path: '/account/invitation',
         name: 'account-invitation',
         meta: {

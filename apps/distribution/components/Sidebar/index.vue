@@ -1,6 +1,7 @@
 <script setup>
 import SidebarItem from './SidebarItem.vue'
-import { reactive, inject } from 'vue'
+import { checkResponseData } from "@/util/index.js"
+const { myCouponsApi } = useApi()
 import routes from './route.js'
 
 const router = useRouter()
@@ -11,6 +12,56 @@ const isMobile = useIsMobile()
 const selectMenu = () => {
   emit('hiddenSetting')
 }
+
+const routesData = ref([])
+// 设置未读状态的函数
+const setUnreadStatus = (type) => {
+  routesData.value = routesData.value.map(route => {
+    if (!route.children) return route
+
+    return {
+      ...route,
+      children: route.children.map(child => {
+        if (child.name !== 'My-Coupons') return child
+
+        return {
+          ...child,
+          meta: {
+            ...child.meta,
+            ...(type === 'hot' ? { hot: true } : {}),
+            ...(type === 'unread' ? { unread: true } : {})
+          }
+        }
+      })
+    }
+  })
+}
+
+
+
+const getCouponGetSwitchStatus = async () => {
+  const result = await myCouponsApi.couponGetSwitchStatus()
+  const res = checkResponseData(result)
+  if(res && res==='OPEN') {
+    setUnreadStatus('hot')
+  }
+}
+const getCouponCountUnusedCard = async () => {
+  const result = await myCouponsApi.couponCountUnusedCard()
+  const res = checkResponseData(result)
+  if(res && parseInt(res?.unusedCardCount)>0) {
+    setUnreadStatus('unread')
+  }
+}
+
+onMounted(()=>{
+  routesData.value = Object.assign([], routes)
+  // 获取Hot状态
+  getCouponGetSwitchStatus()
+  // 获取未读状态
+  getCouponCountUnusedCard()
+
+})
 
 </script>
 
@@ -30,7 +81,7 @@ const selectMenu = () => {
           <img v-if="isCollapse" class="abb-logo" src="~@/assets/imgs/abb-logo.svg" alt="" @click="navigateTo('/home')">
           <img v-else src="~@/assets/imgs/Flylinking-logo.svg" alt="" @click="navigateTo('/home')">
         </div>
-        <template v-for="item in routes" :key="item.path">
+        <template v-for="item in routesData" :key="item.path">
           <sidebar-item :item-data="item" />
         </template>
       </el-menu>
