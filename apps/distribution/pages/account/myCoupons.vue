@@ -107,9 +107,9 @@ onMounted(()=>{
     <!-- 我的优惠券 -->
     <div v-if="activeName==='MyCoupons'" class="mt32">
       <div>
-        <el-button type="primary" @click="jumpToWallet">{{$t('MyCoupons.WithdrawNow')}}</el-button>
+        <el-button type="primary" class="button-default" @click="jumpToWallet">{{$t('MyCoupons.WithdrawNow')}}</el-button>
       </div>
-      <el-radio-group v-model="MyCouponsGroups" class="radio-group radio-group-default MyCoupons-groups" @change="MyCouponsGroupsChange">
+      <el-radio-group v-model="MyCouponsGroups" class="radio-group radio-group-default MyCoupons-groups flex" @change="MyCouponsGroupsChange">
         <!-- 未使用优惠券 -->
         <el-radio-button id="'MyCoupons-Unused" value="UNUSED">{{$t('MyCoupons.Unused')}} ({{MyCouponsTotal.unusedTotal || 0}})</el-radio-button>
         <!-- 已使用优惠券 -->
@@ -151,10 +151,11 @@ onMounted(()=>{
 </template>
 
 <style lang="scss" scoped>
-@use "@/assets/css/element-reset/tabs.scss" as *;
-@use "@/assets/css/element-reset/radio.scss" as *;
-@use "@/assets/css/element-reset/select.scss" as *;
-@use "@/assets/css/element-reset/button.scss" as *;
+@import url("@/assets/css/element-reset/button.scss");
+@import url("@/assets/css/element-reset/tabs.scss");
+@import url("@/assets/css/element-reset/input.scss");
+@import url("@/assets/css/element-reset/select.scss");
+@import url("@/assets/css/element-reset/radio.scss");
 
 .MyCoupons-box {
   margin-bottom: 40px;
@@ -174,6 +175,42 @@ onMounted(()=>{
 .page {
   &.m {
     padding: 0 16px;
+    .MyCoupons-groups {
+      width: 100%;
+      border-radius: var(--el-border-radius-base);
+      align-items: stretch;
+      :deep(.el-radio-button) {
+        flex: 1;
+        min-width: 0;
+      }
+      :deep(.el-radio-button + .el-radio-button) {
+        border-left: 1px solid var(--el-border-color);
+      }
+
+      :deep(.el-radio-button__inner) {
+        width: 100%;
+        min-height: 40px;
+        height: 100%;
+        align-items: center;
+        display: flex;
+        border: 0 !important;
+        white-space: normal;
+        word-break: break-word;
+      }
+      
+      :deep(.el-radio-button__original-radio:checked + .el-radio-button__inner) {
+        box-shadow: none !important;
+        border-radius: 0;
+      }
+    }
+  }
+}
+.rtl .MyCoupons-groups {
+  :deep(.el-radio-button + .el-radio-button) {
+    border-right: 1px solid var(--el-border-color);
+    .el-radio-button__inner {
+      border-left: 0;
+    }
   }
 }
 </style>
