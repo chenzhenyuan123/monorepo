@@ -25,8 +25,9 @@
             font-size: 16px;
             font-weight: 600;
             line-height: 24px; /* 150% */
-            &.is-active, &:hover {
+            &.is-active, &:hover, &:focus-visible {
                 color: #5548FF;
+                box-shadow: none;
             }
             + .el-tabs__item {
                 margin-left: 12px;

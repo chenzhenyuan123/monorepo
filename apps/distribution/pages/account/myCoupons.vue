@@ -176,7 +176,6 @@ onMounted(()=>{
   &.m {
     padding: 0 16px;
     .MyCoupons-groups {
-      width: 100%;
       border-radius: var(--el-border-radius-base);
       align-items: stretch;
       :deep(.el-radio-button) {
