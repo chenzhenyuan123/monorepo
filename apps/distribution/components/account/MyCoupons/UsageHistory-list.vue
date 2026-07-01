@@ -15,7 +15,8 @@ const loading = ref(false)
 const statusData = computed(() => {
   return [
     { value: 'SUCCESS', label: t('MyCoupons.status1'), type: 'success' },
-    { value: 'WITHDRAWING', label: t('MyCoupons.status2'), type: 'primary' }
+    { value: 'WITHDRAWING', label: t('MyCoupons.status2'), type: 'primary' },
+    { value: 'FAIL', label: t('MyCoupons.status3'), type: 'danger' }
   ]
 })
 const statusDataDesc = computed(() => {
@@ -24,7 +25,11 @@ const statusDataDesc = computed(() => {
     { value: 'WITHDRAWING', label: t('MyCoupons.status2'), type: 'primary' },
     { value: 'WITHDRAW_ACCEPT_SUCCESS', label: t('MyCoupons.status2'), type: 'primary' },
     { value: 'ISSUING', label: t('MyCoupons.status2'), type: 'primary' },
-    { value: 'ISSUE_ACCEPT_SUCCESS', label: t('MyCoupons.status2'), type: 'primary' }
+    { value: 'ISSUE_ACCEPT_SUCCESS', label: t('MyCoupons.status2'), type: 'primary' },
+    { value: 'ISSUE_SUCCESS_RETURN', label: t('MyCoupons.status3'), type: 'danger' },
+    { value: 'ISSUE_FAIL', label: t('MyCoupons.status3'), type: 'danger' },
+    { value: 'ISSUE_ACCEPT_FAIL', label: t('MyCoupons.status3'), type: 'danger' },
+    { value: 'WITHDRAW_ACCEPT_FAIL', label: t('MyCoupons.status3'), type: 'danger' }
   ]
 })
 const statusDict = computed(() => {
@@ -134,6 +139,10 @@ onMounted(()=>{
             </div>
           </li>
         </ul>
+      </div>
+      <div class="UsageHistory-tips mb16">
+        <h3>{{$t('invitation.history')}}</h3>
+        <p>{{$t('MyCoupons.UsageHistoryTips')}}</p>
       </div>
       <TableForm class="table-container" :is-empty="!hasTableData" :loading="loading">
           <el-form v-if="!isMobile && hasTableData" ref="formRef" :model="formData" :inline="true" label-position="top" novalidate>
@@ -265,6 +274,22 @@ onMounted(()=>{
       line-height: var(--Line-height-text-sm, 20px);
       margin-bottom: 8px;
     }
+  }
+}
+.UsageHistory-tips {
+  h3 {
+    margin-bottom: 4px;
+    color: var(--colors-text-text-primary-900, #101828);
+    font-family: var(--Font-family-font-family-body, Inter);
+    font-size: var(--Font-size-text-lg, 18px);
+    font-weight: 600;
+    line-height: var(--Line-height-text-lg, 28px);
+  }
+  p {
+    color: var(--colors-text-text-tertiary-600, #475467);
+    font-family: var(--Font-family-font-family-body, Inter);
+    font-size: var(--Font-size-text-md, 16px);
+    line-height: var(--Line-height-text-md, 24px);
   }
 }
 .m {
