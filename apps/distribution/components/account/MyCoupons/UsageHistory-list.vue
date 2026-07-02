@@ -83,7 +83,12 @@ const getCouponStatCoupon = async() => {
   const res = checkResponseData(result)
   if(res) {
     totalCouponData.value = res
+  } else {
+    totalCouponData.value = {
+      totalCouponNumber: 0
+    }
   }
+  loading.value = false
 }
 
 onMounted(()=>{
@@ -215,8 +220,30 @@ onMounted(()=>{
     </div>
 
     <!-- 暂无数据时展示 -->
-    <div v-else class="mt32">
+    <div v-else-if="totalCouponData.totalCouponNumber===0" class="mt32">
       <EmptyData noDataTitle="MyCoupons.NoCouponUsageHistory" noDataText="MyCoupons.NoCouponTips" iconType="Search" />
+    </div>
+
+    <!-- 进入页面加loadding骨架屏 -->
+    <div v-else>      
+      <el-skeleton animated>
+        <template #template>
+          <ul class="UsageHistory-total flex justify-between gap24 mt32">
+            <li>
+              <el-skeleton-item variant="h1" class="mb16" />
+              <el-skeleton-item variant="text" />
+            </li>
+            <li>
+              <el-skeleton-item variant="h1" class="mb16" />
+              <el-skeleton-item variant="text" />
+            </li>
+          </ul>
+          <div class="UsageHistory-tips mt32">
+            <el-skeleton-item variant="h3" class="mb16" />
+            <el-skeleton-item variant="text" />
+          </div>
+        </template>
+      </el-skeleton>
     </div>
   </div>
 </template>
