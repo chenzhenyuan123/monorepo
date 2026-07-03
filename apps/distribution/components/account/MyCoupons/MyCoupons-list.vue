@@ -106,7 +106,7 @@ const showDiscountRuleDialog = useRule => {
         <div class="tertiary-span f12">{{$t('DiscountDetailsDialog.couponIdLabel')}} {{ membershipCardItem.cardNo }}</div>
         <div class="tertiary-span f12">{{ membershipCardItem.startDate }} ~ {{ membershipCardItem.endDate }} (UTC+8)</div>
       </div>
-      <div class="MyCoupons-li-right">
+      <div class="MyCoupons-li-right flex items-center">
         <div class="half-circle-top"></div>
         <div class="half-circle-bottom"></div>
         <div v-if="isActive(membershipCardItem.cardNo)" class="tick-icon lh0 mirror-x-icon">
