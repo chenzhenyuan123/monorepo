@@ -117,14 +117,10 @@ onMounted(()=>{
         <!-- 已过期优惠券 -->
         <el-radio-button id="'MyCoupons-Invalid" value="EXPIRED">{{$t('MyCoupons.Invalid')}} ({{MyCouponsTotal.expiredTotal || 0}})</el-radio-button>
       </el-radio-group>
-      <div v-loading="loading" class="mt32">      
-        <!-- 暂无数据时展示 -->
-        <div v-if="MyCouponsList.length<=0 && !loading" class="no-data-box">
-          <EmptyData noDataTitle="MyCoupons.NoCoupon" noDataText="MyCoupons.NoCouponTips" iconType="Search" />
-        </div>
-        <div v-else>
+      <div class="mt32">
+        <div>
           <!-- 优惠券列表 -->
-          <AccountMyCouponsList v-if="MyCouponsList.length>0" :membershipCardData="MyCouponsList" :isFlex="true" :isDisabled="MyCouponsGroups!=='UNUSED'" /> 
+          <AccountMyCouponsList :membershipCardData="MyCouponsList" :isFlex="true" :isDisabled="MyCouponsGroups!=='UNUSED'" :loading="loading" :count="page.pageSize" /> 
           <div class="mt32">
             <!-- 分页 -->
             <Pagination
@@ -138,7 +134,11 @@ onMounted(()=>{
               @update:current-page="handleCurrentChange"
             />
           </div>
-        </div> 
+        </div>
+        <!-- 暂无数据时展示 -->
+        <div v-if="MyCouponsList.length<=0 && !loading" class="no-data-box">
+          <EmptyData noDataTitle="MyCoupons.NoCoupon" noDataText="MyCoupons.NoCouponTips" iconType="Search" />
+        </div>
       </div>
     </div>
 
@@ -191,8 +191,9 @@ onMounted(()=>{
         width: 100%;
         min-height: 40px;
         height: 100%;
-        align-items: center;
         display: flex;
+        justify-content: center;
+        align-items: center;
         border: 0 !important;
         white-space: normal;
         word-break: break-word;

@@ -29,6 +29,7 @@ export default defineNuxtConfig({
   ],
   css: [
     '@flylinking/ui/styles/css/reset.css',
+    '@flylinking/ui/styles/css/direction.scss',
     '@flylinking/ui/styles/css/global.scss',
   ],
   nitro: {
