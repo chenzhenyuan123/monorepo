@@ -25,11 +25,11 @@
         }
     }
     :deep(.el-tag__content) {
-        display: inline-flex;
+        display: flex;
         align-items: center;
+        gap: 4px;
     }
     .tag-icon {
-        margin: 0 4px 0 -2px;
         font-size: 12px;
     }
     .tag-span {

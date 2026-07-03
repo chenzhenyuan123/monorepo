@@ -44,7 +44,7 @@ const handleMenuClick = async (item) => {
     <template #title>
       <div class="flex">
         <img v-if="itemData.meta.icon && !isMobile" class="Flylink" :src="getIconComponent(itemData.meta.icon)">
-        <span class="title ellipsis" :class="{'mgl-m': isMobile}">{{ $t(itemData.meta.title) }}</span>
+        <span class="title" :class="{'mgl-m': isMobile}">{{ $t(itemData.meta.title) }}</span>
       </div>
     </template>
     <sidebar-item
@@ -55,10 +55,10 @@ const handleMenuClick = async (item) => {
   </el-sub-menu>
   <el-menu-item v-else :index="itemData.path" @click="handleMenuClick(itemData)">
     <template #title>
-      <div class="flex justify-between items-center gap16 sub-item-box">
+      <div class="flex justify-between items-center sub-item-box">
         <div class="sub-item-title items-center flex">
           <img v-if="itemData.meta.icon && !isMobile" class="Flylink" :src="getIconComponent(itemData.meta.icon)">          
-          <span class="title ellipsis" :class="{'mgl-m': isMobile}">{{ $t(itemData.meta.title) }}</span>
+          <span class="title" :class="{'mgl-m': isMobile}">{{ $t(itemData.meta.title) }}</span>
           <div v-if="itemData.meta.unread" class="badge" :class="{'mr4': isMobile}" />
         </div>
         <div v-if="itemData.meta.hot" class="hot ellipsis">{{ $t('MyCoupons.Hot') }}</div>
@@ -74,8 +74,11 @@ const handleMenuClick = async (item) => {
   margin-right: 12px;
   font-size: 16px;
   font-weight: 600;
-  height: 40px;
-  line-height: 40px;
+  min-height: 40px;
+  line-height: 24px;
+  white-space: pre-wrap;
+  display: flex;
+  align-items: center;
 }
 i {
   font-size: 24px;
@@ -99,11 +102,8 @@ i {
   vertical-align: middle;
 }
 .sub-item-box {
-  height: 40px;
   width: 100%;
   .sub-item-title {
-    height: 40px;
-    line-height: 40px;
     flex: 1;
     max-width: calc(100% - 52px);
   }

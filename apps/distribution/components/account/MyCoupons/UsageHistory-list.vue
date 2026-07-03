@@ -101,7 +101,7 @@ onMounted(()=>{
     <!-- 使用数量>0时展示页面，否则展示暂无数据 -->
     <div v-if="totalCouponData.totalCouponNumber>0">
       <div class="mt32 mb32">
-        <ul class="UsageHistory-total flex justify-between gap24">
+        <ul class="UsageHistory-total flex justify-between" :class="isMobile ? 'gap10' : 'gap24'">
           <li>
             <p class="text">{{$t('MyCoupons.UsedTotal')}}</p>
             <div class="flex card-amount-box num">
