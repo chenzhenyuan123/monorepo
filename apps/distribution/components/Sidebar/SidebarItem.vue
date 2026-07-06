@@ -56,7 +56,7 @@ const handleMenuClick = async (item) => {
   <el-menu-item v-else :index="itemData.path" @click="handleMenuClick(itemData)">
     <template #title>
       <div class="flex justify-between items-center sub-item-box">
-        <div class="sub-item-title items-center flex">
+        <div class="sub-item-title flex">
           <img v-if="itemData.meta.icon && !isMobile" class="Flylink" :src="getIconComponent(itemData.meta.icon)">          
           <span class="title" :class="{'mgl-m': isMobile}">{{ $t(itemData.meta.title) }}</span>
           <div v-if="itemData.meta.unread" class="badge" :class="{'mr4': isMobile}" />
@@ -76,8 +76,6 @@ const handleMenuClick = async (item) => {
   font-weight: 600;
   line-height: 24px;
   white-space: pre-wrap;
-  display: flex;
-  align-items: center;
 }
 i {
   font-size: 24px;
@@ -126,10 +124,9 @@ i {
     height: 6px;
     border-radius: 50%;
     background: #EA423B;
-    margin: -12px -8px 0 -8px;
-    &.mr4 {
-      margin-right: 4px;
-    }
+    flex-shrink: 0;
+    margin-left: -6px;
+    margin-right: -6px;
   }
 }
 </style>
