@@ -127,6 +127,9 @@ i {
     flex-shrink: 0;
     margin-left: -6px;
     margin-right: -6px;
+    &.mr4 {
+      margin-right: 6px;
+    }
   }
 }
 </style>
