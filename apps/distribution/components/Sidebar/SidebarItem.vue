@@ -74,7 +74,6 @@ const handleMenuClick = async (item) => {
   margin-right: 12px;
   font-size: 16px;
   font-weight: 600;
-  min-height: 40px;
   line-height: 24px;
   white-space: pre-wrap;
   display: flex;
@@ -106,6 +105,7 @@ i {
   .sub-item-title {
     flex: 1;
     max-width: calc(100% - 52px);
+    padding: 8px 0;
   }
   .hot {
     padding: 0px 6px;

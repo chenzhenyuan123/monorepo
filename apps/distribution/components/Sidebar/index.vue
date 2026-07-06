@@ -122,7 +122,7 @@ onMounted(()=>{
     }
     .el-menu-item {
       margin-top: 0px;
-      height: 40px;
+      height: auto;
       .rtl & {
         padding-left: 12px;
         padding-right: calc(var(--el-menu-base-level-padding) + var(--el-menu-level)*var(--el-menu-level-padding));
