@@ -14,8 +14,11 @@
                 color: #667085;
             }
         }
+        &.is-focused {
+            border-color: #776CFF;
+        }
         .el-form-item.is-error & {
-            box-shadow: 0 0 0 1px var(--el-color-danger) inset;
+            border-color: #f56c6c;
         }
         .el-select__placeholder {
             color: #101828;

@@ -11,6 +11,7 @@ import * as countryApi from './basedata/client/country'
 import * as affiliateApi from './client/affiliate'
 import * as tradeOrderApi from './trade/tradeOrder'
 import * as myCouponsApi from './web/account/myCoupons'
+import * as merchantApplyApi from './client/merchantApply'
 export default {
   contactInfoApi,
   homeApi,
@@ -24,5 +25,6 @@ export default {
   countryApi,
   affiliateApi,
   tradeOrderApi,
-  myCouponsApi
+  myCouponsApi,
+  merchantApplyApi
 }

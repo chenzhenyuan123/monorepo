@@ -14,15 +14,15 @@ const selectMenu = () => {
 }
 
 const routesData = ref([])
-// 设置未读状态的函数
-const setUnreadStatus = (type) => {
+// 设置未读状态的函数 type未读红点unread / hot，routeName要匹配的路由名称
+const setUnreadStatus = (type, routeName) => {
   routesData.value = routesData.value.map(route => {
     if (!route.children) return route
 
     return {
       ...route,
       children: route.children.map(child => {
-        if (child.name !== 'My-Coupons') return child
+        if (child.name !== routeName) return child
 
         return {
           ...child,
@@ -43,14 +43,15 @@ const getCouponGetSwitchStatus = async () => {
   const result = await myCouponsApi.couponGetSwitchStatus()
   const res = checkResponseData(result)
   if(res && res==='OPEN') {
-    setUnreadStatus('hot')
+    setUnreadStatus('hot', 'My-Coupons')
+    setUnreadStatus('hot', 'account-moreMerchantApply')
   }
 }
 const getCouponCountUnusedCard = async () => {
   const result = await myCouponsApi.couponCountUnusedCard()
   const res = checkResponseData(result)
   if(res && parseInt(res?.unusedCardCount)>0) {
-    setUnreadStatus('unread')
+    setUnreadStatus('unread', 'My-Coupons')
   }
 }
 

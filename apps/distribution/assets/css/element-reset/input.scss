@@ -19,6 +19,9 @@
                 background-color: transparent;
             }
         }
+        &:has(.el-input__wrapper.is-focus) {
+            border-color: #776CFF;
+        }
         :deep(.el-input__wrapper) {
             //padding: 0;
             border-radius: 0;
@@ -57,6 +60,9 @@
         border: 1px solid #D0D5DD;
         background-color: #FFF;
         box-shadow: 0px 1px 2px 0px rgba(16, 24, 40, 0.05);
+        &.is-focus {
+            border-color: #776CFF;
+        }
     }
     :deep(.el-input__inner) {
         height: 42px;

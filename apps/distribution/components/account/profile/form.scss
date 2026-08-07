@@ -46,6 +46,7 @@
             :deep(.el-form-item__label:after) {
                 content: '*';
                 color: #5548FF;
+                margin-left: 2px;
             }
         }
         :deep(.el-form-item__label-wrap) {
