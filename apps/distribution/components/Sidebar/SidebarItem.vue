@@ -5,7 +5,7 @@ import AccountIcon from "@/assets/imgs/router-icon/router-account-icon.svg";
 import { checkResponseData } from "@/util/index.js"
 const { myCouponsApi } = useApi()
 
-const props = defineProps(['itemData'])
+const props = defineProps(['itemData', 'isCollapse'])
 const isMobile = useIsMobile()
 
 // 图标映射：将字符串映射到 Element Plus 图标组件
@@ -44,7 +44,7 @@ const handleMenuClick = async (item) => {
     <template #title>
       <div class="flex">
         <img v-if="itemData.meta.icon && !isMobile" class="Flylink" :src="getIconComponent(itemData.meta.icon)">
-        <span class="title" :class="{'mgl-m': isMobile}">{{ $t(itemData.meta.title) }}</span>
+        <span v-if="!isCollapse" class="title" :class="{'mgl-m': isMobile}">{{ $t(itemData.meta.title) }}</span>
       </div>
     </template>
     <sidebar-item
@@ -54,16 +54,14 @@ const handleMenuClick = async (item) => {
     />
   </el-sub-menu>
   <el-menu-item v-else :index="itemData.path" @click="handleMenuClick(itemData)">
-    <template #title>
       <div class="flex justify-between items-center sub-item-box">
         <div class="sub-item-title flex">
           <img v-if="itemData.meta.icon && !isMobile" class="Flylink" :src="getIconComponent(itemData.meta.icon)">          
-          <span class="title" :class="{'mgl-m': isMobile}">{{ $t(itemData.meta.title) }}</span>
+          <span v-if="!isCollapse" class="title" :class="{'mgl-m': isMobile}">{{ $t(itemData.meta.title) }}</span>
           <div v-if="itemData.meta.unread" class="badge" :class="{'mr4': isMobile}" />
         </div>
         <div v-if="itemData.meta.hot" class="hot ellipsis">{{ $t('MyCoupons.Hot') }}</div>
       </div>
-    </template>
     
   </el-menu-item>
 </template>
