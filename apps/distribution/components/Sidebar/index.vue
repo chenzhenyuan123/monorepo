@@ -1,7 +1,7 @@
 <script setup>
 import SidebarItem from './SidebarItem.vue'
 import { checkResponseData } from "@/util/index.js"
-const { myCouponsApi } = useApi()
+const { myCouponsApi, merchantApplyApi } = useApi()
 import routes from './route.js'
 
 const router = useRouter()
@@ -42,8 +42,13 @@ const setUnreadStatus = (type, routeName) => {
 const getCouponGetSwitchStatus = async () => {
   const result = await myCouponsApi.couponGetSwitchStatus()
   const res = checkResponseData(result)
-  if(res && res==='OPEN') {
+  if(res && res==='OPEN') { // 优惠券菜单hot
     setUnreadStatus('hot', 'My-Coupons')
+  }
+  
+  const result1 = await merchantApplyApi.getSwitchStatusDistributorApply()
+  const res1 = checkResponseData(result1)
+  if(res1 && res1==='OPEN') { // 分销员画像菜单hot
     setUnreadStatus('hot', 'account-moreMerchantApply')
   }
 }
