@@ -1,7 +1,21 @@
 <script setup>
+import OrdersIcon from "@/assets/imgs/router-icon/router-orders-icon.svg";
+import AccountIcon from "@/assets/imgs/router-icon/router-account-icon.svg";
 
-defineProps(['itemData'])
+defineProps(['itemData', 'isCollapse'])
 const isMobile = useIsMobile()
+
+// 图标映射：将字符串映射到 Element Plus 图标组件
+const iconMap = {
+  'icon-file-02': OrdersIcon,
+  'icon-user-01': AccountIcon
+}
+
+// 获取图标组件
+const getIconComponent = (iconName) => {
+  return iconMap[iconName] || null
+}
+
 </script>
 
 <template>
@@ -10,12 +24,11 @@ const isMobile = useIsMobile()
     :index="itemData.path"
     class="sub"
   >
-    <template v-if="isMobile" #title>
-      <span class="title mgl-m">{{ $t(itemData.meta.title) }}</span>
-    </template>
-    <template v-else #title>
-      <i v-if="itemData.meta.icon" class="Flylink" :class="itemData.meta.icon"></i>
-      <span class="title">{{ $t(itemData.meta.title) }}</span>
+    <template #title>
+      <div class="flex">
+        <img v-if="itemData.meta.icon && !isMobile" class="Flylink" :src="getIconComponent(itemData.meta.icon)">
+        <span v-if="!isCollapse" class="title" :class="{'mgl-m': isMobile}">{{ $t(itemData.meta.title) }}</span>
+      </div>
     </template>
     <sidebar-item
       v-for="item in (itemData.children || [])"
@@ -23,14 +36,15 @@ const isMobile = useIsMobile()
       :item-data="item"
     />
   </el-sub-menu>
-  <el-menu-item v-else :index="itemData.path">
-    <template v-if="isMobile">
-      <span class="title mgl-m">{{ $t(itemData.meta.title) }}</span>
-    </template>
-    <template v-else>
-      <i v-if="itemData.meta.icon" class="Flylink" :class="itemData.meta.icon"></i>
-      <span class="title" :class="{ mgl: !itemData.meta.icon }">{{ $t(itemData.meta.title) }}</span>
-    </template>
+  <el-menu-item v-else :index="itemData.path" @click="handleMenuClick(itemData)">
+    <div class="flex justify-between items-center sub-item-box">
+      <div class="sub-item-title flex">
+        <img v-if="itemData.meta.icon && !isMobile" class="Flylink" :src="getIconComponent(itemData.meta.icon)">          
+        <span v-if="!isCollapse" class="title" :class="{'mgl-m': isMobile}">{{ $t(itemData.meta.title) }}</span>
+        <div v-if="itemData.meta.unread" class="badge" :class="{'mr4': isMobile}" />
+      </div>
+      <div v-if="itemData.meta.hot" class="hot ellipsis">{{ $t('MyCoupons.Hot') }}</div>
+    </div>    
   </el-menu-item>
 </template>
 

@@ -12,6 +12,7 @@ import * as affiliateApi from './client/affiliate'
 import * as tradeOrderApi from './trade/tradeOrder'
 import * as openapiApi from './web/openapi/index'
 import * as myCouponsApi from './web/account/myCoupons'
+import * as merchantApplyApi from './client/merchantApply'
 
 export default {
   contactInfoApi,
@@ -27,5 +28,6 @@ export default {
   affiliateApi,
   tradeOrderApi,
   openapiApi,
-  myCouponsApi
+  myCouponsApi,
+  merchantApplyApi
 }

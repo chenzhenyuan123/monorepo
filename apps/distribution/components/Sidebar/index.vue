@@ -3,7 +3,7 @@ import SidebarItem from './SidebarItem.vue'
 import { reactive, inject } from 'vue'
 import {routes, routesDeveloper} from './route.js'
 import { checkResponseData } from "@/util/index.js"
-const { myCouponsApi } = useApi()
+const { myCouponsApi, merchantApplyApi } = useApi()
 
 const router = useRouter()
 const isCollapse = inject('isCollapse')
@@ -17,15 +17,15 @@ const selectMenu = () => {
 const route = useRoute()
 
 const routesData = ref([])
-// 设置未读状态的函数
-const setUnreadStatus = (type) => {
+// 设置未读状态的函数 type未读红点unread / hot，routeName要匹配的路由名称
+const setUnreadStatus = (type, routeName) => {
   routesData.value = routesData.value.map(route => {
     if (!route.children) return route
 
     return {
       ...route,
       children: route.children.map(child => {
-        if (child.name !== 'My-Coupons') return child
+        if (child.name !== routeName) return child
 
         return {
           ...child,
@@ -45,15 +45,21 @@ const setUnreadStatus = (type) => {
 const getCouponGetSwitchStatus = async () => {
   const result = await myCouponsApi.couponGetSwitchStatus()
   const res = checkResponseData(result)
-  if(res && res==='OPEN') {
-    setUnreadStatus('hot')
+  if(res && res==='OPEN') { // 优惠券菜单hot
+    setUnreadStatus('hot', 'My-Coupons')
+  }
+  
+  const result1 = await merchantApplyApi.getSwitchStatusDistributorApply()
+  const res1 = checkResponseData(result1)
+  if(res1 && res1==='OPEN') { // 分销员画像菜单hot
+    setUnreadStatus('hot', 'account-moreMerchantApply')
   }
 }
 const getCouponCountUnusedCard = async () => {
   const result = await myCouponsApi.couponCountUnusedCard()
   const res = checkResponseData(result)
   if(res && parseInt(res?.unusedCardCount)>0) {
-    setUnreadStatus('unread')
+    setUnreadStatus('unread', 'My-Coupons')
   }
 }
 
@@ -90,7 +96,7 @@ onMounted(()=>{
           <img v-else src="~@/assets/imgs/Flylinking-logo.svg" alt="" @click="navigateTo('/home')">
         </div>
         <template v-for="item in routesData" :key="item.path">
-          <sidebar-item :item-data="item" />
+          <sidebar-item :item-data="item" :isCollapse="isCollapse" />
         </template>
       </el-menu>
     </el-scrollbar>

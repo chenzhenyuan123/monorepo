@@ -53,7 +53,7 @@ const activeMenu = computed({
           <img v-else src="~@/assets/imgs/Flylinking-logo.svg" alt="" @click="navigateTo('/orders')">
         </div>
         <template v-for="item in routesData" :key="item.path">
-          <sidebar-item :item-data="item" />
+          <sidebar-item :item-data="item" :isCollapse="isCollapse" />
         </template>
       </el-menu>
     </el-scrollbar>
