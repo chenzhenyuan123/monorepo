@@ -103,53 +103,39 @@ const countryToCallingCodeRepeat = computed(() => {
 const rules = () => {
     return {
         "location": [{
-            asyncValidator(rule, value, cb) {
-                if (!value) return cb(new Error(t('moreMerchantApply.required')));
-                cb();
-            },
-            trigger: "change",
+            required: true,
+            message: t('moreMerchantApply.required'),
+            trigger: 'change'
         }],
         "platform": [{
-            asyncValidator(rule, value, cb) {
-                if (!value || !value.length) return cb(new Error(t('moreMerchantApply.required')));
-                cb();
-            },
-            trigger: "change",
+            required: true,
+            message: t('moreMerchantApply.required'),
+            trigger: 'change'
         }],
         "followerCount": [{
-            asyncValidator(rule, value, cb) {
-                if (!value) return cb(new Error(t('moreMerchantApply.required')));
-                cb();
-            },
-            trigger: "change",
+            required: true,
+            message: t('moreMerchantApply.required'),
+            trigger: 'change'
         }],
         "monthlySalesRevenue": [{
-            asyncValidator(rule, value, cb) {
-                if (!value) return cb(new Error(t('moreMerchantApply.required')));
-                cb();
-            },
-            trigger: "change",
+            required: true,
+            message: t('moreMerchantApply.required'),
+            trigger: 'change'
         }],
         "followerDistribution": [{
-            asyncValidator(rule, value, cb) {
-                if (!value) return cb(new Error(t('moreMerchantApply.required')));
-                cb();
-            },
-            trigger: "change",
+            required: true,
+            message: t('moreMerchantApply.required'),
+            trigger: 'change'
         }],
         "salesCategory": [{
-            asyncValidator(rule, value, cb) {
-                if (!value || !value.length) return cb(new Error(t('moreMerchantApply.required')));
-                cb();
-            },
-            trigger: "change",
+            required: true,
+            message: t('moreMerchantApply.required'),
+            trigger: 'change'
         }],
         "followerPreference": [{
-            asyncValidator(rule, value, cb) {
-                if (!value) return cb(new Error(t('moreMerchantApply.required')));
-                cb();
-            },
-            trigger: "change",
+            required: true,
+            message: t('moreMerchantApply.required'),
+            trigger: 'change'
         }],
         "whatsApp": [{
             asyncValidator(rule, value, cb) {
@@ -316,11 +302,16 @@ const displayWhatsApp = computed(() => {
         <div class="profile-head">
             <div class="profile-head-content">
                 <div class="profile-title">{{ $t('moreMerchantApply.title') }}</div>
-                <div class="profile-discribe">{{ $t('moreMerchantApply.titleMessage1') }}</div>
-                <div class="profile-discribe">{{ $t('moreMerchantApply.titleMessage2') }}</div>
-            </div>
-            <div class="profile-head-right" v-if="!isEdit">
-                <el-button class="button-default" @click="edit">{{ $t('moreMerchantApply.edit') }}</el-button>
+                <div class="flex">
+                    <div>
+                        <div class="profile-discribe">{{ $t('moreMerchantApply.titleMessage1') }}</div>
+                        <div class="profile-discribe">{{ $t('moreMerchantApply.titleMessage2') }}</div>
+                    </div>
+                    <div class="flex-center-16"></div>
+                    <div class="profile-head-right" v-if="!isEdit">
+                        <el-button class="button-default" @click="edit">{{ $t('moreMerchantApply.edit') }}</el-button>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -332,7 +323,6 @@ const displayWhatsApp = computed(() => {
             :rules="rules()"
             label-width="auto"
             class="nature-form"
-            novalidate
         >
             <el-form-item :label="$t('moreMerchantApply.location')" prop="location" class="nature-form-item">
                 <el-select
@@ -553,6 +543,9 @@ const displayWhatsApp = computed(() => {
 @use "@/components/account/profile/form.scss" as *;
 
 .more-merchant-apply {
+    max-width: calc(100% - 32px);
+    width: 1200px;
+    margin-bottom: 24px;
     .profile-head-content {
         .profile-title {
             margin: 20px 0 32px;
@@ -570,6 +563,10 @@ const displayWhatsApp = computed(() => {
             font-style: normal;
             font-weight: 400;
             line-height: var(--Line-height-text-sm, 20px);
+            margin-top: 12px;
+        }
+        .profile-head-right {
+            padding: 0;
             margin-top: 12px;
         }
     }
@@ -617,6 +614,7 @@ const displayWhatsApp = computed(() => {
         margin-bottom: 6px;
         :deep(.el-checkbox__label) {
             line-height: 20px;
+            font-weight: 400;
         }
         :deep(.el-checkbox__input) {
             margin-top: 2px;
@@ -626,6 +624,10 @@ const displayWhatsApp = computed(() => {
                 color: #475467;
             }
         }
+    }
+    .nature-list .nature-item .nature-item-label, :deep(.nature-form .nature-form-item .el-form-item__label-wrap) {
+        min-width: 30%;
+        max-width: 310px;
     }
 
     &.m {
