@@ -35,6 +35,7 @@ const year = date.getFullYear();
     float: left;
     color: #667085;
     font-size: 14px;
+    direction: ltr;
   }
   .right-box {
     float: right;

@@ -650,6 +650,7 @@ const displayWhatsApp = computed(() => {
         &.is-checked {
             :deep(.el-checkbox__label) {
                 color: #475467;
+                padding-right: 8px;
             }
         }
     }
@@ -699,6 +700,7 @@ const displayWhatsApp = computed(() => {
                 font-style: normal;
                 font-weight: 500;
                 line-height: var(--Line-height-text-sm, 20px);
+                padding: 0 8px;
             }
         }
     }
