@@ -33,7 +33,7 @@ const goDeveloper = async()=>{
       <!-- 如果是登录态，显示开发者工具入口 -->
       <template v-if="userStore.userInfo && userStore.userInfo.loginAccount">
         <div class="flex-center-16"></div>
-        <div><a @click="goDeveloper">Developer</a></div>
+        <div><a @click="goDeveloper">{{$t('router.Developer')}}</a></div>
       </template>
     </div>
   </div>
