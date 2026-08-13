@@ -8,6 +8,7 @@ import {
     isValidZipcode,
 } from "@/util/validate";
 import {isUseless} from "@flylinking/core/utils/dataUtil";
+import { flagUrl } from "@/util/dataUtil.js"
 import {
     isValidShortAddress,
     validatePhoneByLibphonenumberNum,
@@ -462,12 +463,27 @@ userStore.getUserInfo()
                         class="nature-form-input select-default"
                         @change="changeCountry"
                     >
+                        <template #label="{ label, value }">
+                            <div class="flex items-center gap8">
+                                <div class="circle-country-icon-container size-20">
+                                    <img v-if="value" :src="flagUrl(value)">
+                                </div>
+                                <span>{{ label }}</span>
+                            </div>
+                        </template>
                         <el-option
                             v-for="item in countryData"
                             :key="item.countryId"
                             :value="item.countryId"
                             :label="item.name"
-                        />
+                        >
+                            <div class="flex items-center gap8">
+                                <div class="circle-country-icon-container size-20">
+                                    <img :src="flagUrl(item.countryId)">
+                                </div>
+                                <span>{{ item.name }}</span>
+                            </div>
+                        </el-option>
                     </el-select>
                 </FormGroupItem>
                 <FormGroupItem prop="addressLineOne" class="nature-form-item-col12">

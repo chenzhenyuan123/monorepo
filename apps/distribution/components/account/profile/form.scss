@@ -175,7 +175,7 @@
                 width: 100%;
             }
             :deep(.el-form-item__label) {
-                height: 20px;
+                height: auto;
                 margin-bottom: 16px;
             }
         }
@@ -189,6 +189,7 @@
         .nature-item {
             flex-wrap: wrap;
             margin-bottom: -16px;
+            gap: 0;
             .nature-item-label {
                 margin-bottom: 16px;
             }

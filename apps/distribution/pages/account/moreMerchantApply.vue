@@ -1,18 +1,19 @@
 <script setup>
 import { checkResponseData, arrToDict, successMessage } from "@/util/index.js"
+import { flagUrl } from "@/util/dataUtil.js"
 import {
     validatePhoneByLibphonenumberNum,
     validatePhoneByLibphonenumberStr
 } from "@flylinking/core/utils/validate";
 import { useI18n } from "vue-i18n";
-const { t } = useI18n();
+const { t, locale } = useI18n();
 const { merchantApplyApi, countryApi } = useApi()
 const isMobile = useIsMobile()
 
 const isEdit = ref(false) // 是否是编辑状态-如果没有填过数据，则默认编辑状态
 const loading = ref(false)
 const pageLoading = ref(false)
-const countryList = ref([]) // 国家下拉数据
+const countryDataByLang = ref([]) // 国家下拉数据
 const countryDict = computed(() => arrToDict(countryList.value, { value: 'countryId', label: 'name' }))
 const countryCallingCodeDict = computed(() => arrToDict(countryList.value, { value: 'countryId', label: 'callingCode' }))
 const detailData = ref({}) // 详情数据
@@ -167,9 +168,15 @@ const fetchCountryList = async () => {
     const res = await countryApi.getAllCountry()
     const data = checkResponseData(res)
     if (data && Array.isArray(data)) {
-        countryList.value = data
+        countryDataByLang.value = data
     }
 }
+const countryList = computed(() => {
+    const key = locale.value === 'zh-CN' ? 'zhCn' : 'enUs'
+    return countryDataByLang.value.map(item => {
+        return { ...item, name: item[key] }
+    })
+})
 
 // 根据国家id 更新 WhatsApp 前缀
 const updateWhatsappCountry = (countryId) => {
@@ -323,8 +330,9 @@ const displayWhatsApp = computed(() => {
             :rules="rules()"
             label-width="auto"
             class="nature-form"
+            novalidate
         >
-            <el-form-item :label="$t('moreMerchantApply.location')" prop="location" class="nature-form-item">
+            <el-form-item :label="$t('moreMerchantApply.location')" prop="location" class="nature-form-item gap32">
                 <el-select
                     v-model="form.location"
                     filterable
@@ -332,16 +340,31 @@ const displayWhatsApp = computed(() => {
                     class="nature-form-input select-default"
                     @change="updateWhatsappCountry"
                 >
+                    <template #label="{ label, value }">
+                        <div class="flex items-center gap8">
+                            <div class="circle-country-icon-container size-20">
+                                <img v-if="value" :src="flagUrl(value)">
+                            </div>
+                            <span>{{ label }}</span>
+                        </div>
+                    </template>
                     <el-option
                         v-for="item in countryList"
                         :key="item.countryId"
                         :value="item.countryId"
                         :label="item.name"
-                    />
+                    >
+                        <div class="flex items-center gap8">
+                            <div class="circle-country-icon-container size-20">
+                                <img :src="flagUrl(item.countryId)">
+                            </div>
+                            <span>{{ item.name }}</span>
+                        </div>
+                    </el-option>
                 </el-select>
             </el-form-item>
 
-            <el-form-item :label="$t('moreMerchantApply.platform')" prop="platform" class="nature-form-item">
+            <el-form-item :label="$t('moreMerchantApply.platform')" prop="platform" class="nature-form-item gap32">
                 <el-select
                     v-model="form.platform"
                     multiple
@@ -374,7 +397,7 @@ const displayWhatsApp = computed(() => {
                 </el-select>
             </el-form-item>
 
-            <el-form-item :label="$t('moreMerchantApply.followerCount')" prop="followerCount" class="nature-form-item">
+            <el-form-item :label="$t('moreMerchantApply.followerCount')" prop="followerCount" class="nature-form-item gap32">
                 <el-select
                     v-model="form.followerCount"
                     :placeholder="$t('moreMerchantApply.locationPlaceholder')"
@@ -389,7 +412,7 @@ const displayWhatsApp = computed(() => {
                 </el-select>
             </el-form-item>
 
-            <el-form-item :label="$t('moreMerchantApply.monthlySalesRevenue')" prop="monthlySalesRevenue" class="nature-form-item">
+            <el-form-item :label="$t('moreMerchantApply.monthlySalesRevenue')" prop="monthlySalesRevenue" class="nature-form-item gap32">
                 <el-select
                     v-model="form.monthlySalesRevenue"
                     :placeholder="$t('moreMerchantApply.locationPlaceholder')"
@@ -404,7 +427,7 @@ const displayWhatsApp = computed(() => {
                 </el-select>
             </el-form-item>
 
-            <el-form-item :label="$t('moreMerchantApply.followerDistribution')" prop="followerDistribution" class="nature-form-item">
+            <el-form-item :label="$t('moreMerchantApply.followerDistribution')" prop="followerDistribution" class="nature-form-item gap32">
                 <el-select
                     v-model="form.followerDistribution"
                     :placeholder="$t('moreMerchantApply.locationPlaceholder')"
@@ -419,7 +442,7 @@ const displayWhatsApp = computed(() => {
                 </el-select>
             </el-form-item>
 
-            <el-form-item :label="$t('moreMerchantApply.salesCategory')" prop="salesCategory" class="nature-form-item">
+            <el-form-item :label="$t('moreMerchantApply.salesCategory')" prop="salesCategory" class="nature-form-item gap32">
                 <el-select
                     v-model="form.salesCategory"
                     multiple
@@ -452,7 +475,7 @@ const displayWhatsApp = computed(() => {
                 </el-select>
             </el-form-item>
 
-            <el-form-item :label="$t('moreMerchantApply.followerPreference')" prop="followerPreference" class="nature-form-item">
+            <el-form-item :label="$t('moreMerchantApply.followerPreference')" prop="followerPreference" class="nature-form-item gap32">
                 <el-radio-group v-model="form.followerPreference" class="nature-form-input radio-default radio-vertical">
                     <el-radio v-for="item in followerPreferenceOptions" :key="item.value" :value="item.value">
                         <div class="radio-label-wrap">
@@ -462,7 +485,7 @@ const displayWhatsApp = computed(() => {
                     </el-radio>
                 </el-radio-group>
             </el-form-item>
-            <el-form-item :label="$t('moreMerchantApply.whatsApp')" prop="whatsApp" class="nature-form-item">
+            <el-form-item :label="$t('moreMerchantApply.whatsApp')" prop="whatsApp" class="nature-form-item gap32">
                 <el-input
                     v-model="form.whatsApp"
                     :placeholder="$t('moreMerchantApply.whatsAppPlaceholder')"
@@ -499,35 +522,35 @@ const displayWhatsApp = computed(() => {
 
         <!-- 查看态 -->
         <div v-else class="nature-list">
-            <div class="nature-item">
+            <div class="nature-item gap32">
                 <div class="nature-item-label">{{ $t('moreMerchantApply.location') }}</div>
                 <div class="nature-item-value">{{ countryDict[detailData.location] || '-' }}</div>
             </div>
-            <div class="nature-item">
+            <div class="nature-item gap32">
                 <div class="nature-item-label">{{ $t('moreMerchantApply.platform') }}</div>
                 <div class="nature-item-value">{{ displayPlatform }}</div>
             </div>
-            <div class="nature-item">
+            <div class="nature-item gap32">
                 <div class="nature-item-label">{{ $t('moreMerchantApply.followerCount') }}</div>
                 <div class="nature-item-value">{{ followersDict[detailData.followerCount] || '-' }}</div>
             </div>
-            <div class="nature-item">
+            <div class="nature-item gap32">
                 <div class="nature-item-label">{{ $t('moreMerchantApply.monthlySalesRevenue') }}</div>
                 <div class="nature-item-value">{{ revenueDict[detailData.monthlySalesRevenue] || '-' }}</div>
             </div>
-            <div class="nature-item">
+            <div class="nature-item gap32">
                 <div class="nature-item-label">{{ $t('moreMerchantApply.followerDistribution') }}</div>
                 <div class="nature-item-value">{{ distributionDict[detailData.followerDistribution] || '-' }}</div>
             </div>
-            <div class="nature-item">
+            <div class="nature-item gap32">
                 <div class="nature-item-label">{{ $t('moreMerchantApply.salesCategory') }}</div>
                 <div class="nature-item-value">{{ displayCategories }}</div>
             </div>
-            <div class="nature-item">
+            <div class="nature-item gap32">
                 <div class="nature-item-label">{{ $t('moreMerchantApply.followerPreference') }}</div>
                 <div class="nature-item-value">{{  displayFollowerPreference }}</div>
             </div>
-            <div class="nature-item">
+            <div class="nature-item gap32">
                 <div class="nature-item-label">{{ $t('moreMerchantApply.whatsApp') }}</div>
                 <div class="nature-item-value">{{ displayWhatsApp }}</div>
             </div>
@@ -584,6 +607,7 @@ const displayWhatsApp = computed(() => {
 
         .el-radio {
             gap: 0;
+            height: auto;
 
             .radio-label-wrap {
                 display: flex;
@@ -600,18 +624,22 @@ const displayWhatsApp = computed(() => {
                     font-family: var(--Font-family-font-family-body, Inter);
                     font-size: var(--Font-size-text-sm, 14px);
                     font-weight: 400;
-                    line-height: var(--Line-height-text-sm, 20px); /* 142.857% */
+                    line-height: var(--Line-height-text-sm, 20px);
+                    white-space: normal;
                 }
             }
         }
     }
 
     .whatsapp-auth {
+        width: 512px;
+        max-width: 100%;
         line-height: 1.4;
         align-items: start;
         white-space: pre-wrap;
         margin-top: 6px;
         margin-bottom: 6px;
+        height: auto;
         :deep(.el-checkbox__label) {
             line-height: 20px;
             font-weight: 400;
@@ -627,7 +655,7 @@ const displayWhatsApp = computed(() => {
     }
     .nature-list .nature-item .nature-item-label, :deep(.nature-form .nature-form-item .el-form-item__label-wrap) {
         min-width: 30%;
-        max-width: 310px;
+        max-width: 280px;
     }
 
     &.m {
