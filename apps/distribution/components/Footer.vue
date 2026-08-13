@@ -57,6 +57,7 @@ const goDeveloper = async()=>{
   .left-box {
     color: #667085;
     font-size: 14px;
+    direction: ltr;
   }
   .right-box {
     text-align: right;
