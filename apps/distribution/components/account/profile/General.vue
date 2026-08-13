@@ -2,6 +2,7 @@
 import { useUserStore } from '@/store/userState.js'
 import { isName } from '@/util/validate.js'
 import { checkResponseData, isEMpty, arrToDict } from "@/util/index.js"
+import { flagUrl } from "@/util/dataUtil.js"
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
@@ -172,12 +173,27 @@ userStore.getUserInfo()
                 placeholder=""
                 class="nature-form-input select-default"
             >
+                <template #label="{ label, value }">
+                    <div class="flex items-center gap8">
+                        <div class="circle-country-icon-container size-20">
+                            <img v-if="value" :src="flagUrl(value)">
+                        </div>
+                        <span>{{ label }}</span>
+                    </div>
+                </template>
                 <el-option
                     v-for="item in countryData"
                     :key="item.countryId"
                     :value="item.countryId"
                     :label="item.name"
-                />
+                >
+                    <div class="flex items-center gap8">
+                        <div class="circle-country-icon-container size-20">
+                            <img :src="flagUrl(item.countryId)">
+                        </div>
+                        <span>{{ item.name }}</span>
+                    </div>
+                </el-option>
             </el-select>
         </el-form-item>
         <el-form-item :label="$t('profile.generalEditLableBiography')" prop="biography" class="nature-form-item">
