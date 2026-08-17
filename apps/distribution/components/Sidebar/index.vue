@@ -43,11 +43,11 @@ const setUnreadStatus = (type, routeName) => {
 
 
 const getCouponGetSwitchStatus = async () => {
-  const result = await myCouponsApi.couponGetSwitchStatus()
-  const res = checkResponseData(result)
-  if(res && res==='OPEN') { // 优惠券菜单hot
-    setUnreadStatus('hot', 'My-Coupons')
-  }
+  // const result = await myCouponsApi.couponGetSwitchStatus()
+  // const res = checkResponseData(result)
+  // if(res && res==='OPEN') { // 优惠券菜单hot
+  //   setUnreadStatus('hot', 'My-Coupons')
+  // }
   
   const result1 = await merchantApplyApi.getSwitchStatusDistributorApply()
   const res1 = checkResponseData(result1)
