@@ -241,8 +241,8 @@ const submit = () => {
             whatsApp: form.value.whatsApp,
             authShareWhats: form.value.authShareWhats ? 1 : 0
         }
-        if (isPlatformOtherSelected.value) param.platformOtherDetail = form.value.platformOtherDetail
-        if (isCategoryOtherSelected.value) param.categoryOtherDetail = form.value.categoryOtherDetail
+        if (isPlatformOtherSelected.value) param.platformOtherDetail = form.value.platformOtherDetail || ''
+        if (isCategoryOtherSelected.value) param.categoryOtherDetail = form.value.categoryOtherDetail || ''
         let result = null
         if(detailData.value?.id) { // 编辑
             param.id = detailData.value.id
@@ -269,12 +269,14 @@ onMounted(async () => {
 const displayPlatform = computed(() => {
     const platforms = Array.isArray(detailData.value?.platform) ? detailData.value.platform : []
     const labels = platforms
-        .map(v => (platformDict.value[v]?.label || v))
-        .filter(Boolean)
-
-    if (platforms.includes('Other') && detailData.value?.platformOtherDetail) {
-        labels.push(detailData.value.platformOtherDetail)
-    }
+    .map(v => {
+      const label = platformDict.value[v]?.label || v
+      if (v === 'Other' && detailData.value?.platformOtherDetail) {
+        return `${label} (${detailData.value.platformOtherDetail})`
+      }
+      return label
+    })
+    .filter(Boolean)
 
     return labels.length ? labels.join('、') : '-'
 })
@@ -282,12 +284,14 @@ const displayPlatform = computed(() => {
 const displayCategories = computed(() => {
     const salesCategory = Array.isArray(detailData.value?.salesCategory) ? detailData.value.salesCategory : []
     const labels = salesCategory
-        .map(v => (categoryDict.value[v]?.label || v))
-        .filter(Boolean)
-
-    if (salesCategory.includes('8') && detailData.value?.categoryOtherDetail) {
-        labels.push(detailData.value.categoryOtherDetail)
-    }
+    .map(v => {
+      const label = categoryDict.value[v]?.label || v
+      if (v === '8' && detailData.value?.categoryOtherDetail) {
+        return `${label} (${detailData.value.categoryOtherDetail})`
+      }
+      return label
+    })
+    .filter(Boolean)
     
     return labels.length ? labels.join('、') : '-'
 })
