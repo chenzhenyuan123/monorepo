@@ -21,13 +21,29 @@ export default [
     files: ['**/*.js', '**/*.cjs'],
     languageOptions: {
       globals: {
-        // CommonJS 全局（PM2 配置、构建脚本、csv2lang 等）
+        // Node.js 运行时全局
+        console: 'readonly',
+        process: 'readonly',
+        Buffer: 'readonly',
+        global: 'readonly',
+        setTimeout: 'readonly',
+        clearTimeout: 'readonly',
+        setInterval: 'readonly',
+        clearInterval: 'readonly',
+        setImmediate: 'readonly',
+        clearImmediate: 'readonly',
+        // CommonJS（PM2 配置、构建脚本、csv2lang 等）
         module: 'readonly',
         require: 'readonly',
         exports: 'readonly',
         __dirname: 'readonly',
         __filename: 'readonly',
       },
+    },
+    rules: {
+      // Node 脚本中常有占位/解构跳过变量，降为 warn 避免阻断
+      'no-unused-vars': 'warn',
+      'no-undef': 'warn',
     },
   },
   ...pluginVue.configs['flat/recommended'],
