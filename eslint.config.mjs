@@ -16,6 +16,20 @@ export default [
     ],
   },
   js.configs.recommended,
+  {
+    name: 'flylinking/cjs-globals',
+    files: ['**/*.js', '**/*.cjs'],
+    languageOptions: {
+      globals: {
+        // CommonJS 全局（PM2 配置、构建脚本、csv2lang 等）
+        module: 'readonly',
+        require: 'readonly',
+        exports: 'readonly',
+        __dirname: 'readonly',
+        __filename: 'readonly',
+      },
+    },
+  },
   ...pluginVue.configs['flat/recommended'],
   {
     name: 'flylinking/vue-overrides',
