@@ -33,6 +33,13 @@ yarn-error.log*
 # turbo
 .turbo
 
+# lint cache
+.eslintcache
+.eslintcache.*
+
+# prettier
+.prettierignore
+
 # vercel
 .vercel
 .codebuddy/
