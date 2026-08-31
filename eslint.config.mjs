@@ -43,6 +43,7 @@ export default [
         defineOptions: 'readonly',
         defineModel: 'readonly',
         withDefaults: 'readonly',
+        definePageMeta: 'readonly',
         // Nuxt 3 常见 auto-import composables
         useIsMobile: 'readonly',
         useRoute: 'readonly',
@@ -59,6 +60,7 @@ export default [
         useLocaleHead: 'readonly',
         useSwitchLocalePath: 'readonly',
         useLocales: 'readonly',
+        navigateTo: 'readonly',
       },
     },
     rules: {
