@@ -6,6 +6,7 @@
 import { checkResponseData, scrollTo } from "@/util/index.js";
 import { Search, Plus, Warning } from '@element-plus/icons-vue'
 import NoData from '@/components/svg/NoData.svg'
+import StoreContactInfo from '@/components/StoreContactInfo.vue'
 import { useUserStore } from '@/store/userState.js'
 import { FullScreenPrompt } from '@flylinking/ui';
 
@@ -129,6 +130,8 @@ const storeSearchChange = e => {
             </div>
           </div>
         </div>
+        <!-- 如果选中店铺，且存在店铺id，则展示店铺联系入口 -->
+        <StoreContactInfo :store-id="storeSearchStr" />
         <div class="products-box-content">
           <!-- 未加入分销时展示 -->
           <div v-if="!isJoin && showIsJoin" class="no-data-box">

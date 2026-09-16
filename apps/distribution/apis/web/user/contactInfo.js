@@ -1,6 +1,6 @@
 
 export const query = (storeId) => {
-    return useHttp.get(`/flylink/web/user/contactInfo/query/${storeId}`, {}, { server: true })
+    return useHttp.get(`/trade/web/user/contactInfo/query/${storeId}`, {}, { server: false })
 }
 // 邮箱注册
 export const userRegister = (data) => {
