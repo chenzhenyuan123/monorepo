@@ -6,6 +6,10 @@
 import { previewImg, currencyFormat } from "@/util/index.js";
 import ProductCardImg from '../svg/ProductCard-img.svg'
 
+// 商品无图时的占位图（OSS 相对路径，由 previewImg 按环境拼接 CDN 域名）
+const DEFAULT_GOODS_IMAGE_PATH = 'flylink/1786413736617_2fffb588e7310cb65c09fd2e21a0e834.webp'
+const defaultGoodsImage = computed(() => previewImg(DEFAULT_GOODS_IMAGE_PATH))
+
 const props = defineProps({
   lists: {
     type: Array,
@@ -135,7 +139,7 @@ const generateLinkClick = (item) => {
             v-for="item in lists"
             :key="item.goodsNo"
           >
-            <PictureForOSSAndCenter :image="previewImg(item.imageUrl)" ref="imageRef" class="store-goods-module-item-image"></PictureForOSSAndCenter>
+            <PictureForOSSAndCenter :image="previewImg(item.imageUrl)" :default-image="defaultGoodsImage" ref="imageRef" class="store-goods-module-item-image"></PictureForOSSAndCenter>
             <div class="card-skeleton-text-box">
               <p class="goods-title">{{ item.goodsTitle }}</p>
               <div class="sell-price">
