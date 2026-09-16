@@ -15,8 +15,7 @@
     "pm2:start": "pm2 start ecosystem.config.js",
     "pm2:stop": "pm2 stop ecosystem.config.js",
     "pm2:restart": "pm2 restart ecosystem.config.js",
-    "genLang": "node plugins/i18n/csv2lang.js",
-    "lint": "eslint . --ext .js,.vue --fix --cache"
+    "genLang": "node plugins/i18n/csv2lang.js"
   },
   "devDependencies": {
     "@element-plus/nuxt": "^1.0.5",
