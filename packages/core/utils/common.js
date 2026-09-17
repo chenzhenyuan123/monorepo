@@ -84,3 +84,15 @@ export function arrToDict(arr, { label = 'label', value = 'value' } = {}) {
   }
   return dict
 }
+
+// 判断设备为 ios
+export function isIos() {
+  if (typeof window === 'undefined' || !window.navigator) {
+    return false;
+  }
+  const u = window.navigator.userAgent;
+  if (u && (u.indexOf("iPhone") > -1 || u.indexOf("iOS") > -1)) {
+    return true;
+  }
+  return false;
+}
