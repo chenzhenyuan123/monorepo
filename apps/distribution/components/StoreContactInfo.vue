@@ -345,7 +345,7 @@ const onMoreContact = () => {
 
     &:hover {
       border-radius: 8px;
-      background: #F9FAFB;
+      background: #F2F4F7;
     }
 
     .item-content {
