@@ -2,7 +2,7 @@
  * @Description: 店铺联系方式（根据 storeId 查询店铺的 WhatsApp / 邮箱 / 电话，支持复制）
 -->
 <script setup name="StoreContactInfo">
-import { CopyDocument, Check } from '@element-plus/icons-vue'
+import { CopyDocument, Check, Loading } from '@element-plus/icons-vue'
 import { checkResponseData, copyToClipboard, successMessage } from '@/util/index.js'
 import { getHrefForWhatsApp, getHrefForInstagram, getHrefForFacebook, getHrefForEmail, getHrefForMobile, getHrefForSkype, getHrefForTelegram, getHrefForSnapchat, getHrefForDiscord, getHrefForLine, getHrefForViber } from "@flylinking/core/utils/contact";
 import { sendLog } from "@flylinking/core/utils/logUtil";
@@ -22,14 +22,23 @@ const isMobile = useIsMobile()
 const { t } = useI18n();
 
 const contactInfo = ref(null)
+const loading = ref(false)
 const getContactInfo = async() => {
   if(!props.storeId) {
     contactInfo.value = null
+    loading.value = false
     return
   }
-  const result = await contactInfoApi.query(props.storeId)
-  const res = checkResponseData(result)
-  contactInfo.value = res || null
+  loading.value = true
+  // 清空上一个店铺的数据，避免请求过程中展示旧联系方式
+  contactInfo.value = null
+  try {
+    const result = await contactInfoApi.query(props.storeId)
+    const res = checkResponseData(result)
+    contactInfo.value = res || null
+  } finally {
+    loading.value = false
+  }
 }
 watch(() => props.storeId, () => {
   getContactInfo()
@@ -48,14 +57,14 @@ const copyContact = (key, value) => {
   sendLog({
     eventType: 2, // 1页面/2按钮
     eventCode: 'store-contact-copy',
-    eventDesc: '分销端-复制卖家联系方式'
+    eventDesc: `'分销端-复制卖家联系方式-${key}`
   })
 }
-const clickContact = () => {
+const clickContact = (key) => {
   sendLog({
     eventType: 2, // 1页面/2按钮
     eventCode: 'store-contact-click',
-    eventDesc: '分销端-点击卖家联系方式'
+    eventDesc: `分销端-点击卖家联系方式-${key}`
   })
 }
 // 联系方式列表（key / 展示值 / 跳转链接 / 图标）
@@ -180,18 +189,24 @@ const contactList = computed(() => {
   ].filter(item => item.value)
 })
 
-// 内容是否超出折叠高度（超出才展示「更多」）
+// 内容是否超出折叠行数（超出才展示「更多」）
 const itemsRef = ref(null)
 const hasOverflow = ref(false)
-// 折叠态可见高度：PC 一行 = 40px，移动端两行 = 80px（与样式 max-height 保持一致）
-const COLLAPSED_HEIGHT_PC = 40
-const COLLAPSED_HEIGHT_MOBILE = 80
+// 折叠时可见行数：PC 一行、移动端两行
+const VISIBLE_ROWS_PC = 1
+const VISIBLE_ROWS_MOBILE = 2
 const checkOverflow = () => {
   const el = itemsRef.value
   if (!el) return
-  const collapsedHeight = isMobile ? COLLAPSED_HEIGHT_MOBILE : COLLAPSED_HEIGHT_PC
-  // scrollHeight 不受 max-height 限制，展开态也能正确判断
-  hasOverflow.value = el.scrollHeight > collapsedHeight + 1
+  const children = Array.from(el.children)
+  if (!children.length) {
+    hasOverflow.value = false
+    return
+  }
+  // 按元素 offsetTop 去重计算实际行数（不依赖具体高度，避免亚像素误差）
+  const rowTops = new Set(children.map((child) => Math.round(child.offsetTop)))
+  const visibleRows = isMobile ? VISIBLE_ROWS_MOBILE : VISIBLE_ROWS_PC
+  hasOverflow.value = rowTops.size > visibleRows
 }
 const onResize = () => checkOverflow()
 onMounted(() => {
@@ -215,7 +230,11 @@ const onMoreContact = () => {
 </script>
 
 <template>
-  <div v-if="contactInfo" class="store-contact-box" :class="{ 'is-expanded': expanded }">
+  <!-- 接口请求中 -->
+  <div v-if="loading" class="store-contact-box is-loading">
+    <el-icon class="loading-icon is-loading"><Loading /></el-icon>
+  </div>
+  <div v-else-if="contactInfo" class="store-contact-box" :class="{ 'is-expanded': expanded }">
     <div class="store-contact-title">
       <span class="title-text" :class="{ 'is-expanded': expanded }">
         {{ $t('orders.ordersContactSeller') }}
@@ -231,7 +250,7 @@ const onMoreContact = () => {
         target="_blank"
         id="store-contact-click"
         class="store-contact-item flex"
-        @click="clickContact()"
+        @click="clickContact(item.key)"
       >
         <div class="item-content flex gap8">
           <span class="item-icon" v-html="item.icon"></span>
@@ -248,7 +267,7 @@ const onMoreContact = () => {
             target="_blank"
             class="share"
             id="store-contact-click"
-            @click="clickContact()"
+            @click="clickContact(item.key)"
           >
             <svg data-v-c4d89174="" width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><g data-v-c4d89174="" clip-path="url(#clip0_2173_22621)"><path data-v-c4d89174="" d="M5.25 3.0625H3.5C3.25838 3.0625 3.0625 3.25838 3.0625 3.5V10.5C3.0625 10.7416 3.25838 10.9375 3.5 10.9375H10.5C10.7416 10.9375 10.9375 10.7416 10.9375 10.5V8.75H12.25V10.5L12.2412 10.6787C12.1577 11.5025 11.5025 12.1577 10.6787 12.2412L10.5 12.25H3.5C2.59383 12.25 1.8483 11.5613 1.75879 10.6787L1.75 10.5V3.5C1.75 2.5335 2.5335 1.75 3.5 1.75H5.25V3.0625ZM10.5 1.75C11.4665 1.75 12.25 2.5335 12.25 3.5V6.41699H10.9375V3.9375L6.53711 8.28711L5.71289 7.46289L10.0625 3.0625H7.58301V1.75H10.5Z" fill="#A5A4AA"></path></g><defs data-v-c4d89174=""><clipPath data-v-c4d89174="" id="clip0_2173_22621"><rect data-v-c4d89174="" width="14" height="14" fill="white"></rect></clipPath></defs></svg>
           </a>
@@ -303,7 +322,7 @@ const onMoreContact = () => {
     font-size: var(--Font-size-text-sm, 14px);
     font-weight: 600;
     line-height: 20px;
-    max-width: 200px;
+    max-width: 300px;
     .title-text {
       overflow: hidden;
       text-overflow: ellipsis;
@@ -472,6 +491,20 @@ const onMoreContact = () => {
     .more-icon {
       margin-inline-start: 0;
     }
+  }
+}
+
+// 接口请求中（PC / 移动端通用，置于最后以覆盖移动端的 block 布局）
+.store-contact-box.is-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  // 与正常态高度保持一致，避免切换时跳动
+  min-height: 48px;
+
+  .loading-icon {
+    font-size: 20px;
+    color: #5548FF;
   }
 }
 </style>
