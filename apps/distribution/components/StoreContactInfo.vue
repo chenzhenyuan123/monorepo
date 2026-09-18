@@ -336,7 +336,7 @@ const onMoreContact = () => {
   .store-contact-items {
     // 均等分宽：auto-fill 按容器宽度自动决定列数，每列等宽
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
     align-items: center;
     flex: 1;
     min-width: 0;
