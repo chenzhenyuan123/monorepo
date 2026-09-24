@@ -112,7 +112,7 @@ const nav = [
   { href: '#steps', label: { en: 'Distribution Step', he: 'שלבי ההפצה' } },
   { href: '#stores', label: { en: 'Featured Stores', he: 'חנויות מומלצות' } },
   { href: '#scripts', label: { en: 'Promo Scripts', he: 'תסריטי קידום' } },
-  { href: '#videos', label: { en: 'Video Tutorials', he: 'מדריכי וידאו' } },
+  // { href: '#videos', label: { en: 'Video Tutorials', he: 'מדריכי וידאו' } },
   { href: '#faq', label: { en: 'FAQ', he: 'שאלות נפוצות' } }
 ]
 
@@ -672,7 +672,7 @@ const copyText = (text) => {
       </section>
 
       <!-- ====================== Video Tutorials ====================== -->
-      <section class="section" id="videos">
+      <section class="section" id="videos" style="display:none;">
         <div class="container">
           <div class="section-head">
             <span class="section-head__eyebrow">{{ t('videosEyebrow') }}</span>
@@ -974,7 +974,8 @@ html { scroll-behavior: smooth; }
   .flow__item.is-active .flow__label { color: var(--ink-900); }
   .flow__pills { display: flex; gap: .5rem; overflow-x: auto; padding-bottom: .5rem; }
   .flow__pill { display: flex; flex: none; align-items: center; gap: .5rem; border: 1px solid var(--gray-200); border-radius: 9999px; background: var(--white); padding: .5rem 1rem; font-size: .875rem; font-weight: 500; color: var(--gray-500); transition: all .2s var(--ease); }
-  .flow__pill.is-active { background: var(--tone-50); border-color: var(--tone-200); color: var(--tone-600); }
+  .flow__pill:hover{ border-color: rgb(139, 92, 246) }
+  .flow__pill.is-active { background: var(--tone-50); border-color: rgb(139, 92, 246); color: rgb(117 59 254); }
   .flow__pill-num { display: flex; height: 1.25rem; width: 1.25rem; align-items: center; justify-content: center; border-radius: 9999px; background: var(--flow-fill); font-size: .75rem; font-weight: 700; color: var(--white); }
   .flow__panel { margin-top: 2.5rem; overflow: hidden; border: 1px solid var(--gray-100); border-radius: var(--r-2xl); background: var(--white); box-shadow: var(--shadow-sm); }
   .flow__grid { display: grid; }
@@ -1091,7 +1092,7 @@ html { scroll-behavior: smooth; }
   .video-feature__time span { font-size: .75rem; color: var(--gray-400); }
 
   /* Guarantee */
-  .guarantee { margin-top: 2rem; border: 1px solid #ddd6fe; border-radius: var(--r-2xl); background: #e8e3ff; padding: 2rem; }
+  .guarantee { border: 1px solid #ddd6fe; border-radius: var(--r-2xl); background: #e8e3ff; padding: 2rem; }
   .guarantee__title { text-align: center; font-size: 1.5rem; font-weight: 700; }
   .guarantee__grid { margin-top: 2rem; display: grid; gap: 1.5rem; }
   .guarantee__item { text-align: center; }
