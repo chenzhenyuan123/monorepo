@@ -70,3 +70,6 @@ export function isDuringHour(beginHourStr, endHourStr) {
   }
   return false
 }
+
+// 导出 dayjs 实例，供其它模块获取当前年份等
+export { dayjs }
