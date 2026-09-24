@@ -66,8 +66,8 @@ const props = defineProps({
         text-align: center;
     }
     .no-data-icon {
-        width: 24px;
-        height: 24px;
+        width: 50px;
+        height: 50px;
         padding: 12px;
         border-radius: 10px;
         border: 1px solid #E4E7EC;
