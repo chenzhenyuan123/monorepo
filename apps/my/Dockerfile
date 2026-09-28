@@ -1,4 +1,4 @@
-FROM harbor.kamelnet.com:8080/tools/nodejs18-20-2-pm2-runtime:v240428
+FROM harbor.inflyway.com/tools/nodejs22-21-0-pm2:v251028
 WORKDIR /
 USER root
 COPY .output /flylinking-monorepo-my
