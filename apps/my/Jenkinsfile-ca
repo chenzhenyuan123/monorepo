@@ -1,7 +1,7 @@
 pipeline {
     agent {
         node {
-            label 'k8s-test-jenkins-slave-nodejs-18-20'
+            label 'k8s-test-jenkins-slave-nodejs-22-21-0'
         }
     }
     parameters {
@@ -31,7 +31,7 @@ pipeline {
     stages {
         stage('Printenv') {
             steps {
-                container('jenkins-slave-nodejs-18-20') {
+                container('jenkins-slave-nodejs-22-21-0') {
                     script {
                         def specificCause = currentBuild.getBuildCauses('hudson.model.Cause$UserIdCause')
                         env.CAUSE = "${specificCause.shortDescription}"
@@ -47,7 +47,7 @@ pipeline {
         }
         stage('Checkout代码') {
             steps {
-                container('jenkins-slave-nodejs-18-20') {
+                container('jenkins-slave-nodejs-22-21-0') {
                     checkout scm
                     script {
                         sh 'git config --global --add safe.directory ${WORKSPACE}'
@@ -65,7 +65,7 @@ pipeline {
                 environment name: 'Code_Review', value: 'YES'
             }
             steps {
-                container('jenkins-slave-nodejs-18-20') {
+                container('jenkins-slave-nodejs-22-21-0') {
                     withSonarQubeEnv('sonarqube') {
                         sh 'sonar-scanner -X'
                         sleep 3
@@ -89,7 +89,7 @@ pipeline {
                 environment name: 'Build_Action', value: 'YES'
             }
             steps {
-                container('jenkins-slave-nodejs-18-20') {
+                container('jenkins-slave-nodejs-22-21-0') {
                     script {
                         if ( BRANCH_NAME =~ "^ca-test" || BRANCH_NAME =~ "^ca-release") {
                             sh 'pnpm install && pnpm run build:test:my'
@@ -109,7 +109,7 @@ pipeline {
                 environment name: 'Build_Action', value: 'YES'
             }
             steps {
-                container('jenkins-slave-nodejs-18-20') {
+                container('jenkins-slave-nodejs-22-21-0') {
                     script {
                         sh 'cd apps/my && rm -rf docker_build && mkdir docker_build'
                         sh 'cd apps/my && mv Dockerfile .output ecosystem.config.js package.json docker_build/'
@@ -131,7 +131,7 @@ pipeline {
                 environment name: 'Build_Action', value: 'YES'
             }
             steps {
-                container('jenkins-slave-nodejs-18-20') {
+                container('jenkins-slave-nodejs-22-21-0') {
                     script {
                         if (BRANCH_NAME =~ "^ca-test" || BRANCH_NAME =~ "^ca-release") {
                             retry(2) {
@@ -172,7 +172,7 @@ pipeline {
                 environment name: 'Deploy_Action', value: 'YES'
             }
             steps {
-                container('jenkins-slave-nodejs-18-20') {
+                container('jenkins-slave-nodejs-22-21-0') {
                     script {
                         APP_DIR="${JOB_NAME}".split("/")[0]
                         sh """
