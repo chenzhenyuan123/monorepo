@@ -1,6 +1,7 @@
 <script setup name="home">
 import Flylinking from '@/assets/imgs/64x64.icon.ico'
 import AccountDisable from '@/components/AccountDisable';
+import { PwaUpdatePrompt, PwaInstallPrompt } from '@flylinking/ui';
 import { ElConfigProvider } from 'element-plus'
 import ZH_CN from 'element-plus/es/locale/lang/zh-cn'
 import en from 'element-plus/es/locale/lang/en'
@@ -114,10 +115,16 @@ useHead({
 <template>
   <Head>
     <Link rel="icon" :href="Flylinking" sizes="64x64" />
+    <Link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
     <Meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <Meta name="theme-color" content="#5548ff" />
+    <Meta name="apple-mobile-web-app-capable" content="yes" />
+    <Meta name="apple-mobile-web-app-title" content="FlyLinking" />
     <title>FlyLinking</title>
   </Head>
   <div>
+    <!-- 注入 <link rel="manifest"> -->
+    <VitePwaManifest />
     <noscript>
       You have to enable JavaScript to view this page.
     </noscript>
@@ -127,5 +134,8 @@ useHead({
         <!-- <AccountDisable /> -->
       </NuxtLayout>
     </el-config-provider>
+    <!-- PWA 交互：新版本更新提示 + 添加到主屏幕引导 -->
+    <PwaUpdatePrompt />
+    <PwaInstallPrompt />
   </div>
 </template>
