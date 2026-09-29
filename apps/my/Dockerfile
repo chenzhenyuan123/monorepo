@@ -1,4 +1,4 @@
-FROM harbor.inflyway.com/tools/nodejs22-21-0-pm2:v251028
+FROM harbor-ca.inflyway.com/tools/nodejs22-21-0-pm2:v251028
 WORKDIR /
 USER root
 COPY .output /flylinking-monorepo-my
