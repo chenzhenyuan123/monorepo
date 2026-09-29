@@ -119,8 +119,8 @@ useHead({
     <Meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
     <Meta name="theme-color" content="#5548ff" />
     <Meta name="apple-mobile-web-app-capable" content="yes" />
-    <Meta name="apple-mobile-web-app-title" content="FlyLinking" />
-    <title>FlyLinking</title>
+    <Meta name="apple-mobile-web-app-title" content="Flylinking-My" />
+    <title>Flylinking-My</title>
   </Head>
   <div>
     <!-- 注入 <link rel="manifest"> -->

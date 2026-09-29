@@ -38,9 +38,11 @@ export default defineNuxtConfig({
     // 不再额外注入注册脚本，避免重复注册
     injectRegister: false,
     manifest: {
-      name: 'FlyLinking',
-      short_name: 'FlyLinking',
-      description: 'FlyLinking',
+      // 与 distribution 端隔离：手机上可能同时安装两个 PWA，
+      // 名称必须可区分（浏览器安装弹窗、桌面图标名均取此字段）
+      name: 'Flylinking-My',
+      short_name: 'Flylinking-My',
+      description: 'Flylinking-My',
       start_url: '/',
       display: 'standalone',
       orientation: 'portrait',
