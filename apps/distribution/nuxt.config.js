@@ -54,7 +54,11 @@ export default defineNuxtConfig({
       ]
     },
     workbox: {
-      globPatterns: ['**/*.{js,css,html,svg,png,ico,woff,woff2}'],
+      // globPatterns: ['**/*.{js,css,html,svg,png,ico,woff,woff2}'],
+      // 图片（png）不参与 SW 预缓存：开发阶段大图仍放在本地、后续会迁移到 CDN，
+      // 交给浏览器 HTTP 缓存/CDN 处理即可；同时避免单个文件超过 workbox 默认的
+      // maximumFileSizeToCacheInBytes（2 MiB）导致构建失败（getLink.png 2.51 MB）
+      globPatterns: ['**/*.{js,css,html,svg,ico,woff,woff2}'],
       // 置为 null 以覆盖模块的默认值（默认回退到 baseURL），
       // 即不接管页面导航请求，断网时不做离线页面兜底
       navigateFallback: null,
