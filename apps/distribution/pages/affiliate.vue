@@ -224,7 +224,7 @@ const guarantees = [
   { icon: 'shield', title: { en: 'Fund Safety', he: 'בטיחות הקרן' }, desc: { en: 'Platform-guaranteed transactions with automatic commission settlement.', he: 'עסקאות המובטחות על ידי הפלטפורמה עם סילוק עמלות אוטומטי' } },
   { icon: 'lock', title: { en: 'Information security', he: 'אבטחת מידע' }, desc: { en: 'Encrypted promo links protect your privacy.', he: 'קישורי קידום מכירות מוצפנים מגנים על פרטיות השותפים' } },
   { icon: 'badgeCheck', title: { en: 'Commission Guarantee', he: 'ערבות הנציבות' }, desc: { en: 'Paid into your account automatically, with no upfront investment.', he: 'העמלות נזקפות לחשבונך באופן אוטומטי, ללא צורך בהשקעה מראש' } },
-  { icon: 'headset', title: { en: 'Dedicated Support', he: 'תמיכה ייעודית' }, desc: { en: 'Available 24/7 with timely replies.', he: 'זמינים באינטרנט 24 שעות ביממה, 7 ימים בשבוע, עם מענה מהיר' } }
+  { icon: 'headset', title: { en: 'Dedicated Support', he: 'תמיכה ייעודית' }, desc: { en: 'Available during business hours with prompt replies.', he: 'זמינים באינטרנט 24 שעות ביממה, 7 ימים בשבוע, עם מענה מהיר' } }
 ]
 
 const faqs = [
@@ -240,7 +240,7 @@ const faqs = [
 
 const benefits = [
   { en: 'Free to join, no minimum requirements', he: 'ההצטרפות חינם, ללא תנאי סף' },
-  { en: 'No stock; sellers handle after-sales', he: 'ללא מלאי, שירות לאחר מכירה מטעם המוכר' },
+  { en: 'No stock, sellers handle after-sales', he: 'ללא מלאי, שירות לאחר מכירה מטעם המוכר' },
   { en: 'Commission credited to your account automatically', he: 'העמלה נזקפה באופן אוטומטי לחשבון' },
   { en: 'Platform-guaranteed transactions', he: 'מסחר בטוח המובטח על ידי הפלטפורמה' }
 ]
@@ -296,7 +296,7 @@ const ui = {
   faqEyebrow: { en: 'FAQ', he: 'שאלות נפוצות' },
   faqTitle: { en: 'All your questions, answered', he: 'תשובות לכל השאלות שלכם' },
   faqDesc: { en: 'The most common questions from new affiliates. Contact support if you need more help.', he: 'תשובות לשאלות הנפוצות ביותר של מתחילים — פנו לתמיכה אם אתם זקוקים לעזרה נוספת' },
-  faqFoot: { en: 'If you have any other questions, please contact FlyLink platform customer service, which is available 24/7 hours a day.', he: 'אם יש לכם שאלות נוספות, אנא פנו לשירות הלקוחות של פלטפורמת FlyLink, הזמין 24 שעות ביממה, 7 ימים בשבוע.' },
+  faqFoot: { en: 'If you have any other questions, please contact FlyLink platform customer service, We\'ll respond as soon as possible.', he: 'אם יש לכם שאלות נוספות, אנא פנו לשירות הלקוחות של פלטפורמת FlyLink, הזמין 24 שעות ביממה, 7 ימים בשבוע.' },
   ctaTitle: { en: 'Start earning your first commission today', he: 'התחל להרוויח את העמלה הראשונה שלך כבר עכשיו' },
   ctaDesc: { en: 'No guessing what to do next. Choose a store, contact the seller and share your affiliate link. It\'s that simple.', he: 'אין צורך לנחש מה לעשות עכשיו. בחר חנות להצטרף אליה, צור קשר עם המוכר ושתף את קישור השותפים שלך — כך פשוט להרוויח את העמלה הראשונה שלך.' },
   seeProcess: { en: 'See How It Works', he: 'ראו את התהליך' },
@@ -820,7 +820,7 @@ html { scroll-behavior: smooth; }
   /* Buttons */
   .btn {
     display: inline-flex; align-items: center; justify-content: center; gap: .5rem; border-radius: var(--r-md);
-    padding: .875rem 1.75rem; font-size: 1rem; font-weight: 600; line-height: 1.25; white-space: nowrap;
+    padding: .875rem 1.75rem; font-size: 1rem; font-weight: 600; line-height: 1.25; 
     transition: transform .2s var(--ease), box-shadow .2s var(--ease), background-color .2s var(--ease), color .2s var(--ease), border-color .2s var(--ease);
   }
   .btn--light { background: linear-gradient(270deg, #3b79ff, #5548ff); color: var(--white); box-shadow: var(--shadow-lg); }
@@ -1014,7 +1014,7 @@ html { scroll-behavior: smooth; }
   .cta__benefits { margin-top: 2.5rem; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: .5rem 1.5rem; }
   .cta__benefit { display: flex; align-items: center; gap: .5rem; }
   .cta__benefit > .icon { color: rgba(255,255,255,.7); }
-  .cta__benefit span { font-size: .875rem; color: rgba(255,255,255,.8); }
+  .cta__benefit span { font-size: .875rem; color: rgba(255,255,255,.8); display: flex; align-items: center; }
 
   .footer { background: #0a0945; padding-block: 3rem; }
   .footer__top { display: flex; flex-direction: column; align-items: center; justify-content: space-between; gap: 1.5rem; text-align: center; }
