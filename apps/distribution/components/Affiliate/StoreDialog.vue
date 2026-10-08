@@ -82,7 +82,7 @@ const jumpToGoods = (url) => {
                 </svg>
             </div>
         </template>
-        <div class="grid gap-4">
+        <div class="grid grid-cols-1 gap-4">
             <div class="flex flex-col space-y-1.5 text-center" :class="isRTL ? 'sm:text-right' : 'sm:text-left'">
                 <h2 id="radix-:r1:" class="text-lg font-semibold leading-none tracking-tight flex items-center gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -114,7 +114,7 @@ const jumpToGoods = (url) => {
                         {{ t('storeProducts') }}
                     </h3>
                     <!-- 暂无数据时展示 -->
-                    <div v-if="!loading && goodsList.length<=0">
+                    <div v-if="!loading && goodsList.length<=0" class="min-w-0 overflow-hidden">
                         <EmptyData :noDataTitle="t('noData')" />
                     </div>
                     <div

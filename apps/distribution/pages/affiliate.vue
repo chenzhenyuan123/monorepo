@@ -334,7 +334,7 @@ const copyText = (text) => {
     <header class="site-header">
       <nav class="site-header__bar container">
         <a class="brand" href="#top">
-          <img class="brand__logo" src="https://da-test.flylinking.com/_nuxt/Flylinking-logo.fjmDM9jT.svg" alt="FlyLink">
+          <img class="brand__logo" src="~@/assets/imgs/Flylinking-logo.svg" alt="FlyLink">
           <span class="brand__name">{{ t('brandName') }}</span>
         </a>
 
@@ -706,7 +706,7 @@ const copyText = (text) => {
       <div class="container">
         <div class="footer__top">
           <div class="brand footer__brand">
-            <img class="brand__logo" src="https://da-test.flylinking.com/_nuxt/Flylinking-logo.fjmDM9jT.svg" alt="FlyLink">
+            <img class="brand__logo" src="~@/assets/imgs/Flylinking-logo.svg" alt="FlyLink">
           </div>
           <p class="footer__copy">
             {{ t('footerCopy1') }}
