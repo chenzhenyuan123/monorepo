@@ -15,15 +15,11 @@ import { dayjs } from "@flylinking/core/utils/dateUtil";
 // import contactImg from '@/assets/imgs/affiliate/contact.png'
 // import getLinkImg from '@/assets/imgs/affiliate/getLink.png'
 // import walletImg from '@/assets/imgs/affiliate/wallet.png'
-const allVideo = '' // 'https://raw.githubusercontent.com/chenzhenyuan123/flylink/main/Distribution-Platform_files/all1.mp4'
-const joinStoreVideo = '' // 'https://raw.githubusercontent.com/chenzhenyuan123/flylink/main/Distribution-Platform_files/joinStore.mp4'
-const contactSellersVideo = '' // 'https://raw.githubusercontent.com/chenzhenyuan123/flylink/main/Distribution-Platform_files/ContactSellers_GetLinks.mp4'
-const contactSellersFeatureVideo = '' // 'https://raw.githubusercontent.com/chenzhenyuan123/flylink/main/Distribution-Platform_files/ContactSellers&GetProductLinks.mp4'
 const bannerBg = 'https://flylink-cdn-oss-prod.inflyway.com/flylink/1791429435384_f05dee072994e34016a6bf65b2b7727e.jpeg'
 const storesBg = 'https://flylink-cdn-oss-prod.inflyway.com/flylink/1791429671596_b2a384b671989e722732db56a313f550.jpeg'
 const joinNowImg = 'https://flylink-cdn-oss-prod.inflyway.com/flylink/1791429701169_be171ef85fb20e9fe3b5490a4496fa28.jpeg'
-const contactImg = 'https://flylink-cdn-oss-prod.inflyway.com/flylink/1791429717437_70d7d499c9b5dab4eeb3e9050b6bc446.jpeg'
-const getLinkImg = 'https://flylink-cdn-oss-prod.inflyway.com/flylink/1791429737898_876b235e176f8a33c72217c825834ac1.jpeg'
+const contactImg = 'https://flylink-cdn-oss-prod.inflyway.com/flylink/1791444473023_70d7d499c9b5dab4eeb3e9050b6bc446.jpeg'
+const getLinkImg = 'https://flylink-cdn-oss-prod.inflyway.com/flylink/1791444449939_876b235e176f8a33c72217c825834ac1.jpeg'
 const walletImg = 'https://flylink-cdn-oss-prod.inflyway.com/flylink/1791429748737_f9f7218e5a85f714c817b92718f6e307.jpeg'
 
 definePageMeta({
@@ -114,36 +110,35 @@ const icon = (name, size = 20, extraClass = '') => {
 }
 
 // ===================== 页面静态数据 =====================
-const nav = [ // 文案已修改
+const nav = [
   { href: '#steps', label: { en: 'Distribution Steps', he: 'שלבי ההפצה' } },
-  { href: '#stores', label: { en: 'Top-Rated Stores', he: 'חנויות עם הדירוג הגבוה ביותר' } },
-  { href: '#scripts', label: { en: 'Recommended Scripts', he: 'תסריטים מומלצים' } },
-  // { href: '#videos', label: { en: 'Video Tutorials', he: 'מדריכי וידאו' } },
+  { href: '#stores', label: { en: 'Top stores', he: 'חנויות עם הדירוג הגבוה ביותר' } },
+  { href: '#scripts', label: { en: 'Scripts', he: 'תסריטים מומלצים' } },
   { href: '#faq', label: { en: 'FAQ', he: 'שאלות נפוצות' } }
 ]
 
-const steps = [ // 文案已修改
+const steps = [
   {
     num: 1, tone: 'violet', icon: 'userPlus',
-    title: { en: 'Join the Store as a Distributor', he: 'הצטרפו לחנות כמפיצים' },
-    detail: { en: "Browse the list of stores below, select high-quality stores whose products meet the needs of your local audience, and then click “Join Now” Once you’ve joined, you’ll gain permission to promote that store.", he: 'עיין ברשימת החנויות שלמטה, בחר חנויות איכותיות שמוצריהן עונים על צרכי הקהל המקומי שלך, ולאחר מכן לחץ על "הצטרף עכשיו". לאחר ההצטרפות, תקבל הרשאה לקדם את החנות הזו.' },
+    title: { en: 'Join a store as an distributor', he: 'הצטרפו לחנות כמפיצים' },
+    detail: { en: "Browse the stores below and choose one whose products suit your local audience. Click “Join Now.” You can promote that store as soon as you join.", he: 'עיין ברשימת החנויות שלמטה, בחר חנויות איכותיות שמוצריהן עונים על צרכי הקהל המקומי שלך, ולאחר מכן לחץ על "הצטרף עכשיו". לאחר ההצטרפות, תקבל הרשאה לקדם את החנות הזו.' },
     subSteps: [
-      { en: 'Browse Stores—Browse stores that interest you.', he: 'עיון בחנויות — עיון בחנויות שמעניינות אותך.' },
-      { en: 'Select a store that offers products popular in your local market by category.', he: 'בחר חנות המציעה מוצרים פופולריים בשוק המקומי שלך לפי קטגוריה.' },
-      { en: 'Click “Join Now”—Get promotional access immediately.', he: 'לחץ על "הצטרף עכשיו" — קבל גישה לקידום מכירות באופן מיידי.' },
-      { en: 'You can join multiple stores—promote products from different categories at the same time.', he: 'אתה יכול להצטרף למספר חנויות — ולשווק מוצרים מקטגוריות שונות בו-זמנית.' }
+      { en: 'Browse the stores that interest you.', he: 'עיון בחנויות — עיון בחנויות שמעניינות אותך.' },
+      { en: 'Choose by category and by what sells well locally.', he: 'בחר חנות המציעה מוצרים פופולריים בשוק המקומי שלך לפי קטגוריה.' },
+      { en: 'Click “Join Now” to get promotion access right away.', he: 'לחץ על "הצטרף עכשיו" — קבל גישה לקידום מכירות באופן מיידי.' },
+      { en: 'Join several stores to promote different categories.', he: 'אתה יכול להצטרף למספר חנויות — ולשווק מוצרים מקטגוריות שונות בו-זמנית.' }
     ],
     tips: [
-      { en: 'Focus on categories you’re familiar with—this makes your promotions feel more natural and helps build trust.', he: 'התמקד בקטגוריות שאתה מכיר — כך המבצעים שלך ייראו טבעיים יותר ויסייעו בבניית אמון.' },
-      { en: 'Start by running one store on a trial basis, then join more stores to expand your reach.', he: 'התחל בהפעלת חנות אחת לתקופת ניסיון, ולאחר מכן צרף חנויות נוספות כדי להרחיב את טווח ההגעה שלך.' },
-      { en: 'Start small by choosing categories that align with local bestsellers, then expand quickly.', he: 'התחילו בקטן על ידי בחירת קטגוריות התואמות את רבי-המכר המקומיים, ואז התרחבו במהירות.' }
+      { en: 'Start with categories you know. Your recommendations feel natural and build trust.', he: 'התמקד בקטגוריות שאתה מכיר — כך המבצעים שלך ייראו טבעיים יותר ויסייעו בבניית אמון.' },
+      { en: 'Start small by choosing categories that align with local bestsellers, then expand quickly.', he: 'התחילו בקטן על ידי בחירת קטגוריות התואמות את רבי-המכר המקומיים, ולאחר מכן הרחיבו את הפעילות במהירות.' },
+      { en: 'Try one store first, then add more as you grow.', he: 'נסה תחילה חנות אחת, ולאחר מכן הוסף חנויות נוספות ככל שהעסק שלך יגדל.' }
     ],
     image: joinNowImg
   },
   {
     num: 2, tone: 'purple', icon: 'message',
-    title: { en: 'Contact the Seller on the Products Menu', he: 'צרו קשר עם המוכר בתפריט המוצר' },
-    detail: { en: 'After joining, open the Products menu, click on the store’s contact information, and you can chat directly with the seller via WhatsApp. You can communicate naturally as a buyer or distributor and inquire about best-selling products, inventory status, and available promotional materials.', he: 'לאחר ההרשמה, פתחו את תפריט "מוצרים", לחצו על פרטי יצירת הקשר של החנות, ותוכלו לשוחח ישירות עם המוכר באמצעות WhatsApp. תוכלו לתקשר באופן טבעי כקונים או כמפיצים ולברר אודות המוצרים הנמכרים ביותר, מצב המלאי וחומרי קידום מכירות זמינים.' },
+    title: { en: 'Contact the seller from the Products menu', he: 'צרו קשר עם המוכר בתפריט המוצר' },
+    detail: { en: 'This is the most important step. Right after joining, message the seller to confirm best-sellers and get promo materials.', he: 'לאחר ההרשמה, פתחו את תפריט "מוצרים", לחצו על פרטי יצירת הקשר של החנות, ותוכלו לשוחח ישירות עם המוכר באמצעות WhatsApp. תוכלו לתקשר באופן טבעי כקונים או כמפיצים ולברר אודות המוצרים הנמכרים ביותר, מצב המלאי וחומרי קידום מכירות זמינים.' },
     subSteps: [
       { en: 'Open the Products menu and locate the store\'s contact information."', he: 'פתח את תפריט "מוצר" ואיתור פרטי יצירת הקשר של החנות.' },
       { en: 'Clicking it will automatically open a WhatsApp chat window.', he: 'לחיצה עליו תפתח באופן אוטומטי חלון צ\'אט ב-WhatsApp.' },
@@ -153,14 +148,14 @@ const steps = [ // 文案已修改
     tips: [
       { en: 'Click Contact in the Products menu to start a WhatsApp chat.', he: 'לחץ על "צור קשר" בתפריט "מוצר" כדי לפתוח צ\'אט ב-WhatsApp.' },
       { en: "Ask about best-selling products, inventory status, and commission policies.", he: 'שאלו על המוצרים הנמכרים ביותר, מצב המלאי ומדיניות העמלות.' },
-      { en: 'Request products images and promotional materials from the seller.', he: 'בקש מהמוכר תמונות של המוצר וחומרי קידום מכירות.' }
+      { en: 'Request product images and promotional materials from the seller.', he: 'בקש מהמוכר תמונות של המוצר וחומרי קידום מכירות.' }
     ],
     image: contactImg
   },
   {
     num: 3, tone: 'indigo', icon: 'share',
-    title: { en: 'Get Your Link & Share with Buyers', he: 'קבלו את הקישור שלכם ושתפו אותו עם הקונים' },
-    detail: { en: 'After confirming the products with the seller, go to the store’s homepage or the Products menu and copy the unique promotional link that includes your affiliate ID.', he: 'לאחר שתאשר את המוצר מול המוכר, עבור לדף הבית של החנות או לדף המוצר והעתק את הקישור הייחודי לקידום המכירות, הכולל את מזהה השותף שלך.' },
+    title: { en: 'Get your link and share it with buyers', he: 'קבלו את הקישור שלכם ושתפו אותו עם הקונים' },
+    detail: { en: 'After confirming the products with the seller, go to the store\'s homepage or the Products menu and copy the unique promotional link that includes your affiliate ID.', he: 'לאחר שתאשר את המוצר מול המוכר, עבור לדף הבית של החנות או לדף המוצר והעתק את הקישור הייחודי לקידום המכירות, הכולל את מזהה השותף שלך.' },
     subSteps: [
       { en: 'We\'ve found products that are perfect for your friends.', he: 'מצאנו מוצרים שמתאימים בדיוק לחברים שלך.' },
       { en: 'Click "Get Affiliate Link" on the store Home or Products menu.', he: 'לחץ על "קבל קישור שותפים" בדף הבית של החנות או בתפריט המוצרים.' },
@@ -176,10 +171,10 @@ const steps = [ // 文案已修改
   },
   {
     num: 4, tone: 'fuchsia', icon: 'wallet',
-    title: { en: 'Buyers Pay, You Earn Commissions', he: 'המתן לתשלום, הרווח עמלה' },
-    detail: { en: 'Once a buyer places an order through your referral link and successfully completes payment, you’ll immediately see your commission earnings. The system will automatically credit the commission to your wallet—no manual request is required—making the process safe and reliable.', he: 'כאשר קונים מבצעים הזמנות ומשלמים בהצלחה דרך קישור הקידום שלך, הם יכולים לראות מיד את הכנסות העמלה, והמערכת תסדיר את העמלה לארנק שלך אוטומטית ללא בקשה ידנית, מה שבטוח ואמין.' },
+    title: { en: 'Buyers pay, you earn commission', he: 'המתן לתשלום, הרווח עמלה' },
+    detail: { en: 'Commission is credited to your wallet automatically. There is nothing to submit. If an order is returned or refunded, its commission is deducted.', he: 'כאשר קונים מבצעים הזמנות ומשלמים בהצלחה דרך קישור הקידום שלך, הם יכולים לראות מיד את הכנסות העמלה, והמערכת תסדיר את העמלה לארנק שלך אוטומטית ללא בקשה ידנית, מה שבטוח ואמין.' },
     subSteps: [
-      { en: 'Buyers can access the Products menu and place an order through your referral link.', he: 'הקונים יכולים לגשת לדף המוצר ולבצע הזמנה באמצעות קישור ההפניה שלך.' },
+      { en: 'A buyer pays through your link.', he: 'הקונים יכולים לגשת לדף המוצר ולבצע הזמנה באמצעות קישור ההפניה שלך.' },
       { en: 'Once payment is successful, you can immediately view your estimated commission earnings.', he: 'ברגע שהתשלום יבוצע בהצלחה, תוכל לראות מיד את הרווחים המשוערים מהעמלות שלך.' },
       { en: 'The system will automatically credit the commission to your wallet.', he: 'המערכת תזכה את הארנק שלך בעמלה באופן אוטומטי.' },
       { en: 'View commission details and expenses in your wallet.', he: 'צפה בפרטי העמלות וההוצאות בארנק שלך.' }
@@ -187,31 +182,31 @@ const steps = [ // 文案已修改
     tips: [
       { en: 'Once the buyer makes a payment, the commission is automatically credited to your wallet.', he: 'ברגע שהקונה מבצע את התשלום, העמלה נזקפת אוטומטית לארנק שלך.' },
       { en: 'View commission details in your wallet.', he: 'צפה בפרטי העמלה בארנק שלך.' },
-      { en: 'The platform’s transaction guarantee ensures the security of your funds.', he: 'ערבות העסקאות של הפלטפורמה מבטיחה את אבטחת כספיכם.' }
+      { en: 'The platform\'s transaction guarantee ensures the security of your funds.', he: 'ערבות העסקאות של הפלטפורמה מבטיחה את אבטחת כספיכם.' }
     ],
     image: walletImg
   }
 ]
 
-const contactSteps = [ // 文案已修改
+const contactSteps = [
   { key: 'A', title: { en: 'Open the Products menu', he: 'פתח את תפריט \'מוצרים\'' }, desc: { en: 'After joining, open the Products menu, select the store, and view the store contact information', he: 'לאחר ההרשמה, פתחו את תפריט המוצרים, בחרו את החנות והציגו את פרטי יצירת הקשר של החנות' } },
   { key: 'B', title: { en: 'Click on the store contact information', he: 'לחץ על פרטי יצירת הקשר של החנות' }, desc: { en: 'Click the “WhatsApp” contact option to start a chat.', he: 'לחץ על אפשרות יצירת הקשר "WhatsApp" כדי להתחיל שיחה' } },
   { key: 'C', title: { en: 'Send a Message', he: 'שלח הודעה' }, desc: { en: 'Copy the template below, paste it into the WhatsApp chat and send it to the seller to naturally introduce your promotion intent', he: 'העתיקו את התבנית שלמטה, הדביקו אותה בצ\'אט של ווטסאפ ושלחו אותה למוכר כדי להציג באופן טבעי את כוונתכם לקידום מכירות' } },
-  { key: 'D', title: { en: 'Get Products Details', he: 'קבל פרטים על המוצר' }, desc: { en: 'After confirming the best-selling products with the seller,  you can go to the Products menu to get the promotional link.', he: 'לאחר שתאשרו עם המוכר אילו מוצרים הם הנמכרים ביותר, תוכלו לעבור לתפריט "מוצרים" כדי לקבל את הקישור לקידום המכירות.' } }
+  { key: 'D', title: { en: 'Get product details', he: 'קבל פרטים על המוצר' }, desc: { en: 'After confirming the best-selling products with the seller,  you can go to the Products menu to get the promotional link.', he: 'לאחר שתאשרו עם המוכר אילו מוצרים הם הנמכרים ביותר, תוכלו לעבור לתפריט "מוצרים" כדי לקבל את הקישור לקידום המכירות.' } }
 ]
 
-const templates = [ // 文案已修改
-  { label: { en: 'Formal', he: 'פורמלי' }, content: { en: 'Hello, I am a distributor on the Flylink platform and am very interested in your store’s products. Could you please tell me about your best-selling products and commission policy? I look forward to working with your store! Thank you.', he: 'שלום, אני מפיץ בפלטפורמת Flylink ואני מתעניין מאוד במוצרים של החנות שלכם. האם תוכלו לספר לי על המוצרים הנמכרים ביותר שלכם ועל מדיניות העמלות שלכם? אני מצפה לעבוד עם החנות שלכם! תודה.' } },
-  { label: { en: 'Relaxed', he: 'נינוח' }, content: { en: "Hello, I’ve been recommending great products to my friends lately, and I stumbled upon your store—your products are really excellent. Could you recommend some of your best-selling items? Would you be able to send me some promotional links and images for reference?", he: 'שלום, לאחרונה אני ממליץ לחברים שלי על מוצרים מעולים, ונתקלתי במקרה בחנות שלכם — המוצרים שלכם באמת מצוינים. האם תוכלו להמליץ לי על כמה מהמוצרים הנמכרים ביותר שלכם? האם תוכלו לשלוח לי כמה קישורים ותמונות לקידום מכירות לשם התייחסות?' } },
-  { label: { en: 'Community Promo', he: 'מבצע קהילתי' }, content: { en: 'Hello, I run a shopping community and would like to recommend your company’s best-selling products to my group members. Could you please provide links to your best-selling products, products images, and information on your affiliate commission policy? Thank you!', he: 'שלום, אני מנהל קהילת קניות והייתי רוצה להמליץ לחברי הקבוצה שלי על המוצרים הנמכרים ביותר של החברה שלכם. האם תוכלו לספק לי קישורים למוצרים הנמכרים ביותר שלכם, תמונות של המוצרים ומידע על מדיניות העמלות שלכם לתוכנית השותפים? תודה!' } }
+const templates = [
+  { label: { en: 'Formal', he: 'פורמלי' }, content: { en: 'Hello, I am a distributor on the FlyLink platform and am very interested in your store\'s products. Could you please tell me about your best-selling products and commission policy? I look forward to working with you. Thank you.', he: 'שלום, אני מפיץ בפלטפורמת FlyLink ואני מתעניין מאוד במוצרים של החנות שלכם. האם תוכלו לספר לי על המוצרים הנמכרים ביותר שלכם ועל מדיניות העמלות שלכם? אני מצפה לעבוד עם החנות שלכם! תודה.' } },
+  { label: { en: 'Relaxed', he: 'נינוח' }, content: { en: "Hello, I\'ve been recommending great products to my friends lately, and I stumbled upon your store—your products are really excellent. Could you recommend some of your best-selling items? Would you be able to send me some promotional links and images for reference?", he: 'שלום, לאחרונה אני ממליץ לחברים שלי על מוצרים מעולים, ונתקלתי במקרה בחנות שלכם — המוצרים שלכם באמת מצוינים. האם תוכלו להמליץ לי על כמה מהמוצרים הנמכרים ביותר שלכם? האם תוכלו לשלוח לי כמה קישורים ותמונות לקידום מכירות לשם התייחסות?' } },
+  { label: { en: 'Community Promo', he: 'מבצע קהילתי' }, content: { en: 'Hello, I run a shopping community and would like to recommend your company\'s best-selling products to my group members. Could you please provide links to your best-selling products, products images, and information on your affiliate commission policy? Thank you!', he: 'שלום, אני מנהל קהילת קניות והייתי רוצה להמליץ לחברי הקבוצה שלי על המוצרים הנמכרים ביותר של החברה שלכם. האם תוכלו לספק לי קישורים למוצרים הנמכרים ביותר שלכם, תמונות של המוצרים ומידע על מדיניות העמלות שלכם לתוכנית השותפים? תודה!' } }
 ]
 
-const scripts = [ // 文案已修改
+const scripts = [
   {
     id: 'friend-recommend', tone: 'blue',
     title: { en: 'Private Recommendation', he: 'המלצה פרטית' },
     category: { en: '1-on-1 Recommendation', he: 'המלצה אישית' },
-    content: { en: 'Hi! I remember you were pretty interested in [T-shirts], and I just came across a store with great reviews and reasonable prices. Here’s my exclusive referral link. Let me know if it meets your expectations. If you have any questions, feel free to contact me anytime!', he: 'היי! אני זוכרת שהתעניינת מאוד ב[חולצות], ובדיוק נתקלתי בחנות עם ביקורות מצוינות ומחירים סבירים. הנה קישור ההפניה הבלעדי שלי. תודיעי לי אם זה עונה על הציפיות שלך. אם יש לך שאלות, אל תהססי לפנות אליי בכל עת!' },
+    content: { en: 'Hi! I remember you were interested in [T-shirts], and I just found a store with great reviews and fair prices. Here\'s my referral link. Let me know what you think, and ask me anything.', he: 'היי! אני זוכרת שהתעניינת מאוד ב[חולצות], ובדיוק נתקלתי בחנות עם ביקורות מצוינות ומחירים סבירים. הנה קישור ההפניה הבלעדי שלי. תודיעי לי אם זה עונה על הציפיות שלך. אם יש לך שאלות, אל תהססי לפנות אליי בכל עת!' },
     usage: { en: 'Great for recommending products to friends in private chat, natural and not pushy', he: 'נהדר להמלצה על מוצרים לחברים בצ\'אט פרטי, בצורה טבעית ולא אגרסיבית' },
     tip: { en: 'Understand their needs before recommending to avoid a mass-message feel, and follow up on their experience after.', he: 'הבינו את צרכיהם לפני שתמליצו, כדי להימנע מתחושת "הודעה המונית", ועקבו אחר חווייתם לאחר מכן.' }
   },
@@ -219,55 +214,35 @@ const scripts = [ // 文案已修改
     id: 'group-share', tone: 'orange',
     title: { en: 'Community Promo', he: 'מבצע קהילתי' },
     category: { en: 'Group Share', he: 'שיתוף קבוצתי' },
-    content: { en: 'Dear family, I recently discovered a high-quality, affordable products. I’ve been using it myself for a while now and think it’s pretty great, so I wanted to share it with you all! Here’s the link. If you’re interested, feel free to check it out, and let me know if you have any questions~', he: 'משפחה יקרה, לאחרונה גיליתי מוצר איכותי ובמחיר סביר. אני משתמשת בו בעצמי כבר זמן מה ומאוד מרוצה ממנו, ולכן רציתי לשתף אתכם בו! הנה הקישור. אם אתם מעוניינים, אתם מוזמנים לבדוק אותו, ותודיעו לי אם יש לכם שאלות~' },
+    content: { en: 'Dear family, I recently discovered a high-quality, affordable products. I\'ve been using it myself for a while now and think it\'s pretty great, so I wanted to share it with you all! Here\'s the link. If you\'re interested, feel free to check it out, and let me know if you have any questions~', he: 'משפחה יקרה, לאחרונה גיליתי מוצר איכותי ובמחיר סביר. אני משתמשת בו בעצמי כבר זמן מה ומאוד מרוצה ממנו, ולכן רציתי לשתף אתכם בו! הנה הקישור. אם אתם מעוניינים, אתם מוזמנים לבדוק אותו, ותודיעו לי אם יש לכם שאלות~' },
     usage: { en: 'Perfect for sharing in groups and communities, the tone is friendly and natural.', he: 'מושלם לשיתוף בקבוצות ובקהילות, והטון ידידותי וטבעי.' },
     tip: { en: 'It\'s best to interact with the community a bit first, posting a link out of the blue might make people feel uncomfortable.', he: 'עדיף קודם כל ליצור קצת אינטראקציה עם הקהילה; פרסום קישור פתאום עלול לגרום לאנשים להרגיש לא בנוח.' }
   }
 ]
 
-const videos = [
-  { id: 'full-flow', title: { en: 'Full process demonstration', he: 'הדגמת תהליך מלא' }, desc: { en: 'Full flow demo from joining a store to receiving commission', he: 'הדגמת זרימה מלאה מהצטרפות לחנות ועד קבלת עמלה' }, duration: '02:15', image: walletImg, video: allVideo },
-  { id: 'pick-store', title: { en: 'How to join the store', he: 'איך להצטרף לחנות' }, desc: { en: 'Products selection strategy and commission comparison tips', he: 'אסטרטגיית בחירת מוצרים וטיפים להשוואת עמלות' }, duration: '00:42', image: joinNowImg, video: joinStoreVideo },
-  { id: 'whatsapp-guide', title: { en: 'Contact Sellers & Get Links via WhatsApp', he: 'צור קשר עם מוכרים וקבל קישורים דרך WhatsApp' }, desc: { en: 'Hands-on WhatsApp walkthrough, learn in 3 minutes', he: 'הדרכה מעשית ב-WhatsApp, למד ב-3 דקות' }, duration: '00:46', image: contactImg, video: contactSellersVideo }
+const guarantees = [
+  { icon: 'shield', title: { en: 'Fund Safety', he: 'בטיחות הקרן' }, desc: { en: 'Platform-guaranteed transactions with automatic commission settlement.', he: 'עסקאות המובטחות על ידי הפלטפורמה עם סילוק עמלות אוטומטי' } },
+  { icon: 'lock', title: { en: 'Information security', he: 'אבטחת מידע' }, desc: { en: 'Encrypted promo links protect your privacy.', he: 'קישורי קידום מכירות מוצפנים מגנים על פרטיות השותפים' } },
+  { icon: 'badgeCheck', title: { en: 'Commission Guarantee', he: 'ערבות הנציבות' }, desc: { en: 'Paid into your account automatically, with no upfront investment.', he: 'העמלות נזקפות לחשבונך באופן אוטומטי, ללא צורך בהשקעה מראש' } },
+  { icon: 'headset', title: { en: 'Dedicated Support', he: 'תמיכה ייעודית' }, desc: { en: 'Available 24/7 with timely replies.', he: 'זמינים באינטרנט 24 שעות ביממה, 7 ימים בשבוע, עם מענה מהיר' } }
 ]
 
-const videoFeature = {
-  title: { en: 'How to Contact Sellers & Get Products Details?', he: 'איך ליצור קשר עם מוכרים ולקבל פרטי מוצר?' },
-  desc: { en: 'This is the most critical step in promotion. After joining a store, you need to chat with the seller via WhatsApp to confirm best-sellers and promo materials. This video shows the full process.', he: 'זהו השלב הקריטי ביותר בקידום. לאחר הצטרפות לחנות, עליך לשוחח עם המוכר ב-WhatsApp כדי לאשר מוצרים נמכרים וחומרי קידום. הסרטון הזה מציג את התהליך המלא.' },
-  steps: [
-    { en: '1. Open the Products menu', he: '1. פתח את תפריט המוצרים' },
-    { en: '2. Click on the contact information', he: '2. לחץ על פרטי יצירת הקשר' },
-    { en: '3. Chat on WhatsApp', he: '3. שוחח ב-WhatsApp' },
-    { en: '4. Get Affiliate Link', he: '4. קבל קישור שותף' }
-  ],
-  image: contactImg,
-  duration: '00:55',
-  video: contactSellersFeatureVideo
-}
-
-const guarantees = [ // 文案已修改
-  { icon: 'shield', title: { en: 'Fund Safety', he: 'בטיחות הקרן' }, desc: { en: 'Platform-guaranteed transactions with automatic commission settlement', he: 'עסקאות המובטחות על ידי הפלטפורמה עם סילוק עמלות אוטומטי' } },
-  { icon: 'lock', title: { en: 'Info Security', he: 'אבטחת מידע' }, desc: { en: 'Encrypted promo links protect affiliate privacy', he: 'קישורי קידום מכירות מוצפנים מגנים על פרטיות השותפים' } },
-  { icon: 'badgeCheck', title: { en: 'Commission Guarantee', he: 'ערבות הנציבות' }, desc: { en: 'Commissions are automatically credited to your account, with no upfront investment required', he: 'העמלות נזקפות לחשבונך באופן אוטומטי, ללא צורך בהשקעה מראש' } },
-  { icon: 'headset', title: { en: 'Dedicated Support', he: 'תמיכה ייעודית' }, desc: { en: 'Online 7×24 hours with timely responses', he: 'זמינים באינטרנט 24 שעות ביממה, 7 ימים בשבוע, עם מענה מהיר' } }
-]
-
-const faqs = [ // 文案已修改
-  { q: { en: 'Does joining cost anything?', he: 'האם ההצטרפות כרוכה בתשלום כלשהו?' }, a: { en: 'It\'s completely free. There\'s no cost to join a merchant\'s affiliate program—simply sign up to become an affiliate. Then choose the merchants you like, click “Join Now,” and you\'ll gain promotional access.', he: 'זה לגמרי בחינם. ההצטרפות לתוכנית השותפים של סוחר כלשהו אינה כרוכה בעלות כלשהי — כל שעליך לעשות הוא להירשם כדי להפוך לשותף. לאחר מכן, בחר את הסוחרים המועדפים עליך, לחץ על "הצטרף עכשיו", ותקבל גישה למבצעים.' } },
-  { q: { en: 'When does commission arrive?', he: 'מתי מתקבלת העמלה?' }, a: { en: 'Once a buyer places an order through your referral link and successfully completes payment, you can immediately view your commission earnings for that period. The system will automatically credit the commission to your wallet; there is no need to submit a manual request.', he: 'ברגע שקונה מבצע הזמנה דרך קישור ההפניה שלך ומשלים את התשלום בהצלחה, תוכל לראות מיד את רווחי העמלה שלך לאותה תקופה. המערכת תזכה את העמלה באופן אוטומטי לארנק שלך; אין צורך להגיש בקשה ידנית.' } },
-  { q: { en: 'How do I contact the seller?', he: 'איך ניתן ליצור קשר עם המוכר?' }, a: { en: 'After joining the affiliate program, open the Products menu, locate store contact Information, and click on it to chat directly with the seller via WhatsApp. We recommend that you contact the seller immediately after successfully joining to confirm best-selling items, inventory status, and promotional materials.', he: 'לאחר ההצטרפות לתוכנית השותפים, פתחו את תפריט המוצרים, אתרו את פרטי יצירת הקשר של החנות ולחצו עליהם כדי לשוחח ישירות עם המוכר באמצעות WhatsApp. אנו ממליצים ליצור קשר עם המוכר מיד לאחר ההצטרפות, כדי לאמת אילו מוצרים הם הנמכרים ביותר, מה מצב המלאי ומהם חומרי הקידום.' } },
-  { q: { en: 'What should I keep in mind when talking to sellers?', he: 'על מה עליי לשים לב כשאני משוחח עם המוכרים?' }, a: { en: "Please communicate naturally as a buyer or reseller, and never stray from the Flylink platform. Proactively ask sellers about local best-selling products, inventory status, and commission policies, and request products images and reseller links from them, ensuring that the reseller links include your affiliate ID.", he: 'אנא תקשרו באופן טבעי כקונה או כמפיץ, ואל תסטו לעולם מפלטפורמת Flylink. שאלו את המוכרים ביוזמתכם אודות המוצרים הנמכרים ביותר באזור, מצב המלאי ומדיניות העמלות, ובקשו מהם תמונות של המוצרים וקישורי מפיצים, תוך הקפדה על כך שקישורי המפיצים יכללו את מזהה השותף שלכם.' } },
-  { q: { en: 'How do I get the promo link?', he: 'איך אני מקבל את קישור המבצע?' }, a: { en: 'After confirming the products with the seller, click “Get Affiliate Link” on the Home page or in the Products menu, and copy the unique link that includes your affiliate ID. Share it with friends or in groups so you can track your commissions.', he: 'לאחר שאישרת את המוצר מול המוכר, לחץ על "קבל קישור שותפים" בדף הבית או בתפריט המוצרים, והעתק את הקישור הייחודי הכולל את מזהה השותף שלך. שתף אותו עם חברים או בקבוצות כדי שתוכל לעקוב אחר העמלות שלך.' } },
-  { q: { en: 'Can I join multiple stores?', he: 'האם אני יכול להצטרף למספר חנויות?' }, a: { en: 'Yes. You can join affiliate programs from multiple merchants and promote products in different categories. We recommend prioritizing merchants you’re familiar with and whose products are popular locally.', he: 'כן. אתה יכול להצטרף לתוכניות שותפים של מספר סוחרים ולקדם מוצרים בקטגוריות שונות. אנו ממליצים לתת עדיפות לסוחרים שאתה מכיר ושמוצריהם פופולריים באזור שלך.' } },
+const faqs = [
+  { q: { en: 'Does joining cost anything?', he: 'האם ההצטרפות כרוכה בתשלום כלשהו?' }, a: { en: 'No. Joining is free. Sign up, pick the stores you like, click “Join Now,” and you can promote them right away.', he: 'זה לגמרי בחינם. ההצטרפות לתוכנית השותפים של סוחר כלשהו אינה כרוכה בעלות כלשהי — כל שעליך לעשות הוא להירשם כדי להפוך לשותף. לאחר מכן, בחר את הסוחרים המועדפים עליך, לחץ על "הצטרף עכשיו", ותקבל גישה למבצעים.' } },
+  { q: { en: 'When does commission arrive?', he: 'מתי מתקבלת העמלה?' }, a: { en: 'Once a buyer places an order through your affiliate link and successfully completes payment, you can immediately view your commission earnings for that period. The system will automatically credit the commission to your wallet; there is no need to submit a manual request.', he: 'ברגע שקונה מבצע הזמנה דרך קישור ההפניה שלך ומשלים את התשלום בהצלחה, תוכל לראות מיד את רווחי העמלה שלך לאותה תקופה. המערכת תזכה את העמלה באופן אוטומטי לארנק שלך; אין צורך להגיש בקשה ידנית.' } },
+  { q: { en: 'How do I contact the seller?', he: 'איך ניתן ליצור קשר עם המוכר?' }, a: { en: 'After joining the affiliate program, open the Products menu, locate stock contact information, and click on it to chat directly with the seller via WhatsApp. We recommend that you contact the seller immediately after successfully joining to confirm best-selling items, inventory status, and promotional materials.', he: 'לאחר ההצטרפות לתוכנית השותפים, פתחו את תפריט המוצרים, אתרו את פרטי יצירת הקשר של החנות ולחצו עליהם כדי לשוחח ישירות עם המוכר באמצעות WhatsApp. אנו ממליצים ליצור קשר עם המוכר מיד לאחר ההצטרפות, כדי לאמת אילו מוצרים הם הנמכרים ביותר, מה מצב המלאי ומהם חומרי הקידום.' } },
+  { q: { en: 'What should I keep in mind when talking to sellers?', he: 'על מה עליי לשים לב כשאני משוחח עם המוכרים?' }, a: { en: "Talk naturally, as a buyer or affiliate, and keep the conversation on the FlyLink platform. Ask about locally popular products, stock and commission policy, and request product images and links that include your affiliate ID.", he: 'אנא תקשרו באופן טבעי כקונה או כמפיץ, ואל תסטו לעולם מפלטפורמת FlyLink. פנו באופן יזום למוכרים כדי לברר אודות המוצרים הנמכרים ביותר באזור, מצב המלאי ומדיניות העמלות, ובקשו מהם תמונות של המוצרים וקישורי שותפים, תוך הקפדה על כך שקישורי השותפים יכללו את מזהה השותף שלכם.' } },
+  { q: { en: 'How do I get my affiliate link?', he: 'איך אני מקבל את קישור המבצע?' }, a: { en: 'After confirming the products with the seller, click “Get Affiliate Link” on the Home page or in the Products menu, and copy the unique link that includes your affiliate ID. Share it with friends or in groups so you can track your commissions.', he: 'לאחר שאישרת את המוצר מול המוכר, לחץ על "קבל קישור שותפים" בדף הבית או בתפריט המוצרים, והעתק את הקישור הייחודי הכולל את מזהה השותף שלך. שתף אותו עם חברים או בקבוצות כדי שתוכל לעקוב אחר העמלות שלך.' } },
+  { q: { en: 'Can I join more than one store?', he: 'האם אני יכול להצטרף למספר חנויות?' }, a: { en: 'Yes. You can join affiliate programs from multiple merchants and promote products in different categories. We recommend prioritizing merchants you\'re familiar with and whose products are popular locally.', he: 'כן. אתה יכול להצטרף לתוכניות שותפים של מספר סוחרים ולקדם מוצרים בקטגוריות שונות. אנו ממליצים לתת עדיפות לסוחרים שאתה מכיר ושמוצריהם פופולריים באזור שלך.' } },
   { q: { en: 'What if a buyer returns the item?', he: 'מה יקרה אם הקונה יחזיר את הפריט?' }, a: { en: "If a buyer requests a return or refund, the commission for that order will be automatically deducted. Only orders that have been paid for, shipped, and not refunded will be finalized.", he: 'אם קונה מבקש להחזיר את המוצר או לקבל החזר כספי, העמלה עבור אותה הזמנה תנוכה באופן אוטומטי. רק הזמנות ששולמו, נשלחו ולא הוחזרו ייסגרו סופית.' } },
-  { q: { en: 'How can I check my commission status?', he: 'איך אוכל לבדוק את מצב העמלה שלי?' }, a: { en: 'In the Wallet menu, you can view your balance, pending commissions, and all transaction records for the products you distribute.', he: 'בתפריט "ארנק" תוכל להציג את היתרה שלך, את העמלות הממתינות ואת כל רישומי העסקאות עבור המוצרים שאתה מפיץ.' } }
+  { q: { en: 'How can I check my commission status?', he: 'איך אוכל לבדוק את מצב העמלה שלי?' }, a: { en: 'Open the Wallet menu to see your balance, pending commission and every transaction for the products you promote.', he: 'בתפריט "ארנק" תוכל להציג את היתרה שלך, את העמלות הממתינות ואת כל רישומי העסקאות עבור המוצרים שאתה מפיץ.' } }
 ]
 
-const benefits = [ // 文案已修改
-  { en: 'Free to join, no threshold', he: 'ההצטרפות חינם, ללא תנאי סף' },
-  { en: 'No stocking, Seller after-sales', he: 'ללא מלאי, שירות לאחר מכירה מטעם המוכר' },
-  { en: 'Commission automatically credited to the account', he: 'העמלה נזקפה באופן אוטומטי לחשבון' },
-  { en: 'Platform-guaranteed safe trading', he: 'מסחר בטוח המובטח על ידי הפלטפורמה' }
+const benefits = [
+  { en: 'Free to join, no minimum requirements', he: 'ההצטרפות חינם, ללא תנאי סף' },
+  { en: 'No stock; sellers handle after-sales', he: 'ללא מלאי, שירות לאחר מכירה מטעם המוכר' },
+  { en: 'Commission credited to your account automatically', he: 'העמלה נזקפה באופן אוטומטי לחשבון' },
+  { en: 'Platform-guaranteed transactions', he: 'מסחר בטוח המובטח על ידי הפלטפורמה' }
 ]
 
 // ===================== 双语支持（EN / Hebrew） =====================
@@ -280,54 +255,52 @@ const toggleLang = () => {
 const L = (v) => (v && typeof v === 'object' && 'en' in v) ? v[lang.value] : v
 
 // 页面级独立 UI 文案
-const ui = { // 文案已修改
+const ui = {
   brandName: { en: 'Distributor Recruitment Platform', he: 'פלטפורמה לגיוס מפיצים' },
   joinNow: { en: 'Join Now', he: 'הצטרפו עכשיו' },
   seeHow: { en: 'See How It Works', he: 'ראו כיצד זה עובד' },
-  heroPill: { en: 'No stocking · High commission · Abundant promotion resources · Zero cost', he: 'ללא מלאי · עמלה גבוהה · משאבי קידום רבים · ללא עלות' },
-  heroTitle: { en: 'Join the distribution platform, Easily earn commissions', he: 'הצטרפו לפלטפורמת ההפצה, והרוויחו עמלות בקלות' },
+  heroPill: { en: 'No stock · High commission · Promo resources · Zero cost', he: 'ללא מלאי · עמלה גבוהה · משאבי קידום רבים · ללא עלות' },
+  heroTitle: { en: 'Join the distribution  platform and earn commission easily', he: 'הצטרפו לפלטפורמת ההפצה, והרוויחו עמלות בקלות' },
   stepsEyebrow: { en: 'How-To Guide', he: 'מדריך מעשי' },
   stepsTitle: { en: 'Earn Commission in 4 Easy Steps', he: 'הרוויחו עמלה ב-4 שלבים פשוטים' },
-  stepsDesc: { en: 'From joining to payout, the flow is simple and transparent — Click each step for detailed guidance', he: 'מההרשמה ועד לתשלום, התהליך פשוט ושקוף — לחצו על כל שלב לקבלת הנחיות מפורטות' },
+  stepsDesc: { en: 'From joining to payout, the flow is simple and transparent. Select a step for details.', he: 'מההרשמה ועד לתשלום, התהליך פשוט ושקוף — לחצו על כל שלב לקבלת הנחיות מפורטות' },
   stepTag: { en: 'Step', he: 'שלב' },
   stepsLabel: { en: 'Steps', he: 'שלבים' },
   keyPoints: { en: 'Key Points', he: 'נקודות מרכזיות' },
   previous: { en: 'Previous', he: 'קודם' },
   next: { en: 'Next', he: 'הבא' },
   storesEyebrow: { en: 'Top-Rated Stores', he: 'חנויות עם הדירוג הגבוה ביותר' },
-  storesTitle: { en: 'The best-selling products from these top-quality stores are just waiting for you to promote them', he: 'המוצרים הנמכרים ביותר מחנויות איכותיות אלה רק מחכים שתקדם אותם' },
-  storesDesc: { en: 'Carefully selected high-quality stores, generous commissions, and easy sales—Choose categories that are popular in your local market', he: 'חנויות איכותיות שנבחרו בקפידה, עמלות נדיבות ומכירות קלות — בחרו בקטגוריות הפופולריות בשוק המקומי שלכם' },
+  storesTitle: { en: 'Best-selling products are waiting for you', he: 'המוצרים הנמכרים ביותר מחנויות איכותיות אלה רק מחכים שתקדם אותם' },
+  storesDesc: { en: 'Carefully selected stores with generous commissions and easy sales. Choose categories that are popular in your local market.', he: 'חנויות איכותיות שנבחרו בקפידה, עמלות נדיבות ומכירות קלות — בחרו בקטגוריות הפופולריות בשוק המקומי שלכם' },
   high: { en: 'Best', he: 'הטוב ביותר' },
   commissionRate: { en: 'Commission Rate:', he: 'שיעור העמלה:' },
   contactEyebrow: { en: 'Seller Contact Guide', he: 'מדריך ליצירת קשר עם המוכר' },
   contactTitle: { en: 'After joining a store, how do you contact the seller?', he: 'לאחר ההצטרפות לחנות, כיצד ניתן ליצור קשר עם המוכר?' },
-  contactDesc1: { en: 'This is the most critical step in promotion — after joining, contact the seller right away to confirm products info and promo materials.', he: 'זהו השלב החשוב ביותר בקידום — לאחר ההצטרפות, צרו קשר עם המוכר מיד כדי לאשר את פרטי המוצר וחומרי הקידום.' },
+  contactDesc1: { en: 'This is the most critical step in promotion — after joining, contact the seller right away to confirm product information and promo materials.', he: 'זהו השלב החשוב ביותר בקידום — לאחר ההצטרפות, צרו קשר עם המוכר מיד כדי לאשר את פרטי המוצר וחומרי הקידום.' },
   contactDesc2: { en: "We've already filled in your contact information for you; just copy it and you're all set.", he: 'כבר מילאנו עבורך את פרטי הקשר; כל מה שאתה צריך לעשות זה להעתיק אותם וזהו.' },
   readyTitle: { en: 'Ready to start?', he: 'מוכנים להתחיל?' },
   readyDesc: { en: 'Click the button below to open the Products menu, then find the store\'s contact information and chat with the seller via WhatsApp.', he: 'לחץ על הכפתור שלמטה כדי לפתוח את תפריט המוצרים, ולאחר מכן מצא את פרטי יצירת הקשר של החנות וצ\'ט עם המוכר דרך WhatsApp.' },
-  goContact: { en: 'Go to Products & Contact Seller', he: 'עבור אל המוצר וצור קשר עם המוכר' },
+  goContact: { en: 'Go to the Products menu and contact the seller', he: 'עבור אל המוצר וצור קשר עם המוכר' },
   waTemplates: { en: 'WhatsApp Message Templates', he: 'תבניות הודעות WhatsApp' },
   copyMessage: { en: 'Copy Message', he: 'העתק הודעה' },
-  note: { en: 'Friendly Reminder: When chatting with sellers, please stay on the Flylink platform—engage in natural conversation as a buyer or distributor.', he: 'תזכורת ידידותית: בעת שיחה עם המוכרים, אנא הישארו בפלטפורמת Flylink — ניהלו שיחה טבעית בתור קונה או מפיץ.' },
+  note: { en: 'Reminder: keep the conversation on the FlyLink platform and speak as a buyer or distributor would.', he: 'תזכורת ידידותית: בעת שיחה עם המוכרים, אנא הישארו בפלטפורמת Flylink — ניהלו שיחה טבעית בתור קונה או מפיץ.' },
   scriptsEyebrow: { en: 'Handy Tools', he: 'כלים שימושיים' },
   scriptsTitle: { en: 'Recommended Scripts', he: 'תסריטים מומלצים' },
-  scriptsDesc: { en: 'Ready-to-use scripts for a variety of promotional scenarios—making your promotions more natural, faster, and more effective', he: 'תסריטים מוכנים לשימוש למגוון תרחישי קידום מכירות — שהופכים את פעולות הקידום שלכם לטבעיות יותר, מהירות יותר ויעילות יותר' },
+  scriptsDesc: { en: 'Ready-to-use scripts for different promotion scenarios. They help you sound natural and work faster.', he: 'תסריטים מוכנים לשימוש למגוון תרחישי קידום מכירות — שהופכים את פעולות הקידום שלכם לטבעיות יותר, מהירות יותר ויעילות יותר' },
   copy: { en: 'Copy', he: 'העתק' },
   videosEyebrow: { en: 'Video Lessons', he: 'שיעורי וידאו' },
   videosTitle: { en: 'Video Tutorials', he: 'מדריכי וידאו' },
   videosDesc: { en: 'Watch video tutorials to get started fast — learn by doing, easily', he: 'צפו במדריכי וידאו כדי להתחיל במהירות — למדו תוך כדי עשייה, בקלות' },
-  featuredTutorial: { en: 'Featured Tutorial', he: 'מדריך מומלץ' },
   minToLearn: { en: 'min to learn', he: 'דקות ללמוד' },
-  guaranteeTitle: { en: 'Four Platform Guarantees for Worry-free Promotion', he: 'ארבע התחייבויות של הפלטפורמה לקידום ללא דאגות' },
+  guaranteeTitle: { en: 'Four platform guarantees for worry-free promotion', he: 'ארבע התחייבויות של הפלטפורמה לקידום ללא דאגות' },
   faqEyebrow: { en: 'FAQ', he: 'שאלות נפוצות' },
-  faqTitle: { en: 'All Your Questions, Answered', he: 'תשובות לכל השאלות שלכם' },
-  faqDesc: { en: 'Answers to the most common beginner questions — contact support if you need more help', he: 'תשובות לשאלות הנפוצות ביותר של מתחילים — פנו לתמיכה אם אתם זקוקים לעזרה נוספת' },
-  faqFoot: { en: 'If you have any other questions, please contact Flylink platform customer service, which is available 7x24 hours a day.', he: 'אם יש לכם שאלות נוספות, אנא פנו לשירות הלקוחות של פלטפורמת Flylink, הזמין 24 שעות ביממה, 7 ימים בשבוע.' },
-  ctaTitle: { en: 'Start Earning Your First Commission Now', he: 'התחל להרוויח את העמלה הראשונה שלך כבר עכשיו' },
-  ctaDesc: { en: 'No guessing what to do next. Choose a store to join, contact the seller, and share your affiliate link—it’s that simple to earn your first commission.', he: 'אין צורך לנחש מה לעשות עכשיו. בחר חנות להצטרף אליה, צור קשר עם המוכר ושתף את קישור השותפים שלך — כך פשוט להרוויח את העמלה הראשונה שלך.' },
-  seeProcess: { en: 'See the Process', he: 'ראו את התהליך' },
-  footerCopy1: { en: 'Affiliate Platform · Auto commission settlement, safe & reliable', he: 'פלטפורמת שותפים · סילוק עמלות אוטומטי, בטוח ואמין' },
-  footerCopy2: { en: 'After joining, contact the seller right away to get your product promo link', he: 'לאחר ההרשמה, צור קשר עם המוכר מיד כדי לקבל את קישור המבצע של המוצר שלך' },
+  faqTitle: { en: 'All your questions, answered', he: 'תשובות לכל השאלות שלכם' },
+  faqDesc: { en: 'The most common questions from new affiliates. Contact support if you need more help.', he: 'תשובות לשאלות הנפוצות ביותר של מתחילים — פנו לתמיכה אם אתם זקוקים לעזרה נוספת' },
+  faqFoot: { en: 'If you have any other questions, please contact FlyLink platform customer service, which is available 24/7 hours a day.', he: 'אם יש לכם שאלות נוספות, אנא פנו לשירות הלקוחות של פלטפורמת FlyLink, הזמין 24 שעות ביממה, 7 ימים בשבוע.' },
+  ctaTitle: { en: 'Start earning your first commission today', he: 'התחל להרוויח את העמלה הראשונה שלך כבר עכשיו' },
+  ctaDesc: { en: 'No guessing what to do next. Choose a store, contact the seller and share your affiliate link. It\'s that simple.', he: 'אין צורך לנחש מה לעשות עכשיו. בחר חנות להצטרף אליה, צור קשר עם המוכר ושתף את קישור השותפים שלך — כך פשוט להרוויח את העמלה הראשונה שלך.' },
+  seeProcess: { en: 'See How It Works', he: 'ראו את התהליך' },
+  footerCopy1: { en: 'Distribution Platform · automatic commission settlement, safe and reliable', he: 'פלטפורמת שותפים · סילוק עמלות אוטומטי, בטוח ואמין' },
   footerBottom: { en: `© ${dayjs().year()} FlyLink. All rights reserved.`, he: `© ${dayjs().year()} FlyLink. כל הזכויות שמורות.` },
   copied: { en: 'Copied', he: 'הועתק' }
 }
@@ -427,7 +400,7 @@ const copyText = (text) => {
                 :class="{ 'is-active': activeStep === i, 'is-done': activeStep > i }"
                 @click="activeStep = i"
               >
-                <span class="flow__line"><span class="flow__line-fill"></span></span>
+                <span v-if="i<steps.length-1" class="flow__line"><span class="flow__line-fill"></span></span>
                 <div class="flow__node">
                   <span class="flow__circle">
                     <span class="flow__ring"></span>
@@ -478,7 +451,7 @@ const copyText = (text) => {
                   <div class="flow__right-title mt1">{{ t('keyPoints') }}</div>
                   <div class="flow__tips">
                     <div v-for="(tip, ti) in currentStep.tips" :key="ti" class="flow__tip">
-                      <span class="num-dot">{{ ti + 1 }}</span>
+                      <span class="num-dot">✓</span>
                       <span>{{ L(tip) }}</span>
                     </div>
                   </div>
@@ -659,49 +632,6 @@ const copyText = (text) => {
         </div>
       </section>
 
-      <!-- ====================== Video Tutorials ====================== -->
-      <section class="section" id="videos" style="display:none;">
-        <div class="container">
-          <div class="section-head">
-            <span class="section-head__eyebrow">{{ t('videosEyebrow') }}</span>
-            <h2 class="section-head__title">{{ t('videosTitle') }}</h2>
-            <p class="section-head__desc">{{ t('videosDesc') }}</p>
-          </div>
-
-          <div class="video-grid">
-            <article v-for="v in videos" :key="v.id" class="video-card">
-              <div class="video-card__media">
-                <video class="video-card__video" :src="v.video" :poster="v.image" controls preload="metadata" playsinline></video>
-                <span class="video-card__duration"><span v-html="icon('clock', 12)"></span>{{ v.duration }}</span>
-              </div>
-              <div class="video-card__body">
-                <h3 class="video-card__title">{{ L(v.title) }}</h3>
-                <p class="video-card__desc">{{ L(v.desc) }}</p>
-              </div>
-            </article>
-          </div>
-
-          <div class="video-feature">
-            <div class="video-feature__grid">
-              <div>
-                <span class="video-feature__tag"><span v-html="icon('playCircle', 16)"></span>{{ t('featuredTutorial') }}</span>
-                <h3 class="video-feature__title">{{ L(videoFeature.title) }}</h3>
-                <p class="video-feature__desc">{{ L(videoFeature.desc) }}</p>
-                <ul class="video-feature__steps">
-                  <li v-for="(s, i) in videoFeature.steps" :key="i">{{ L(s) }}</li>
-                </ul>
-              </div>
-              <div class="video-feature__media">
-                <div class="video-feature__frame">
-                  <video class="video-feature__video" :src="videoFeature.video" :poster="videoFeature.image" controls preload="metadata" playsinline></video>
-                </div>
-                <div class="video-feature__time"><b>{{ videoFeature.duration }}</b><span>{{ t('minToLearn') }}</span></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       <!-- ====================== Guarantees ====================== -->
       <section class="section section--alt">
         <div class="container">
@@ -779,8 +709,7 @@ const copyText = (text) => {
             <img class="brand__logo" src="https://da-test.flylinking.com/_nuxt/Flylinking-logo.fjmDM9jT.svg" alt="FlyLink">
           </div>
           <p class="footer__copy">
-            {{ t('footerCopy1') }}<br>
-            {{ t('footerCopy2') }}
+            {{ t('footerCopy1') }}
           </p>
         </div>
         <p class="footer__bottom">{{ t('footerBottom') }}</p>
@@ -854,7 +783,7 @@ html { scroll-behavior: smooth; }
 
 <style lang="scss" scoped>
 .affiliate-page {
-  font-family: "PingFang SC", "Noto Sans SC", "Hiragino Sans GB", "Microsoft YaHei", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Arial, sans-serif, "Inter";
   color: var(--ink-900);
   background: var(--white);
   line-height: 1.5;
@@ -976,7 +905,7 @@ html { scroll-behavior: smooth; }
   .flow__right-title { font-size: .875rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--gray-400); }
   .flow__tips { display: grid; font-size: .875rem; }
   .flow__tip { display: flex; align-items: flex-start; gap: .75rem; color: var(--ink-700); padding: .5rem .75rem; }
-  .flow__tip .num-dot { margin-top: .125rem; }
+  .flow__tip .num-dot { margin-top: .125rem;background: var(--whatsapp-tint); color: var(--whatsapp-dark); }
   .flow__figure { margin-top: 1.25rem; overflow: hidden; border: 1px solid rgba(255,255,255,.6); border-radius: var(--r-md); box-shadow: var(--shadow-sm); }
   .flow__figure img { aspect-ratio: 15 / 10; width: 100%; object-fit: cover; }
   .flow__sub { display: grid; }
@@ -1050,33 +979,6 @@ html { scroll-behavior: smooth; }
   .script-detail__quote { margin-top: 20px; border-radius: var(--r-md); background: var(--whatsapp-soft); padding: 1.25rem; flex: 1; }
   .script-detail__quote p { font-size: 1.125rem; line-height: 1.75; color: var(--ink-800); }
   .script-detail .btn { margin-top: 1rem; height: 40px; max-width: 300px; }
-
-  /* Videos */
-  .video-grid { margin-top: 3rem; display: grid; gap: 1.5rem; }
-  .video-card { overflow: hidden; border: 1px solid var(--gray-100); border-radius: var(--r-xl); background: var(--white); box-shadow: var(--shadow-sm); cursor: pointer; transition: box-shadow .3s var(--ease), transform .3s var(--ease); }
-  .video-card:hover { box-shadow: var(--shadow-xl); transform: translateY(-.25rem); }
-  .video-card__media { position: relative; height: 12rem; overflow: hidden; background: linear-gradient(135deg, #ddd6fe, #c7d2fe); }
-  .video-card__play { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,.3); }
-  .video-card__play > .icon { color: rgba(255,255,255,.9); }
-  .video-card__duration { position: absolute; right: .75rem; bottom: .75rem; display: flex; align-items: center; gap: .25rem; border-radius: 9999px; background: rgba(0,0,0,.6); padding: .25rem .625rem; font-size: .75rem; font-weight: 500; color: var(--white); }
-  .video-card__body { padding: 1.25rem; }
-  .video-card__title { font-size: 1.125rem; font-weight: 700; }
-  .video-card__desc { margin-top: .5rem; font-size: .875rem; color: var(--gray-500); }
-  .video-card__video { height: 100%; width: 100%; object-fit: cover; display: block; }
-
-  .video-feature { margin-top: 2rem; overflow: hidden; border-radius: var(--r-2xl); background: #abb8cd; padding: 2rem; }
-  .video-feature__grid { display: grid; gap: 2rem; align-items: center; }
-  .video-feature__tag { display: inline-flex; align-items: center; gap: .5rem; border-radius: 9999px; background: rgba(255,255,255,.15); padding: .25rem .75rem; font-size: .875rem; font-weight: 500; color: var(--white); }
-  .video-feature__title { margin-top: 1rem; font-size: 1.5rem; font-weight: 700; color: var(--white); }
-  .video-feature__desc { margin-top: .75rem; line-height: 1.75; color: rgba(255,255,255,.8); }
-  .video-feature__steps { margin-top: 1.5rem; display: flex; flex-wrap: wrap; gap: .75rem; }
-  .video-feature__steps li { border-radius: var(--r-sm); background: rgba(255,255,255,.1); padding: .5rem 1rem; font-size: .875rem; color: rgba(255,255,255,.9); }
-  .video-feature__media { position: relative; }
-  .video-feature__frame { position: relative; overflow: hidden; border-radius: var(--r-xl); box-shadow: var(--shadow-xl); }
-  .video-feature__frame video { width: 100%; object-fit: cover; display: block; }
-  .video-feature__time { position: absolute; right: -1rem; top: -1rem; border-radius: var(--r-md); background: var(--white); padding: 1rem; box-shadow: var(--shadow-xl); }
-  .video-feature__time b { display: block; font-size: 1.5rem; font-weight: 700; color: var(--brand); }
-  .video-feature__time span { font-size: .75rem; color: var(--gray-400); }
 
   /* Guarantee */
   .guarantee { border: 1px solid #ddd6fe; border-radius: var(--r-2xl); background: #e8e3ff; padding: 2rem; }
